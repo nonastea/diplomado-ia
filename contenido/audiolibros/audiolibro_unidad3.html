@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Cómo aprende de verdad una inteligencia artificial</title>
+<style>
+  :root{
+    --bg:#0F1512; --card:#18201C; --card2:#1F2925;
+    --ink:#EAF1EE; --soft:#93A099; --green:#2FBF95; --green-deep:#1B8E6E;
+    --amber:#E0A45C; --line:#2A342F; --hl:#22332C;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 200px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:#5f6b64;}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(15,21,18,0) 0%,var(--bg) 22%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;}
+  .btn-skip span{font-size:1.15rem;}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#08110D;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(47,191,149,.35);}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;}
+  .spd button.on{background:var(--green);color:#08110D;}
+
+  /* SHEET capítulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);}
+  .sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card2);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro · voz del dispositivo</p>
+    <h1>Cómo aprende de verdad una inteligencia artificial</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capítulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capítulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "La inteligencia artificial, explicada desde el mundo comercial", "c": false}, {"t": "Cómo aprende de verdad una inteligencia artificial", "c": true}, {"t": "La IA ya trabaja dentro de tu industria. Decide a qué afiliado conviene llamar primero, anticipa quién está por traspasarse a otra administradora, proyecta cuánta pensión tendrá una persona y separa a los buenos prospectos de los que no van a cerrar.", "c": false}, {"t": "Esta guía te explica cómo funciona por dentro , sin tecnicismos y con ejemplos de tu mundo. Y aquí está lo interesante: lo vas a entender rápido, porque parte de algo que ya haces todos los días sin darte cuenta: leer clientes .", "c": false}, {"t": "El recorrido", "c": true}, {"t": "1 La gran idea: aprender de la experiencia, no de un manual", "c": false}, {"t": "2 Toda predicción responde a una de dos preguntas", "c": false}, {"t": "3 Los pasos para entrenar una máquina", "c": false}, {"t": "4 El gran riesgo: repetir de memoria sin entender", "c": false}, {"t": "5 Las distintas formas de aprender (los algoritmos)", "c": false}, {"t": "6 La IA también aprende de textos, imágenes y voz", "c": false}, {"t": "7 Cómo saber si funciona (y por qué \"97% de aciertos\" engaña)", "c": false}, {"t": "8 Los errores más comunes", "c": false}, {"t": "9 Un caso completo: anticiparse al traspaso", "c": false}, {"t": "Aprender de la experiencia, no de un manual", "c": true}, {"t": "Piensa en lo que te pasó después de tus primeros años vendiendo. Hoy puedes intuir, casi al primer minuto de una llamada, si un afiliado está a punto de irse o si un prospecto va a cerrar. No lo sacas de un manual: lo sabes porque viste cientos de clientes. Lo notas en el tono, en las preguntas que hace, en cómo reacciona. Si alguien te pidiera escribir la regla exacta, no podrías… pero igual lo sientes.", "c": false}, {"t": "Eso es exactamente lo que hace una máquina cuando \"aprende\". En lugar de darle reglas, le mostramos miles de casos pasados y ella sola descubre el patrón.", "c": false}, {"t": "Para que se entienda lo distinto que es esto: la forma antigua de programar era a punta de reglas fijas: \"si el cliente tiene tal renta, ofrécele tal plan\". Funciona para cosas simples, pero se cae apenas el caso es un poco más sutil. La forma nueva, llamada machine learning (aprendizaje automático), no usa reglas: usa ejemplos. Es como enseñarle a un niño qué es un gato. No le recitas características; le muestras gatos hasta que lo reconoce solo. La máquina aprende igual.", "c": false}, {"t": "Tres palabras que vas a ver todo el rato", "c": false}, {"t": "Para enseñarle, cada ejemplo necesita dos cosas: las señales y la respuesta correcta.", "c": false}, {"t": "Los nombres técnicos de esas dos cosas son simples una vez que sabes a qué se refieren:", "c": false}, {"t": "A las señales se les llama características (en inglés, features ): los datos que le entregas para que prediga. La renta, la edad, la antigüedad, el número de reclamos.", "c": false}, {"t": "A la respuesta correcta se le llama etiqueta (en inglés, label ): lo que quieres que aprenda a predecir. Es, en el fondo, el resultado que tú ya conoces de tus registros: \"este afiliado se fue\" o \"este se quedó\".", "c": false}, {"t": "Cuando le enseñas con ejemplos que ya traen la respuesta —porque la sacaste de tu historial—, eso se llama aprendizaje supervisado . \"Supervisado\" porque aprende comparando cada intento con la respuesta verdadera, igual que un vendedor nuevo que aprende mirando casos reales que ya sabemos cómo terminaron.", "c": false}, {"t": "Toda predicción responde a una de dos preguntas", "c": true}, {"t": "Por más sofisticado que parezca, casi todo lo que una máquina predice cae en una de dos preguntas. Saber cuál es la tuya es la primera decisión del proyecto, porque define todo lo que viene después.", "c": false}, {"t": "¿Cuánta pensión tendrá este afiliado al jubilar?", "c": false}, {"t": "¿Cuánto cotizará en los próximos años?", "c": false}, {"t": "¿Cuánto venderá esta sucursal el próximo mes?", "c": false}, {"t": "Nombre técnico: regresión . Es solo \"predecir un número\".", "c": false}, {"t": "¿Este afiliado se traspasa o se queda?", "c": false}, {"t": "¿Este prospecto va a firmar o no?", "c": false}, {"t": "¿Este cliente está conforme o molesto?", "c": false}, {"t": "Nombre técnico: clasificación . Es \"ubicar cada caso en su grupo\".", "c": false}, {"t": "Los pasos para entrenar una máquina", "c": true}, {"t": "Entrenar una máquina es como armar una buena cartera de prospectos: hay un orden, y saltarse un paso te pasa la cuenta después. Estos son los pasos que importan.", "c": false}, {"t": "Reúne y ordena los datos. Es la etapa más larga y menos glamorosa, pero la más decisiva. Si tus datos vienen sucios o con errores, la máquina aprende cosas equivocadas. Es como capacitar a un equipo con una base de datos llena de teléfonos malos: por mucho que se esfuercen, parten torcidos.", "c": false}, {"t": "Separa las señales de la respuesta. Decides qué datos del cliente le muestras (las señales) y qué quieres que prediga (la respuesta). Elegir buenas señales es de lo más importante de todo: datos irrelevantes confunden a la máquina; datos bien elegidos la vuelven mucho más certera.", "c": false}, {"t": "Aparta un grupo para la \"prueba real\". Este paso es el más importante de entender. No le muestras todos los casos: escondes una parte. La entrenas con la mayoría y, al final, la evalúas con los casos que apartaste, que nunca vio. ¿Por qué? Para comprobar que de verdad aprendió a predecir , y no solo se memorizó tu cartera histórica.", "c": false}, {"t": "Déjala entrenar. La máquina revisa los miles de casos una y otra vez y va afinando sus criterios hasta achicar al máximo la diferencia entre lo que predice y lo que realmente pasó. A esa fase de estudio se le llama entrenamiento .", "c": false}, {"t": "Tómale la prueba. Ahora sí, le presentas los casos que apartaste y mides cuánto acierta. Ese resultado es el que vale, porque son casos que nunca había visto.", "c": false}, {"t": "Ponla a trabajar. Si pasó la prueba, se \"congela\" y empieza a operar. Desde ahí ya no aprende: solo recibe clientes nuevos y entrega su predicción. A esa etapa de solo responder se le llama inferencia (palabra rara, idea simple: dejó de estudiar, ahora solo trabaja).", "c": false}, {"t": "Manténla vigente. El mercado cambia: nuevas administradoras, nuevas campañas, nuevos hábitos de los afiliados. Lo que la máquina aprendió hace un año se queda viejo. Cuando empieza a fallar, se vuelve a entrenar con datos recientes.", "c": false}, {"t": "Cómo se ordenan los datos", "c": false}, {"t": "Para que la máquina entienda tu información, hay que dejarla en una tabla muy prolija: una fila por cada cliente, una columna por cada dato, y un solo valor por casilla . Por ejemplo, una tabla de afiliados:", "c": false}, {"t": "Una fila por afiliado · una columna por dato · un valor por casilla.", "c": false}, {"t": "Afiliado", "c": false}, {"t": "Edad", "c": false}, {"t": "Renta", "c": false}, {"t": "Años cotizando", "c": false}, {"t": "Reclamos", "c": false}, {"t": "¿Se traspasó? (lo que queremos predecir)", "c": false}, {"t": "Cliente A", "c": false}, {"t": "34", "c": false}, {"t": "$850.000", "c": false}, {"t": "No", "c": false}, {"t": "Cliente B", "c": false}, {"t": "51", "c": false}, {"t": "$1.900.000", "c": false}, {"t": "22", "c": false}, {"t": "Sí", "c": false}, {"t": "Cliente C", "c": false}, {"t": "29", "c": false}, {"t": "$620.000", "c": false}, {"t": "No", "c": false}, {"t": "Repetir de memoria no es entender", "c": true}, {"t": "Este es el problema más importante de toda la IA, y lo vas a reconocer de inmediato porque lo has visto en tu propio equipo de ventas.", "c": false}, {"t": "Piensa en dos vendedores nuevos. A los dos les enseñan el mismo guion.", "c": false}, {"t": "Se aprende el libreto palabra por palabra. En el ensayo lo recita perfecto. Pero frente a un cliente real, apenas este dice algo fuera del guion, se queda en blanco. No supo adaptarse.", "c": false}, {"t": "No memoriza frases: entiende por qué funciona cada parte del guion. Cuando el cliente se sale del libreto, igual cierra, porque captó la lógica de fondo.", "c": false}, {"t": "Una máquina puede caer en la misma trampa que el primero. Puede aprenderse de memoria tu cartera histórica a la perfección y, aun así, quedar inútil frente a clientes nuevos. A ese error se le llama sobreajuste (en inglés, overfitting ): el modelo memoriza los casos en vez de entender el patrón.", "c": false}, {"t": "Las distintas formas de aprender (los algoritmos)", "c": true}, {"t": "Un algoritmo es simplemente un método de aprendizaje. Así como hay distintos estilos para vender —unos cierran con datos, otros con cercanía—, hay distintos algoritmos. No necesitas conocerlos todos; con estos tres entiendes el panorama.", "c": false}, {"t": "La línea de tendencia (regresión lineal)", "c": false}, {"t": "El más simple. Imagina que pones a tus afiliados en un gráfico: mientras más renta y más antigüedad, mayor pensión proyectada. Si trazas la línea que mejor pasa entre todos los puntos, esa línea te sirve para estimar: ingresas los datos de un afiliado nuevo y te entrega su proyección. Su gran ventaja es que es fácil de explicar : puedes decirle al cliente \"por cada año más de cotización, su pensión sube tanto\".", "c": false}, {"t": "El árbol de decisión", "c": false}, {"t": "Funciona como una pauta de calificación de prospectos: una cadena de preguntas de sí o no que te va llevando a una conclusión. Lo vas a reconocer al toque, porque tú ya usas algo así para calificar clientes.", "c": false}, {"t": "Su ventaja: es transparente, se sigue como una lista de chequeo, y puedes mostrar exactamente por qué clasificó a alguien de cierta forma. Su problema: si lo dejas crecer demasiado, empieza a inventar reglas absurdas (\"clientes de 37 años, de tal comuna, contactados un martes…\"), es decir, cae en el sobreajuste de la Parte 4.", "c": false}, {"t": "El equipo de árboles (métodos de conjunto)", "c": false}, {"t": "Aquí aparece una de las ideas más potentes: en vez de confiar en un árbol, se construyen cientos de árboles distintos y se los hace votar. La conclusión más votada gana.", "c": false}, {"t": "Es de los métodos más certeros que existen. El costo: se vuelve una caja negra . Con cientos de árboles votando, ya no puedes explicar con claridad por qué tomó una decisión. Acierta mucho, pero pierde la capacidad de justificarse.", "c": false}, {"t": "La decisión de fondo", "c": false}, {"t": "Y aquí está lo que importa, que aplica especialmente en tu rubro: el método más potente no siempre es el mejor . En servicios financieros, que están regulados, muchas veces necesitas poder explicar una decisión: a un cliente, a una jefatura, a un fiscalizador. Una caja negra que dice \"este afiliado es de alto riesgo\" sin poder justificarlo te sirve menos que un modelo un poco menos preciso pero que sí puedes defender. La capacidad de explicar tiene un valor real, no es un detalle.", "c": false}, {"t": "La IA también aprende de textos, imágenes y voz", "c": true}, {"t": "Todo lo anterior usaba tablas ordenadas de datos. Pero gran parte de la información valiosa no vive en tablas: vive en correos, mensajes, llamadas grabadas, comentarios y reclamos escritos. Para eso existe un tipo de IA más poderoso, el aprendizaje profundo (en inglés, deep learning ), que usa \"redes neuronales\", inspiradas a grandes rasgos en el cerebro humano.", "c": false}, {"t": "Su gracia es esta: con las tablas, tú tenías que elegir las señales. Con un texto o una imagen, la máquina descubre las señales sola . Y eso es enorme, porque una sola foto contiene cientos de miles de datos: ningún humano podría procesarlos a mano. La red profunda se las arregla sola con ese volumen.", "c": false}, {"t": "Esto abre tres mundos, y al menos uno es directamente útil para ti:", "c": false}, {"t": "IA que entiende el lenguaje", "c": false}, {"t": "Es la IA que lee y escribe textos. Puede leer miles de comentarios o reclamos de afiliados y detectar quién está molesto y a punto de irse, mucho antes de que llame a pedir su traspaso. Y un dato: esto es exactamente lo que es ChatGPT , esa herramienta con la que quizás ya has conversado. Sirve para analizar el ánimo de los clientes, clasificar mensajes y responder consultas.", "c": false}, {"t": "IA que ve", "c": false}, {"t": "Es la que interpreta imágenes y video: el desbloqueo de tu teléfono con la cara, las cámaras que leen patentes, la verificación de identidad con una selfie y la cédula. Todo eso es IA \"viendo\".", "c": false}, {"t": "IA que aprende probando", "c": false}, {"t": "Esta es distinta: no aprende de casos con respuesta conocida, sino probando y corrigiendo , con premios y castigos, igual que se aprende a manejar o a vender en la práctica: lo que funciona se repite, lo que falla se descarta. Así aprenden, por ejemplo, los sistemas que optimizan precios o recomendaciones.", "c": false}, {"t": "Cómo saber si funciona (y por qué \"97% de aciertos\" engaña)", "c": true}, {"t": "Aquí hay una trampa muy útil que te va a enseñar a desconfiar de los números bonitos. La llaman la trampa del \"97% de aciertos\".", "c": false}, {"t": "Supón que solo un 3% de tus afiliados se traspasa en un año. Ahora imagina un modelo flojo que siempre dice lo mismo: \"nadie se va\". ¿Cuánto acierta? Un 97% de las veces, porque la enorme mayoría efectivamente se queda.", "c": false}, {"t": "Suena excelente… pero ese modelo es completamente inútil : jamás detecta a uno solo de los que sí se iban, que es justo lo que te interesaba pillar. Por eso \"acierta el 97%\" puede ser una cifra que esconde un fracaso. A esto se le llama la paradoja de la exactitud .", "c": false}, {"t": "Por eso no basta con mirar \"cuánto acierta en total\". Se usan dos preguntas más finas:", "c": false}, {"t": "Y casi siempre hay que elegir qué error te pesa más , porque apretar de un lado afloja el otro. Si quieres pillar a absolutamente todos los que se van, vas a generar más falsas alertas. Si quieres cero falsas alertas, se te van a escapar algunos que sí se iban.", "c": false}, {"t": "Los errores más comunes", "c": true}, {"t": "Para cerrar la parte técnica, cinco trampas en las que se cae seguido al empezar con estos proyectos:", "c": false}, {"t": "Usar IA cuando no hace falta. A veces una regla simple basta y es gratis: \"llamar a todo afiliado que no ha sido contactado en seis meses\". No vale la pena montar un modelo complejo a menos que de verdad funcione bastante mejor que esa regla simple.", "c": false}, {"t": "Dejar que memorice. El sobreajuste de la Parte 4: que el modelo se aprenda los casos de memoria y falle con los clientes nuevos. Es el error más clásico.", "c": false}, {"t": "Darle demasiados datos. Suena raro, pero más señales no siempre es mejor: con demasiadas, el modelo se pierde y deja de encontrar lo importante. Mejor pocos datos buenos que cientos de datos inútiles.", "c": false}, {"t": "Ignorar los casos atípicos. Un solo cliente muy fuera de lo común puede distorsionar todo. Es como sacar la renta promedio de tu cartera y que ahí esté metido un afiliado con ingresos altísimos: te desordena el número y te lleva a conclusiones falsas. Hay que detectar esos casos raros y decidir qué hacer con ellos.", "c": false}, {"t": "No saber cuándo parar. Llega un punto en que juntar más datos ya casi no mejora el resultado, pero cuesta tiempo y dinero. Conviene fijarse una meta clara de antemano y parar al alcanzarla.", "c": false}, {"t": "Un caso completo: anticiparse al traspaso", "c": true}, {"t": "Juntemos todo con un caso que conoces bien. Una empresa de servicios financieros tiene un problema clásico: muchos afiliados se traspasan a la competencia, y captar uno nuevo cuesta varias veces más que retener a uno actual. Esa fuga silenciosa le erosiona el negocio por los dos lados.", "c": false}, {"t": "La idea: adelantarse y predecir quién está por irse , para actuar antes de perderlo. Anticiparse a la fuga de clientes tiene nombre técnico: se le dice churn . Mira cómo se aplica todo lo que acabas de leer.", "c": false}, {"t": "Reunieron y ordenaron los datos. Una fila por afiliado. Las señales: cantidad de cotizaciones, renta, reclamos, hace cuánto no hay contacto, si respondió campañas anteriores.", "c": false}, {"t": "Definieron la pregunta. \"¿Se traspasa o se queda?\" Es una categoría → clasificación (Parte 2).", "c": false}, {"t": "Apartaron un grupo de prueba para evaluar después con afiliados que el modelo no había visto.", "c": false}, {"t": "Probaron primero lo simple. Empezaron con una regla básica: \"en riesgo = sin movimiento hace más de 90 días\". Pero descubrieron que se les escapaban afiliados que todavía aparecían activos, pero que ya mostraban señales finas de pérdida de interés. La regla simple no capturaba esos matices.", "c": false}, {"t": "Ahí sí justificaron la IA más potente , porque demostró funcionar mejor que la regla simple (recuerda la trampa 1 de la Parte 8: no la dieron por hecho, la probaron).", "c": false}, {"t": "La midieron con criterio. No se quedaron con \"cuánto acierta en total\" (los que se van son minoría, y ahí está la paradoja). Se fijaron sobre todo en cuántos de los que se iban lograban detectar, sin llenarse de falsas alertas.", "c": false}, {"t": "La pusieron a operar. Cada semana el modelo le asigna a cada afiliado una \"nota de riesgo\". Con esa nota, el equipo comercial prioriza a quién llamar y a quién ofrecerle un beneficio de retención.", "c": false}, {"t": "Y el detalle más importante de todo: el modelo no retiene a nadie. Solo le dice al equipo a quién prestarle atención primero. La acción —la llamada, la oferta, la conversación que salva al cliente— sigue siendo humana. La máquina entrega la pista; el cierre lo haces tú.", "c": false}, {"t": "Las palabras clave, en una línea", "c": true}, {"t": "Machine learning", "c": false}, {"t": "Enseñarle a una máquina con ejemplos pasados, no con reglas.", "c": false}, {"t": "Característica (señal)", "c": false}, {"t": "Un dato del cliente que le entregas a la máquina para que prediga.", "c": false}, {"t": "Etiqueta (respuesta)", "c": false}, {"t": "El resultado que quieres que aprenda a predecir.", "c": false}, {"t": "Regresión", "c": false}, {"t": "Cuando la respuesta es un número (\"¿cuánto?\").", "c": false}, {"t": "Clasificación", "c": false}, {"t": "Cuando la respuesta es una categoría (\"¿cuál?\").", "c": false}, {"t": "Entrenamiento", "c": false}, {"t": "La fase en que la máquina estudia los casos históricos.", "c": false}, {"t": "Inferencia", "c": false}, {"t": "Cuando ya terminó de aprender y solo entrega predicciones.", "c": false}, {"t": "Sobreajuste", "c": false}, {"t": "El error de memorizar en vez de entender.", "c": false}, {"t": "Algoritmo", "c": false}, {"t": "Un método con el que la máquina aprende.", "c": false}, {"t": "Caja negra", "c": false}, {"t": "Un modelo que acierta pero no puede justificar por qué.", "c": false}, {"t": "Aprendizaje profundo", "c": false}, {"t": "IA que aprende de textos, imágenes y voz, eligiendo sola las señales.", "c": false}, {"t": "Churn", "c": false}, {"t": "La fuga de un cliente o afiliado hacia la competencia.", "c": false}, {"t": "Si te quedas con tres cosas, que sean estas", "c": true}, {"t": "La IA aprende de ejemplos , no de reglas. Igual que tú aprendiste a leer clientes: viendo cientos de casos reales.", "c": false}, {"t": "El gran riesgo es memorizar en vez de entender . Por eso siempre se evalúa con casos nuevos que el modelo nunca vio.", "c": false}, {"t": "El método más potente no siempre es el mejor . A veces gana el simple, porque lo puedes explicar y defender.", "c": false}, {"t": "Lo interesante es que tú ya piensas así: anticipas quién se va y a quién llamar. La máquina solo hace eso mismo, a gran escala. Por eso estás mejor preparada que muchos para trabajar con ella.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+// render
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+function loadVoices(){
+  voices = synth.getVoices().filter(v=>v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = synth.getVoices();
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  // prefer a natural es voice
+  let pref = voices.findIndex(v=>/es-MX|es-US|es-419/i.test(v.lang));
+  if(pref<0) pref = voices.findIndex(v=>v.lang.toLowerCase().startsWith('es'));
+  if(pref<0) pref=0;
+  sel.value=pref; chosenVoice=voices[pref];
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; return; }
+  idx=i; highlight(i);
+  const u = new SpeechSynthesisUtterance(SEGS[i].t);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{ if(playing) speakSeg(i+1); };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+highlight(0);
+</script>
+</body>
+</html>

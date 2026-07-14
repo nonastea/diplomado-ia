@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Unidad 5 · Análisis predictivo y prescriptivo — Mapa conceptual y flashcards</title>
+<style>
+:root{
+  --bg:#eef1f7; --surface:#ffffff; --surface-2:#f7f9fd; --surface-3:#eef2f8;
+  --ink:#1a2432; --muted:#54637a; --faint:#8593a6; --line:#dbe3f0; --line-strong:#c3cee0;
+  --accent:#22356b; --accent-soft:#eaeffb;
+  --shadow-s:0 1px 3px rgba(20,40,80,.07);
+  --shadow-m:0 6px 22px rgba(20,40,80,.10),0 2px 6px rgba(20,40,80,.06);
+  --shadow-l:0 14px 40px rgba(20,40,80,.16),0 4px 12px rgba(20,40,80,.09);
+  --radius:14px;
+  /* categorías */
+  --k-fund:#2c4a8f; --k-fund-s:#e9eefb;
+  --k-desc:#1c7d6f; --k-desc-s:#e4f4f0;
+  --k-diag:#0f7d8c; --k-diag-s:#e2f3f5;
+  --k-pred:#a5711a; --k-pred-s:#f9f0dd;
+  --k-presc:#69499b; --k-presc-s:#f0eafa;
+  --k-rig:#b83f57; --k-rig-s:#fbe9ee;
+  --k-enr:#586675; --k-enr-s:#eceff4;
+}
+html[data-theme="dark"]{
+  --bg:#0d1420; --surface:#151f2e; --surface-2:#1a2536; --surface-3:#202d41;
+  --ink:#e7eef8; --muted:#a0b1c6; --faint:#6e8098; --line:#28374e; --line-strong:#3a4a63;
+  --accent:#8098d9; --accent-soft:#1c2b43;
+  --shadow-s:0 1px 3px rgba(0,0,0,.4);
+  --shadow-m:0 6px 22px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.35);
+  --shadow-l:0 16px 44px rgba(0,0,0,.6),0 4px 14px rgba(0,0,0,.4);
+  --k-fund:#7f9adf; --k-fund-s:#1b2a44;
+  --k-desc:#4dbfab; --k-desc-s:#123029;
+  --k-diag:#4fc4d4; --k-diag-s:#0f2d33;
+  --k-pred:#e0ab48; --k-pred-s:#2f2610;
+  --k-presc:#b79ce2; --k-presc-s:#241a34;
+  --k-rig:#e88aa0; --k-rig-s:#331520;
+  --k-enr:#9aadbf; --k-enr-s:#1e2733;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Avenir Next',Avenir,'Helvetica Neue','Segoe UI',system-ui,-apple-system,sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  transition:background .3s,color .3s;
+}
+.mono{font-family:ui-monospace,'SF Mono',Menlo,'DejaVu Sans Mono',Consolas,monospace;}
+button{font-family:inherit;}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:2px; border-radius:6px;}
+
+/* ---------- categoría → color helpers ---------- */
+.k-fund{--kc:var(--k-fund); --kcs:var(--k-fund-s);}
+.k-desc{--kc:var(--k-desc); --kcs:var(--k-desc-s);}
+.k-diag{--kc:var(--k-diag); --kcs:var(--k-diag-s);}
+.k-pred{--kc:var(--k-pred); --kcs:var(--k-pred-s);}
+.k-presc{--kc:var(--k-presc); --kcs:var(--k-presc-s);}
+.k-rig{--kc:var(--k-rig); --kcs:var(--k-rig-s);}
+.k-enr{--kc:var(--k-enr); --kcs:var(--k-enr-s);}
+
+/* ---------- header ---------- */
+header{max-width:1240px; margin:0 auto; padding:26px 22px 4px;}
+.kick{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+.kick .mono{color:var(--faint); font-weight:500; letter-spacing:.04em;}
+h1.title{font-weight:200; font-size:30px; letter-spacing:-.015em; margin:6px 0 4px; line-height:1.1;}
+h1.title b{font-weight:700; color:var(--accent);}
+.subtitle{color:var(--muted); font-size:14px; max-width:760px;}
+.subtitle .mono{font-size:12.5px; color:var(--faint);}
+
+/* ---------- tabs ---------- */
+.tabs-wrap{position:sticky; top:0; z-index:40; background:var(--bg); border-bottom:1px solid var(--line);}
+.tabs{max-width:1240px; margin:0 auto; padding:10px 22px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.tab{
+  border:1px solid var(--line); background:var(--surface); color:var(--muted);
+  padding:9px 15px; border-radius:11px; cursor:pointer; font-size:14px; font-weight:600;
+  display:inline-flex; align-items:center; gap:7px; transition:all .15s; min-height:40px;
+}
+.tab:hover{border-color:var(--line-strong); color:var(--ink);}
+.tab[aria-selected="true"]{background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:var(--shadow-s);}
+.tab .ic{font-size:15px;}
+.tab .cnt{font-size:11px; font-weight:700; background:rgba(0,0,0,.10); padding:1px 7px; border-radius:20px;}
+.tab[aria-selected="true"] .cnt{background:rgba(255,255,255,.22);}
+.theme-btn{
+  margin-left:auto; border:1px solid var(--line); background:var(--surface); color:var(--muted);
+  padding:9px 13px; border-radius:11px; cursor:pointer; font-size:13px; font-weight:600;
+  display:inline-flex; align-items:center; gap:6px; min-height:40px;
+}
+.theme-btn:hover{border-color:var(--line-strong); color:var(--ink);}
+
+main{max-width:1240px; margin:0 auto; padding:16px 22px 70px;}
+.panel{display:none;} .panel.active{display:block; animation:fade .28s ease;}
+@keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+.intro{color:var(--muted); font-size:14px; margin:6px 0 14px; line-height:1.5;}
+.intro b{color:var(--ink);}
+
+/* ================= MAPA ================= */
+.map-toolbar{display:flex; flex-wrap:wrap; gap:7px; align-items:center; margin-bottom:10px;}
+.btn{
+  border:1px solid var(--line); background:var(--surface); color:var(--muted);
+  padding:8px 12px; border-radius:10px; cursor:pointer; font-size:13px; font-weight:600;
+  display:inline-flex; align-items:center; gap:6px; min-height:40px; transition:all .15s;
+}
+.btn:hover{border-color:var(--line-strong); color:var(--ink);}
+.btn.icon{padding:8px 11px; font-size:16px; min-width:40px; justify-content:center;}
+.btn.primary{background:var(--accent-soft); border-color:transparent; color:var(--accent);}
+.zoom-group{display:inline-flex; gap:4px; margin-left:auto;}
+
+.map-stage{
+  position:relative; width:100%; height:min(66vh,620px); min-height:430px;
+  background:
+    radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0) 0 0/26px 26px,
+    var(--surface-2);
+  border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+  touch-action:none; cursor:grab; box-shadow:var(--shadow-s) inset;
+}
+.map-stage.grabbing{cursor:grabbing;}
+#world{position:absolute; top:0; left:0; transform-origin:0 0; will-change:transform;}
+#edges{position:absolute; top:0; left:0; overflow:visible; pointer-events:none;}
+.node{
+  position:absolute; width:158px; min-height:44px; padding:8px 10px;
+  background:var(--surface); border:1.5px solid var(--line-strong); border-top:3px solid var(--kc);
+  border-radius:11px; box-shadow:var(--shadow-s); cursor:pointer; user-select:none;
+  transition:box-shadow .15s,border-color .15s,transform .12s;
+  display:flex; align-items:center;
+}
+.node:hover{box-shadow:var(--shadow-m);}
+.node.sel{border-color:var(--kc); box-shadow:0 0 0 3px var(--kcs),var(--shadow-m);}
+.node.root{width:186px; background:var(--accent); border-color:var(--accent); border-top-color:var(--accent);}
+.node.root .n-title{color:#fff; font-weight:700;}
+.node.root .n-sub{color:rgba(255,255,255,.72);}
+.node.branch{width:172px;}
+.n-title{font-size:12.5px; font-weight:700; line-height:1.22; color:var(--ink); letter-spacing:-.005em;}
+.n-sub{font-size:10px; color:var(--muted); font-weight:600; margin-top:1px; line-height:1.15;}
+.n-plus{--enr-clr:var(--k-enr); color:var(--k-enr); font-weight:800;}
+.badge{
+  position:absolute; bottom:-11px; left:50%; transform:translateX(-50%);
+  background:var(--kc); color:#fff; font-size:10.5px; font-weight:800; line-height:1;
+  padding:3px 8px; border-radius:20px; box-shadow:var(--shadow-s); border:1.5px solid var(--surface);
+  white-space:nowrap;
+}
+.node.root .badge{background:#fff; color:var(--accent);}
+.hint{
+  position:absolute; left:12px; bottom:12px; right:12px; pointer-events:none;
+  font-size:11.5px; color:var(--faint); background:color-mix(in srgb,var(--surface) 80%,transparent);
+  backdrop-filter:blur(2px); padding:6px 10px; border-radius:9px; border:1px solid var(--line);
+  max-width:max-content;
+}
+.legend{display:flex; flex-wrap:wrap; gap:5px 14px; margin:11px 0 4px; font-size:12px; color:var(--muted);}
+.legend span{display:inline-flex; align-items:center; gap:6px;}
+.legend i{width:11px; height:11px; border-radius:3px; background:var(--lc); display:inline-block;}
+
+/* detail card */
+.detail{
+  margin-top:14px; background:var(--surface); border:1px solid var(--line);
+  border-left:4px solid var(--kc,var(--accent)); border-radius:var(--radius);
+  padding:16px 18px; box-shadow:var(--shadow-s); min-height:96px;
+}
+.detail .d-top{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:7px;}
+.detail .d-cat{font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--kc); background:var(--kcs); padding:3px 9px; border-radius:20px;}
+.detail .d-title{font-size:17px; font-weight:700; letter-spacing:-.01em;}
+.detail .d-state{font-size:11.5px; color:var(--faint); font-weight:600; margin-left:auto;}
+.detail .d-body{font-size:14px; color:var(--muted); line-height:1.55;}
+.detail.empty .d-body{color:var(--faint); font-style:italic;}
+.detail .d-body b{color:var(--ink);}
+.d-oe{color:var(--k-pred); font-weight:700;}
+
+/* ================= FLASHCARDS ================= */
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;}
+.chip{
+  border:1.5px solid var(--line); background:var(--surface); color:var(--muted);
+  padding:7px 13px; border-radius:20px; cursor:pointer; font-size:13px; font-weight:600;
+  display:inline-flex; align-items:center; gap:7px; min-height:38px; transition:all .15s;
+}
+.chip:hover{border-color:var(--line-strong);}
+.chip .dot{width:9px; height:9px; border-radius:50%; background:var(--kc,var(--faint));}
+.chip .c{font-size:11px; font-weight:700; opacity:.7;}
+.chip[aria-pressed="true"]{border-color:var(--kc,var(--accent)); background:var(--kcs,var(--accent-soft)); color:var(--ink);}
+.chip.all[aria-pressed="true"]{border-color:var(--accent); background:var(--accent-soft); color:var(--accent);}
+
+.fc-layout{display:grid; grid-template-columns:1fr 288px; gap:20px; align-items:start;}
+.fc-main{min-width:0;}
+.card-wrap{perspective:1600px; margin-bottom:14px;}
+.card{
+  position:relative; width:100%; min-height:310px; cursor:pointer;
+  transform-style:preserve-3d; transition:transform .5s cubic-bezier(.4,.15,.2,1);
+}
+.card.flip{transform:rotateY(180deg);}
+.face{
+  position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  border-radius:var(--radius); border:1px solid var(--line); border-top:4px solid var(--kc);
+  background:var(--surface); box-shadow:var(--shadow-m); padding:30px 28px;
+  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+}
+.face.back{transform:rotateY(180deg); background:var(--surface-2); justify-content:center;}
+.f-cat{position:absolute; top:16px; left:18px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.09em; color:var(--kc); background:var(--kcs); padding:3px 9px; border-radius:20px;}
+.f-enr{position:absolute; top:16px; right:18px; font-size:10px; font-weight:800; color:var(--k-enr); background:var(--k-enr-s); padding:3px 9px; border-radius:20px; letter-spacing:.05em;}
+.f-term{font-size:26px; font-weight:700; line-height:1.14; letter-spacing:-.02em; color:var(--ink);}
+.f-en{font-size:14px; margin-top:9px; color:var(--muted); font-weight:500;}
+.f-hint{position:absolute; bottom:15px; left:0; right:0; text-align:center; font-size:11px; color:var(--faint);}
+.f-def{font-size:17px; line-height:1.5; color:var(--ink); max-width:440px;}
+.f-def b{color:var(--accent);}
+.f-back-label{position:absolute; top:16px; left:18px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.09em; color:var(--faint);}
+
+.fc-controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin-bottom:8px;}
+.fc-controls .btn{min-width:auto;}
+.btn.good{border-color:transparent; background:var(--k-desc-s); color:var(--k-desc);}
+.btn.review{border-color:transparent; background:var(--k-pred-s); color:var(--k-pred);}
+.btn.good.on,.btn.review.on{box-shadow:0 0 0 2px currentColor inset;}
+.pos-ind{font-size:12.5px; color:var(--faint); font-weight:600; text-align:center; margin-top:2px;}
+.pos-ind b{color:var(--ink);}
+
+/* progress panel */
+.side{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:17px; box-shadow:var(--shadow-s); position:sticky; top:74px;}
+.side h3{margin:0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); font-weight:700;}
+.stat{display:flex; justify-content:space-between; align-items:center; padding:7px 0; font-size:13.5px; border-bottom:1px solid var(--line);}
+.stat:last-of-type{border-bottom:none;}
+.stat .lab{display:flex; align-items:center; gap:8px; color:var(--muted);}
+.stat .lab i{width:10px; height:10px; border-radius:3px;}
+.stat .val{font-weight:700; font-size:15px; color:var(--ink);}
+.i-dom{background:var(--k-desc);} .i-rev{background:var(--k-pred);} .i-new{background:var(--faint);}
+.bar{height:11px; border-radius:7px; overflow:hidden; display:flex; margin:12px 0 6px; background:var(--surface-3); border:1px solid var(--line);}
+.bar .seg{height:100%; transition:width .35s;}
+.bar .s-dom{background:var(--k-desc);} .bar .s-rev{background:var(--k-pred);} .bar .s-new{background:var(--line-strong);}
+.side .pct{font-size:12px; color:var(--faint); text-align:center; margin-bottom:14px;}
+.side-actions{display:flex; flex-direction:column; gap:7px;}
+.side-actions .btn{width:100%; justify-content:center;}
+.kbd-help{margin-top:14px; padding-top:13px; border-top:1px solid var(--line); font-size:11.5px; color:var(--faint); line-height:1.85;}
+.kbd-help kbd{font-family:ui-monospace,monospace; font-size:10.5px; background:var(--surface-3); border:1px solid var(--line); border-bottom-width:2px; border-radius:5px; padding:1px 6px; color:var(--muted); font-weight:600;}
+.empty-filter{text-align:center; padding:46px 20px; color:var(--muted);}
+.empty-filter .big{font-size:34px; margin-bottom:8px;}
+
+/* ================= DISCREPANCIAS ================= */
+.disc-card{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--k-rig); border-radius:var(--radius); padding:18px 20px; margin-bottom:15px; box-shadow:var(--shadow-s);}
+.disc-card .d-num{display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--k-rig); margin-bottom:8px;}
+.disc-card .d-num .badge-n{background:var(--k-rig); color:#fff; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px;}
+.disc-card h3{margin:0 0 11px; font-size:17px; font-weight:700; line-height:1.25; color:var(--ink); letter-spacing:-.01em;}
+.disc-row{display:grid; grid-template-columns:118px 1fr; gap:10px; padding:7px 0; font-size:13.5px; line-height:1.5; border-top:1px solid var(--line);}
+.disc-row .h{font-weight:700; color:var(--muted);}
+.disc-row .h.curso{color:var(--k-diag);} .disc-row .h.lit{color:var(--k-presc);}
+.disc-row b{color:var(--ink);}
+.disc-rule{margin-top:11px; background:var(--k-rig-s); border-radius:10px; padding:11px 13px; font-size:13.5px; line-height:1.5;}
+.disc-rule .rl{font-weight:800; color:var(--k-rig);}
+.tag-conf{font-size:10px; font-weight:700; color:var(--k-desc); border:1px solid var(--k-desc); border-radius:6px; padding:1px 6px; margin-left:4px; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap;}
+
+footer{max-width:1240px; margin:0 auto; padding:8px 22px 44px; color:var(--faint); font-size:12px; text-align:center; line-height:1.6;}
+footer b{color:var(--muted);}
+
+/* ---------- responsive ---------- */
+@media (max-width:860px){
+  .fc-layout{grid-template-columns:1fr;}
+  .side{position:static;}
+}
+@media (max-width:600px){
+  header{padding:20px 15px 4px;} .tabs{padding:9px 15px;} main{padding:14px 15px 60px;}
+  h1.title{font-size:23px;} .subtitle{font-size:13px;}
+  .tab{padding:8px 12px; font-size:13px;}
+  .map-stage{height:min(62vh,500px);}
+  .f-term{font-size:22px;} .f-def{font-size:15px;}
+  .card{min-height:270px;} .face{padding:24px 20px;}
+  .detail{position:fixed; left:0; right:0; bottom:0; z-index:60; margin:0; border-radius:16px 16px 0 0;
+    box-shadow:var(--shadow-l); transform:translateY(calc(100% + 20px)); transition:transform .3s; max-height:64vh; overflow:auto;}
+  .detail.show{transform:none;}
+  .detail-close{display:inline-block;}
+  .hint{font-size:10.5px;}
+  .legend{font-size:11px;}
+}
+.detail-close{display:none; position:absolute; top:12px; right:14px; border:none; background:var(--surface-3); color:var(--muted); width:30px; height:30px; border-radius:50%; font-size:18px; cursor:pointer; line-height:1;}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s !important; transition-duration:.001s !important;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kick">Toma de decisiones basadas en datos con IA · <span class="mono">Máster en IA</span></div>
+  <h1 class="title">Unidad 5 · <b>Análisis predictivo y prescriptivo</b></h1>
+  <div class="subtitle">Mapa conceptual interactivo + 33 flashcards del módulo. <span class="mono">Archivo autocontenido — funciona sin internet.</span></div>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tabs" role="tablist" aria-label="Secciones">
+    <button class="tab" role="tab" aria-selected="true" data-tab="map"><span class="ic" aria-hidden="true">🗺️</span> Mapa conceptual</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="cards"><span class="ic" aria-hidden="true">🃏</span> Flashcards <span class="cnt">33</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="disc"><span class="ic" aria-hidden="true">⚠️</span> Discrepancias <span class="cnt">3</span></button>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema claro u oscuro"><span id="thIc">🌙</span> <span id="thTx">Oscuro</span></button>
+  </div>
+</div>
+
+<main>
+  <!-- ======= MAPA ======= -->
+  <section class="panel active" id="panel-map" role="tabpanel" aria-label="Mapa conceptual">
+    <p class="intro">La unidad completa como un árbol. <b>Clic en una casilla</b> = expandir/contraer su rama + resaltarla + ver su explicación abajo. <b>Arrastra</b> para mover · <b>rueda o pellizca</b> para zoom. Arranca con solo las ramas principales; ábrelas a demanda.</p>
+    <div class="map-toolbar">
+      <button class="btn primary" id="expandAll">⊕ Expandir todo</button>
+      <button class="btn" id="collapseAll">⊖ Solo ramas principales</button>
+      <div class="zoom-group">
+        <button class="btn icon" id="zOut" aria-label="Alejar">−</button>
+        <button class="btn icon" id="zIn" aria-label="Acercar">+</button>
+        <button class="btn icon" id="zFit" aria-label="Ajustar a pantalla" title="Ajustar a pantalla">⤢</button>
+      </div>
+    </div>
+    <div class="map-stage" id="stage">
+      <svg id="edges"></svg>
+      <div id="world"></div>
+      <div class="hint">clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda/pellizco para zoom</div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="detail empty" id="detail">
+      <button class="detail-close" id="detClose" aria-label="Cerrar">×</button>
+      <div class="d-top"><span class="d-title">Toca un nodo del mapa</span></div>
+      <div class="d-body">Cada casilla guarda una explicación con lo esencial del concepto — incluidas las frases con olor a examen. Empieza por la raíz o por cualquiera de las cinco ramas principales.</div>
+    </div>
+  </section>
+
+  <!-- ======= FLASHCARDS ======= -->
+  <section class="panel" id="panel-cards" role="tabpanel" aria-label="Flashcards">
+    <p class="intro">Una tarjeta por cada término del glosario (33 en total). <b>Clic o espacio</b> para voltear. Filtra por categoría, marca lo que dominas y repasa lo que no. Tu progreso se guarda en este dispositivo.</p>
+    <div class="chips" id="chips"></div>
+    <div class="fc-layout">
+      <div class="fc-main">
+        <div class="card-wrap">
+          <div class="card" id="card" tabindex="0" role="button" aria-label="Tarjeta — clic o espacio para voltear">
+            <div class="face front">
+              <span class="f-cat"></span><span class="f-enr" style="display:none">⁺ Enriquecimiento</span>
+              <div class="f-term"></div><div class="f-en mono"></div>
+              <div class="f-hint">clic / espacio para ver la definición</div>
+            </div>
+            <div class="face back">
+              <span class="f-back-label">Definición</span>
+              <div class="f-def"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-controls">
+          <button class="btn" id="prev" aria-label="Anterior">← Anterior</button>
+          <button class="btn primary" id="flip">↻ Voltear</button>
+          <button class="btn" id="next" aria-label="Siguiente">Siguiente →</button>
+          <button class="btn good" id="mark-dom">✓ La domino</button>
+          <button class="btn review" id="mark-rev">↻ Repasar</button>
+        </div>
+        <div class="pos-ind" id="posInd"></div>
+      </div>
+
+      <aside class="side">
+        <h3>Progreso</h3>
+        <div class="stat"><span class="lab"><i class="i-dom"></i> Dominadas</span><span class="val" id="stDom">0</span></div>
+        <div class="stat"><span class="lab"><i class="i-rev"></i> Para repasar</span><span class="val" id="stRev">0</span></div>
+        <div class="stat"><span class="lab"><i class="i-new"></i> Sin ver</span><span class="val" id="stNew">33</span></div>
+        <div class="bar" aria-hidden="true"><div class="seg s-dom" id="segDom" style="width:0"></div><div class="seg s-rev" id="segRev" style="width:0"></div><div class="seg s-new" id="segNew" style="width:100%"></div></div>
+        <div class="pct" id="pctTxt">0% dominado</div>
+        <div class="side-actions">
+          <button class="btn" id="onlyRev">🎯 Solo tarjetas por repasar</button>
+          <button class="btn" id="shuffle">🔀 Mezclar</button>
+          <button class="btn" id="reset">♻︎ Reiniciar progreso</button>
+        </div>
+        <div class="kbd-help">
+          <kbd>←</kbd> <kbd>→</kbd> navegar &nbsp;·&nbsp; <kbd>espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino &nbsp;·&nbsp; <kbd>2</kbd> repasar
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ======= DISCREPANCIAS ======= -->
+  <section class="panel" id="panel-disc" role="tabpanel" aria-label="Discrepancias">
+    <p class="intro">Tres puntos donde el curso y la práctica actual no coinciden. Regla general: <b>en el examen responde según el curso</b>; las correcciones son para tu práctica real. Cada tarjeta trae su regla de examen.</p>
+    <div id="discList"></div>
+  </section>
+</main>
+
+<footer>
+  Generado a partir de «Explicación Unidad 5 — Análisis predictivo y prescriptivo potenciado por IA» · Curso: <b>Toma de decisiones basadas en datos con IA</b><br>
+  Archivo autocontenido, funciona sin internet.
+</footer>
+
+<script id="appdata" type="application/json">{"nodes":[{"id":"root","p":null,"cat":"fund","t":"Analítica de datos con IA","d":"El hilo de toda la unidad: el dato deja de servir solo para describir el pasado y pasa a ser un apoyo activo para decidir el futuro. Se recorre la cadena Datos → Información → Conocimiento → Decisión (DIKW) en cuatro niveles de madurez: descriptivo, diagnóstico, predictivo y prescriptivo. <b>Regla de oro de examen:<\/b> cada nivel depende de la calidad del anterior — sin buena descripción no hay buen diagnóstico, y así hacia arriba."},{"id":"n1","p":"root","cat":"desc","t":"Nivel 1 · Descriptivo","el":"¿qué ocurrió?","d":"Responde <b>¿qué ocurrió?<\/b> Resume y visualiza datos históricos en tableros y reportes. Es el piso de la pirámide y el punto de partida de casi toda empresa. La IA aquí no reemplaza al analista: le pone los datos a mano en lenguaje natural y le redacta los resúmenes."},{"id":"n2","p":"root","cat":"diag","t":"Nivel 2 · Diagnóstico","el":"¿por qué?","d":"Responde <b>¿por qué ocurrió?<\/b> Busca los factores y relaciones detrás de un resultado. <b>Ojo de examen:<\/b> identifica asociación e influencia, NO causalidad absoluta — correlación no es causa. Sus herramientas son los influenciadores clave y el árbol de descomposición."},{"id":"n3","p":"root","cat":"pred","t":"Nivel 3 · Predictivo","el":"¿qué podría ocurrir?","d":"Responde <b>¿qué podría ocurrir?<\/b> Usa el histórico para estimar el futuro y reducir la incertidumbre. Es el corazón técnico de la unidad: clasificación, regresión y detección de anomalías, entrenadas con modelos supervisados y AutoML. Su talón de Aquiles son la calidad de los datos y la fuga del objetivo."},{"id":"n4","p":"root","cat":"presc","t":"Nivel 4 · Prescriptivo","el":"¿qué hacer?","d":"Responde <b>¿qué deberíamos hacer?<\/b> Es el escalón más alto: no solo predice, recomienda la acción. Personaliza caso por caso con la siguiente mejor acción y el aprendizaje por refuerzo, superando a la regla fija y a la prueba A/B. La recomendación siempre se valida en contexto estratégico, ético y regulatorio."},{"id":"nr","p":"root","cat":"rig","t":"Rigor y errores","el":"transversal","d":"Rama transversal, no un quinto nivel: atraviesa los cuatro. Reúne la mayor amenaza técnica (la fuga del objetivo, que golpea sobre todo al nivel predictivo) y el límite de fondo (la IA acelera pero no reemplaza el juicio humano). Es candidata segura a pregunta de síntesis."},{"id":"nlq","p":"n1","cat":"desc","t":"Consulta de Lenguaje Natural (NLQ)","el":"explora con","d":"Permite preguntar a los datos en lenguaje humano — «ventas por región el último trimestre» — y obtener la visualización automáticamente. Es la puerta de entrada de la democratización: el usuario de negocio explora sin saber SQL ni depender del área técnica. En Power BI es la función de Q&amp;A."},{"id":"narr","p":"n1","cat":"desc","t":"Narrativa inteligente","d":"Genera automáticamente resúmenes en texto de gráficos y tablas — «las ventas subieron 12% impulsadas por la región norte» — y se actualizan solos al filtrar. Traduce el gráfico a palabras para quien no lee bien las visualizaciones. No sustituye al analista: le ahorra la redacción mecánica."},{"id":"democ","p":"n1","cat":"desc","t":"Democratización de los datos","el":"habilita","d":"La tendencia de fondo que habilitan la NLQ y la narrativa: trasladar la exploración de datos a los usuarios de negocio, sin depender de especialistas. Más gente decidiendo con datos, menos cuello de botella en el área técnica. Es el «para qué» del nivel descriptivo con IA."},{"id":"synon","p":"nlq","cat":"desc","t":"Sinónimos de campo","el":"necesita","d":"Configuración que le enseña al sistema que varios términos de negocio apuntan al mismo campo — «ingresos», «ventas» y «facturación» son la misma columna. Sin esto, la NLQ falla cuando el usuario no usa el nombre exacto del dato. Es el ajuste que hace que preguntar en lenguaje natural realmente funcione."},{"id":"qa","p":"nlq","cat":"desc","t":"Preguntas y Respuestas (Q&amp;A)","el":"se ofrece como","d":"La forma concreta en que se ofrece la NLQ: una caja donde el usuario escribe su consulta descriptiva en lenguaje cotidiano y recibe el gráfico. Es la cara visible de la consulta en lenguaje natural dentro de la herramienta."},{"id":"infl","p":"n2","cat":"diag","t":"Influenciadores clave","d":"Visualización que identifica qué factores más impactan una métrica de interés — «qué hace que un cliente se vaya». <b>Por dentro es un modelo de ML<\/b> (ML.NET, regresión logística o lineal): no es magia, es un modelo entrenado. Ordena los factores por peso, pero mide influencia, no causalidad."},{"id":"arbol","p":"n2","cat":"diag","t":"Árbol de descomposición","d":"Herramienta de causa raíz que va desglosando una métrica por dimensiones — región, luego producto, luego canal — y sugiere con IA en cuál conviene profundizar. Es exploración guiada del «por qué»: abres la rama que más explica el resultado. Interactiva y jerárquica."},{"id":"causa","p":"n2","cat":"diag","t":"Causa raíz","d":"El mecanismo profundo que origina un resultado, más allá de la correlación superficial. <b>Advertencia de examen:<\/b> el diagnóstico apunta a la causa probable, pero identifica asociación, no causalidad absoluta — hay que validar. En el caso del foro, la causa raíz de los retrasos no era el tráfico sino el etiquetado en bodega en horas punta."},{"id":"calidad","p":"n3","cat":"pred","t":"Calidad de datos (requisito)","el":"requisito","d":"El requisito no negociable del nivel predictivo: «un modelo es tan bueno como sus datos». Datos sucios, sesgados o incompletos producen predicciones sucias, por buenos que sean los algoritmos. Por eso la calidad reaparece como obsesión en cada nivel de la cadena analítica."},{"id":"clasif","p":"n3","cat":"pred","t":"Clasificación","d":"Predice a qué <b>categoría<\/b> o etiqueta pertenecerá un evento futuro — «¿fallará o no fallará?», «¿aterrizará con retraso?». La salida es discreta: una clase. Es uno de los dos grandes tipos de predicción supervisada, junto con la regresión."},{"id":"regr","p":"n3","cat":"pred","t":"Regresión","d":"Predice un <b>valor numérico<\/b> continuo — «¿cuántas horas de vida útil quedan?», «¿cuánto durará el vuelo?». La salida es una cantidad, no una categoría. La distinción con clasificación es la pregunta de examen más típica: categoría → clasificación, número → regresión."},{"id":"anom","p":"n3","cat":"pred","t":"Detección de anomalías","d":"Identifica comportamientos que se apartan significativamente de lo esperado en una serie temporal. El ejemplo oficial de Microsoft es un motor de avión con 20 sensores donde ninguna señal por separado dice mucho, pero juntas revelan la salud del equipo — literalmente Fibromin. ⚠ El servicio dedicado de Azure se retira en 2026 (ver Discrepancias)."},{"id":"automl","p":"n3","cat":"pred","t":"AutoML","el":"se entrena con","d":"Automatiza construir el modelo: ingeniería de características, selección del algoritmo, ajuste de hiperparámetros y validación cruzada, sin escribir código. Es la «capa de análisis» de la Unidad 4 puesta en piloto automático. En Power BI vive en los dataflows."},{"id":"target","p":"n3","cat":"pred","t":"Variable objetivo · Supervisados","d":"La <b>variable objetivo<\/b> es la clase o el valor que el modelo intenta predecir. Los <b>modelos supervisados<\/b> aprenden de ejemplos históricos etiquetados con la respuesta correcta — necesitan un histórico donde ya se sabe qué pasó. Esto engancha con el ground truth y las etiquetas que vimos en la Unidad 3."},{"id":"umbral","p":"anom","cat":"pred","t":"Umbrales fijos vs. dinámicos","el":"fijos ✗ / dinámicos ✓","d":"Umbral fijo: una regla rígida («alerta si supera 80°»), simple pero tonta — no distingue contexto. Margen dinámico: una banda que se adapta al comportamiento histórico de la serie (tendencia y estacionalidad) y marca anomalía solo cuando el dato se sale de lo esperable para ese momento. El curso enseña que los márgenes dinámicos ✓ superan a los umbrales fijos ✗."},{"id":"nba","p":"n4","cat":"presc","t":"Siguiente mejor acción (NBA)","d":"La intervención con mayor probabilidad de lograr el resultado deseado, decidida caso por caso. Supera a la regla fija («a todos el 10% de descuento») porque personaliza por perfil. Por dentro, lo preciso es hablar de bandidos contextuales — refuerzo de un solo paso."},{"id":"rl","p":"n4","cat":"presc","t":"Aprendizaje por refuerzo","d":"Un agente aprende de la interacción con un <b>entorno<\/b> para maximizar la recompensa acumulada. El marco correcto es agente → acción → entorno → recompensa (⚠ el PDF a veces dice «usuario», pero lo canónico es «entorno»). No aprende de ejemplos etiquetados como el supervisado: aprende probando y recibiendo premio o castigo."},{"id":"agente","p":"rl","cat":"presc","t":"Agente · Recompensa · Rango-recompensa","d":"El <b>agente<\/b> es quien toma las decisiones. La <b>recompensa<\/b> es la señal que premia o castiga cada acción. El bucle «rango y recompensa» (Rank &amp; Reward) es el ciclo donde el sistema propone acciones (rango) y recibe retroalimentación (recompensa) para mejorar. <b>Moraleja de examen:<\/b> el sistema optimiza exactamente lo que premias — si diseñas mal la recompensa, cumple la métrica y arruina el negocio."},{"id":"explor","p":"rl","cat":"presc","t":"Exploración vs. explotación ⁺","d":"El dilema central del refuerzo: ¿pruebo una acción nueva que quizás sea mejor (exploración) o uso la mejor que ya conozco (explotación)? Demasiada explotación se estanca en un óptimo local; demasiada exploración desperdicia recursos probando. <i>Enriquecimiento: no está en el PDF con este nombre, pero es la mecánica que hay detrás.<\/i>"},{"id":"bandits","p":"rl","cat":"presc","t":"Bandidos contextuales ⁺","d":"Refuerzo de un solo paso: contexto → acción → recompensa, sin cadena de estados. Es exactamente lo que hacía Azure Personalizer y lo correcto detrás de la «siguiente mejor acción». Supera a la prueba A/B porque personaliza por perfil y sigue aprendiendo, en lugar de fijar dos variantes de antemano. <i>Enriquecimiento.<\/i>"},{"id":"leak","p":"nr","cat":"rig","t":"Fuga del objetivo (target leakage)","d":"Usar en el modelo una variable que no estará disponible en el momento de predecir — el modelo «hace trampa» con información del futuro y luego fracasa en la realidad. <b>La regla para cazarla:<\/b> «¿este dato ya existe en el instante en que hago la predicción?». Si se llena después de lo que quieres anticipar, es fuga. Se delata por métricas sospechosamente perfectas y ataca sobre todo al nivel predictivo."},{"id":"juicio","p":"nr","cat":"rig","t":"El juicio humano no se reemplaza","d":"El límite de fondo de toda la unidad: la IA acelera pero no reemplaza el criterio humano. Lo dice en lo descriptivo (la narrativa no sustituye al analista), en lo diagnóstico (no prueba causalidad) y en lo prescriptivo (la recomendación se valida en contexto estratégico, ético y regulatorio). Candidato seguro a pregunta de síntesis."}],"cross":[{"f":"leak","t":"n3","l":"ataca sobre todo a"},{"f":"narr","t":"causa","l":"dispara el ¿por qué?"}],"cards":[{"t":"Análisis descriptivo","en":"Descriptive Analytics","cat":"fund","d":"Resume y visualiza datos históricos para responder <b>qué ocurrió<\/b>.","enr":false},{"t":"Análisis diagnóstico","en":"Diagnostic Analytics","cat":"fund","d":"Identifica los factores y relaciones que explican <b>por qué ocurrió<\/b> un resultado.","enr":false},{"t":"Analítica predictiva","en":"Predictive Analytics","cat":"fund","d":"Usa el histórico para estimar <b>qué podría ocurrir<\/b> y reducir la incertidumbre.","enr":false},{"t":"Analítica prescriptiva","en":"Prescriptive Analytics","cat":"fund","d":"Evalúa alternativas y recomienda <b>qué acción ejecutar<\/b>.","enr":false},{"t":"Cadena analítica de datos","en":"Data → … → Decision","cat":"fund","d":"La progresión de dato crudo a decisión (DIKW); cada nivel depende del anterior.","enr":false},{"t":"Consulta de Lenguaje Natural","en":"NLQ · Natural Language Query","cat":"desc","d":"Preguntar a los datos en lenguaje humano y obtener visualizaciones automáticas.","enr":false},{"t":"Preguntas y Respuestas","en":"Q&amp;A","cat":"desc","d":"Herramienta de IA que responde consultas descriptivas escritas en lenguaje cotidiano.","enr":false},{"t":"Sinónimos de campo","en":"Field Synonyms","cat":"desc","d":"Configuración que enseña al sistema que varios términos de negocio apuntan al mismo campo.","enr":false},{"t":"Narrativa inteligente","en":"Smart Narrative","cat":"desc","d":"Genera automáticamente resúmenes en texto de gráficos y tablas; se actualiza al filtrar.","enr":false},{"t":"Democratización de los datos","en":"Data Democratization","cat":"desc","d":"Trasladar la exploración de datos a los usuarios de negocio, sin depender de especialistas.","enr":false},{"t":"Influenciadores clave","en":"Key Influencers","cat":"diag","d":"Visualización que identifica qué factores más impactan una métrica de interés.","enr":false},{"t":"Árbol de descomposición","en":"Decomposition Tree","cat":"diag","d":"Herramienta de causa raíz que sugiere en qué dimensión de los datos profundizar.","enr":false},{"t":"Causa raíz","en":"Root Cause","cat":"diag","d":"El mecanismo profundo que origina un resultado, más allá de la correlación superficial.","enr":false},{"t":"Clasificación","en":"Classification","cat":"pred","d":"Predice a qué <b>categoría<\/b> o etiqueta pertenecerá un evento futuro.","enr":false},{"t":"Regresión","en":"Regression","cat":"pred","d":"Predice un <b>valor numérico<\/b> continuo (una cantidad específica).","enr":false},{"t":"Detección de anomalías","en":"Anomaly Detection","cat":"pred","d":"Identifica comportamientos que se apartan significativamente de lo esperado en una serie.","enr":false},{"t":"Variable objetivo","en":"Target Variable","cat":"pred","d":"La clase o el valor que el modelo intenta predecir.","enr":false},{"t":"Modelos supervisados","en":"Supervised Learning","cat":"pred","d":"Aprenden de ejemplos históricos <b>etiquetados<\/b> con la respuesta correcta.","enr":false},{"t":"Serie temporal","en":"Time Series","cat":"pred","d":"Secuencia de datos ordenados en el tiempo, con tendencia y estacionalidad.","enr":false},{"t":"Umbrales fijos vs. márgenes dinámicos","en":"Fixed / Dynamic Bounds","cat":"pred","d":"Regla rígida vs. banda que se adapta al comportamiento histórico de la serie.","enr":false},{"t":"AutoML","en":"Automated Machine Learning","cat":"pred","d":"Automatiza construir el modelo: preparación, algoritmo, ajuste y validación.","enr":false},{"t":"KPI","en":"Key Performance Indicator","cat":"pred","d":"Indicador clave que mide el desempeño de un área del negocio.","enr":false},{"t":"Fuga del objetivo","en":"Target Leakage","cat":"rig","d":"Usar una variable no disponible al predecir; el modelo «hace trampa» y falla en la realidad.","enr":false},{"t":"Prueba A/B","en":"A/B Testing","cat":"rig","d":"Comparar dos variantes en dos grupos; estática y sin personalizar por caso.","enr":false},{"t":"Siguiente mejor acción","en":"Next Best Action","cat":"presc","d":"La intervención con mayor probabilidad de lograr el resultado deseado, caso por caso.","enr":false},{"t":"Aprendizaje por refuerzo","en":"Reinforcement Learning","cat":"presc","d":"Un agente aprende de la interacción con un <b>entorno<\/b> para maximizar la recompensa acumulada.","enr":false},{"t":"Agente","en":"Agent","cat":"presc","d":"El que toma las decisiones en el aprendizaje por refuerzo.","enr":false},{"t":"Recompensa","en":"Reward","cat":"presc","d":"La señal que premia o castiga cada acción del agente.","enr":false},{"t":"Rango y recompensa","en":"Rank and Reward","cat":"presc","d":"El bucle donde el sistema propone acciones (rango) y recibe retroalimentación (recompensa).","enr":false},{"t":"Exploración vs. explotación","en":"Exploration / Exploitation","cat":"presc","d":"Balance entre probar acciones nuevas y usar la mejor conocida.","enr":true},{"t":"Bandidos contextuales","en":"Contextual Bandits","cat":"presc","d":"Refuerzo de un solo paso (contexto→acción→recompensa); lo real detrás de NBA.","enr":true},{"t":"ML.NET y regresión","en":"ML.NET","cat":"enr","d":"Biblioteca de ML de Microsoft; el motor real (logística/lineal) de Influenciadores clave.","enr":true},{"t":"Métricas de evaluación","en":"Accuracy · Recall · RMSE · AUC","cat":"enr","d":"Miden el desempeño del modelo; un valor «perfecto» suele delatar fuga del objetivo.","enr":true}],"discs":[{"n":1,"title":"El servicio de detección de anomalías se apaga en 2026","curso":"Enseña detección de anomalías en series temporales con «servicios de IA univariantes», remitiendo a la guía oficial de Microsoft Learn para configurarlos. El <b>concepto<\/b> — bandas dinámicas que consideran el histórico en lugar de umbrales fijos — es correcto y está plenamente vigente.","lit":"El servicio concreto que el curso enseña a configurar es <b>Azure AI Anomaly Detector<\/b>. Microsoft lo retira el <b>1 de octubre de 2026<\/b>, y desde el 20 de septiembre de 2023 ya no se pueden crear recursos nuevos. La ruta recomendada es migrar a <b>Microsoft Fabric<\/b> (que integra el proyecto open source <span class='mono'>microsoft/anomaly-detector<\/span>) o usar ese proyecto directamente.","regla":"Si preguntan por el <b>concepto<\/b> (qué es la detección de anomalías, umbrales fijos vs. dinámicos), responde con el curso — sigue 100% vigente. Si preguntan por la <b>herramienta<\/b> para hacerlo hoy, el servicio dedicado de Azure se retira; hoy se hace con Fabric o bibliotecas open source. Para Fibromin: no construyas sobre el Anomaly Detector standalone.","conf":"confirmado — documentación oficial de Microsoft, 2025–2026"},{"n":2,"title":"El motor de «siguiente mejor acción» también se apaga en 2026","curso":"El caso prescriptivo describe un «motor de personalización basado en aprendizaje por refuerzo» que, mediante un «bucle de rango y recompensa», aprende qué oferta hacer a cada perfil de cliente. El <b>concepto<\/b> es correcto.","lit":"Esa descripción es, casi textual, <b>Azure AI Personalizer<\/b> — el servicio que procesaba <em>contextos<\/em> y <em>acciones<\/em> con refuerzo, cuya API se llama justamente <b>Rank &amp; Reward<\/b> («rango y recompensa»). Microsoft lo retira el <b>1 de octubre de 2026<\/b>, la misma fecha que Anomaly Detector, y ya no permite crear recursos nuevos. Hoy la siguiente mejor acción se implementa con bibliotecas de bandidos contextuales o plataformas de RL propias.","regla":"El <b>concepto<\/b> (siguiente mejor acción, aprendizaje por refuerzo, bucle rango-recompensa) es lo evaluable y va tal cual. Solo ten presente que el <b>servicio llave en mano<\/b> que lo hacía se retira. Para Fibromin: si algún día implementas NBA de mantención, no dependas del Personalizer.","conf":"confirmado — anuncio oficial de Microsoft, oct. 2025"},{"n":3,"title":"El agente interactúa con un <em>entorno<\/em>, no con «el usuario»","curso":"Hay una <b>inconsistencia interna<\/b> en el propio PDF. En «Conceptos clave» define el refuerzo como decisiones óptimas «mediante un sistema de recompensas basado en interacciones con <b>el usuario<\/b>». Pero más adelante, en el Nivel 4, lo define correctamente como «interacción continua con un <b>entorno<\/b>».","lit":"La definición canónica es la segunda: el agente interactúa con un <b>entorno<\/b> (<span class='mono'>environment<\/span>), no necesariamente con un usuario. El usuario puede <em>ser parte<\/em> del entorno en un caso de personalización, pero el marco general es <b>agente → acción → entorno → recompensa<\/b>. Además, para «siguiente mejor acción» lo preciso es hablar de <b>bandidos contextuales<\/b> (RL de un solo paso, sin cadena de estados).","regla":"Si te piden la definición de refuerzo, el marco correcto es <b>agente–entorno–recompensa<\/b>. Si el enunciado usa la frase del curso con «usuario», respóndele al curso — pero sabé que «entorno» es lo correcto, y que el propio PDF lo usa bien en el Nivel 4. «Bandidos contextuales» es enriquecimiento: el examen casi seguro espera «aprendizaje por refuerzo».","conf":"confirmado — texto del propio PDF, Nivel 4"}]}</script>
+<script>
+/* ============================================================
+   Unidad 5 · Mapa conceptual + Flashcards — lógica vanilla
+   ============================================================ */
+(function(){
+"use strict";
+
+var DATA = JSON.parse(document.getElementById('appdata').textContent);
+var $  = function(s,c){return (c||document).querySelector(s);};
+var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
+
+/* ---------- localStorage seguro ---------- */
+var LS = {
+  get:function(k){ try{return localStorage.getItem(k);}catch(e){return null;} },
+  set:function(k,v){ try{localStorage.setItem(k,v);}catch(e){} }
+};
+
+var CAT_LABEL = {fund:'Fundamentos',desc:'Descriptivo',diag:'Diagnóstico',pred:'Predictivo',presc:'Prescriptivo',rig:'Rigor',enr:'Enriquecimiento'};
+var CAT_ORDER = ['fund','desc','diag','pred','presc','rig','enr'];
+
+/* =========================================================
+   TEMA
+   ========================================================= */
+(function initTheme(){
+  var saved = LS.get('u5_theme');
+  var dark = saved ? (saved==='dark') : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  applyTheme(dark);
+  $('#themeBtn').addEventListener('click', function(){
+    var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+    applyTheme(!isDark);
+    LS.set('u5_theme', !isDark ? 'dark':'light');
+  });
+})();
+function applyTheme(dark){
+  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  $('#thIc').textContent = dark ? '☀️' : '🌙';
+  $('#thTx').textContent = dark ? 'Claro' : 'Oscuro';
+  if(window.__redrawEdges) window.__redrawEdges();
+}
+function cssColor(cat){
+  return getComputedStyle(document.documentElement).getPropertyValue('--k-'+cat).trim() || '#888';
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+var discRendered=false;
+$$('.tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    $$('.tab').forEach(function(t){t.setAttribute('aria-selected','false');});
+    tab.setAttribute('aria-selected','true');
+    var name = tab.getAttribute('data-tab');
+    $$('.panel').forEach(function(p){p.classList.remove('active');});
+    $('#panel-'+name).classList.add('active');
+    if(name==='map'){ setTimeout(fitMap, 30); }
+    if(name==='disc' && !discRendered){ renderDiscs(); discRendered=true; }
+  });
+});
+
+/* =========================================================
+   MAPA CONCEPTUAL
+   ========================================================= */
+var stage = $('#stage'), world = $('#world');
+var oldEdges = $('#edges'); if(oldEdges) oldEdges.remove(); // usamos svg dentro de #world
+
+// índices
+var byId={}, kids={};
+DATA.nodes.forEach(function(n){ byId[n.id]=n; kids[n.id]=[]; });
+DATA.nodes.forEach(function(n){ if(n.p) kids[n.p].push(n.id); });
+function depthOf(id){ var d=0,c=byId[id]; while(c && c.p){ d++; c=byId[c.p]; } return d; }
+function descendants(id){ var c=0; (kids[id]||[]).forEach(function(k){ c+=1+descendants(k); }); return c; }
+
+var expanded = {root:true};           // set de ids expandidos
+var selId = null;
+var panX=0, panY=0, scale=1;
+var NODE_H_DEFAULT=52, ROWGAP=124, COLGAP=180;
+
+/* --- layout tipo árbol (leaves secuenciales, padres centrados) --- */
+function computeLayout(){
+  var pos={}, nextX=0;
+  function walk(id){
+    var visibleKids = expanded[id] ? (kids[id]||[]) : [];
+    if(visibleKids.length===0){
+      pos[id] = {cx: nextX*COLGAP, depth: depthOf(id)};
+      nextX++;
+    } else {
+      var xs=[];
+      visibleKids.forEach(function(k){ walk(k); xs.push(pos[k].cx); });
+      pos[id] = {cx:(xs[0]+xs[xs.length-1])/2, depth: depthOf(id)};
+    }
+  }
+  walk('root');
+  // y por profundidad
+  Object.keys(pos).forEach(function(id){ pos[id].y = pos[id].depth*ROWGAP; });
+  return pos;
+}
+
+var curPos={};
+function renderMap(anchorId, beforeScreen){
+  curPos = computeLayout();
+
+  // 1) nodos HTML
+  var html = '<svg class="edgesvg" style="position:absolute;top:0;left:0;overflow:visible;pointer-events:none;width:1px;height:1px;"></svg>';
+  Object.keys(curPos).forEach(function(id){
+    var n=byId[id], p=curPos[id];
+    var cls='node k-'+n.cat+(id==='root'?' root':(n.p==='root'?' branch':''))+(id===selId?' sel':'');
+    var hasKids=(kids[id]||[]).length>0;
+    var collapsed = hasKids && !expanded[id];
+    var badge = collapsed ? '<span class="badge">+'+descendants(id)+'</span>' : '';
+    // left/top provisional (centrado se corrige tras medir ancho)
+    html += '<div class="'+cls+'" data-id="'+id+'" role="button" tabindex="0" '
+         +  'style="left:'+p.cx+'px;top:'+p.y+'px" aria-label="'+n.t.replace(/<[^>]+>/g,'')+'">'
+         +  '<div class="n-title">'+n.t+'</div>'+badge+'</div>';
+  });
+  world.innerHTML = html;
+
+  // 2) medir y centrar cada nodo (left = cx - w/2)
+  var nodeEls={};
+  $$('.node', world).forEach(function(el){
+    var id=el.getAttribute('data-id'), p=curPos[id];
+    var w=el.offsetWidth, h=el.offsetHeight;
+    el.style.left = (p.cx - w/2)+'px';
+    p.w=w; p.h=h; p.top=p.y; p.left=p.cx-w/2;
+    nodeEls[id]=el;
+  });
+
+  drawEdges();
+
+  // recentrado bajo el cursor (el nodo clickeado queda quieto)
+  if(anchorId && beforeScreen && curPos[anchorId]){
+    var np=curPos[anchorId];
+    panX = beforeScreen.x - np.cx*scale;
+    panY = beforeScreen.y - (np.top)*scale;
+  }
+  applyTransform();
+  bindNodes(nodeEls);
+}
+
+function drawEdges(){
+  var svg=$('.edgesvg', world); if(!svg) return;
+  var s='';
+  // jerárquicas
+  Object.keys(curPos).forEach(function(id){
+    var n=byId[id]; if(!n.p) return;
+    if(!curPos[n.p]) return;
+    var c=curPos[id], pa=curPos[n.p];
+    var x1=pa.cx, y1=pa.top+pa.h, x2=c.cx, y2=c.top;
+    var dy=Math.max(18,(y2-y1)/2);
+    var col=cssColor(n.cat);
+    s += '<path d="M '+x1+' '+y1+' C '+x1+' '+(y1+dy)+' '+x2+' '+(y2-dy)+' '+x2+' '+y2+'" fill="none" stroke="'+col+'" stroke-width="2" opacity="0.55"/>';
+    if(n.el){ s += edgeLabel((x1+x2)/2, (y1+y2)/2, n.el, col); }
+  });
+  // cross-links (punteadas) — solo si ambos visibles
+  (DATA.cross||[]).forEach(function(cx){
+    var a=curPos[cx.f], b=curPos[cx.t];
+    if(!a||!b) return;
+    var x1=a.cx, y1=a.top+a.h/2, x2=b.cx, y2=b.top+b.h/2;
+    var mx=(x1+x2)/2, my=(y1+y2)/2 - 26;
+    s += '<path d="M '+x1+' '+y1+' Q '+mx+' '+my+' '+x2+' '+y2+'" fill="none" stroke="var(--k-presc)" stroke-width="1.8" stroke-dasharray="3 4" opacity="0.7"/>';
+    s += edgeLabel((x1+x2)/2, (y1+y2)/2 - 13, cx.l, cssColor('presc'), true);
+  });
+  svg.innerHTML=s;
+}
+function edgeLabel(x,y,txt,col,italic){
+  var clean=txt.replace(/&amp;/g,'&');
+  var w=clean.length*5.5+10;
+  return '<rect x="'+(x-w/2)+'" y="'+(y-8)+'" width="'+w+'" height="16" rx="8" '
+       + 'fill="var(--surface)" opacity="0.92"/>'
+       + '<text x="'+x+'" y="'+(y+3.5)+'" text-anchor="middle" font-size="9.5" '
+       + 'font-family="ui-monospace,monospace" fill="'+ (italic?'var(--muted)':col) +'" '
+       + (italic?'font-style="italic" ':'') + 'font-weight="600">'+txt+'</text>';
+}
+
+function bindNodes(nodeEls){
+  Object.keys(nodeEls).forEach(function(id){
+    var el=nodeEls[id];
+    el.addEventListener('keydown', function(e){
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); onNodeActivate(id, el); }
+    });
+    // el click real se maneja vía pointerup en el stage (para distinguir de arrastre)
+  });
+}
+
+function onNodeActivate(id, el){
+  var n=byId[id];
+  var hasKids=(kids[id]||[]).length>0;
+  // posición en pantalla ANTES del relayout (para recentrar)
+  var before=null;
+  if(curPos[id]) before = {x: curPos[id].cx*scale+panX, y: curPos[id].top*scale+panY};
+  if(hasKids){ expanded[id] = !expanded[id]; }
+  selId=id;
+  renderMap(hasKids?id:null, hasKids?before:null);
+  if(!hasKids){ // re-marcar selección sin relayout ya está hecho por renderMap
+    var e2=$('.node[data-id="'+id+'"]',world); if(e2) e2.classList.add('sel');
+  }
+  showDetail(id);
+}
+
+function showDetail(id){
+  var n=byId[id], det=$('#detail');
+  var hasKids=(kids[id]||[]).length>0;
+  var desc=descendants(id);
+  var state = !hasKids ? 'hoja del árbol'
+            : (expanded[id] ? ('rama abierta · '+desc+' por debajo')
+                            : ('rama cerrada · '+desc+' ocultos'));
+  det.className='detail k-'+n.cat;
+  det.innerHTML =
+    '<button class="detail-close" id="detClose" aria-label="Cerrar">×</button>'
+    +'<div class="d-top"><span class="d-cat">'+CAT_LABEL[n.cat]+'</span>'
+    +'<span class="d-title">'+n.t+'</span>'
+    +'<span class="d-state">'+state+'</span></div>'
+    +'<div class="d-body">'+n.d+'</div>';
+  det.classList.add('show'); // móvil (bottom-sheet); escritorio lo ignora
+  $('#detClose').addEventListener('click', function(){
+    det.classList.remove('show');
+    if(selId){ var e=$('.node[data-id="'+selId+'"]',world); if(e) e.classList.remove('sel'); }
+    selId=null;
+  });
+}
+
+/* --- transform / pan / zoom --- */
+function applyTransform(){
+  world.style.transform='translate('+panX+'px,'+panY+'px) scale('+scale+')';
+}
+function clampScale(s){ return Math.max(0.35, Math.min(2.4, s)); }
+function zoomAt(factor, cx, cy){
+  var wx=(cx-panX)/scale, wy=(cy-panY)/scale;
+  scale=clampScale(scale*factor);
+  panX=cx-wx*scale; panY=cy-wy*scale;
+  applyTransform();
+}
+function fitMap(){
+  var ids=Object.keys(curPos); if(!ids.length) return;
+  var minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  ids.forEach(function(id){ var p=curPos[id];
+    minX=Math.min(minX,p.left); minY=Math.min(minY,p.top);
+    maxX=Math.max(maxX,p.left+p.w); maxY=Math.max(maxY,p.top+p.h);
+  });
+  var pad=34, bw=(maxX-minX)+pad*2, bh=(maxY-minY)+pad*2;
+  var sw=stage.clientWidth, sh=stage.clientHeight;
+  scale=clampScale(Math.min(sw/bw, sh/bh, 1.35));
+  panX = (sw - (maxX-minX)*scale)/2 - (minX-pad)*scale + pad*scale - pad*scale;
+  panX = (sw - (maxX-minX)*scale)/2 - minX*scale;
+  panY = (sh - (maxY-minY)*scale)/2 - minY*scale;
+  applyTransform();
+}
+
+/* Pointer events: pan (1 dedo/mouse), pinch (2 dedos), tap en nodo */
+var pointers={}, panStart=null, dragged=false, downNodeId=null, pinch=null;
+stage.addEventListener('pointerdown', function(e){
+  stage.setPointerCapture(e.pointerId);
+  pointers[e.pointerId]={x:e.clientX,y:e.clientY};
+  var np=Object.keys(pointers).length;
+  var nodeEl=e.target.closest ? e.target.closest('.node') : null;
+  downNodeId = nodeEl ? nodeEl.getAttribute('data-id') : null;
+  dragged=false;
+  if(np===1){
+    panStart={x:e.clientX,y:e.clientY, px:panX, py:panY};
+    stage.classList.add('grabbing');
+  } else if(np===2){
+    var ps=Object.keys(pointers).map(function(k){return pointers[k];});
+    pinch={ d:dist(ps[0],ps[1]), s:scale,
+            mx:(ps[0].x+ps[1].x)/2, my:(ps[0].y+ps[1].y)/2 };
+    var r=stage.getBoundingClientRect();
+    pinch.wx=(pinch.mx-r.left-panX)/scale; pinch.wy=(pinch.my-r.top-panY)/scale;
+    panStart=null;
+  }
+});
+stage.addEventListener('pointermove', function(e){
+  if(!pointers[e.pointerId]) return;
+  pointers[e.pointerId]={x:e.clientX,y:e.clientY};
+  var np=Object.keys(pointers).length;
+  if(np>=2 && pinch){
+    var ps=Object.keys(pointers).map(function(k){return pointers[k];});
+    var nd=dist(ps[0],ps[1]);
+    var ns=clampScale(pinch.s * nd/pinch.d);
+    var r=stage.getBoundingClientRect();
+    var mx=(ps[0].x+ps[1].x)/2, my=(ps[0].y+ps[1].y)/2;
+    scale=ns;
+    panX=(mx-r.left)-pinch.wx*scale;
+    panY=(my-r.top)-pinch.wy*scale;
+    applyTransform(); dragged=true; return;
+  }
+  if(panStart){
+    var dx=e.clientX-panStart.x, dy=e.clientY-panStart.y;
+    if(Math.abs(dx)+Math.abs(dy)>4) dragged=true;
+    panX=panStart.px+dx; panY=panStart.py+dy;
+    applyTransform();
+  }
+});
+function endPointer(e){
+  if(pointers[e.pointerId]){
+    // tap sobre nodo (sin arrastre) => activar
+    if(!dragged && downNodeId){
+      var el=$('.node[data-id="'+downNodeId+'"]',world);
+      onNodeActivate(downNodeId, el);
+    }
+  }
+  delete pointers[e.pointerId];
+  if(Object.keys(pointers).length<2) pinch=null;
+  if(Object.keys(pointers).length===0){ panStart=null; stage.classList.remove('grabbing'); downNodeId=null; }
+}
+stage.addEventListener('pointerup', endPointer);
+stage.addEventListener('pointercancel', endPointer);
+
+stage.addEventListener('wheel', function(e){
+  e.preventDefault();
+  var r=stage.getBoundingClientRect();
+  var factor = e.deltaY<0 ? 1.12 : 0.89;
+  zoomAt(factor, e.clientX-r.left, e.clientY-r.top);
+}, {passive:false});
+
+/* botones mapa */
+$('#zIn').addEventListener('click', function(){ zoomAt(1.2, stage.clientWidth/2, stage.clientHeight/2); });
+$('#zOut').addEventListener('click', function(){ zoomAt(0.83, stage.clientWidth/2, stage.clientHeight/2); });
+$('#zFit').addEventListener('click', fitMap);
+$('#expandAll').addEventListener('click', function(){
+  DATA.nodes.forEach(function(n){ if((kids[n.id]||[]).length) expanded[n.id]=true; });
+  renderMap(); fitMap();
+});
+$('#collapseAll').addEventListener('click', function(){
+  expanded={root:true}; selId=null;
+  renderMap(); fitMap();
+  var det=$('#detail'); det.className='detail empty';
+  det.innerHTML='<button class="detail-close" id="detClose" aria-label="Cerrar">×</button>'
+    +'<div class="d-top"><span class="d-title">Toca un nodo del mapa</span></div>'
+    +'<div class="d-body">Cada casilla guarda una explicación con lo esencial del concepto — incluidas las frases con olor a examen. Empieza por la raíz o por cualquiera de las cinco ramas principales.</div>';
+});
+
+window.__redrawEdges=function(){ if(Object.keys(curPos).length) drawEdges(); };
+
+function dist(a,b){ var dx=a.x-b.x, dy=a.y-b.y; return Math.sqrt(dx*dx+dy*dy); }
+
+/* leyenda */
+(function legend(){
+  var wrap=$('#legend'), seen={};
+  DATA.nodes.forEach(function(n){ seen[n.cat]=true; });
+  var html='';
+  CAT_ORDER.forEach(function(c){ if(!seen[c]) return;
+    html+='<span><i style="--lc:var(--k-'+c+')"></i> '+CAT_LABEL[c]+'</span>';
+  });
+  wrap.innerHTML=html;
+})();
+
+/* primer render */
+renderMap();
+requestAnimationFrame(fitMap);
+window.addEventListener('resize', function(){ if($('#panel-map').classList.contains('active')) fitMap(); });
+
+/* =========================================================
+   FLASHCARDS
+   ========================================================= */
+var cards=DATA.cards.map(function(c,i){ c._i=i; return c; });
+var progress={};        // term -> 'dom' | 'rev'
+(function loadProg(){
+  var raw=LS.get('u5_progress');
+  if(raw){ try{ progress=JSON.parse(raw)||{}; }catch(e){ progress={}; } }
+})();
+function saveProg(){ LS.set('u5_progress', JSON.stringify(progress)); }
+function statusOf(c){ return progress[c.t] || 'new'; }
+
+var filterCat=null, onlyRev=false, order=cards.map(function(c){return c._i;}), pos=0, flipped=false;
+
+function visibleList(){
+  return order.filter(function(i){
+    var c=cards[i];
+    if(filterCat && c.cat!==filterCat) return false;
+    if(onlyRev && statusOf(c)!=='rev') return false;
+    return true;
+  });
+}
+
+/* chips de categoría */
+(function chips(){
+  var wrap=$('#chips');
+  var counts={}; cards.forEach(function(c){ counts[c.cat]=(counts[c.cat]||0)+1; });
+  var html='<button class="chip all" data-cat="" aria-pressed="true">Todas <span class="c">'+cards.length+'</span></button>';
+  CAT_ORDER.forEach(function(cat){ if(!counts[cat]) return;
+    html+='<button class="chip k-'+cat+'" data-cat="'+cat+'" aria-pressed="false">'
+        +'<span class="dot"></span>'+CAT_LABEL[cat]+' <span class="c">'+counts[cat]+'</span></button>';
+  });
+  wrap.innerHTML=html;
+  $$('.chip',wrap).forEach(function(ch){
+    ch.addEventListener('click', function(){
+      $$('.chip',wrap).forEach(function(x){x.setAttribute('aria-pressed','false');});
+      ch.setAttribute('aria-pressed','true');
+      filterCat = ch.getAttribute('data-cat') || null;
+      pos=0; flipped=false; renderCard();
+    });
+  });
+})();
+
+var cardEl=$('#card');
+function renderCard(){
+  var list=visibleList();
+  var side=$('.fc-main');
+  var empty=$('#emptyMsg');
+  if(list.length===0){
+    cardEl.parentNode.style.display='none';
+    if(!empty){
+      empty=document.createElement('div'); empty.id='emptyMsg'; empty.className='empty-filter';
+      empty.innerHTML='<div class="big">🗂️</div>No hay tarjetas en este filtro.<br>Prueba otra categoría o quita «solo por repasar».';
+      $('.fc-main').insertBefore(empty, $('.fc-controls'));
+    }
+    empty.style.display='block';
+    $('#posInd').textContent='0 de 0';
+    updateSide(); return;
+  }
+  if(empty) empty.style.display='none';
+  cardEl.parentNode.style.display='';
+  if(pos>=list.length) pos=0;
+  var c=cards[list[pos]];
+  cardEl.classList.toggle('flip', flipped);
+  var front=$('.face.front',cardEl), back=$('.face.back',cardEl);
+  $('.f-cat',front).textContent=CAT_LABEL[c.cat];
+  front.className='face front k-'+c.cat;
+  var enrEl=$('.f-enr',front);
+  enrEl.style.display = c.enr ? '' : 'none';
+  $('.f-term',front).innerHTML=c.t;
+  $('.f-en',front).innerHTML=c.en;
+  back.className='face back k-'+c.cat;
+  $('.f-def',back).innerHTML=c.d;
+  // marca botones dom/rev segun estado
+  var st=statusOf(c);
+  $('#mark-dom').classList.toggle('on', st==='dom');
+  $('#mark-rev').classList.toggle('on', st==='rev');
+  $('#posInd').innerHTML='Tarjeta <b>'+(pos+1)+'</b> de <b>'+list.length+'</b>'
+      + (filterCat?(' · '+CAT_LABEL[filterCat]):'') ;
+  updateSide();
+}
+function updateSide(){
+  var dom=0,rev=0,nw=0;
+  cards.forEach(function(c){ var s=statusOf(c); if(s==='dom')dom++; else if(s==='rev')rev++; else nw++; });
+  var tot=cards.length;
+  $('#stDom').textContent=dom; $('#stRev').textContent=rev; $('#stNew').textContent=nw;
+  $('#segDom').style.width=(dom/tot*100)+'%';
+  $('#segRev').style.width=(rev/tot*100)+'%';
+  $('#segNew').style.width=(nw/tot*100)+'%';
+  $('#pctTxt').textContent=Math.round(dom/tot*100)+'% dominado';
+}
+
+function flip(){ flipped=!flipped; cardEl.classList.toggle('flip',flipped); }
+function nav(d){ var list=visibleList(); if(!list.length) return;
+  pos=(pos+d+list.length)%list.length; flipped=false; renderCard(); }
+function mark(status){
+  var list=visibleList(); if(!list.length) return;
+  var c=cards[list[pos]];
+  if(progress[c.t]===status) delete progress[c.t]; else progress[c.t]=status;
+  saveProg();
+  renderCard();
+  setTimeout(function(){ if(visibleList().length) nav(1); }, 180);
+}
+
+cardEl.addEventListener('click', flip);
+$('#flip').addEventListener('click', flip);
+$('#prev').addEventListener('click', function(){nav(-1);});
+$('#next').addEventListener('click', function(){nav(1);});
+$('#mark-dom').addEventListener('click', function(){mark('dom');});
+$('#mark-rev').addEventListener('click', function(){mark('rev');});
+$('#shuffle').addEventListener('click', function(){
+  for(var i=order.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=order[i];order[i]=order[j];order[j]=t; }
+  pos=0; flipped=false; renderCard();
+});
+$('#reset').addEventListener('click', function(){
+  progress={}; saveProg(); onlyRev=false; $('#onlyRev').classList.remove('on');
+  $('#onlyRev').textContent='🎯 Solo tarjetas por repasar';
+  pos=0; flipped=false; renderCard();
+});
+$('#onlyRev').addEventListener('click', function(){
+  onlyRev=!onlyRev;
+  this.classList.toggle('on', onlyRev);
+  this.textContent = onlyRev ? '🎯 Ver todas las tarjetas' : '🎯 Solo tarjetas por repasar';
+  pos=0; flipped=false; renderCard();
+});
+
+/* atajos de teclado (solo con la pestaña flashcards activa) */
+document.addEventListener('keydown', function(e){
+  if(!$('#panel-cards').classList.contains('active')) return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowLeft'){ e.preventDefault(); nav(-1); }
+  else if(e.key==='ArrowRight'){ e.preventDefault(); nav(1); }
+  else if(e.key===' '){ e.preventDefault(); flip(); }
+  else if(e.key==='1'){ e.preventDefault(); mark('dom'); }
+  else if(e.key==='2'){ e.preventDefault(); mark('rev'); }
+});
+// estilo "on" para onlyRev
+var styleOn=document.createElement('style');
+styleOn.textContent='.btn.on{box-shadow:0 0 0 2px var(--accent) inset;color:var(--accent);}';
+document.head.appendChild(styleOn);
+
+renderCard();
+
+/* =========================================================
+   DISCREPANCIAS
+   ========================================================= */
+function renderDiscs(){
+  var wrap=$('#discList'), html='';
+  DATA.discs.forEach(function(d){
+    html+='<div class="disc-card">'
+      +'<div class="d-num"><span class="badge-n">'+d.n+'</span> Discrepancia '+d.n
+      +'<span class="tag-conf">'+d.conf+'</span></div>'
+      +'<h3>'+d.title+'</h3>'
+      +'<div class="disc-row"><div class="h curso">Qué dice el curso</div><div>'+d.curso+'</div></div>'
+      +'<div class="disc-row"><div class="h lit">Práctica actual</div><div>'+d.lit+'</div></div>'
+      +'<div class="disc-rule"><span class="rl">Regla de examen:</span> '+d.regla+'</div>'
+      +'</div>';
+  });
+  wrap.innerHTML=html;
+}
+
+})();
+
+</script>
+</body>
+</html>
