@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 1 · Crear valor empresarial con la IA — Mapa conceptual y Flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Toma de decisiones basadas en datos con IA · Máster en IA</div>
+  <h1>Unidad 1 · <b>Crear valor empresarial con la IA</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 43 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Dos puntos donde el material del curso choca con la definición técnica estándar. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> IA definida como «principalmente aprendizaje automático»</h3>
+      <p>El curso define la IA como una herramienta para resolver tareas específicas <b>principalmente mediante aprendizaje automático</b>. En la literatura, el ML es la rama dominante hoy, pero la IA como campo es más amplia: también incluye sistemas simbólicos y basados en reglas, búsqueda, planificación, optimización y lógica. Reducir IA ≈ ML describe la práctica empresarial actual, no la disciplina completa.</p>
+      <div class="regla"><b>Regla:</b> si preguntan por <i>la IA en los negocios hoy</i>, responde con la visión del curso (IA ≈ ML aplicado a tareas estrechas). Si piden <i>definir la IA como campo</i>, aclara que el ML es su subcampo más usado, no su totalidad.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> El ML como «paradigma de programación»</h3>
+      <p>El curso llama al aprendizaje automático un «paradigma de programación donde el algoritmo encuentra patrones en los datos». Formalmente, el ML es un <b>subcampo de la IA</b>, no un paradigma de programación paralelo a la programación tradicional. La contraposición del curso (reglas explícitas vs. reglas aprendidas) es correcta y didáctica, pero la etiqueta «paradigma de programación» es imprecisa.</p>
+      <div class="regla"><b>Regla:</b> conserva la idea central —en ML el comportamiento se <i>aprende</i> de ejemplos en vez de <i>codificarse</i> a mano—, que es lo evaluable. Solo matiza la clasificación («ML es un subcampo de la IA») si la pregunta apunta a la taxonomía del campo.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 1 — Crear valor empresarial con la IA» · Curso: Toma de decisiones basadas en datos con IA · Archivo autocontenido, funciona sin internet.</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"BI → Inteligencia de Decisión"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Madurez analítica"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Mecanismos de valor IA"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"IA y ML sin exageración"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Mapeo de casos de uso"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Caso TelecomPlus"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Contexto y datos"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"BI → Inteligencia de Decisión"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Madurez analítica"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Mecanismos de valor IA"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"IA y ML sin exageración"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Mapeo de casos de uso"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Caso TelecomPlus"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Contexto y datos"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+id:"root", t:"CREAR VALOR EMPRESARIAL CON LA IA", c:"root",
+d:"Unidad de entrada del diplomado: enseña a pensar dónde y por qué la IA genera valor en una organización. Tesis central: la Inteligencia de Negocios clásica (que responde «¿qué pasó?» mirando el retrovisor) muta, gracias a la IA, hacia una Inteligencia de Decisión que además anticipa y recomienda. Todo gira en torno al mapa valor vs. dificultad y a los cuatro tipos de análisis. Idea guía: la IA es un medio para mejorar la decisión, no un fin.",
+k:[
+ {e:"evoluciona hacia", t:"BI → Inteligencia de Decisión", c:"azul", id:"iddec",
+  d:"El objetivo del curso es entender cómo la evolución de la Inteligencia de Negocios (BI) hacia la Inteligencia de Decisión —integrando IA— transforma la toma de decisiones. Permite dejar de decidir por instinto y pasar a fundamentar en datos y predicciones probabilísticas: no «va a pasar X», sino «hay 78% de probabilidad de que pase X».",
+  k:[
+   {e:"parte de", t:"BI clásico (descriptivo)", c:"azul",
+    d:"Conjunto de sistemas que procesan datos para decidir en escenarios complejos: consolida fuentes y las presenta como reportes, KPIs y dashboards. Su énfasis es descriptivo (describe lo que ya pasó) y tiene dos límites estructurales: es retrospectivo (mira el pasado) y depende de la intervención humana. Analogía: el espejo retrovisor del auto.",
+    k:[
+     {e:"limitado por", t:"3 V + falta de especialistas", c:"gris",
+      d:"El volumen, la velocidad y la variedad crecientes de los datos (las tres V del Big Data), impulsados por sistemas digitales e IoT, superaron la capacidad de análisis manual. Se sumó una limitación estructural: faltan perfiles especializados para extraer valor a la velocidad que el negocio exige. La IA llena ese vacío."}
+    ]},
+   {e:"se transforma por", t:"3 transformaciones", c:"azul",
+    d:"La incorporación de IA al BI responde a tres transformaciones simultáneas: (1) necesidad de acceso inmediato a información relevante (respuestas ahora, no la semana que viene); (2) democratización del análisis, con herramientas accesibles para perfiles no técnicos; (3) eliminación de barreras tecnológicas mediante plataformas automatizadas."},
+   {e:"resultado:", t:"Inteligencia de Decisión = BI + IA", c:"azul",
+    d:"Fórmula conceptual: Inteligencia de Decisión = Inteligencia de Negocios (BI) + Inteligencia Artificial (IA). El BI aporta el «qué pasó» y la infraestructura de datos; la IA aporta el «qué pasará» y el «qué hacer»; la suma optimiza la decisión humana (un gerente mejor informado) y la automatizada (el sistema decide solo, a escala). Analogía: el conductor experto que usa retrovisor y GPS a la vez."}
+  ]},
+ {e:"se ordena en", t:"MADUREZ ANALÍTICA (Gartner)", c:"verde",
+  d:"Modelo de madurez analítica de Gartner (Figuras 1 y 5): un plano de dos ejes, valor generado (vertical) vs. complejidad o dificultad (horizontal). Sobre él se ubican cuatro tipos de análisis y tres visiones temporales. La transición de reportar el pasado a anticipar y guiar decisiones no es solo tecnológica, sino conceptual.",
+  k:[
+   {e:"¿qué ocurrió?", t:"Descriptivo (hindsight)", c:"verde",
+    d:"Responde «¿qué ocurrió?». Base del plano: bajo valor y baja complejidad. Vive en la capa de ingestión y se asocia a la visión retrospectiva (hindsight). Es contar lo que pasó: ventas del mes, número de reclamos, churn observado."},
+   {e:"¿por qué?", t:"Diagnóstico", c:"verde",
+    d:"Responde «¿por qué ocurrió?». Sube un peldaño agregando una capa interpretativa: ya no solo «las ventas cayeron 12%», sino por qué (subió el precio, hubo quiebre de stock). Visión hindsight o insight."},
+   {e:"¿qué ocurrirá?", t:"Predictivo (insight)", c:"verde", id:"predictivo",
+    d:"Responde «¿qué es probable que suceda?». Aquí ocurre el salto cualitativo que trae la IA: estima qué pasará según patrones en los datos. Se sitúa en la transición hacia el insight (visión de la perspectiva) y es el punto de inflexión entre insight y foresight."},
+   {e:"¿qué hacer?", t:"Prescriptivo (foresight)", c:"verde",
+    d:"La cima: mayor valor y complejidad, visión anticipatoria (foresight). No solo anticipa escenarios: recomienda acciones concretas. Responde «¿qué debo hacer?» o «¿cómo hacer que ocurra?». Analogía médica: descriptivo mide la fiebre, diagnóstico la explica, predictivo anticipa el empeoramiento, prescriptivo receta el antibiótico.",
+    k:[
+     {e:"parte baja", t:"Capa de aplicación", c:"verde",
+      d:"Franja centrada en automatización y facilidad de uso (application layer). Refleja la democratización del acceso al análisis. Concentra las capacidades descriptivas y diagnósticas; el valor es acotado y orientado al pasado (hindsight). Es lo que enfatiza la Figura 2."},
+     {e:"parte alta", t:"Capa analítica", c:"verde",
+      d:"Franja de capacidades avanzadas de predicción y optimización (analytical layer), rotulada «mejores pronósticos y predicciones». Es donde se captura el mayor valor. Vive lo predictivo y lo prescriptivo. Es lo que enfatiza la Figura 3."}
+    ]}
+  ]},
+ {e:"la IA aporta", t:"MECANISMOS DE VALOR", c:"ambar",
+  d:"La IA aporta valor al BI ampliando la capacidad analítica sin aumentar proporcionalmente la complejidad para el usuario final: hace el análisis más potente y a la vez más fácil de usar. Ese doble efecto se logra por tres mecanismos.",
+  k:[
+   {e:"mecanismo 1", t:"Automatización", c:"ambar",
+    d:"Tareas que antes requerían un técnico —explorar variables, identificar patrones, generar reportes— se ejecutan solas dentro de plataformas. Permite preguntar en lenguaje natural, recibir explicaciones automáticas o alertas sin construir consultas. Impacto doble: mejora la eficiencia y reduce estructuralmente la dependencia de especialistas."},
+   {e:"mecanismo 2", t:"Predicción individual", c:"ambar", id:"prediccion",
+    d:"Mientras el análisis tradicional describe, la IA identifica patrones complejos y estima comportamientos futuros (demanda, churn, riesgo financiero). La diferencia clave es la granularidad: deja de ser agregado y opera a nivel individual, habilitando decisiones accionables.",
+    k:[
+     {e:"clave:", t:"Granularidad", c:"ambar", id:"granularidad",
+      d:"El BI clásico dice «vamos a vender 3% menos» (número global); la IA dice «Juan Pérez tiene 82% de probabilidad de irse el mes que viene». Pasar del promedio a la persona vuelve la decisión accionable: no puedes intervenir un 3%, pero sí llamar a Juan y ofrecerle algo."},
+     {e:"ejemplo estrella", t:"Churn (fuga de clientes)", c:"ambar", id:"churnmec",
+      d:"Tasa de abandono: porcentaje de clientes que dejan un servicio en un período. Churn rate = (clientes que se fueron ÷ clientes al inicio) × 100%. Si TelecomPlus empezó enero con 10.000 y perdió 500, su churn fue 5%. Es el hilo conductor de toda la unidad (Figura 3, caso TelecomPlus, ejercicio retail, foro DataConnect)."}
+    ]},
+   {e:"mecanismo 3", t:"Datos no estructurados", c:"ambar",
+    d:"Durante décadas el BI se centró en datos estructurados (tablas: ventas, inventarios, finanzas). Pero gran parte de la información vive sin formato tabular: correos, documentos, imágenes, audio, conversaciones. La IA los transforma en datos analizables: texto → variables de sentimiento; imagen → etiquetas; audio → transcripción. Es el habilitador clave que enriquece los modelos predictivos y prescriptivos."}
+  ]},
+ {e:"intuir sin mito", t:"IA Y ML SIN EXAGERACIÓN", c:"violeta",
+  d:"La mayoría de las aplicaciones actuales son IA estrecha (narrow AI): sistemas para tareas específicas con alta precisión, no una inteligencia general. Analogía: una calculadora muy especializada, extraordinaria en su tarea e inútil fuera de ella.",
+  k:[
+   {e:"contrasta con", t:"Estrecha ↔ General (AGI)", c:"violeta",
+    d:"IA estrecha (narrow o weak AI): resuelve un único problema bien definido para el que fue entrenada. IA General (AGI): abordaría cualquier problema como un humano; no existe comercialmente hoy. La distinción es la vacuna contra la exageración: cuando prometen «una IA que resolverá todo», prometen AGI. Lo valioso es una batería de sistemas estrechos, cada uno excelente en su tarea."},
+   {e:"núcleo:", t:"ML infiere de los datos", c:"violeta",
+    d:"En la programación tradicional un programador define las reglas explícitamente; en el aprendizaje automático el comportamiento se aprende de ejemplos. El sistema recibe datos históricos con resultados conocidos e identifica patrones estadísticos que le permiten generalizar a casos nuevos. Analogía: recibir 200 platos ya cocinados con su resultado y deducir solo qué combinaciones funcionan."},
+   {e:"tríada", t:"Algoritmo → Entrenamiento → Modelo", c:"violeta",
+    d:"El algoritmo es el método (cómo se aprende, la técnica del escultor); el entrenamiento ajusta los parámetros usando datos (el acto de esculpir); el modelo es el resultado entrenado, la instancia aprendida (la estatua terminada). Frase de examen: «el algoritmo es el método, el modelo es la instancia aprendida a partir de ese método». Los parámetros son los números internos (pesos) que el modelo afina para encajar con los datos."},
+   {e:"advertencia", t:"Garbage in, garbage out", c:"violeta",
+    d:"La efectividad del ML depende directamente de la calidad de los datos: el modelo no adquiere conocimiento abstracto, captura las regularidades presentes en la información. Sesgos (un banco que negó créditos a un grupo los perpetúa), errores (datos mal registrados) y falta de representatividad (solo vio clientes urbanos) se reflejan en el modelo. Es un espejo del pasado, defectos incluidos: basura entra, basura sale."}
+  ]},
+ {e:"se estructura con", t:"MAPEO DE CASOS DE USO", c:"coral",
+  d:"Herramienta práctica más concreta de la unidad. Evita el error más común en proyectos de IA: empezar por la tecnología antes de definir el problema («tengo un martillo, busquemos un clavo»). El mapeo invierte el orden: primero el problema, después la herramienta.",
+  k:[
+   {e:"técnica ágil", t:"Storyboard (actual vs. futura)", c:"coral",
+    d:"Estructura cada idea con un guion gráfico (storyboard) que visualiza cómo cambiaría un proceso real al incorporar IA. La Figura 4 es una matriz que contrasta la implementación actual con la futura habilitada por IA. Obliga a describir primero la situación inicial y luego las acciones que efectivamente cambian con IA (alertas, priorización, clasificación, recomendaciones)."},
+   {e:"4 columnas", t:"Setup · Acciones · Outcomes · Impacto", c:"coral", id:"dims",
+    d:"Las cuatro dimensiones de toda idea de caso: Configuración (Setup: punto de partida, recursos y supuestos); Acciones (qué se genera o modifica en el flujo); Resultados inmediatos (Outcomes: los productos directos, p. ej. una lista de clientes priorizados); Impacto (Results: la consecuencia de negocio, p. ej. reducción de pérdidas). Confundir Outcome (salida técnica) con Impacto (valor de negocio) es un error clásico; la matriz obliga a conectarlos."},
+   {e:"utilidad doble", t:"Comunicar + evaluar viabilidad", c:"coral",
+    d:"El marco (a) facilita comunicar el valor esperado a las partes interesadas (stakeholders) y (b) permite evaluar tempranamente la viabilidad del caso, detectando limitaciones de datos o bajo impacto antes de invertir. Conecta explícitamente cambios operativos con resultados de negocio. El ejemplo de retail (tabla de la sección 5.1) es la respuesta modelo."}
+  ]},
+ {e:"caso aplicado", t:"CASO TELECOMPLUS (CHURN)", c:"cian", id:"telecom",
+  d:"Laura Martínez, analista de inteligencia de negocios en TelecomPlus (telefonía e internet), nota que la rotación de clientes sube, sobre todo en el segmento joven (18-29). El caso recorre el eje de madurez de hindsight a foresight y usa implícitamente la matriz Setup–Acciones–Resultados–Impacto. Material con olor a examen.",
+  k:[
+   {e:"problema", t:"Churn juvenil +15%, solo descriptivo", c:"cian",
+    d:"En reuniones mensuales, Laura presenta informes tradicionales con un aumento del 15% en la tasa de abandono; los jóvenes son los más propensos. Pero el análisis se detiene en lo descriptivo: no ofrece recomendaciones ni decisiones específicas. Las soluciones generales (nuevos planes, descuentos para jóvenes) no resultan efectivas. Es el techo del BI descriptivo de la Figura 1."},
+   {e:"solución", t:"Modelo ML + próxima mejor acción", c:"cian", id:"nba",
+    d:"TelecomPlus entrena un modelo de ML con datos históricos de compra, uso e interacción. Ahora predice la probabilidad de abandono de cada cliente de forma individual (granularidad) y sugiere una «próxima mejor acción» (next best action): un descuento específico a los de mayor riesgo y valor, o un plan mejor ajustado. La IA optimiza miles de decisiones diarias imposibles de gestionar a mano. Es el paso prescriptivo: no basta saber quién se irá, dice qué hacer con cada uno."},
+   {e:"resultado", t:"Churn −10% en el 1er trimestre", c:"cian",
+    d:"Tras implementar, la tasa de rotación baja un 10% en el primer trimestre. No solo reduce la fuga: mejora ingresos (retiene clientes valiosos) y usa mejor los recursos, porque la IA maneja de forma autónoma las intervenciones personalizadas. La IA permite predecir, personalizar y actuar de forma proactiva para cambiar los resultados."},
+   {e:"se replica en", t:"Retail · DataConnect · Disrupción digital", c:"cian",
+    d:"El ejercicio práctico pide elegir un proceso propio y responder qué decisiones se toman hoy, qué problema abordar con datos y cómo cambiaría con IA, usando el esquema Configuración–Acciones–Resultados–Impacto; el ejemplo de retail (con CRM y puntaje de riesgo de abandono) es la respuesta modelo. El foro colaborativo replica el caso con la empresa ficticia DataConnect (internet, churn 18-29) y el video «Disrupción digital»."}
+  ]}
+]
+};
+
+const CROSS = [
+ {from:"predictivo", to:"prediccion", label:"se implementa como", bend:70},
+ {from:"granularidad", to:"nba", label:"habilita la", bend:-90},
+ {from:"churnmec", to:"telecom", label:"se materializa en", bend:80},
+ {from:"dims", to:"telecom", label:"estructura el caso", bend:-70}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["fund","Inteligencia de Negocios (BI)","Business Intelligence","Prácticas, arquitecturas y herramientas que convierten datos dispersos en información útil para tomar decisiones."],
+["fund","Inteligencia Artificial (IA)","Artificial Intelligence","Herramienta para construir sistemas capaces de resolver tareas específicas, hoy principalmente mediante aprendizaje automático."],
+["fund","Aprendizaje automático (ML)","Machine Learning","Enfoque donde el sistema infiere patrones y reglas a partir de datos históricos, en vez de recibir reglas codificadas a mano."],
+["fund","Inteligencia de Decisión","Decision Intelligence","Disciplina que suma BI + IA para optimizar la toma de decisiones humana y automatizada."],
+["fund","IA estrecha","Narrow AI","Sistema que resuelve un único problema bien definido para el que fue entrenado, sin capacidad general."],
+["fund","IA general","Artificial General Intelligence (AGI)","Inteligencia hipotética capaz de abordar cualquier tipo de problema, como un humano; no existe comercialmente hoy."],
+["fund","Algoritmo de ML","Algorithm","Procedimiento computacional (el método) que analiza datos para encontrar el mejor modelo posible."],
+["fund","Entrenamiento","Training","Proceso que ajusta los parámetros del algoritmo usando datos para producir el modelo."],
+["fund","Modelo","Model","Resultado entrenado, capaz de generar predicciones; la instancia aprendida a partir del algoritmo."],
+["fund","Parámetros","Parameters","Números internos que el modelo afina durante el entrenamiento para encajar con los datos."],
+["fund","Programación tradicional","Rule-based programming","Enfoque donde un programador define explícitamente todas las reglas del comportamiento."],
+["fund","Generalización","Generalization","Capacidad del modelo de acertar en casos nuevos a partir de patrones aprendidos de casos vistos."],
+["flujo","Análisis descriptivo","Descriptive analytics","Análisis que responde «¿qué ocurrió?» describiendo datos históricos."],
+["flujo","Análisis diagnóstico","Diagnostic analytics","Análisis que responde «¿por qué ocurrió?» agregando una capa interpretativa."],
+["flujo","Análisis predictivo","Predictive analytics","Análisis que estima «¿qué es probable que ocurra?» a partir de patrones en los datos."],
+["flujo","Análisis prescriptivo","Prescriptive analytics","Análisis que responde «¿qué acción tomar?» recomendando decisiones concretas."],
+["flujo","Visión retrospectiva","Hindsight","Mirada al pasado; asociada a los análisis descriptivo y diagnóstico."],
+["flujo","Visión de la perspectiva","Insight","Comprensión de patrones que permite estimar el presente o futuro probable; asociada al análisis predictivo."],
+["flujo","Visión anticipatoria","Foresight","Capacidad de anticipar y guiar acciones futuras; asociada al análisis prescriptivo."],
+["flujo","Modelo de madurez analítica","Analytics maturity model","Marco de Gartner que ordena la analítica en niveles crecientes de valor y dificultad, de descriptivo a prescriptivo."],
+["flujo","Capa de ingestión","Ingestion layer","Nivel base donde se captan y describen los datos (análisis descriptivo)."],
+["flujo","Capa de aplicación","Application layer","Franja centrada en automatización y facilidad de uso; refleja la democratización del análisis."],
+["flujo","Capa analítica","Analytical layer","Franja de capacidades avanzadas de predicción y optimización, donde se captura el mayor valor."],
+["algo","Datos estructurados","Structured data","Información organizada en filas y columnas (ventas, inventarios, registros financieros)."],
+["algo","Datos no estructurados","Unstructured data","Información sin formato tabular: textos, imágenes, audio, correos, conversaciones."],
+["algo","Análisis de sentimiento","Sentiment analysis","Conversión de texto en variables que miden la actitud o emoción expresada."],
+["algo","Democratización del análisis","Data democratization","Poner las capacidades de análisis de datos al alcance de perfiles no técnicos."],
+["algo","Automatización","Automation","Ejecución automática de tareas analíticas: explorar variables, generar reportes, emitir alertas."],
+["algo","Granularidad","Granularity","Nivel de detalle del análisis; la IA lo lleva de lo agregado a lo individual."],
+["algo","Decisiones accionables","Actionable decisions","Decisiones concretas y ejecutables que se habilitan al analizar a nivel individual."],
+["algo","Predicción de demanda","Demand forecasting","Estimación de la demanda futura mediante modelos predictivos."],
+["algo","Tres V del dato","Three V's (Volume, Velocity, Variety)","Volumen, velocidad y variedad crecientes de los datos que hicieron insuficiente el análisis manual."],
+["deep","Mapeo de historias de IA","AI use-case story mapping","Técnica ágil que contrasta el proceso actual con su versión futura con IA para visualizar dónde se genera valor."],
+["deep","Storyboard","Storyboard","Guion gráfico que ilustra paso a paso cómo cambiaría un proceso al incorporar IA."],
+["deep","Configuración (Setup)","Setup","Dimensión del mapeo: punto de partida, recursos y supuestos iniciales del proceso."],
+["deep","Acciones","Actions","Dimensión del mapeo: qué se genera o modifica en el flujo de trabajo con IA."],
+["deep","Resultados inmediatos","Outcomes","Dimensión del mapeo: los productos directos del proceso (p. ej., una lista priorizada)."],
+["deep","Impacto","Results","Dimensión del mapeo: la consecuencia empresarial observable (p. ej., menos pérdidas, más ingresos)."],
+["deep","CRM","Customer Relationship Management","Sistema de gestión de la relación con clientes donde se visualizan puntajes e indicadores."],
+["eval","Churn","Churn / Churn rate","Tasa de abandono: porcentaje de clientes que dejan de usar un servicio en un período."],
+["eval","Próxima mejor acción","Next Best Action","Recomendación del modelo sobre la mejor acción a tomar con cada cliente en el momento."],
+["err","Sesgo","Bias","Distorsión aprendida por el modelo cuando los datos históricos reflejan una realidad parcial o injusta."],
+["err","Disrupción digital","Digital disruption","Transformación profunda de procesos y modelos de negocio impulsada por tecnologías digitales e IA."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos", col:"var(--azul)"},
+  flujo:{n:"Madurez analítica", col:"var(--verde)"},
+  algo:{n:"Datos y mecanismos", col:"var(--ambar)"},
+  deep:{n:"Mapeo de casos de uso", col:"var(--violeta)"},
+  eval:{n:"Caso y evaluación", col:"var(--coral)"},
+  err:{n:"Riesgos y contexto", col:"var(--cian)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
