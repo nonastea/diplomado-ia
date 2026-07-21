@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Unidad 4 — Prototipado de IA · Mapa conceptual y flashcards</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --surface:#ffffff; --surface-2:#f7f9fd; --line:#e0e6f1;
+    --ink:#1b2533; --muted:#5d6e80; --faint:#8a99ab;
+    --accent:#22356b; --accent-soft:#eef2fb;
+    --fund:#2c4a8f; --valid:#c0455e; --alc:#6b4ea0; --met:#1f8a7a;
+    --arq:#1597a5; --herr:#b9821a; --eco:#5a6b7b; --ext:#9a6a12;
+    --shadow:0 8px 30px rgba(20,40,80,.10), 0 2px 8px rgba(20,40,80,.06);
+    --radius:14px;
+  }
+  html[data-theme="dark"]{
+    --bg:#0e1521; --surface:#16202e; --surface-2:#1b2738; --line:#2a3850;
+    --ink:#e7edf6; --muted:#9fb0c4; --faint:#6f8197;
+    --accent:#7d97d8; --accent-soft:#1d2c44;
+    --fund:#7d97d8; --valid:#e87f95; --alc:#b59ce0; --met:#48bda9;
+    --arq:#52c4d3; --herr:#e0ab48; --eco:#9aadbf; --ext:#e0ab48;
+    --shadow:0 10px 34px rgba(0,0,0,.45), 0 2px 10px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,"DejaVu Sans Mono",Consolas,monospace;}
+
+  /* ---------- header ---------- */
+  header{
+    padding:22px 22px 14px; max-width:1180px; margin:0 auto;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .brand h1{
+    font-family:Georgia,"Times New Roman",serif; font-weight:600; letter-spacing:-.3px;
+    font-size:25px; margin:0; line-height:1.12; color:var(--ink);
+  }
+  .brand h1 .u{color:var(--accent);}
+  .brand .sub{color:var(--muted); font-size:13.5px; margin-top:3px;}
+  .brand .sub .mono{font-size:12px; color:var(--faint);}
+  .theme-btn{
+    border:1px solid var(--line); background:var(--surface); color:var(--muted);
+    border-radius:10px; padding:8px 12px; cursor:pointer; font-size:13px; display:flex; gap:7px; align-items:center;
+    transition:.18s;
+  }
+  .theme-btn:hover{color:var(--ink); border-color:var(--accent);}
+
+  /* ---------- tabs ---------- */
+  .tabs-wrap{position:sticky; top:0; z-index:40; background:linear-gradient(var(--bg) 70%, transparent); padding-top:4px;}
+  .tabs{
+    max-width:1180px; margin:0 auto; padding:0 22px 12px; display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .tab{
+    border:1px solid var(--line); background:var(--surface); color:var(--muted);
+    padding:9px 16px; border-radius:11px; cursor:pointer; font-size:14px; font-weight:600;
+    display:flex; align-items:center; gap:8px; transition:.16s;
+  }
+  .tab .ic{width:18px;height:18px;display:inline-block;}
+  .tab:hover{color:var(--ink);}
+  .tab[aria-selected="true"]{background:var(--accent); color:#fff; border-color:var(--accent); box-shadow:var(--shadow);}
+  html[data-theme="dark"] .tab[aria-selected="true"]{color:#0e1521;}
+  .tab .cnt{font-size:11px; opacity:.7; font-weight:700;}
+
+  main{max-width:1180px; margin:0 auto; padding:6px 22px 60px;}
+  .panel{display:none;}
+  .panel.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  .intro{color:var(--muted); font-size:14px; margin:6px 0 14px; max-width:780px;}
+  .intro b{color:var(--ink);}
+
+  /* ---------- map ---------- */
+  .map-toolbar{
+    display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px;
+  }
+  .tool{
+    border:1px solid var(--line); background:var(--surface); color:var(--muted);
+    border-radius:9px; padding:7px 12px; cursor:pointer; font-size:13px; font-weight:600; transition:.15s;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .tool:hover{color:var(--ink); border-color:var(--accent);}
+  .tool.on{background:var(--accent-soft); color:var(--accent); border-color:var(--accent);}
+  .tool .k{font-size:16px; line-height:1; font-weight:400;}
+  .tool-sep{width:1px; height:22px; background:var(--line); margin:0 2px;}
+
+  .map-shell{position:relative;}
+  .map-stage{
+    position:relative; background:
+      radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0);
+    background-size:22px 22px;
+    background-color:var(--surface);
+    border:1px solid var(--line); border-radius:var(--radius);
+    height:600px; overflow:hidden; box-shadow:var(--shadow); touch-action:none; cursor:grab;
+  }
+  .map-stage.grabbing{cursor:grabbing;}
+  #mapSvg{width:100%; height:100%; display:block;}
+  .node-box{cursor:pointer;}
+  .node-rect{transition:filter .15s, opacity .2s;}
+  .node-box:hover .node-rect{filter:brightness(1.04);}
+  .node-label{pointer-events:none; font-weight:600;}
+  .node-toggle{font-weight:700; pointer-events:none;}
+  .edge{fill:none; stroke:var(--line); stroke-width:1.6;}
+  html[data-theme="dark"] .edge{stroke:#33456040;}
+  .xlink{fill:none; stroke-width:1.5; stroke-dasharray:2 4; opacity:.85;}
+  .xlabel{font-size:10px; font-weight:600;}
+  .xlabel-bg{opacity:.92;}
+
+  .legend{
+    display:flex; gap:14px 18px; flex-wrap:wrap; margin-top:12px; padding:12px 14px;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; font-size:12.5px;
+  }
+  .legend .lg{display:flex; align-items:center; gap:7px; color:var(--muted);}
+  .legend .dot{width:12px; height:12px; border-radius:4px; flex:none;}
+  .legend .xl{display:flex; align-items:center; gap:7px; color:var(--muted);}
+  .legend .xl svg{flex:none;}
+  .map-hint{font-size:12px; color:var(--faint); margin-top:9px;}
+
+  /* detail panel */
+  .detail{
+    position:absolute; top:14px; right:14px; width:330px; max-width:calc(100% - 28px);
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    box-shadow:var(--shadow); padding:16px 17px; transform:translateX(calc(100% + 26px));
+    transition:transform .28s cubic-bezier(.4,1.2,.4,1); z-index:10;
+  }
+  .detail.open{transform:none;}
+  .detail .chip{
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
+    padding:3px 9px; border-radius:7px; color:#fff; margin-bottom:9px;
+  }
+  html[data-theme="dark"] .detail .chip{color:#0e1521;}
+  .detail h3{margin:0 0 7px; font-size:17px; line-height:1.25;}
+  .detail p{margin:0; color:var(--muted); font-size:13.6px; line-height:1.55;}
+  .detail .x{position:absolute; top:11px; right:12px; cursor:pointer; color:var(--faint); border:0; background:none; font-size:19px; line-height:1; padding:2px;}
+  .detail .x:hover{color:var(--ink);}
+  .detail .disc-tag{
+    margin-top:11px; font-size:11.5px; color:var(--valid); font-weight:600;
+    display:flex; gap:6px; align-items:center;
+  }
+
+  /* ---------- flashcards ---------- */
+  .chips{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px;}
+  .chip-f{
+    border:1.5px solid var(--line); background:var(--surface); color:var(--muted);
+    border-radius:20px; padding:6px 13px; cursor:pointer; font-size:12.5px; font-weight:600; transition:.15s;
+    display:inline-flex; align-items:center; gap:7px; user-select:none;
+  }
+  .chip-f .d{width:9px;height:9px;border-radius:50%;flex:none;}
+  .chip-f:hover{color:var(--ink);}
+  .chip-f[aria-pressed="true"]{color:#fff;}
+  .chip-f.all[aria-pressed="true"]{background:var(--accent); border-color:var(--accent);}
+  html[data-theme="dark"] .chip-f[aria-pressed="true"]{color:#0e1521;}
+
+  .card-stage{perspective:1600px; margin:4px auto 0; max-width:560px;}
+  .flip{
+    position:relative; width:100%; min-height:320px; cursor:pointer;
+    transform-style:preserve-3d; transition:transform .5s cubic-bezier(.4,.7,.3,1);
+  }
+  .flip.flipped{transform:rotateY(180deg);}
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:18px; padding:30px 28px; display:flex; flex-direction:column;
+    background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow);
+  }
+  .face .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:auto;}
+  .face .cat-chip{
+    font-size:10.5px; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
+    padding:4px 10px; border-radius:8px; color:#fff;
+  }
+  html[data-theme="dark"] .face .cat-chip{color:#0e1521;}
+  .face .idx{font-size:12px; color:var(--faint); font-weight:600;}
+  .front .center{margin:auto 0; text-align:center;}
+  .front .term{font-size:27px; font-weight:700; line-height:1.18; letter-spacing:-.3px;}
+  .front .en{font-size:14px; color:var(--muted); margin-top:11px;}
+  .front .tap{font-size:11.5px; color:var(--faint); text-align:center; margin-top:auto;}
+  .back{transform:rotateY(180deg);}
+  .back .lbl{font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:6px;}
+  .back .term-sm{font-size:16px; font-weight:700; margin-bottom:4px;}
+  .back .en-sm{font-size:12.5px; color:var(--muted); margin-bottom:14px;}
+  .back .def{font-size:18px; line-height:1.5; margin:auto 0;}
+  .back .star{margin-top:auto; font-size:11.5px; color:var(--faint);}
+  .back .star.is{color:var(--herr);}
+
+  .controls{display:flex; gap:9px; align-items:center; justify-content:center; margin:18px auto 0; max-width:560px; flex-wrap:wrap;}
+  .nav-btn{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink);
+    border-radius:11px; padding:11px 16px; cursor:pointer; font-size:14px; font-weight:600; transition:.15s;
+    display:inline-flex; align-items:center; gap:7px;
+  }
+  .nav-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .nav-btn.primary{background:var(--accent); color:#fff; border-color:var(--accent);}
+  html[data-theme="dark"] .nav-btn.primary{color:#0e1521;}
+  .nav-btn.primary:hover{filter:brightness(1.08); color:#fff;}
+  html[data-theme="dark"] .nav-btn.primary:hover{color:#0e1521;}
+  .nav-btn.star-btn.on{background:var(--herr); color:#fff; border-color:var(--herr);}
+  html[data-theme="dark"] .nav-btn.star-btn.on{color:#0e1521;}
+  .nav-btn:disabled{opacity:.4; cursor:default;}
+
+  .progress{max-width:560px; margin:18px auto 0;}
+  .pbar{height:8px; background:var(--line); border-radius:6px; overflow:hidden;}
+  .pfill{height:100%; width:0; background:linear-gradient(90deg,var(--met),var(--arq)); transition:width .3s;}
+  .pmeta{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:8px;}
+  .pmeta b{color:var(--ink);}
+  .sub-controls{display:flex; gap:9px; justify-content:center; margin-top:14px; flex-wrap:wrap;}
+  .kbd-hint{text-align:center; font-size:11.5px; color:var(--faint); margin-top:16px;}
+  .kbd-hint kbd{
+    font-family:inherit; background:var(--surface-2); border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; font-size:11px; color:var(--muted); margin:0 1px;
+  }
+  .empty{text-align:center; color:var(--muted); padding:50px 20px; font-size:15px;}
+
+  /* ---------- discrepancies ---------- */
+  .disc-grid{display:grid; gap:16px; grid-template-columns:1fr;}
+  .disc-card{
+    background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--valid);
+    border-radius:13px; padding:18px 20px; box-shadow:var(--shadow);
+  }
+  .disc-card .pill{
+    display:inline-block; background:var(--valid); color:#fff; font-size:10.5px; font-weight:700;
+    letter-spacing:.5px; padding:3px 10px; border-radius:8px; text-transform:uppercase; margin-bottom:9px;
+  }
+  html[data-theme="dark"] .disc-card .pill{color:#0e1521;}
+  .disc-card h3{margin:0 0 12px; font-size:18px;}
+  .disc-card .row{margin:0 0 11px; font-size:14px; line-height:1.55;}
+  .disc-card .row:last-child{margin-bottom:0;}
+  .disc-card .row .h{font-weight:700; color:var(--ink);}
+  .disc-card .row.rule{
+    background:var(--accent-soft); border-radius:9px; padding:10px 13px; color:var(--ink); font-size:13.5px;
+  }
+  .disc-card .row.rule .h{color:var(--accent);}
+  .tag-conf{
+    font-size:10.5px; font-weight:700; color:var(--met); border:1px solid var(--met); border-radius:6px;
+    padding:1px 6px; margin-left:4px; vertical-align:middle; text-transform:uppercase; letter-spacing:.3px;
+  }
+
+  footer{max-width:1180px; margin:0 auto; padding:0 22px 40px; color:var(--faint); font-size:12px; text-align:center;}
+  footer b{color:var(--muted);}
+
+  @media (max-width:720px){
+    .brand h1{font-size:21px;}
+    .map-stage{height:460px;}
+    .detail{position:fixed; left:0; right:0; bottom:0; top:auto; width:100%; max-width:100%;
+      border-radius:16px 16px 0 0; transform:translateY(calc(100% + 10px));}
+    .detail.open{transform:none;}
+    .front .term{font-size:23px;}
+    .back .def{font-size:16px;}
+    main{padding:6px 14px 60px;} header{padding:18px 14px 12px;} .tabs{padding:0 14px 12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1><span class="u">Unidad 4</span> · Prototipado de proyectos de IA</h1>
+    <div class="sub">Mapa conceptual interactivo + 47 flashcards · <span class="mono">Toma de decisiones basadas en datos con IA</span></div>
+  </div>
+  <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">
+    <span id="themeIc">🌙</span><span id="themeTx">Oscuro</span>
+  </button>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="map">
+      <span class="ic" aria-hidden="true">🗺️</span> Mapa conceptual
+    </button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="cards">
+      <span class="ic" aria-hidden="true">🃏</span> Flashcards <span class="cnt">47</span>
+    </button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="disc">
+      <span class="ic" aria-hidden="true">⚠️</span> Discrepancias <span class="cnt">2</span>
+    </button>
+  </div>
+</div>
+
+<main>
+  <!-- ===================== MAPA ===================== -->
+  <section class="panel active" id="panel-map" role="tabpanel">
+    <p class="intro">El esqueleto completo de la unidad en un solo lugar. <b>Toca un nodo</b> para leer su explicación, <b>toca una rama numerada</b> para expandir o colapsar sus ramas, y <b>arrastra</b> el lienzo (o usa la rueda) para moverte. Las líneas punteadas son los <b>enlaces cruzados</b>: relaciones reales entre ramas distintas, incluidos los cruces a las Unidades 2 y 3.</p>
+
+    <div class="map-toolbar">
+      <button class="tool" id="btnExpand"><span class="k">＋</span> Expandir todo</button>
+      <button class="tool" id="btnCollapse"><span class="k">－</span> Solo ramas principales</button>
+      <button class="tool" id="btnFit"><span class="k">⤢</span> Ajustar a pantalla</button>
+      <div class="tool-sep"></div>
+      <button class="tool" id="btnZoomOut" aria-label="Alejar"><span class="k">−</span></button>
+      <button class="tool" id="btnZoomIn" aria-label="Acercar"><span class="k">+</span></button>
+      <div class="tool-sep"></div>
+      <button class="tool on" id="btnXlinks">Enlaces cruzados</button>
+    </div>
+
+    <div class="map-shell">
+      <div class="map-stage" id="mapStage">
+        <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <aside class="detail" id="detail" aria-live="polite">
+        <button class="x" id="detailClose" aria-label="Cerrar">×</button>
+        <span class="chip" id="detailChip"></span>
+        <h3 id="detailTitle"></h3>
+        <p id="detailBody"></p>
+        <div class="disc-tag" id="detailDisc" style="display:none"></div>
+      </aside>
+    </div>
+
+    <div class="legend" id="legend"></div>
+    <p class="map-hint">Sugerencia: en el móvil, un toque sostenido y arrastre mueve el mapa; pellizca para hacer zoom.</p>
+  </section>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <section class="panel" id="panel-cards" role="tabpanel">
+    <p class="intro">Una tarjeta por cada uno de los <b>47 términos</b> del glosario. El frente trae el término en español y su equivalente en inglés; el reverso, la definición. Filtra por categoría, marca las que ya dominas y repasa solo las que te faltan.</p>
+
+    <div class="chips" id="chips"></div>
+
+    <div id="cardArea">
+      <div class="card-stage">
+        <div class="flip" id="flip">
+          <div class="face front">
+            <div class="topbar">
+              <span class="cat-chip" id="fCat"></span>
+              <span class="idx" id="fIdx"></span>
+            </div>
+            <div class="center">
+              <div class="term" id="fTerm"></div>
+              <div class="en mono" id="fEn"></div>
+            </div>
+            <div class="tap">Toca la tarjeta o pulsa Espacio para ver la definición</div>
+          </div>
+          <div class="face back">
+            <div class="topbar">
+              <span class="cat-chip" id="bCat"></span>
+              <span class="idx" id="bIdx"></span>
+            </div>
+            <div class="lbl">Definición</div>
+            <div class="term-sm" id="bTerm"></div>
+            <div class="en-sm mono" id="bEn"></div>
+            <div class="def" id="bDef"></div>
+            <div class="star" id="bStar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="nav-btn" id="btnPrev">‹ Anterior</button>
+        <button class="nav-btn primary" id="btnFlip">Voltear</button>
+        <button class="nav-btn" id="btnNext">Siguiente ›</button>
+        <button class="nav-btn star-btn" id="btnStar">★ La domino</button>
+      </div>
+
+      <div class="progress">
+        <div class="pbar"><div class="pfill" id="pfill"></div></div>
+        <div class="pmeta">
+          <span>Tarjeta <b id="pCur">1</b> / <b id="pTot">47</b></span>
+          <span>Dominadas: <b id="pMastered">0</b> / <span id="pSet">47</span></span>
+        </div>
+      </div>
+
+      <div class="sub-controls">
+        <button class="nav-btn" id="btnShuffle">🔀 Mezclar</button>
+        <button class="nav-btn" id="btnReview">Repasar las pendientes</button>
+        <button class="nav-btn" id="btnReset">↺ Reiniciar progreso</button>
+      </div>
+
+      <p class="kbd-hint"><kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear · <kbd>M</kbd> marcar dominada</p>
+    </div>
+    <div class="empty" id="cardsEmpty" style="display:none">No hay tarjetas en este filtro. Activa alguna categoría.</div>
+  </section>
+
+  <!-- ===================== DISCREPANCIAS ===================== -->
+  <section class="panel" id="panel-disc" role="tabpanel">
+    <p class="intro">Dos puntos donde la terminología estándar o el estado actual de los productos <b>matizan o actualizan</b> lo que dice el curso. Para el examen, prioriza la versión del curso y ten esto como contexto.</p>
+    <div class="disc-grid">
+
+      <div class="disc-card">
+        <span class="pill">Discrepancia 1</span>
+        <h3>"Prototipo" del curso vs. PoC / Prototipo / MVP estándar</h3>
+        <p class="row"><span class="h">El curso dice:</span> el prototipo de IA es un producto inacabado cuyo único fin es validar impacto y viabilidad, de punta a punta, con datos reales, en 2–4 semanas. Lo presenta como distinto de PoC y MVP.</p>
+        <p class="row"><span class="h">La terminología estándar dice</span><span class="tag-conf">confirmado</span>: en realidad son <b>tres herramientas distintas</b> para riesgos distintos. <b>PoC</b> = ¿es técnicamente posible? (interno, datos quemados, desechable). <b>Prototipo clásico</b> = ¿cómo se ve y se siente? (UX/diseño, datos ficticios, no productivo). <b>MVP</b> = ¿lo quiere el mercado? (producto real lanzado a usuarios). El "prototipo" del curso es un <b>híbrido PoC+MVP</b> y, además, contradice al prototipo clásico en un punto: exige datos reales donde el clásico usa ficticios.</p>
+        <p class="row rule"><span class="h">Regla práctica:</span> si la pregunta es "¿qué es un prototipo en esta unidad?" → usa la definición del curso. Si es "distingue PoC / prototipo / MVP" → usa el reparto de tres (factibilidad / experiencia / mercado).</p>
+      </div>
+
+      <div class="disc-card">
+        <span class="pill">Discrepancia 2</span>
+        <h3>Azure Machine Learning Studio</h3>
+        <p class="row"><span class="h">El curso dice:</span> "Azure Machine Learning Studio: interfaz web para entrenar e implementar modelos sin código."</p>
+        <p class="row"><span class="h">El estado actual dice</span><span class="tag-conf">confirmado</span>: el producto sin código que encajaba con esa frase, <b>"Azure ML Studio (classic)", fue retirado el 31 de agosto de 2024</b>. Hoy "Azure Machine Learning studio" es un entorno unificado <b>principalmente de código</b>, y la experiencia visual sin código la entrega el <b>"Azure ML designer"</b>.</p>
+        <p class="row rule"><span class="h">Regla práctica:</span> para el examen, vale la definición del curso. En la vida real, "interfaz sin código de Azure" = el <i>designer</i>; el <i>Studio classic</i> ya no existe.</p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  Herramienta de estudio · Unidad 4 del Máster en IA · <b>47 conceptos · mapa conceptual · 2 discrepancias verificadas</b><br>
+  Fuente principal: Zwingmann (2024), <i>AI-Powered Business Intelligence</i>, O'Reilly. Tu progreso se guarda en este navegador.
+</footer>
+
+<script>
+"use strict";
+
+/* ============ almacenamiento seguro ============ */
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+};
+
+/* ============ tema ============ */
+(function(){
+  const saved = store.get('u4-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+  syncThemeBtn();
+})();
+function syncThemeBtn(){
+  const dark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.getElementById('themeIc').textContent = dark ? '☀️' : '🌙';
+  document.getElementById('themeTx').textContent = dark ? 'Claro' : 'Oscuro';
+}
+document.getElementById('themeBtn').addEventListener('click', ()=>{
+  const dark = document.documentElement.getAttribute('data-theme')==='dark';
+  if(dark){ document.documentElement.removeAttribute('data-theme'); store.set('u4-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); store.set('u4-theme','dark'); }
+  syncThemeBtn();
+  if(currentTab==='map') renderMap();
+});
+
+/* ============ tabs ============ */
+let currentTab = 'map';
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+    t.setAttribute('aria-selected','true');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    const id = t.dataset.tab;
+    document.getElementById('panel-'+id).classList.add('active');
+    currentTab = id;
+    if(id==='map'){ if(!mapInited){ initMap(); } else { renderMap(); } requestAnimationFrame(fitMap); }
+    if(id==='cards' && !cardsInited){ initCards(); }
+  });
+});
+
+/* ============ categorías ============ */
+const CATS = {
+  fund:{name:'Fundamentos', v:'--fund'},
+  valid:{name:'Validación', v:'--valid'},
+  alc:{name:'Alcance y reglas', v:'--alc'},
+  met:{name:'Ágil vs cascada', v:'--met'},
+  arq:{name:'Arquitectura 3 capas', v:'--arq'},
+  herr:{name:'Herramientas', v:'--herr'},
+  eco:{name:'Ecosistemas', v:'--eco'},
+  ext:{name:'Enlace · Unidad 2/3', v:'--ext'},
+};
+function catColor(c){ return getComputedStyle(document.documentElement).getPropertyValue(CATS[c].v).trim(); }
+
+/* ============ datos del mapa ============ */
+// parent=null → raíz ; ext:true → nodo de enlace a otra unidad
+const NODES = [
+  {id:'r', label:'Prototipado de IA', cat:'fund', parent:null, root:true,
+   detail:'El esqueleto de toda la unidad. Prototipar es construir un producto inacabado —de punta a punta pero simple— para averiguar rápido y barato si una idea de IA genera valor real antes de invertir. Toca cualquier nodo para ver su explicación.'},
+
+  // 1. Fundamentos
+  {id:'b1', label:'1 · ¿Qué es un prototipo?', cat:'fund', parent:'r', branch:true,
+   detail:'Antes de prototipar hay que fijar qué es —y qué no es— un prototipo en este curso. Este bloque define el vocabulario que se usa en todo lo demás.'},
+  {id:'n1a', label:'Producto inacabado para VALIDAR', cat:'fund', parent:'b1',
+   detail:'Un prototipo es un producto inacabado cuyo único propósito es validar una hipótesis de negocio y técnica. No es "una versión chica del sistema": es un instrumento para responder una pregunta y luego desecharse o escalarse.'},
+  {id:'n1b', label:'≠ PoC (factibilidad técnica)', cat:'fund', parent:'b1',
+   detail:'La Prueba de Concepto valida solo la factibilidad TÉCNICA ("¿se puede?"), con datos quemados y de forma desechable. El prototipo del curso va más allá: también mide el impacto en el usuario.'},
+  {id:'n1c', label:'≠ MVP (encaje con el mercado)', cat:'fund', parent:'b1',
+   detail:'El Producto Mínimo Viable es un producto real y funcional, con lo mínimo para validar el ENCAJE CON EL MERCADO ante usuarios reales. A diferencia del prototipo, no es desechable.'},
+  {id:'n1d', label:'Curso = híbrido PoC + MVP', cat:'fund', parent:'b1', disc:1,
+   detail:'El "prototipo" que enseña el curso es en realidad un híbrido: valida factibilidad técnica (como un PoC) e impacto en el usuario (como un MVP), con datos reales y en 2–4 semanas.'},
+
+  // 2. Validación
+  {id:'b2', label:'2 · ¿Por qué prototipar?', cat:'valid', parent:'r', branch:true,
+   detail:'El motivo de fondo: los proyectos de ML están rodeados de incertidumbre, y el prototipo es la forma de reducir ese riesgo a bajo costo.'},
+  {id:'n2a', label:'Nace de la INCERTIDUMBRE', cat:'valid', parent:'b2',
+   detail:'Casi todo proyecto de ML arrastra falta de previsibilidad sobre requisitos, aceptación del usuario y calidad de los datos. No sabes si hay señal hasta que construyes el modelo: por eso se prototipa en vez de planificar a ciegas.'},
+  {id:'n2b', label:'Evita el POZO SIN FONDO → ROI', cat:'valid', parent:'b2',
+   detail:'Muchos proyectos gastan meses y miles de dólares para descubrir que no funcionan. El prototipo llega a esa conclusión (o al éxito) rápido y barato, mejorando el retorno de la inversión.'},
+  {id:'n2c', label:'UTILIDAD sobre PRECISIÓN', cat:'valid', parent:'b2',
+   detail:'Un modelo preciso es un logro técnico; uno útil es un logro de negocio. El prototipo pone la solución frente a usuarios reales pronto para saber si sirve de verdad, no solo si acierta.'},
+  {id:'n2d', label:'Gestiona EXPECTATIVAS', cat:'valid', parent:'b2',
+   detail:'Involucrar a las partes interesadas desde el día uno permite detectar problemas (como mala calidad de datos) temprano y ajustar lo que la tecnología puede lograr realmente.'},
+  {id:'n2e', label:'Valida 2 dimensiones: IMPACTO + VIABILIDAD', cat:'valid', parent:'b2',
+   detail:'Todo prototipo valida dos cosas: IMPACTO (valor de negocio + adopción del usuario) y VIABILIDAD (¿hay señal en los datos?, ¿funciona el modelo?). Son exactamente los dos ejes de los "casos campeones" de la Unidad 3.'},
+
+  // 3. Alcance
+  {id:'b3', label:'3 · Cómo se acota', cat:'alc', parent:'r', branch:true,
+   detail:'Cómo se delimita un prototipo para que sea gestión de riesgo y no una distracción técnica: alcance estricto y reglas duras.'},
+  {id:'n3a', label:'INTEGRACIÓN VERTICAL PROFUNDA', cat:'alc', parent:'b3',
+   detail:'El prototipo cubre TODAS las capas del caso de uso —de la ingesta de datos a la interfaz— pero superficialmente. Es el "esqueleto que camina": un hilo delgado pero completo de punta a punta.'},
+  {id:'n3b', label:'BAJA COMPLEJIDAD TÉCNICA', cat:'alc', parent:'b3',
+   detail:'La contraparte de la integración vertical: cada capa se mantiene simple. Amplio pero superficial. Si te hundes en una sola capa (el modelo perfecto), dejas de validar de punta a punta.'},
+  {id:'n3c', label:'TEMPORALIDAD: 2–4 semanas', cat:'alc', parent:'b3',
+   detail:'Un prototipo no debería tomar más de 2 a 4 semanas (a veces solo días). El plazo corto es justamente lo que fuerza el aprendizaje acelerado.'},
+  {id:'n3d', label:'Objetivo + Plazos + Criterios de aceptación', cat:'alc', parent:'b3',
+   detail:'El alcance se acota con tres elementos: un OBJETIVO CLARO (planteado como pregunta de investigación, medido contra una línea de base), PLAZOS ESTRICTOS y CRITERIOS DE ACEPTACIÓN definidos de antemano.'},
+  {id:'n3e', label:'REGLA DE ORO: no comprometerse con los datos', cat:'alc', parent:'b3',
+   detail:'Usar solo información que existiría en producción, sin limpiezas manuales no escalables. "El modelo y la interfaz se arreglan; los datos, no."'},
+
+  // 4. Metodología
+  {id:'b4', label:'4 · Metodología', cat:'met', parent:'r', branch:true,
+   detail:'Por qué el prototipado exige mentalidad ágil y no cascada para sobrevivir a la incertidumbre de la IA.'},
+  {id:'n4a', label:'BI como PRODUCTO DE DATOS', cat:'met', parent:'b4',
+   detail:'Integrar IA en BI exige dejar de ver el BI como informes estáticos y tratarlo como un producto vivo e iterable, asumiendo de antemano que no hay certeza sobre si la idea funcionará.'},
+  {id:'n4b', label:'CASCADA → congela requisitos, feedback tardío', cat:'met', parent:'b4',
+   detail:'La cascada es lineal y rígida: congela los requisitos al inicio. Su mayor riesgo es el feedback tardío —el cliente ve el producto solo al final, cuando corregir es carísimo.'},
+  {id:'n4c', label:'ÁGIL → sprints, pivota, fallar rápido y barato', cat:'met', parent:'b4',
+   detail:'La agilidad trabaja en sprints, pivota ante hallazgos nuevos y permite "fallar rápido y barato", con interacción continua con usuarios reales. Encaja con la incertidumbre de la IA.'},
+
+  // 5. Arquitectura
+  {id:'b5', label:'5 · Arquitectura: 3 capas', cat:'arq', parent:'r', branch:true,
+   detail:'El kit de herramientas: tres capas que responden dónde están los datos, dónde se genera el modelo y cómo se entrega el resultado (lo visto en la Unidad 2).'},
+  {id:'n5a', label:'Responde 3 preguntas (Unidad 2)', cat:'arq', parent:'b5',
+   detail:'Un buen kit resuelve tres preguntas: ¿dónde residen los datos?, ¿dónde se genera el modelo? y ¿cómo se entrega el resultado a quien decide? Son las mismas tres capas de la Unidad 2.'},
+  {id:'n5b', label:'CAPA DE DATOS', cat:'arq', parent:'b5',
+   detail:'Donde se almacena y carga la información: estructurada (tablas CSV) o no estructurada (imágenes, audio, texto). Debe crecer con flexibilidad y dar acceso rápido para iterar.'},
+  {id:'n5c', label:'CAPA DE ANÁLISIS', cat:'arq', parent:'b5',
+   detail:'El núcleo donde se entrenan y evalúan los modelos. Aquí viven AutoML, los servicios preentrenados (AIaaS) y la personalización con aprendizaje profundo.'},
+  {id:'n5d', label:'CAPA DE USUARIO', cat:'arq', parent:'b5',
+   detail:'La interfaz que traduce las predicciones en algo comprensible. Es vital: un prototipo solo cumple su función cuando puede discutirse y validarse en una decisión real.'},
+  {id:'n5e', label:'Evitar PROTOTIPADO EN ISLA', cat:'arq', parent:'b5',
+   detail:'Prototipar en una máquina local aislada, sin ruta hacia prueba o producción. Se debe evitar: mata la transición fluida si la validación resulta positiva.'},
+  {id:'n5f', label:'Usar CONTENEDORES / DOCKER', cat:'arq', parent:'b5',
+   detail:'Empaquetan el flujo de trabajo para moverlo entre entornos (de local a la nube) sin que cambie su comportamiento. Reducen la fricción técnica y evitan el prototipado en isla.'},
+
+  // 6. Herramientas
+  {id:'b6', label:'6 · Herramientas y servicios', cat:'herr', parent:'r', branch:true,
+   detail:'El detalle de la capa de análisis: qué servicios listos para usar prioriza el prototipado, evitando entrenar desde cero.'},
+  {id:'n6a', label:'AutoML', cat:'herr', parent:'b6',
+   detail:'Automatiza tareas de clasificación y regresión. Permite levantar prototipos rápido, incluso con poco expertise técnico. Es la herramienta estrella de la capa de análisis.'},
+  {id:'n6b', label:'AIaaS (OCR, NLP)', cat:'herr', parent:'b6',
+   detail:'Servicios de IA preentrenados accesibles vía API para funciones básicas como OCR (leer texto de imágenes) o NLP (procesar lenguaje). Es el extremo más gestionado del espectro AIaaS↔PaaS de la Unidad 3.'},
+  {id:'n6c', label:'MODELOS PREENTRENADOS', cat:'herr', parent:'b6',
+   detail:'Modelos ya entrenados que se reutilizan para aplicaciones personalizadas, evitando el costo de entrenar sistemas desde cero en la etapa de validación.'},
+  {id:'n6d', label:'PERSONALIZACIÓN (deep learning)', cat:'herr', parent:'b6',
+   detail:'Espacio para usuarios técnicos que necesitan entrenar modelos a medida o usar arquitecturas de aprendizaje profundo, cuando los servicios listos no bastan.'},
+  {id:'n6e', label:'INSTANCIA DE CÁLCULO', cat:'herr', parent:'b6',
+   detail:'La máquina virtual en la nube donde se ejecuta la carga real de los modelos. Es el "motor" que se arrienda por horas en lugar de comprar un servidor.'},
+
+  // 7. Ecosistemas
+  {id:'b7', label:'7 · Ecosistemas', cat:'eco', parent:'r', branch:true,
+   detail:'Las marcas equivalentes que ofrecen las tres capas. Lo importante no es la marca, sino que la tecnología soporte datos, análisis e interfaz.'},
+  {id:'n7a', label:'AWS', cat:'eco', parent:'b7',
+   detail:'Pila de Amazon: S3 (almacenamiento) · SageMaker (análisis/ML) · AI Services (preentrenados) · QuickSight (visualización).'},
+  {id:'n7b', label:'GCP', cat:'eco', parent:'b7',
+   detail:'Pila de Google: Cloud Storage · Vertex AI · Cloud AI APIs · Looker / Looker Studio.'},
+  {id:'n7c', label:'AZURE', cat:'eco', parent:'b7', disc:2,
+   detail:'Pila de Microsoft: Blob Storage · Azure Machine Learning · Cognitive Services · Power BI. Nota: el "Azure ML Studio (classic)" sin código fue retirado.'},
+  {id:'n7d', label:'OPEN SOURCE', cat:'eco', parent:'b7',
+   detail:'Opciones abiertas e híbridas: PostgreSQL/Docker · Python/R/MLflow · Streamlit/Dash. Bajo costo y portables.'},
+
+  // 8. Caso
+  {id:'b8', label:'8 · Caso Comercial Luma', cat:'valid', parent:'r', branch:true,
+   detail:'El caso chileno donde todo se aplica de punta a punta: el mismo patrón que usarías para validar Fibromin antes de invertir.'},
+  {id:'n8a', label:'Abandono → prototipo en 2 semanas', cat:'valid', parent:'b8',
+   detail:'Comercial Luma detecta abandono de compras y sospecha que falta personalización. En vez de una plataforma definitiva, construye un prototipo de recomendaciones en dos semanas, solo para validar.'},
+  {id:'n8b', label:'AutoML + grupo piloto → ¿escalar?', cat:'valid', parent:'b8',
+   detail:'Usa AutoML en la capa de análisis y prueba con un grupo piloto. Las recomendaciones personalizadas le ganan a los "más vendidos": hay evidencia para decidir si escalar. Igual que validar Fibromin antes de fabricar todo el stock.'},
+
+  // externos (Unidad 3)
+  {id:'x1', label:'Casos campeones · Unidad 3', cat:'ext', parent:null, ext:true,
+   detail:'En la Unidad 3 elegiste qué iniciativas perseguir con la matriz de casos campeones (alto impacto × alta viabilidad). El prototipo confirma esa misma apuesta —los mismos dos ejes— un paso más adelante, con evidencia real.'},
+  {id:'x2', label:'Espectro AIaaS ↔ PaaS · Unidad 3', cat:'ext', parent:null, ext:true,
+   detail:'En la Unidad 3, AIaaS y PaaS no son dos cajas separadas sino un espectro según cuánto trabajo gestiona el proveedor. AIaaS es el extremo más gestionado; entrenar tu propio modelo en PaaS, el menos.'},
+];
+
+// enlaces cruzados (no jerárquicos)
+const XLINKS = [
+  {from:'n2e', to:'n5d', label:'el impacto se valida en la interfaz'},
+  {from:'n2e', to:'n5c', label:'viabilidad = señal + modelo'},
+  {from:'n3e', to:'n5b', label:'datos reales, sin limpiar a mano'},
+  {from:'n6a', to:'n5c', label:'herramienta de esa capa'},
+  {from:'n4c', to:'n3c', label:'los sprints fijan el plazo'},
+  {from:'n2e', to:'x1', label:'mismos ejes: impacto × viabilidad'},
+  {from:'n6b', to:'x2', label:'extremo más gestionado'},
+];
+
+const byId = Object.fromEntries(NODES.map(n=>[n.id,n]));
+const BRANCH_ORDER = ['b1','b2','b3','b4','b5','b6','b7','b8'];
+
+/* ============ estado del mapa ============ */
+let mapInited=false, mapSvgInited=false;
+const expanded = new Set(BRANCH_ORDER); // por defecto: todo expandido
+let showXlinks = true;
+let selected = null;
+const view = {tx:40, ty:20, s:1};
+const SVGNS='http://www.w3.org/2000/svg';
+const svg = document.getElementById('mapSvg');
+
+/* medidas */
+const ROOT_W=180, BRANCH_W=212, LEAF_W=258, EXT_W=210;
+const LINE_H=15, PAD_V=10, V_GAP=9, GROUP_GAP=15;
+const COL_ROOT=24, COL_BRANCH=270, COL_LEAF=560, COL_EXT=560+LEAF_W+96;
+
+function wrap(text, maxChars){
+  const words=text.split(' ');
+  const lines=[]; let cur='';
+  for(const w of words){
+    if((cur+' '+w).trim().length<=maxChars){ cur=(cur+' '+w).trim(); }
+    else { if(cur) lines.push(cur); cur=w; }
+  }
+  if(cur) lines.push(cur);
+  return lines.length?lines:[''];
+}
+function nodeWidth(n){ return n.root?ROOT_W : n.branch?BRANCH_W : n.ext?EXT_W : LEAF_W; }
+function nodeMaxChars(n){ return n.root?22 : n.branch?24 : n.ext?24 : 32; }
+function computeNode(n){
+  const w=nodeWidth(n);
+  const lines=wrap(n.label, nodeMaxChars(n));
+  const h=lines.length*LINE_H + PAD_V*2;
+  return {w,h,lines};
+}
+
+/* layout: devuelve posiciones {x,y,w,h,cx,cy,lines} por id */
+function layout(){
+  const pos={};
+  for(const n of NODES) pos[n.id]=computeNode(n);
+
+  let y=18;
+  for(const bId of BRANCH_ORDER){
+    const b=byId[bId]; const bp=pos[bId];
+    bp.x=COL_BRANCH;
+    const kids=NODES.filter(n=>n.parent===bId);
+    if(expanded.has(bId) && kids.length){
+      const centers=[];
+      for(const k of kids){
+        const kp=pos[k.id];
+        kp.x=COL_LEAF; kp.y=y; kp.cy=y+kp.h/2; kp.cx=kp.x+kp.w/2;
+        centers.push(kp.cy);
+        y+=kp.h+V_GAP;
+      }
+      bp.cy=(centers[0]+centers[centers.length-1])/2;
+      bp.y=bp.cy-bp.h/2;
+      y+=GROUP_GAP;
+    } else {
+      bp.y=y; bp.cy=y+bp.h/2;
+      y+=bp.h+GROUP_GAP;
+    }
+    bp.cx=bp.x+bp.w/2;
+  }
+  const totalH=y;
+
+  // raíz centrada
+  const rp=pos['r'];
+  rp.x=COL_ROOT;
+  const bcs=BRANCH_ORDER.map(b=>pos[b].cy);
+  rp.cy=(Math.min(...bcs)+Math.max(...bcs))/2;
+  rp.y=rp.cy-rp.h/2; rp.cx=rp.x+rp.w/2;
+
+  // externos: a la derecha, alineados a su nodo fuente (vía xlink)
+  const srcOf={};
+  for(const xl of XLINKS){ if(byId[xl.to] && byId[xl.to].ext) srcOf[xl.to]=xl.from; }
+  const usedY=[];
+  for(const n of NODES.filter(n=>n.ext)){
+    const ep=pos[n.id]; ep.x=COL_EXT;
+    const src=srcOf[n.id];
+    let cy = src && pos[src].cy ? pos[src].cy : totalH/2;
+    // evitar solape con otro externo
+    for(const uy of usedY){ if(Math.abs(cy-uy)<ep.h+16) cy=uy+ep.h+16; }
+    usedY.push(cy);
+    ep.cy=cy; ep.y=cy-ep.h/2; ep.cx=ep.x+ep.w/2;
+  }
+
+  // bounding box
+  let maxX=0, maxY=0, minY=1e9;
+  for(const n of NODES){
+    const p=pos[n.id];
+    if(p.y===undefined) continue;
+    maxX=Math.max(maxX, p.x+p.w); maxY=Math.max(maxY, p.y+p.h); minY=Math.min(minY,p.y);
+  }
+  return {pos, bbox:{w:maxX, h:maxY, minY}};
+}
+
+/* ============ render del mapa ============ */
+let lastLayout=null;
+function renderMap(){
+  const L=layout(); lastLayout=L; const pos=L.pos;
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const vp=document.createElementNS(SVGNS,'g');
+  vp.setAttribute('id','viewport');
+  vp.setAttribute('transform',`translate(${view.tx},${view.ty}) scale(${view.s})`);
+  svg.appendChild(vp);
+
+  const edgeLayer=document.createElementNS(SVGNS,'g');
+  const xLayer=document.createElementNS(SVGNS,'g');
+  const nodeLayer=document.createElementNS(SVGNS,'g');
+  vp.appendChild(edgeLayer); vp.appendChild(xLayer); vp.appendChild(nodeLayer);
+
+  // qué nodos son visibles
+  function visible(n){
+    if(n.root||n.branch||n.ext) return true;
+    return expanded.has(n.parent);
+  }
+  // resaltado: selected + ancestros + (si rama) sus hijos
+  const hl=new Set();
+  if(selected){
+    let c=byId[selected];
+    while(c){ hl.add(c.id); c=c.parent?byId[c.parent]:null; }
+    if(byId[selected].branch){ NODES.filter(n=>n.parent===selected).forEach(n=>hl.add(n.id)); }
+    // incluir extremos de xlinks del seleccionado
+    XLINKS.forEach(xl=>{ if(xl.from===selected) hl.add(xl.to); if(xl.to===selected) hl.add(xl.from); });
+  }
+  const dimAll = selected!==null;
+
+  // aristas jerárquicas
+  for(const n of NODES){
+    if(n.root||n.ext) continue;
+    if(!visible(n)) continue;
+    const p=byId[n.parent]; const pp=pos[p.id]; const cp=pos[n.id];
+    const x1=pp.x+pp.w, y1=pp.cy, x2=cp.x, y2=cp.cy;
+    const mx=(x1+x2)/2;
+    const path=document.createElementNS(SVGNS,'path');
+    path.setAttribute('d',`M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`);
+    path.setAttribute('class','edge');
+    if(dimAll){ path.style.opacity = (hl.has(n.id)&&hl.has(p.id))?0.95:0.16; }
+    edgeLayer.appendChild(path);
+  }
+
+  // enlaces cruzados
+  if(showXlinks){
+    for(const xl of XLINKS){
+      const a=byId[xl.from], b=byId[xl.to];
+      if(!visible(a)||!visible(b)) continue;
+      const ap=pos[a.id], bp=pos[b.id];
+      // salir por la derecha del origen y entrar por izquierda del destino (o derecha->izquierda según x)
+      let x1,x2;
+      if(bp.x>=ap.x){ x1=ap.x+ap.w; x2=bp.x; } else { x1=ap.x; x2=bp.x+bp.w; }
+      const y1=ap.cy, y2=bp.cy;
+      const dx=Math.max(40, Math.abs(x2-x1)*0.5);
+      const path=document.createElementNS(SVGNS,'path');
+      path.setAttribute('d',`M ${x1} ${y1} C ${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}`);
+      path.setAttribute('class','xlink');
+      path.setAttribute('stroke', catColor(b.ext?'ext':a.cat));
+      if(dimAll){ path.style.opacity=(hl.has(a.id)&&hl.has(b.id))?0.95:0.12; }
+      xLayer.appendChild(path);
+      // etiqueta
+      const mxp=(x1+x2)/2, myp=(y1+y2)/2;
+      const tw=xl.label.length*5.4+10;
+      const bg=document.createElementNS(SVGNS,'rect');
+      bg.setAttribute('x',mxp-tw/2); bg.setAttribute('y',myp-9);
+      bg.setAttribute('width',tw); bg.setAttribute('height',16);
+      bg.setAttribute('rx',5); bg.setAttribute('class','xlabel-bg');
+      bg.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--surface').trim());
+      bg.setAttribute('stroke', catColor(b.ext?'ext':a.cat)); bg.setAttribute('stroke-width','1');
+      if(dimAll) bg.style.opacity=(hl.has(a.id)&&hl.has(b.id))?0.96:0.1;
+      const tx=document.createElementNS(SVGNS,'text');
+      tx.setAttribute('x',mxp); tx.setAttribute('y',myp+2.5);
+      tx.setAttribute('text-anchor','middle'); tx.setAttribute('class','xlabel');
+      tx.setAttribute('fill', catColor(b.ext?'ext':a.cat));
+      tx.textContent=xl.label;
+      if(dimAll) tx.style.opacity=(hl.has(a.id)&&hl.has(b.id))?1:0.12;
+      xLayer.appendChild(bg); xLayer.appendChild(tx);
+    }
+  }
+
+  // nodos
+  for(const n of NODES){
+    if(!visible(n)) continue;
+    const p=pos[n.id]; const col=catColor(n.cat);
+    const g=document.createElementNS(SVGNS,'g');
+    g.setAttribute('class','node-box');
+    g.setAttribute('transform',`translate(${p.x},${p.y})`);
+    if(dimAll) g.style.opacity = hl.has(n.id)?1:0.32;
+
+    const rect=document.createElementNS(SVGNS,'rect');
+    rect.setAttribute('width',p.w); rect.setAttribute('height',p.h);
+    rect.setAttribute('rx',10); rect.setAttribute('class','node-rect');
+    const surf=getComputedStyle(document.documentElement).getPropertyValue('--surface').trim();
+    if(n.root){
+      rect.setAttribute('fill',col); rect.setAttribute('stroke',col);
+    } else if(n.branch){
+      rect.setAttribute('fill',col+ (document.documentElement.getAttribute('data-theme')==='dark'?'22':'14'));
+      rect.setAttribute('stroke',col); rect.setAttribute('stroke-width','1.6');
+    } else if(n.ext){
+      rect.setAttribute('fill',surf); rect.setAttribute('stroke',col);
+      rect.setAttribute('stroke-width','1.4'); rect.setAttribute('stroke-dasharray','5 3');
+    } else {
+      rect.setAttribute('fill',surf); rect.setAttribute('stroke',col); rect.setAttribute('stroke-width','1.3');
+    }
+    if(selected===n.id){ rect.setAttribute('stroke-width','2.6'); }
+    g.appendChild(rect);
+
+    // barra de color a la izquierda para hojas
+    if(!n.root && !n.branch){
+      const bar=document.createElementNS(SVGNS,'rect');
+      bar.setAttribute('x',0); bar.setAttribute('y',0); bar.setAttribute('width',4);
+      bar.setAttribute('height',p.h); bar.setAttribute('rx',2); bar.setAttribute('fill',col);
+      g.appendChild(bar);
+    }
+
+    // texto
+    const textX = (!n.root && !n.branch) ? 13 : (n.branch? 26 : p.w/2);
+    const startY = PAD_V + 11;
+    const anchor = n.root?'middle':'start';
+    const txtColor = n.root ? '#ffffff' : getComputedStyle(document.documentElement).getPropertyValue('--ink').trim();
+    p.lines.forEach((ln,i)=>{
+      const t=document.createElementNS(SVGNS,'text');
+      t.setAttribute('x',n.root?p.w/2:textX); t.setAttribute('y',startY+i*LINE_H);
+      t.setAttribute('text-anchor',anchor);
+      t.setAttribute('class','node-label');
+      t.setAttribute('font-size', n.branch?'12.5':'12');
+      t.setAttribute('fill', txtColor);
+      t.textContent=ln;
+      g.appendChild(t);
+    });
+
+    // toggle para ramas
+    if(n.branch){
+      const kids=NODES.filter(x=>x.parent===n.id);
+      if(kids.length){
+        const tg=document.createElementNS(SVGNS,'text');
+        tg.setAttribute('x',12); tg.setAttribute('y',p.h/2+4);
+        tg.setAttribute('class','node-toggle'); tg.setAttribute('font-size','13');
+        tg.setAttribute('fill',col);
+        tg.textContent= expanded.has(n.id)?'−':'+';
+        g.appendChild(tg);
+      }
+    }
+    // marca de discrepancia
+    if(n.disc){
+      const d=document.createElementNS(SVGNS,'circle');
+      d.setAttribute('cx',p.w-11); d.setAttribute('cy',11); d.setAttribute('r',7);
+      d.setAttribute('fill',catColor('valid'));
+      g.appendChild(d);
+      const dt=document.createElementNS(SVGNS,'text');
+      dt.setAttribute('x',p.w-11); dt.setAttribute('y',14.5); dt.setAttribute('text-anchor','middle');
+      dt.setAttribute('font-size','9'); dt.setAttribute('font-weight','700'); dt.setAttribute('fill','#fff');
+      dt.setAttribute('class','node-label'); dt.textContent=n.disc;
+      g.appendChild(dt);
+    }
+
+    g.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      if(n.branch){
+        if(expanded.has(n.id)) expanded.delete(n.id); else expanded.add(n.id);
+      }
+      openDetail(n);
+      renderMap();
+    });
+    nodeLayer.appendChild(g);
+  }
+}
+
+/* panel de detalle */
+function openDetail(n){
+  selected=n.id;
+  const d=document.getElementById('detail');
+  document.getElementById('detailTitle').textContent=n.label;
+  document.getElementById('detailBody').textContent=n.detail;
+  const chip=document.getElementById('detailChip');
+  chip.textContent=CATS[n.cat].name;
+  chip.style.background=catColor(n.cat);
+  const dt=document.getElementById('detailDisc');
+  if(n.disc){
+    dt.style.display='flex';
+    dt.innerHTML='⚠️ Ver la pestaña <b style="margin:0 4px">Discrepancias</b> · punto '+n.disc;
+  } else dt.style.display='none';
+  d.classList.add('open');
+}
+document.getElementById('detailClose').addEventListener('click',()=>{
+  document.getElementById('detail').classList.remove('open');
+  selected=null; renderMap();
+});
+document.getElementById('mapStage').addEventListener('click',()=>{
+  if(selected){ selected=null; document.getElementById('detail').classList.remove('open'); renderMap(); }
+});
+
+/* ============ pan + zoom ============ */
+function clampZoom(s){ return Math.max(0.35, Math.min(2.4, s)); }
+function applyView(){
+  const vp=document.getElementById('viewport');
+  if(vp) vp.setAttribute('transform',`translate(${view.tx},${view.ty}) scale(${view.s})`);
+}
+let dragging=false, dStart=null;
+const stage=document.getElementById('mapStage');
+stage.addEventListener('pointerdown',(e)=>{
+  if(e.target.closest('.node-box')) return;
+  dragging=true; dStart={x:e.clientX-view.tx, y:e.clientY-view.ty};
+  stage.classList.add('grabbing'); stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener('pointermove',(e)=>{
+  if(!dragging) return;
+  view.tx=e.clientX-dStart.x; view.ty=e.clientY-dStart.y; applyView();
+});
+stage.addEventListener('pointerup',(e)=>{ dragging=false; stage.classList.remove('grabbing'); });
+stage.addEventListener('pointercancel',()=>{ dragging=false; stage.classList.remove('grabbing'); });
+stage.addEventListener('wheel',(e)=>{
+  e.preventDefault();
+  const r=stage.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  const old=view.s; const ns=clampZoom(old*(e.deltaY<0?1.12:0.89));
+  // zoom hacia el cursor
+  view.tx = mx - (mx-view.tx)*(ns/old);
+  view.ty = my - (my-view.ty)*(ns/old);
+  view.s=ns; applyView();
+},{passive:false});
+
+function zoomBtn(f){
+  const r=stage.getBoundingClientRect(); const cx=r.width/2, cy=r.height/2;
+  const old=view.s; const ns=clampZoom(old*f);
+  view.tx=cx-(cx-view.tx)*(ns/old); view.ty=cy-(cy-view.ty)*(ns/old);
+  view.s=ns; applyView();
+}
+document.getElementById('btnZoomIn').addEventListener('click',()=>zoomBtn(1.18));
+document.getElementById('btnZoomOut').addEventListener('click',()=>zoomBtn(0.85));
+
+function fitMap(){
+  if(!lastLayout) return;
+  const r=stage.getBoundingClientRect();
+  const bb=lastLayout.bbox;
+  const contentW=bb.w+20, contentH=(bb.h-bb.minY)+40;
+  const s=clampZoom(Math.min(r.width/contentW, r.height/contentH)*0.96);
+  view.s=s;
+  view.tx=(r.width-contentW*s)/2 + 8*s;
+  view.ty=(r.height-(bb.h-bb.minY)*s)/2 - bb.minY*s;
+  applyView();
+}
+document.getElementById('btnFit').addEventListener('click',fitMap);
+document.getElementById('btnExpand').addEventListener('click',()=>{
+  BRANCH_ORDER.forEach(b=>expanded.add(b)); renderMap(); requestAnimationFrame(fitMap);
+});
+document.getElementById('btnCollapse').addEventListener('click',()=>{
+  expanded.clear(); selected=null; document.getElementById('detail').classList.remove('open');
+  renderMap(); requestAnimationFrame(fitMap);
+});
+document.getElementById('btnXlinks').addEventListener('click',(e)=>{
+  showXlinks=!showXlinks; e.currentTarget.classList.toggle('on',showXlinks); renderMap();
+});
+
+/* leyenda */
+function buildLegend(){
+  const el=document.getElementById('legend');
+  const order=['fund','valid','alc','met','arq','herr','eco','ext'];
+  let h='';
+  for(const c of order){
+    h+=`<span class="lg"><span class="dot" style="background:${catColor(c)}"></span>${CATS[c].name}</span>`;
+  }
+  h+=`<span class="xl"><svg width="34" height="12"><line x1="1" y1="6" x2="33" y2="6" stroke="${catColor('valid')}" stroke-width="1.6" stroke-dasharray="2 4"/></svg>Enlace cruzado</span>`;
+  el.innerHTML=h;
+}
+
+function initMap(){
+  mapInited=true;
+  buildLegend();
+  renderMap();
+  requestAnimationFrame(fitMap);
+}
+
+/* ============ FLASHCARDS ============ */
+const CARDS=[
+  {es:'Prototipo', en:'Prototype', cat:'fund', def:'Producto inacabado cuyo único propósito es validar hipótesis de negocio y técnicas.'},
+  {es:'Prueba de Concepto', en:'Proof of Concept (PoC)', cat:'fund', def:'Experimento que prueba si una idea es técnicamente posible, antes de comprometer recursos.'},
+  {es:'Producto Mínimo Viable', en:'Minimum Viable Product (MVP)', cat:'fund', def:'Producto real y funcional con lo mínimo para validar el encaje con el mercado ante usuarios reales.'},
+  {es:'Incertidumbre', en:'Uncertainty', cat:'fund', def:'Falta de previsibilidad sobre requisitos, aceptación del usuario y calidad de los datos en proyectos de ML.'},
+  {es:'Inteligencia de Negocio', en:'Business Intelligence (BI)', cat:'fund', def:'Prácticas y herramientas para convertir datos en informes y métricas que apoyan decisiones.'},
+  {es:'Producto de datos', en:'Data product', cat:'fund', def:'Tratar el BI como algo vivo e iterable, no como informes estáticos.'},
+  {es:'Impacto', en:'Impact', cat:'valid', def:'Dimensión de validación centrada en el valor de negocio y la adopción por el usuario.'},
+  {es:'Viabilidad', en:'Viability / Feasibility', cat:'valid', def:'Dimensión de validación centrada en la factibilidad técnica con los recursos actuales.'},
+  {es:'Criterios de aceptación', en:'Acceptance criteria', cat:'valid', def:'Condiciones, definidas de antemano, bajo las cuales el prototipo se considera exitoso.'},
+  {es:'Línea de base', en:'Baseline', cat:'valid', def:'Punto de comparación (sistema o regla actual) que el prototipo debe superar.'},
+  {es:'Señales en los datos', en:'Signals / patterns', cat:'valid', def:'Patrones suficientes en los datos para que un modelo sea realmente útil.'},
+  {es:'Utilidad sobre precisión', en:'Utility over accuracy', cat:'valid', def:'Principio: un modelo útil (logro de negocio) vale más que uno solo preciso (logro técnico).'},
+  {es:'Retorno de la inversión', en:'Return on Investment (ROI)', cat:'valid', def:'Relación entre el valor obtenido y lo invertido; el prototipo lo mejora al fallar barato.'},
+  {es:'Pozo sin fondo', en:'Bottomless pit', cat:'valid', def:'Proyecto que consume recursos indefinidamente sin entregar valor; el prototipo lo previene.'},
+  {es:'Gestión de expectativas', en:'Expectation management', cat:'valid', def:'Involucrar a las partes interesadas temprano para ajustar lo que la tecnología puede lograr.'},
+  {es:'Integración vertical profunda', en:'Deep vertical integration', cat:'alc', def:'Cubrir todas las capas (datos a interfaz) manteniendo baja la complejidad técnica.'},
+  {es:'Realismo de datos / No comprometerse con los datos', en:"Data realism / Don't commit to the data", cat:'alc', def:'Usar solo datos disponibles en producción, sin limpiezas manuales no escalables.'},
+  {es:'Objetivo claro', en:'Clear objective', cat:'alc', def:'Meta del prototipo planteada como pregunta de investigación o comparación técnica.'},
+  {es:'Plazos estrictos', en:'Strict timelines', cat:'alc', def:'Límite de tiempo corto (2–4 semanas) que fuerza el aprendizaje acelerado.'},
+  {es:'Baja complejidad técnica', en:'Low technical complexity', cat:'alc', def:'Mantener el prototipo simple en cada capa, pese a cubrirlas todas.'},
+  {es:'Metodología en cascada', en:'Waterfall', cat:'met', def:'Modelo lineal y secuencial de fases rígidas que asume el sistema predecible desde el inicio.'},
+  {es:'Metodología ágil', en:'Agile', cat:'met', def:'Filosofía de ciclos iterativos (sprints), colaboración continua y entrega temprana de valor.'},
+  {es:'Sprint', en:'Sprint', cat:'met', def:'Ciclo corto de desarrollo iterativo e incremental dentro de la metodología ágil.'},
+  {es:'Fallar rápido y barato', en:'Fail fast & cheap', cat:'met', def:'Mentalidad de detectar pronto y a bajo costo si una idea no funciona.'},
+  {es:'Feedback tardío', en:'Late feedback', cat:'met', def:'Riesgo de la cascada: el cliente ve el producto solo al final, cuando el ajuste ya es caro.'},
+  {es:'Congelar requisitos', en:'Freezing requirements', cat:'met', def:'Fijar los requerimientos al inicio; inviable bajo la incertidumbre de la IA.'},
+  {es:'Pivotar', en:'Pivot', cat:'met', def:'Cambiar de estrategia ante hallazgos nuevos sin reiniciar todo el proyecto.'},
+  {es:'Capa de datos', en:'Data layer', cat:'arq', def:'Entorno elástico donde se almacena, organiza y carga la información del prototipo.'},
+  {es:'Capa de análisis', en:'Analysis layer', cat:'arq', def:'Núcleo donde se construyen experimentos, se entrenan y se evalúan los modelos.'},
+  {es:'Capa de usuario / interfaz', en:'User / UI layer', cat:'arq', def:'Interfaz que traduce las predicciones en resultados comprensibles para validar en contexto real.'},
+  {es:'Datos estructurados', en:'Structured data', cat:'arq', def:'Información en filas y columnas, como tablas CSV.'},
+  {es:'Datos no estructurados', en:'Unstructured data', cat:'arq', def:'Información sin formato tabular: imágenes, documentos, audios, texto.'},
+  {es:'Prototipado en isla', en:'Island prototyping', cat:'arq', def:'Experimentar en una máquina local aislada, sin ruta a prueba o producción; debe evitarse.'},
+  {es:'AutoML', en:'Automated Machine Learning', cat:'herr', def:'Automatización de tareas de regresión y clasificación, para prototipar rápido sin gran expertise.'},
+  {es:'IA como Servicio', en:'AI as a Service (AIaaS)', cat:'herr', def:'Servicios de IA preentrenados accesibles vía API para funciones básicas.'},
+  {es:'Reconocimiento óptico de caracteres', en:'Optical Character Recognition (OCR)', cat:'herr', def:'Función de IA que extrae texto desde imágenes o documentos escaneados.'},
+  {es:'Procesamiento de lenguaje natural', en:'Natural Language Processing (NLP)', cat:'herr', def:'Función de IA para entender y procesar lenguaje humano.'},
+  {es:'Modelos preentrenados', en:'Pretrained models', cat:'herr', def:'Modelos ya entrenados, reutilizables para aplicaciones personalizadas sin entrenar desde cero.'},
+  {es:'Contenedores / Docker', en:'Containers / Docker', cat:'herr', def:'Empaquetan un flujo de trabajo para moverlo entre entornos sin que cambie su comportamiento.'},
+  {es:'Servicios gestionados en la nube', en:'Managed cloud services', cat:'herr', def:'Servicios de IA/ML listos para usar que reducen costo e infraestructura en la validación.'},
+  {es:'Instancia de cálculo', en:'Compute instance', cat:'herr', def:'Máquina virtual en la nube donde se ejecuta la carga real de los modelos.'},
+  {es:'Aprendizaje profundo', en:'Deep learning', cat:'herr', def:'Arquitecturas de redes neuronales profundas para tareas que requieren modelos a medida.'},
+  {es:'Azure Blob Storage', en:'Azure Blob Storage', cat:'eco', def:'Almacenamiento de objetos binarios grandes (CSV, imágenes, resultados) en Azure.'},
+  {es:'Azure Machine Learning Studio', en:'Azure ML Studio', cat:'eco', def:'Interfaz web de Azure para entrenar/implementar modelos sin código (ver Discrepancia 2).'},
+  {es:'Almacén de datos', en:'Data warehouse', cat:'eco', def:'Repositorio central de datos integrados que los sistemas de prueba intentan replicar.'},
+  {es:'Proceso ETL', en:'Extract, Transform, Load', cat:'eco', def:'Extraer, transformar y cargar datos entre sistemas; parte del entorno de producción.'},
+  {es:'Ecosistemas tecnológicos', en:'AWS / GCP / Azure / Open Source', cat:'eco', def:'Conjuntos equivalentes de herramientas para cubrir las tres capas; la elección depende del contexto.'},
+];
+
+let cardsInited=false;
+let activeCats=new Set(Object.keys(CATS).filter(c=>c!=='ext')); // todas salvo ext
+let deck=[]; let pos=0; let flipped=false;
+let mastered=new Set();
+
+function loadMastered(){
+  try{ const s=store.get('u4-mastered'); if(s) mastered=new Set(JSON.parse(s)); }catch(e){}
+}
+function saveMastered(){ store.set('u4-mastered', JSON.stringify([...mastered])); }
+
+function buildChips(){
+  const el=document.getElementById('chips');
+  let h=`<button class="chip-f all" data-cat="all" aria-pressed="true">Todas</button>`;
+  const order=['fund','valid','alc','met','arq','herr','eco'];
+  for(const c of order){
+    h+=`<button class="chip-f" data-cat="${c}" aria-pressed="true" style="--cc:${catColor(c)}">
+      <span class="d" style="background:${catColor(c)}"></span>${CATS[c].name}</button>`;
+  }
+  el.innerHTML=h;
+  el.querySelectorAll('.chip-f').forEach(ch=>{
+    ch.addEventListener('click',()=>toggleChip(ch));
+  });
+  refreshChipStyles();
+}
+function refreshChipStyles(){
+  document.querySelectorAll('.chip-f').forEach(ch=>{
+    const c=ch.dataset.cat;
+    if(c==='all'){
+      const allOn=activeCats.size===7;
+      ch.setAttribute('aria-pressed', allOn?'true':'false');
+      return;
+    }
+    const on=activeCats.has(c);
+    ch.setAttribute('aria-pressed', on?'true':'false');
+    ch.style.background= on?catColor(c):'';
+    ch.style.borderColor= on?catColor(c):'';
+  });
+}
+function toggleChip(ch){
+  const c=ch.dataset.cat;
+  if(c==='all'){
+    if(activeCats.size===7){ activeCats=new Set(); }
+    else { activeCats=new Set(['fund','valid','alc','met','arq','herr','eco']); }
+  } else {
+    if(activeCats.has(c)) activeCats.delete(c); else activeCats.add(c);
+  }
+  refreshChipStyles();
+  rebuildDeck();
+}
+
+function rebuildDeck(reviewOnly){
+  deck=CARDS.map((c,i)=>({...c,_i:i})).filter(c=>activeCats.has(c.cat));
+  if(reviewOnly){ deck=deck.filter(c=>!mastered.has(c._i)); }
+  pos=0; flipped=false;
+  const empty=document.getElementById('cardsEmpty');
+  const area=document.getElementById('cardArea');
+  if(deck.length===0){ empty.style.display='block'; area.style.display='none'; return; }
+  empty.style.display='none'; area.style.display='block';
+  renderCard();
+}
+
+function renderCard(){
+  if(deck.length===0) return;
+  const c=deck[pos];
+  const col=catColor(c.cat);
+  document.getElementById('flip').classList.toggle('flipped',flipped);
+  // front
+  document.getElementById('fTerm').textContent=c.es;
+  document.getElementById('fEn').textContent=c.en;
+  const fc=document.getElementById('fCat'); fc.textContent=CATS[c.cat].name; fc.style.background=col;
+  document.getElementById('fIdx').textContent=`${pos+1} / ${deck.length}`;
+  // back
+  document.getElementById('bTerm').textContent=c.es;
+  document.getElementById('bEn').textContent=c.en;
+  document.getElementById('bDef').textContent=c.def;
+  const bc=document.getElementById('bCat'); bc.textContent=CATS[c.cat].name; bc.style.background=col;
+  document.getElementById('bIdx').textContent=`${pos+1} / ${deck.length}`;
+  const isM=mastered.has(c._i);
+  const bs=document.getElementById('bStar');
+  bs.textContent= isM?'★ Marcada como dominada':'☆ Aún no dominada';
+  bs.classList.toggle('is',isM);
+  // star btn
+  const sb=document.getElementById('btnStar');
+  sb.classList.toggle('on',isM);
+  sb.textContent= isM?'★ Dominada':'★ La domino';
+  // nav
+  document.getElementById('btnPrev').disabled = pos===0;
+  document.getElementById('btnNext').disabled = pos===deck.length-1;
+  // progress
+  document.getElementById('pCur').textContent=pos+1;
+  document.getElementById('pTot').textContent=deck.length;
+  const inSet=deck.filter(c=>mastered.has(c._i)).length;
+  document.getElementById('pMastered').textContent=inSet;
+  document.getElementById('pSet').textContent=deck.length;
+  document.getElementById('pfill').style.width=(deck.length? (inSet/deck.length*100):0)+'%';
+}
+
+function flipCard(){ flipped=!flipped; document.getElementById('flip').classList.toggle('flipped',flipped); }
+function nextCard(){ if(pos<deck.length-1){ pos++; flipped=false; renderCard(); } }
+function prevCard(){ if(pos>0){ pos--; flipped=false; renderCard(); } }
+function toggleMaster(){
+  const c=deck[pos]; if(!c) return;
+  if(mastered.has(c._i)) mastered.delete(c._i); else mastered.add(c._i);
+  saveMastered(); renderCard();
+}
+
+document.getElementById('flip').addEventListener('click',flipCard);
+document.getElementById('btnFlip').addEventListener('click',flipCard);
+document.getElementById('btnNext').addEventListener('click',nextCard);
+document.getElementById('btnPrev').addEventListener('click',prevCard);
+document.getElementById('btnStar').addEventListener('click',toggleMaster);
+document.getElementById('btnShuffle').addEventListener('click',()=>{
+  for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  pos=0; flipped=false; renderCard();
+});
+document.getElementById('btnReview').addEventListener('click',()=>rebuildDeck(true));
+document.getElementById('btnReset').addEventListener('click',()=>{
+  if(confirm('¿Reiniciar el progreso de tarjetas dominadas?')){
+    mastered.clear(); saveMastered(); rebuildDeck();
+  }
+});
+
+document.addEventListener('keydown',(e)=>{
+  if(currentTab!=='cards') return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowRight'){ nextCard(); e.preventDefault(); }
+  else if(e.key==='ArrowLeft'){ prevCard(); e.preventDefault(); }
+  else if(e.key===' '){ flipCard(); e.preventDefault(); }
+  else if(e.key==='m'||e.key==='M'){ toggleMaster(); e.preventDefault(); }
+});
+
+function initCards(){
+  cardsInited=true;
+  loadMastered();
+  buildChips();
+  rebuildDeck();
+}
+
+/* arranque: el mapa es la pestaña activa */
+window.addEventListener('load',()=>{ initMap(); });
+window.addEventListener('resize',()=>{ if(currentTab==='map') requestAnimationFrame(fitMap); });
+</script>
+</body>
+</html>

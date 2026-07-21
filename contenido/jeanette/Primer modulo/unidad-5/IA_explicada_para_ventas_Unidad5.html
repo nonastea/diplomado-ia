@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Del reporte del mes a la mejor jugada para cada cliente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .idea .frase{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial</p>
+    <h1>Del reporte del mes a la mejor jugada para cada cliente</h1>
+    <p class="lead">Piensa en un mes cualquiera de tu trabajo. Miras cuánto se vendió y cuántos afiliados se traspasaron (<em>qué pasó</em>). Intuyes por qué (¿mejoró la competencia? ¿fallamos en un reclamo?). Hueles quién está por irse. Y decides a quién llamar primero y qué ofrecerle. Todos los días haces ese recorrido con tu cartera, casi sin pensarlo.</p>
+    <p class="lead">Esta guía te muestra que los datos pueden hacer <strong>ese mismo viaje</strong> —de mirar el pasado a decidir la mejor jugada— pero a gran escala y para miles de clientes a la vez. Y lo vas a entender rápido, porque tú ya haces las cuatro etapas. Solo les vamos a poner nombre.</p>
+    <span class="nota">No necesitas saber de tecnología ni de matemáticas. Solo seguir la idea.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>La gran idea: tus datos hacen un viaje en cuatro etapas</a></li>
+      <li><a href="#p2"><span class="n">2</span>Etapa 1 — ¿Qué pasó? (y cómo preguntarle a los datos hablando)</a></li>
+      <li><a href="#p3"><span class="n">3</span>Etapa 2 — ¿Por qué pasó? (cazar la causa sin perderte)</a></li>
+      <li><a href="#p4"><span class="n">4</span>Etapa 3 — ¿Qué va a pasar? (anticiparte, como ya lo haces)</a></li>
+      <li><a href="#p5"><span class="n">5</span>La trampa del dato que no deberías tener</a></li>
+      <li><a href="#p6"><span class="n">6</span>Etapa 4 — ¿Qué hago? (la mejor jugada para cada cliente)</a></li>
+      <li><a href="#p7"><span class="n">7</span>Todo junto: la empresa que dejó de perder clientes</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">El mapa</span></div>
+    <h2 class="titulo">Tus datos hacen un viaje en cuatro etapas</h2>
+
+    <p>Ya, antes de meternos en herramientas y nombres raros, quédate con una sola idea, porque es el mapa de toda la unidad.</p>
+
+    <p>Cuando trabajas tu cartera, sin darte cuenta pasas por cuatro momentos. Primero miras <em>qué pasó</em>: cuánto vendiste, cuántos se fueron. Después te preguntas <em>por qué pasó</em>: capaz que la competencia mejoró su oferta, capaz que fallamos en un reclamo. Luego anticipas <em>qué va a pasar</em>: ese afiliado calladito que hace tres meses no contesta, lo hueles, se va a ir. Y por último decides <em>qué hago</em>: a este lo llamo hoy y le ofrezco esto; a este otro mejor lo dejo tranquilo.</p>
+
+    <p>Esos cuatro momentos —qué pasó, por qué, qué va a pasar, qué hago— son exactamente las cuatro etapas por las que la IA hace viajar a los datos. Cada una tiene su nombre técnico, y así se ven:</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Las cuatro etapas del viaje de los datos · de mirar atrás a decidir adelante.</caption>
+        <thead>
+          <tr><th>La etapa</th><th>La pregunta que responde</th><th>En tu mundo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Descriptivo</td><td>¿Qué pasó?</td><td class="lab-col">El reporte del mes: cuánto se vendió, cuántos se fueron</td></tr>
+          <tr><td>Diagnóstico</td><td>¿Por qué pasó?</td><td class="lab-col">Por qué cayeron los traspasos este trimestre</td></tr>
+          <tr><td>Predictivo</td><td>¿Qué va a pasar?</td><td class="lab-col">Quién está por traspasarse el mes que viene</td></tr>
+          <tr><td>Prescriptivo</td><td>¿Qué hago?</td><td class="lab-col">A quién llamar y qué ofrecerle para que se quede</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Y hay algo importante: las cuatro etapas son una escalera, no cajones sueltos. No puedes decidir bien la jugada (etapa 4) si no sabes a quién se le va a ir (etapa 3). No anticipas bien (etapa 3) si no entendiste por qué se fue la gente antes (etapa 2). Y no entiendes el porqué (etapa 2) si tus números del pasado están mal hechos (etapa 1). Cada peldaño se apoya en el de abajo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un vendedor con experiencia sube esa escalera solo, con un cliente a la vez: mira, entiende, anticipa, decide. Lo que hace la IA es subirla por ti con miles de clientes al mismo tiempo. No es magia nueva: es tu criterio, multiplicado.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Tus datos pueden hacer el mismo viaje que tú haces con cada cliente —qué pasó, por qué, qué viene, qué hago— pero para miles a la vez.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">Mirar el pasado</span></div>
+    <h2 class="titulo">Etapa 1 — ¿Qué pasó? (y cómo preguntarle a los datos hablando)</h2>
+
+    <p>La primera etapa es la más conocida, y es la que ya vives: mirar el pasado. Cuánto se vendió el trimestre, qué producto salió más, cómo venían los traspasos. Es el reporte de siempre. En el curso a esto se le llama <span class="term">análisis descriptivo</span>, y responde una sola pregunta: ¿qué pasó?</p>
+
+    <p>Hasta aquí, nada nuevo. Lo interesante es lo que la IA le agrega. Antes, para sacar un dato distinto tenías que pedírselo al área de sistemas y esperar. Ahora hay dos cosas que cambian el juego.</p>
+
+    <h3>Preguntarle a los datos hablando, como a una persona</h3>
+    <p>Imagina que en vez de pedir un reporte, le escribes a tu sistema una pregunta tal como la dirías en voz alta: "¿cuáles fueron las ventas del último trimestre?" o "¿qué región creció más este año?". Y el sistema te entiende y te arma el gráfico solo. No hay que saber fórmulas ni programar: le hablas como le hablarías a un colega.</p>
+
+    <p>Esto ya lo usaste: es lo mismo que le preguntas a ChatGPT o al asistente del teléfono. Aplicado a tus datos de ventas, a esto se le llama <span class="term">consulta en lenguaje natural</span> (en inglés, NLQ).</p>
+
+    <div class="mundo">
+      <div class="lab">Cómo se ve</div>
+      Tú escribes "¿cuánto vendimos en el norte el año pasado?" y aparece el gráfico, sin molestar a nadie de sistemas. Hay un detalle fino que lo hace funcionar: el sistema tiene que entender que cuando tú dices "ventas", otra persona dice "facturación" y otra "ingresos", y todas hablan de lo mismo. Eso se le enseña de antemano.
+    </div>
+
+    <h3>Que te escriban el resumen del gráfico, solo</h3>
+    <p>La segunda ayuda: la IA no solo te muestra el gráfico, también te escribe abajo, en palabras, lo que ese gráfico está diciendo. "Las ventas subieron un 12% respecto al año pasado, con el mayor crecimiento entre junio y septiembre." Ese comentario que tú a veces tienes que redactar a mano para la jefatura, lo arma la máquina en un segundo. Y si cambias el filtro a otra región, el texto se reescribe solo. A esto se le llama <span class="term">narrativa inteligente</span>.</p>
+
+    <p>Ojo, eso sí: la máquina te destaca lo que salta a la vista, pero no reemplaza tu lectura. Decir "las ventas cayeron" es fácil; entender que cayeron porque cerró un cliente grande del norte, eso lo pones tú. La máquina apura la parte lateosa; el criterio sigue siendo tuyo.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La primera etapa es mirar el pasado. La IA solo te deja preguntarle a los datos hablando, y te escribe el resumen sola.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">Encontrar la causa</span></div>
+    <h2 class="titulo">Etapa 2 — ¿Por qué pasó? (cazar la causa sin perderte)</h2>
+
+    <p>Saber qué pasó casi nunca alcanza. Si este trimestre se te fueron más afiliados de lo normal, el número te dice el tamaño del golpe, pero no la razón. Y sin la razón, no sabes qué arreglar. Ahí entra la segunda etapa: entender por qué pasó. En el curso, <span class="term">análisis diagnóstico</span>.</p>
+
+    <p>Tú ya haces esto de cabeza. Cuando algo se cae, empiezas a preguntarte: ¿es la competencia? ¿un problema de atención? ¿un segmento en particular? Lo que la IA hace es esa misma cacería, pero revisando cientos de posibles causas a la vez, sin que tú tengas que ir una por una.</p>
+
+    <h3>Qué es lo que más está pesando</h3>
+    <p>La primera herramienta te dice, de todos los factores posibles, cuáles son los que de verdad están moviendo la aguja. En vez de revisar a mano edad, renta, zona, antigüedad y reclamos uno por uno, la máquina te señala: "mira, la fuga se concentra sobre todo en afiliados de menos de dos años y con un reclamo sin resolver". A esa herramienta se le llama <span class="term">influenciadores clave</span>: los factores que más impactan en lo que te importa.</p>
+
+    <h3>Ir desarmando el problema por capas</h3>
+    <p>La segunda herramienta te ayuda a ir más al fondo. Parte de lo general y te va sugiriendo dónde escarbar. La caída está en el norte… dentro del norte, en dos ciudades… dentro de esas ciudades, en un segmento de clientes jóvenes… y ahí está el origen. Es como ir abriendo cajones, y que alguien te diga cuál abrir para no perder tiempo. A esto se le llama <span class="term">árbol de descomposición</span>, y sirve para encontrar la <span class="term">causa raíz</span>: el origen real del problema, no el síntoma.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre saber "se nos fueron 300 afiliados" y saber "se nos fueron 300, casi todos del mismo segmento, casi todos con un reclamo mal cerrado". Lo primero te preocupa. Lo segundo te dice exactamente dónde poner el esfuerzo mañana.
+    </div>
+
+    <p>Un aviso honesto: estas herramientas te muestran dónde mirar, no te entregan el veredicto firmado. Te dicen "esto está muy relacionado con la fuga", pero si es la causa de verdad o una casualidad, eso lo confirmas tú, que conoces el negocio.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La segunda etapa es cazar el porqué. La IA revisa cientos de causas por ti y te apunta dónde escarbar; el veredicto lo firmas tú.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">Anticiparse</span></div>
+    <h2 class="titulo">Etapa 3 — ¿Qué va a pasar? (anticiparte, como ya lo haces)</h2>
+
+    <p>Aquí viene la etapa que más suena, y también la que tú ya haces sin darte cuenta: anticipar. Ese afiliado que hace tres meses no contesta y bajó sus aportes… lo hueles, se va a ir. No lo sacaste de un manual: lo sabes porque viste cientos de casos iguales. La IA hace exactamente eso, con toda tu cartera a la vez. En el curso, <span class="term">análisis predictivo</span>, y responde: ¿qué va a pasar?</p>
+
+    <p>Ojo, no adivina el futuro con bola de cristal. Lo que hace es reducir la incertidumbre: en vez de esperar a que el cliente se vaya, te avisa antes, cuando todavía puedes hacer algo. Y las preguntas que responde son de dos tipos.</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">¿Cuál?</div>
+        <div class="sub">Predecir una categoría</div>
+        <ul>
+          <li>¿Se va a traspasar o se queda?</li>
+          <li>¿Este prospecto es bueno o no?</li>
+          <li>¿Esta operación es normal o sospechosa?</li>
+        </ul>
+        <p class="nm">En el curso: clasificación.</p>
+      </div>
+      <div class="card a">
+        <div class="q">¿Cuánto?</div>
+        <div class="sub">Predecir un número</div>
+        <ul>
+          <li>¿Cuánta pensión va a tener?</li>
+          <li>¿Cuánto vamos a vender el próximo mes?</li>
+          <li>¿Cuántos días va a demorar un trámite?</li>
+        </ul>
+        <p class="nm">En el curso: regresión.</p>
+      </div>
+    </div>
+
+    <p>La diferencia es simple: <span class="term">clasificación</span> es cuando la respuesta es una etiqueta ("se va" / "se queda"); <span class="term">regresión</span> es cuando la respuesta es una cifra ("$850.000 de pensión"). Las dos usan tu historia para adivinar el futuro; solo cambia qué tipo de respuesta buscas.</p>
+
+    <h3>Cuando algo se sale de lo normal</h3>
+    <p>Hay un tercer tipo de anticipación muy útil: detectar lo que se sale del molde. Una sucursal que de un día para otro vende la mitad, un tiempo de espera que se dispara, un gasto que se triplica sin razón. La IA aprende cómo se ve "lo normal" en cada caso y te avisa cuando algo se desvía de verdad. A esto se le llama <span class="term">detección de anomalías</span>.</p>
+
+    <p>Lo bueno es que no usa un límite fijo y tonto (tipo "avísame si pasa de 100"), sino que entiende el ritmo propio de cada cosa. Así te ahorra falsas alarmas: no te molesta por el peak normal de fin de mes, pero sí te avisa por la caída rara de un martes cualquiera.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es pasar de reaccionar a anticipar. En vez de enterarte de que un afiliado se fue cuando ya firmó el traspaso, la máquina te lo marca semanas antes, con la ficha en amarillo, cuando una llamada tuya todavía lo puede salvar.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La tercera etapa es anticipar. La máquina te marca quién se va y qué se sale de lo normal, mientras todavía puedes actuar.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">El gran riesgo</span></div>
+    <h2 class="titulo">La trampa del dato que no deberías tener</h2>
+
+    <p>Esta parte es corta, pero es de las más importantes de toda la unidad, porque es el error que hunde a los modelos que anticipan, y es facilísimo caer en él sin darte cuenta.</p>
+
+    <p>Te lo explico con la trampa que es. Imagina que quieres predecir quién se va a traspasar, y para "entrenar" a la máquina le pasas, entre los datos, la fecha en que el afiliado firmó el traspaso. La máquina va a acertar el 100% de las veces… obvio, le estás dando la respuesta. Pero ese dato —la fecha de firma— solo existe cuando el cliente <em>ya</em> se fue. El día que de verdad necesitas anticipar, ese dato no está. La máquina que se veía perfecta en la prueba, en la cancha falla fea.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">El modelo que hace trampa</div>
+        <p>Entrena con un dato que solo aparece DESPUÉS de lo que quieres predecir (la fecha de firma del traspaso). Se ve perfecto en la prueba, con aciertos espectaculares. Pero ese dato no existe cuando de verdad hay que anticipar, y en la realidad se cae.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">El modelo honesto</div>
+        <p>Entrena solo con datos que tendrías ANTES de que el cliente decida: su antigüedad, sus aportes, sus reclamos, sus llamadas. Acierta menos que el tramposo en la prueba, pero funciona de verdad el día que importa.</p>
+      </div>
+    </div>
+
+    <p>A este error se le llama <span class="term">fuga del objetivo</span> (en inglés, <em>target leakage</em>). En simple: el modelo hace trampa sin querer, usando un dato que ya revela la respuesta. La regla de oro es preguntarte siempre: "¿este dato lo iba a tener ANTES de que pasara lo que quiero predecir?". Si la respuesta es no, ese dato queda fuera.</p>
+
+    <div class="mundo">
+      <div class="lab">Cómo se detecta</div>
+      La señal de alarma es al revés de lo que uno pensaría: cuando un modelo te da resultados demasiado buenos, demasiado perfectos, desconfía. En el mundo real nada acierta el 99%. Un modelo "milagroso" casi siempre está haciendo trampa con un dato que no debería tener.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Si un dato solo aparece después de lo que quieres predecir, no sirve para predecirlo. Un modelo demasiado perfecto casi siempre está haciendo trampa.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Decidir la jugada</span></div>
+    <h2 class="titulo">Etapa 4 — ¿Qué hago? (la mejor jugada para cada cliente)</h2>
+
+    <p>Llegamos a la etapa más avanzada, y también a la más valiosa para alguien de ventas. Saber que un afiliado se va a ir (etapa 3) no sirve de nada si no sabes qué hacer con esa información. La pregunta final es: ¿qué hago? En el curso, <span class="term">análisis prescriptivo</span>.</p>
+
+    <p>Y aquí está la joya. No se trata de tratar a todos igual. Se trata de saber, para <em>cada</em> cliente, cuál es la jugada con más probabilidad de funcionar. A uno le sirve una llamada personal, a otro un beneficio, a otro que simplemente le resuelvan un reclamo que arrastra hace meses. Esa jugada a medida para cada caso tiene nombre: la <span class="term">siguiente mejor acción</span> (en inglés, <em>Next Best Action</em>).</p>
+
+    <h3>Esto ya lo tiene el buen vendedor</h3>
+    <p>Fíjate que esto es puro colmillo comercial. El vendedor con calle no le ofrece lo mismo a todos: lee a cada cliente y sabe qué mueve a cada uno. Lo que hace la IA es tener ese colmillo para miles de clientes a la vez, y afinarlo con cada resultado.</p>
+
+    <h3>Cómo aprende a decidir mejor: probando</h3>
+    <p>¿Y cómo aprende la máquina cuál es la mejor jugada? De la misma forma que aprendiste tú a vender: probando. Ofrece una cosa, mira si funcionó, y si funcionó, repite; si no, cambia. Con premios cuando acierta y "castigos" cuando falla, va afinando su estrategia sola, cliente a cliente. A esa forma de aprender —probando, con premios y castigos— se le llama <span class="term">aprendizaje por refuerzo</span>. Es igualito a como aprendiste a manejar o a cerrar una venta: nadie te dio el manual perfecto, lo fuiste calibrando a punta de intentos.</p>
+
+    <div class="mundo">
+      <div class="lab">Cómo se decide en tu caso</div>
+      En vez de mandar la misma oferta de retención a los 300 afiliados en riesgo (y quemar plata en muchos que no la necesitaban), el sistema le arma a cada uno la jugada con más chance: a este un descuento, a este una llamada, a este resolverle el reclamo. Y aprende cuál funciona mejor para cada tipo de cliente.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La cuarta etapa es decidir la jugada. No la misma para todos: la mejor para cada cliente, afinada probando.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">Todo junto</span></div>
+    <h2 class="titulo">Todo junto: la empresa que dejó de perder clientes</h2>
+
+    <p>Juntemos las cuatro etapas en una historia real del curso, y verás que es tu mundo tal cual. Una empresa de telefonía estaba perdiendo clientes que se pasaban a la competencia —lo que tú vives como el traspaso de afiliados—. No sabían quién se iba, ni por qué, ni qué ofrecerle a cada uno. Así subieron la escalera completa:</p>
+
+    <ol class="pasos">
+      <li><b>Miraron qué pasó (etapa 1).</b> Sacaron los números: cuántos clientes se iban, de qué planes, en qué zonas. El reporte del pasado, para dimensionar el golpe.</li>
+      <li><b>Entendieron por qué (etapa 2).</b> Con las herramientas de causa raíz descubrieron qué factores pesaban más en la fuga: cierto tipo de contrato, cierta antigüedad, clientes con reclamos. Dejaron de adivinar.</li>
+      <li><b>Anticiparon quién se iría (etapa 3).</b> Entrenaron un modelo con su historia —cuidándose de no caer en la trampa del dato tramposo— para marcar, por adelantado, a los clientes con alto riesgo de irse.</li>
+      <li><b>Decidieron la jugada para cada uno (etapa 4).</b> En vez de la misma oferta para todos, un sistema que aprende probando le fue armando a cada cliente la mejor movida: a uno un descuento, a otro meses gratis, a otro un beneficio. Y con cada resultado, afinaba.</li>
+    </ol>
+
+    <p>¿El resultado? Aceptaron muchas más ofertas de retención que con la vieja campaña de "lo mismo para todos". Pero fíjate en lo más importante, porque es donde tú entras: el sistema no retuvo a nadie. Solo le dijo al equipo a quién priorizar y qué probar con cada uno. La llamada, la conversación, el gesto que de verdad convence al cliente de quedarse… eso siguió siendo humano. La máquina entrega la pista; el cierre lo haces tú.</p>
+
+    <p>Y date cuenta de algo: la empresa no hizo nada que tú no hagas. Miró, entendió, anticipó y decidió. Solo lo hizo con miles de clientes a la vez. Ese es todo el viaje.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Las cuatro etapas juntas convierten una montaña de datos en una jugada concreta para cada cliente. Pero la jugada la ejecutas tú.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <p>No necesitas memorizarlas para entender la idea. Están aquí por si en el curso las nombran y quieres ubicarlas al toque.</p>
+    <div class="glos">
+      <dl>
+        <dt>Análisis descriptivo</dt><dd>Mirar el pasado: ¿qué pasó? (el reporte de siempre).</dd>
+        <dt>Análisis diagnóstico</dt><dd>Entender el porqué: ¿por qué pasó?</dd>
+        <dt>Análisis predictivo</dt><dd>Anticipar: ¿qué va a pasar?</dd>
+        <dt>Análisis prescriptivo</dt><dd>Decidir la jugada: ¿qué hago?</dd>
+        <dt>Consulta en lenguaje natural (NLQ)</dt><dd>Preguntarle a los datos hablando, como a ChatGPT, y que te arme el gráfico.</dd>
+        <dt>Narrativa inteligente</dt><dd>Que la IA te escriba, en palabras, lo que dice el gráfico.</dd>
+        <dt>Influenciadores clave</dt><dd>Los factores que más pesan en lo que te importa.</dd>
+        <dt>Árbol de descomposición</dt><dd>Ir desarmando el problema por capas hasta el origen.</dd>
+        <dt>Causa raíz</dt><dd>El origen real de un problema, no el síntoma.</dd>
+        <dt>Clasificación</dt><dd>Predecir una categoría (¿se va o se queda?).</dd>
+        <dt>Regresión</dt><dd>Predecir un número (¿cuánta pensión?).</dd>
+        <dt>Detección de anomalías</dt><dd>Avisar cuando algo se sale de lo normal.</dd>
+        <dt>Fuga del objetivo (target leakage)</dt><dd>Cuando el modelo hace trampa con un dato que revela la respuesta.</dd>
+        <dt>Siguiente mejor acción (Next Best Action)</dt><dd>La mejor jugada para cada cliente, no la misma para todos.</dd>
+        <dt>Aprendizaje por refuerzo</dt><dd>Aprender probando, con premios y castigos.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con tres cosas, que sean estas</h2>
+    <ol>
+      <li>Los datos hacen un viaje de <strong>cuatro etapas</strong>: qué pasó, por qué, qué viene, qué hago. Cada una se apoya en la anterior. Y tú ya lo recorres con cada cliente.</li>
+      <li>La joya está al final: no tratar a todos igual, sino saber la <strong>mejor jugada para cada uno</strong>. Eso es puro colmillo comercial, ahora a gran escala.</li>
+      <li>Desconfía de lo <strong>demasiado perfecto</strong>. Un modelo que acierta el 99% casi siempre está haciendo trampa con un dato que no debería tener.</li>
+    </ol>
+    <p class="remate">Lo interesante es que tú ya piensas así: miras, entiendes, anticipas y decides, con cada afiliado. La máquina solo hace eso mismo con miles a la vez, y te pasa la pista. El cierre —la llamada, la conversación que salva al cliente— sigue siendo tuyo. Por eso estás mejor preparada que muchos.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para entender, en tu idioma, cómo la IA lleva los datos del reporte del pasado a la mejor jugada del futuro. Sin tecnicismos.
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>

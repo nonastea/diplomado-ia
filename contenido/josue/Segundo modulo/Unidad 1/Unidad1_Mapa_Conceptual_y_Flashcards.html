@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 1 · Transformación digital y cultura de innovación — Mapa conceptual y Flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="cultura"].on{background:var(--verde);}
+  .chip[data-c="ia"].on{background:var(--ambar);}
+  .chip[data-c="lider"].on{background:var(--violeta);}
+  .chip[data-c="barreras"].on{background:var(--coral);}
+  .chip[data-c="casos"].on{background:var(--cian);}
+  .chip[data-c="contexto"].on{background:var(--gris);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Innovación empresarial con IA · Máster en IA</div>
+  <h1>Unidad 1 · <b>Transformación digital y cultura de innovación</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 30 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Un punto donde el material del curso simplifica una distinción que la literatura técnica desglosa en más niveles. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> Digitización / digitalización / transformación digital: tres niveles vs. el binario del curso</h3>
+      <p><b>El curso</b> usa una distinción <b>binaria</b>: «digitalizar» es automatizar u ordenar lo existente sin cambiar el trámite de fondo (formulario de papel → pantalla), y «transformar» es rediseñar cómo se crea valor (procesos, responsabilidades, modelo de ingresos). <b>La literatura</b> (Gartner; Bloomberg &amp; Volkoff, 2015) distingue <b>tres niveles</b> en inglés: <i>digitization</i> (pasar información analógica a formato digital: escanear el papel), <i>digitalization</i> (usar tecnologías digitales para cambiar procesos y modelos operativos) y <i>digital transformation</i> (cambio profundo del modelo de negocio y la cultura). El choque es idiomático: el español «digitalización» funde <i>digitization</i> y <i>digitalization</i> en una sola palabra, y por eso el curso las agrupa.</p>
+      <div class="regla"><b>Regla:</b> responde con la distinción del curso (digitalizar = mejora de lo existente; transformar = rediseño del valor). Menciona los tres niveles en inglés <b>solo si</b> la pregunta pide matiz o profundidad terminológica; si no, agregarlos puede leerse como que confundes el marco del curso.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 1 — Transformación digital y cultura de innovación» · Curso: Innovación empresarial con IA · Archivo autocontenido, funciona sin internet.</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u1theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Fundamentos"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Cultura e innovación"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Inteligencia artificial"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"Liderazgo y cambio"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Barreras"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Integración"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Casos y aplicación"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Fundamentos"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Cultura e innovación"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Inteligencia artificial"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"Liderazgo y cambio"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Barreras"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Integración"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Casos y aplicación"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+id:"root", t:"TRANSFORMACIÓN DIGITAL Y CULTURA DE INNOVACIÓN", c:"root",
+d:"La tesis del módulo: la tecnología por sí sola no transforma nada; lo que transforma es cómo una organización decide, trabaja, aprende y crea valor con ella. La unidad conecta cuatro cosas que suelen tratarse por separado —estrategia, cultura, innovación y herramientas digitales— y sostiene que solo funcionan cuando avanzan juntas. No hay matemática: el rigor está en distinguir conceptos que el lenguaje cotidiano confunde.",
+k:[
+ {e:"parte de los", t:"FUNDAMENTOS", c:"azul",
+  d:"La base conceptual del módulo: separar una mejora tecnológica de una transformación real, entender qué es crear valor y qué es la madurez digital, y ver por qué una misma herramienta (el CRM) puede quedarse en digitalización o habilitar una transformación según el uso.",
+  k:[
+   {id:"digitransf", e:"distingue", t:"Digitalizar vs. transformar", c:"azul",
+    d:"Digitalizar es hacer más eficiente una práctica que ya existe (pasar el formulario de papel a pantalla): útil, pero el trámite de fondo sigue igual. Transformar comienza cuando la organización se atreve a revisar si todavía resuelve bien las necesidades del cliente, lo que puede obligar a cambiar procesos, responsabilidades, servicios o el modelo de ingresos. Netflix no solo transmitió películas por internet: cambió la forma de ofrecer entretenimiento. Pregunta guía de toda la unidad: «¿qué problema queremos resolver y qué tendría que cambiar para hacerlo mejor?»."},
+   {e:"busca la", t:"Creación de valor", c:"azul",
+    d:"Crear valor es resolver algo que realmente le importa al cliente; no siempre es un producto nuevo: puede ser acortar una espera, quitar un trámite, informar mejor o atender de forma menos impersonal. Un modelo predictivo no crea valor por existir: lo crea cuando mejora una decisión (ajustar inventario, anticipar una necesidad). «El dato es el punto de partida, no el resultado final.» Rogers (2023): las organizaciones que se transforman preguntan, observan, prueban y corrigen."},
+   {e:"se mide como", t:"Madurez digital", c:"azul",
+    d:"Westerman, Bonnet y McAfee (2014): «La madurez digital no depende de cuántas tecnologías se compran. Se nota en la capacidad de usarlas con criterio, conectarlas con la estrategia y sostener los cambios en el trabajo cotidiano.» Es la diferencia entre tener herramientas y ser una organización que sabe usarlas: mide criterio, alineación y sostenibilidad, no cantidad de software."},
+   {e:"ejemplo:", t:"CRM como ejemplo", c:"azul",
+    d:"El mismo Customer Relationship Management (CRM) cae en digitalizar o en transformar según el uso: si es «una agenda más cómoda», la mejora es solo administrativa; si el equipo analiza la información, detecta problemas frecuentes y ajusta su propuesta de servicio, apoya una transformación real. La herramienta no decide; lo decide el uso. Es el ejemplo con que el curso enseña que la tecnología es neutra hasta que una práctica la carga de sentido."}
+  ]},
+ {e:"requiere", t:"CULTURA E INNOVACIÓN", c:"verde",
+  d:"Si la estrategia dice qué valor crear, la cultura es el lugar donde eso se vuelve práctica. Esta rama reúne las condiciones que permiten innovar: una cultura que no castiga el error, seguridad para hablar, aprendizaje que se comparte y un método para probar sin apostar todo.",
+  k:[
+   {e:"define la", t:"Cultura organizacional", c:"verde",
+    d:"Es la manera habitual en que una organización funciona, incluso sin procedimiento escrito; se nota en sus conversaciones, en lo que premia, en lo que evita y en cómo responde a un problema. Schein y Schein (2021): la cultura son supuestos compartidos que con los años parecen obvios; nadie los escribió, pero todos saben qué se puede hacer y qué evitar. Frases de examen: «la tecnología se compra, la cultura no» y «la cultura no es un adorno de la estrategia, es el lugar donde la estrategia se vuelve práctica»."},
+   {id:"cultinnov", e:"habilita la", t:"Cultura de innovación", c:"verde",
+    d:"Ambiente donde se puede proponer, probar y aprender sin convertir cada error en una amenaza. Matiz de examen: NO elimina la exigencia; permite usar la experiencia para mejorar. Es la base que convierte la incertidumbre en fuente de preguntas y oportunidades, en vez de vivirla solo como amenaza."},
+   {id:"segpsico", e:"exige", t:"Seguridad psicológica", c:"verde",
+    d:"Confianza para preguntar, disentir o reconocer un error sin miedo a una descalificación. Edmondson (2019): los equipos de alto desempeño no son los que nunca fallan, sino los que pueden hablar de los errores, pedir ayuda y señalar una dificultad antes de que crezca. NO significa aceptar cualquier idea sin discusión: significa analizar la propuesta sin ridiculizar a quien la presenta. Es la condición para que exista aprendizaje organizacional."},
+   {e:"sostiene el", t:"Aprendizaje organizacional y continuo", c:"verde",
+    d:"Aprendizaje organizacional: convertir la experiencia en mejoras compartidas que cambian cómo trabaja la organización (no basta que aprenda una sola persona). Aprendizaje continuo: como los datos y la IA se desactualizan rápido, aprender debe ser parte del trabajo, no un curso aislado; hay que abrir espacios para compartir lo aprendido y conectarlo con problemas concretos. Uno es el resultado (memoria compartida); el otro, el hábito que lo mantiene vivo."},
+   {id:"experimentacion", e:"se prueba con", t:"Experimentación / Prototipo", c:"verde",
+    d:"Probar no es improvisar: una prueba útil parte de una pregunta, tiene alcance acotado y define de antemano cómo se evaluará. Su virtud es asimétrica: aun si falla, evita una inversión mayor y deja aprendizaje. Amazon hace muchísimos experimentos; no todos triunfan, pero aprende pronto y con costo controlado. El prototipo es la versión barata que valida la idea antes de comprometer grandes recursos."}
+  ]},
+ {id:"ia", e:"incorpora", t:"INTELIGENCIA ARTIFICIAL", c:"ambar",
+  d:"IA: modelos y herramientas que reconocen patrones, procesan información, generan contenido o apoyan decisiones. La regla del módulo: primero el problema, luego la herramienta. Sus resultados no se aceptan a ciegas —pueden equivocarse o repetir sesgos— por eso siempre hace falta supervisión humana. Su valor estratégico aparece cuando mejora un servicio o una decisión, no solo cuando ahorra tiempo.",
+  k:[
+   {e:"principio:", t:"Primero el problema, luego la herramienta", c:"ambar",
+    d:"La IA debe incorporarse desde una necesidad estratégica, no solo para ahorrar tiempo. Automatizar una tarea repetitiva es útil, pero rediseñar un servicio a partir de una mejor comprensión de los usuarios tiene un efecto mucho mayor. Instalar una solución no resuelve, por sí sola, una dificultad del negocio: antes hay que acordar qué decisión se quiere mejorar y quién usará el resultado. Es el mismo principio de digitalizar vs. transformar, aplicado a la IA."},
+   {e:"se ordena con", t:"Las 4 preguntas antes de implementar", c:"ambar",
+    d:"(1) ¿Qué decisión queremos mejorar? (2) ¿Qué datos se utilizarán? (3) ¿Quién revisará el resultado? (4) ¿Qué haremos si el sistema se equivoca? Son el guion exacto que el ejercicio FreshExpress espera que apliques. Ordenan el proyecto desde el problema y no desde la herramienta, e incorporan la supervisión humana y el plan para el error antes de que ocurra el error."},
+   {e:"incluye", t:"Modelo predictivo · Sesgos · Supervisión humana", c:"ambar",
+    d:"Los modelos detectan patrones y personalizan, pero sus resultados no se aceptan a ciegas: un modelo puede equivocarse, repetir sesgos (distorsiones presentes en los datos) o dar una respuesta estadísticamente razonable que no encaja con el contexto. Iansiti y Lakhani (2020): la IA cambia cómo circula la información y se coordinan las actividades, así que no es tarea exclusiva del área tecnológica; modifica controles, responsabilidades y capacitación. Por eso siempre hace falta una persona que revise y valide (supervisión humana)."},
+   {e:"aporta", t:"Valor estratégico + tipos de análisis", c:"ambar",
+    d:"El valor estratégico de la IA aparece cuando mejora un servicio, descubre una oportunidad o ayuda a decidir con mejores antecedentes —no solo cuando ahorra tiempo. Los tres niveles de análisis, en sofisticación creciente: descriptivo (describe lo que pasó), predictivo (anticipa lo que podría pasar) y prescriptivo (recomienda qué acción tomar). «La velocidad no reemplaza el criterio»: siempre hay que decidir qué es un buen resultado, qué riesgo se acepta y quién responde."}
+  ]},
+ {e:"es guiada por", t:"LIDERAZGO Y GESTIÓN DEL CAMBIO", c:"violeta",
+  d:"El lado humano de la transformación: orientar personas cuando la tecnología cambia rápido. Incluye el liderazgo digital, el arte de liderar sin tener todas las respuestas y la gestión del cambio como conjunto de acciones concretas. Punto contraintuitivo de examen: la IA no reduce la importancia del liderazgo, la aumenta.",
+  k:[
+   {id:"liderdigital", e:"se ejerce como", t:"Liderazgo digital", c:"violeta",
+    d:"Capacidad de orientar a las personas en medio de cambios tecnológicos: explicar el propósito, escuchar inquietudes, facilitar el aprendizaje y decidir con responsabilidad. No es liderazgo «técnico»; es liderazgo de personas en un contexto que cambia rápido. En AgroAndes, el rol de la jefa comercial fue «traducir la transformación digital en situaciones concretas»."},
+   {e:"implica", t:"Liderar sin todas las respuestas", c:"violeta",
+    d:"Cuando la tecnología y el mercado se mueven rápido, la imagen del líder que lo sabe todo pierde sentido. Kotter (2012): liderar el cambio es construir una visión comprensible y movilizar personas, traduciéndola en prioridades, decisiones y conversaciones cotidianas. Rasgos: crear espacios para preguntar (y poner límites: qué usos, qué datos proteger, qué decisiones necesitan supervisión) y escuchar sin dejar de decidir (explicar los criterios fortalece la confianza aunque no todos queden conformes)."},
+   {e:"opera vía", t:"Gestión del cambio", c:"violeta",
+    d:"Conjunto de acciones para dejar una forma conocida de trabajar y adoptar otra: comunicación, capacitación, participación, seguimiento y ajustes cuando la implementación no avanza. Es el lado humano del proyecto: no el qué se instala, sino el cómo se logra que la gente cambie de hábito. En AgroAndes tomó la forma de capacitar en situaciones reales de trabajo, no en las funciones del programa."},
+   {e:"clave:", t:"La IA aumenta el liderazgo", c:"violeta",
+    d:"Punto contraintuitivo y de examen: la IA no reduce la importancia del liderazgo, la aumenta. Cuanto más capaces son las herramientas, más necesario es orientar su uso con propósito y responsabilidad. Una herramienta poderosa sin dirección es más peligrosa, no menos."}
+  ]},
+ {e:"tropieza con", t:"BARRERAS (fuera del presupuesto)", c:"coral",
+  d:"Hay proyectos técnicamente correctos que casi nadie usa: la explicación no está en la herramienta sino alrededor de ella (rutinas, acuerdos, relaciones de años). Estas barreras no aparecen en el presupuesto —resistencia al cambio, contradicciones de la dirección, silos y falta de un propósito claro— y son las que de verdad frenan la transformación.",
+  k:[
+   {id:"resistencia", e:"la más común:", t:"Resistencia al cambio", c:"coral",
+    d:"No siempre es falta de voluntad: puede ser miedo a perder autonomía, a quedar en evidencia, o falta de tiempo para aprender. Si esas dudas no se conversan, el proyecto «queda en el papel» y la gente sigue trabajando como antes. La IA intensifica esto: presentarla solo como forma de «producir más», sin explicar límites ni el papel del juicio humano, genera más desconfianza."},
+   {e:"desde arriba:", t:"Contradicciones de la dirección", c:"coral",
+    d:"No sirve pedir innovación y castigar cualquier intento imperfecto; si el discurso invita a experimentar pero la evaluación premia el cumplimiento rígido, los equipos aprenden a no arriesgarse. Kane et al. (2019): los comportamientos de los líderes influyen directamente en la transformación; las decisiones cotidianas muestran más que un discurso qué conductas se valoran y cuáles se castigan."},
+   {id:"silos", e:"estructura:", t:"Silos / equipos separados", c:"coral",
+    d:"Áreas que trabajan como compartimentos cerrados. Un proyecto de IA suele necesitar conocimiento técnico, comercial, jurídico y operativo a la vez; si cada equipo protege su información y decide por separado, la solución queda incompleta o es difícil de incorporar. Los silos son especialmente dañinos para la IA porque un buen proyecto de IA cruza varias áreas."},
+   {id:"proposito", e:"la más profunda:", t:"Falta de razón / propósito claro", c:"coral",
+    d:"Adoptar tecnología «porque está de moda» o «porque la competencia la usa» impide acordar prioridades y saber si el esfuerzo valió la pena. Sin un problema definido no hay forma de medir el éxito. Para avanzar, las personas necesitan una explicación comprensible: hacia dónde se va, por qué se cambia y qué apoyo recibirán. Aquí vive el propósito compartido: el sentido común y explícito del cambio."}
+  ]},
+ {e:"se logra con", t:"INTEGRACIÓN Y CONVERGENCIA", c:"cian",
+  d:"Tecnología, cultura, innovación, liderazgo e IA se revisaron por separado, pero en la práctica están mezclados. Esta rama muestra cómo hacerlos converger y por qué la transformación no tiene fecha final.",
+  k:[
+   {e:"nace del", t:"Trabajo en equipo", c:"cian",
+    d:"Cadena clave: una tecnología cambia tareas; esas tareas modifican relaciones; y esas relaciones facilitan o bloquean una mejora. Los problemas aparecen al tratar cada asunto como proyecto aislado: instalar una plataforma sin preparar a quienes la usan; pedir innovación sin cambiar cómo se evalúa el error; contratar especialistas en IA sin conectarlos con el negocio."},
+   {e:"logra la", t:"Convergencia", c:"cian",
+    d:"Las transformaciones sólidas hacen que las piezas conversen entre sí: la estrategia aclara qué valor crear, las personas aportan experiencia, la cultura define cómo se colabora y la tecnología amplía lo posible. Ninguna basta sola. Es la respuesta directa al error de los silos y los proyectos aislados."},
+   {e:"se sostiene con", t:"Planificación sin fecha final / Resumen", c:"cian",
+    d:"La transformación digital no tiene fecha de término: las herramientas y las expectativas seguirán cambiando; lo permanente es la capacidad de observar, aprender y ajustar. El resumen del curso ordena tres factores —Cultura (1/3): terreno donde se aprende e innova; IA (2/3): uso responsable y estratégico con datos, revisión humana y necesidad real; Liderazgo (3/3): explicar propósito, escuchar, poner límites, decidir con evidencia. Se vuelve sostenible cuando estrategia, personas, cultura y tecnología avanzan juntas."}
+  ]},
+ {e:"se ilustra en", t:"CASOS Y APLICACIÓN", c:"gris",
+  d:"Los ejemplos y casos que aterrizan todo lo anterior: empresas reales que transformaron (no solo digitalizaron), el caso central AgroAndes y el ejercicio FreshExpress con el que se evalúa el módulo.",
+  k:[
+   {e:"ilustran", t:"Ejemplos: Netflix · Nubank · Microsoft · Amazon", c:"gris",
+    d:"Netflix: transformó el entretenimiento (elegir qué, cuándo y dónde), no solo «streaming». Nubank/fintech: compitió en la forma de atender (móvil, sin filas), superando los 100 millones de clientes en Latinoamérica en 2024, primer banco digital fuera de Asia. Microsoft/Nadella: cambio cultural de «know-it-alls» a «learn-it-alls» (mentalidad de crecimiento) que sostuvo su recuperación (de unos US$300 mil millones a más de US$3 billones). Amazon: experimenta mucho, aprende barato y temprano."},
+   {id:"agroandes", e:"caso central:", t:"Caso AgroAndes", c:"gris",
+    d:"Distribuidora chilena de insumos agrícolas; creció con trato cercano, pero los clientes empezaron a exigir información en línea y respuestas rápidas. Compró CRM, ERP y plataforma web y al año la mejora fue mínima: los vendedores seguían con sus planillas, todo dependía del correo, el cliente no notaba el cambio (digitalizar sin transformar). Frenaban: resistencia al cambio, poca coordinación y —la más profunda— falta de propósito compartido. El segundo intento partió por las personas (explicar el porqué, equipos mixtos, capacitar en situaciones reales); la IA llegó dos años después (asistente virtual, modelos predictivos de demanda, sistema de recomendaciones), no por novedosa sino porque apoyaba necesidades ya identificadas. Camila Rojas: «pensamos que bastaba instalar plataformas, pero el verdadero cambio era aprender a trabajar de otra manera». Lo llamativo no es la IA, sino lo que tuvo que ocurrir antes."},
+   {e:"ejercicio:", t:"Ejercicio FreshExpress", c:"gris",
+    d:"Empresa de logística de comidas preparadas que compró sistema de rutas, app de repartidores y chatbot, pero los tiempos no mejoran, hay errores, la app es poco práctica y los conductores usan sus teléfonos personales. Tarea: elegir un proceso crítico (rutas, incidencias o comunicación con el cliente) y responder con el esquema «Configuración → Acciones → Resultados → Impacto», contrastando implementación actual vs. futura e indicando qué análisis (descriptivo/predictivo/prescriptivo) se aplicaría. Enseña a poner el objetivo antes que la herramienta, sumar lo humano (equipo conjunto, gestión del cambio) a lo técnico (IA predictiva) y medir el impacto en el cliente y el negocio."}
+  ]}
+ ]
+};
+
+const CROSS = [
+ {from:"segpsico", to:"resistencia", label:"la reduce", bend:-70},
+ {from:"cultinnov", to:"experimentacion", label:"la habilita", bend:55},
+ {from:"silos", to:"ia", label:"un proyecto de IA los cruza", bend:-95},
+ {from:"agroandes", to:"digitransf", label:"lo ilustra", bend:120},
+ {from:"liderdigital", to:"proposito", label:"lo construye", bend:-55}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u1theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["fund","Transformación digital","Digital transformation","Revisar cómo la organización decide, trabaja y crea valor usando la tecnología como apoyo y no como fin."],
+["fund","Digitalización","Digitalization","Hacer más eficiente una práctica que ya existe (p. ej., pasar un formulario de papel a pantalla) sin cambiar el trámite de fondo."],
+["fund","Madurez digital","Digital maturity","Capacidad de usar la tecnología con criterio, conectarla con la estrategia y sostener los cambios en el trabajo cotidiano."],
+["fund","Creación de valor","Value creation","Resolver algo que importa al usuario: un producto nuevo, o acortar una espera, quitar un trámite, informar mejor."],
+["fund","CRM","Customer Relationship Management","Sistema para gestionar la relación con clientes; su valor depende de si solo ordena datos o si se usa para ajustar el servicio."],
+["cultura","Cultura organizacional","Organizational culture","La manera habitual en que una organización funciona, aun sin procedimiento escrito; se nota en lo que premia, evita y cómo responde a un problema."],
+["cultura","Cultura de innovación","Innovation culture","Ambiente donde se puede proponer, probar y aprender sin convertir cada error en una amenaza; no elimina la exigencia."],
+["cultura","Aprendizaje organizacional","Organizational learning","Capacidad de convertir la experiencia en mejoras compartidas que modifican cómo trabaja la organización."],
+["cultura","Aprendizaje continuo","Continuous learning","Aprender como parte del trabajo, no en un curso aislado, porque herramientas y expectativas cambian rápido."],
+["cultura","Seguridad psicológica","Psychological safety","Confianza para preguntar, disentir o reconocer un error sin miedo a una descalificación."],
+["cultura","Experimentación","Experimentation","Probar con una pregunta clara, alcance acotado y criterio de evaluación; incluso si falla, deja aprendizaje."],
+["cultura","Prototipo","Prototype","Prueba acotada y de bajo costo para validar una idea antes de comprometer grandes recursos."],
+["ia","Inteligencia artificial (IA)","Artificial intelligence (AI)","Modelos y herramientas que reconocen patrones, procesan información, generan contenido o apoyan decisiones."],
+["ia","Modelo predictivo","Predictive model","Modelo que anticipa un comportamiento o valor; no crea valor por existir, sino cuando ayuda a decidir mejor."],
+["ia","Sesgo (algorítmico)","(Algorithmic) bias","Distorsión sistemática en los resultados de un modelo que puede repetir prejuicios presentes en los datos."],
+["ia","Supervisión humana","Human oversight","Revisión de una persona sobre los resultados de la IA; decidir qué usos son aceptables y qué necesita validación."],
+["ia","Valor estratégico","Strategic value","El aporte de la IA cuando mejora un servicio, descubre una oportunidad o ayuda a decidir con mejores antecedentes."],
+["ia","Análisis descriptivo","Descriptive analytics","Uso de datos para describir lo que pasó."],
+["ia","Análisis predictivo","Predictive analytics","Uso de datos para anticipar lo que podría pasar."],
+["ia","Análisis prescriptivo","Prescriptive analytics","Uso de datos para recomendar qué acción tomar."],
+["lider","Liderazgo digital","Digital leadership","Capacidad de orientar personas en medio de cambios tecnológicos: explicar propósito, escuchar, facilitar aprendizaje y decidir con responsabilidad."],
+["lider","Gestión del cambio","Change management","Conjunto de acciones (comunicación, capacitación, participación, seguimiento) para dejar una forma de trabajar y adoptar otra."],
+["barreras","Resistencia al cambio","Resistance to change","Rechazo a una nueva forma de trabajar; no es solo falta de voluntad (miedo a perder autonomía, quedar en evidencia, no tener tiempo)."],
+["barreras","Silos / Equipos separados","Organizational silos","Áreas que trabajan como compartimentos cerrados y no comparten información ni decisiones."],
+["casos","Fintech","Fintech","Empresas que compiten en servicios financieros con procesos más simples y experiencia móvil directa."],
+["casos","ERP / Software de gestión","Enterprise Resource Planning","Sistema que integra la gestión de los procesos de la empresa (compras, inventario, ventas); aparece en el caso AgroAndes."],
+["casos","Asistente virtual / Chatbot","Virtual assistant / Chatbot","Herramienta que responde consultas frecuentes de forma automatizada."],
+["casos","Sistema de recomendaciones","Recommender system","Modelo que sugiere productos u opciones según las características del usuario."],
+["contexto","Convergencia","Convergence","Que estrategia, personas, cultura y tecnología conversen entre sí en lugar de tratarse como proyectos aislados."],
+["contexto","Propósito compartido","Shared purpose","Sentido común y explícito del cambio, para que no se viva como «el proyecto de sistemas» ajeno al trabajo."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos", col:"var(--azul)"},
+  cultura:{n:"Cultura y personas", col:"var(--verde)"},
+  ia:{n:"Inteligencia artificial", col:"var(--ambar)"},
+  lider:{n:"Liderazgo y cambio", col:"var(--violeta)"},
+  barreras:{n:"Barreras comunes", col:"var(--coral)"},
+  casos:{n:"Casos y aplicación", col:"var(--cian)"},
+  contexto:{n:"Integración y contexto", col:"var(--gris)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u1fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u1fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
