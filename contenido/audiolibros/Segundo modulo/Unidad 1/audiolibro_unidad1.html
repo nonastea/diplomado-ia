@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Transformación digital y cultura de innovación</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 1 &middot; voz del dispositivo</p>
+    <h1>Transformación digital y cultura de innovación</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "En este rato, mientras manejas, vas a entender algo que a lo mejor ya sospechabas pero nunca habías podido poner en palabras. Por qué la A F P compra sistema tras sistema, capacita, manda correos entusiastas, y a los meses tú sigues persiguiendo los mismos traspasos con las mismas trabas de siempre. La herramienta llegó, pero en el día a día no cambió nada de verdad.", "c": false}, {"t": "Y lo mejor de todo esto es que no vas a necesitar saber nada de tecnología. Es criterio comercial puro, el tuyo, aplicado a algo que suena complicado y que se llama transformación digital. Al final de este audio vas a tener las palabras para distinguir un cambio real de un gasto con nombre moderno, y argumentos para pedir lo que de verdad te ayuda a retener afiliados y a cerrar.", "c": false}, {"t": "Capítulo uno. Comprar el sistema no es lo mismo que cambiar cómo trabajas.", "c": true}, {"t": "Toda esta unidad se apoya en una sola distinción, y te voy a ser honesto: si te queda clara esta, ya entendiste la mitad del curso. Hay dos cosas que la gente confunde todo el tiempo, aunque son bien distintas. Una se llama digitalizar, y la otra se llama transformar.", "c": false}, {"t": "Digitalizar es hacer más cómodo algo que ya hacías. Pasas la ficha del afiliado del papel a la pantalla, anotas la llamada en un sistema en vez de un cuaderno. Es útil, te ahorra tiempo, pero el trámite de fondo sigue siendo exactamente el mismo. Cambió la superficie, no cambió el juego.", "c": false}, {"t": "Transformar, en cambio, es algo mucho más profundo. La transformación digital es revisar cómo la organización decide, cómo trabaja y cómo crea valor, usando la tecnología solo como apoyo y nunca como el fin. Empieza el día que te atreves a preguntarte si tu forma de atender todavía resuelve bien lo que el afiliado necesita. Y eso puede obligarte a cambiar procesos, responsabilidades, hasta la forma de vender.", "c": false}, {"t": "El ejemplo clásico es Netflix. No se limitó a mandar películas por internet, porque eso sería apenas digitalizar el viejo arriendo de videos. Cambió la forma misma de ofrecer entretenimiento: tú eliges qué ver, cuándo y en qué pantalla. Cambiaron el juego, no el envoltorio.", "c": false}, {"t": "Y esto se ve clarísimo con una herramienta que de seguro conoces. El ce-ere-eme, que es el sistema donde guardas la relación con tus clientes, cae en digitalizar o en transformar según cómo lo uses. Si es apenas una agenda más cómoda donde anotas llamadas, la mejora es puramente administrativa, no cambia nada de fondo.", "c": false}, {"t": "Pero si tu equipo analiza esa información, detecta problemas que se repiten y ajusta la forma de atender, entonces ese mismo ce-ere-eme está apoyando una transformación de verdad. Fíjate, porque es la clave de todo: la herramienta no decide nada, lo decide el uso que tú le das. Tu planilla de cartera es una simple agenda si solo te dice a quién visitaste, y es transformación si la usas para detectar quién está por traspasarse y llamarlo a tiempo.", "c": false}, {"t": "De acá sale una idea que conviene grabarse. Unos investigadores, Westerman y su equipo, dijeron que la madurez digital no depende de cuántas tecnologías compras. Se nota en la capacidad de usarlas con criterio, conectarlas con la estrategia y sostener los cambios en el trabajo de todos los días. Una A F P puede tener el software más caro del mercado y ser un desastre digitalmente, y otra, con herramientas modestas, sacarle mucho más.", "c": false}, {"t": "¿Y para qué todo esto, al final? Para una sola cosa: crear valor. La creación de valor es resolver algo que de verdad le importa al cliente. Y ojo, no siempre es un producto nuevo: a veces es acortar una espera, quitar un trámite molesto o atender de una forma menos fría.", "c": false}, {"t": "Además, esto hoy corre más rápido que nunca. Antes una empresa podía quedarse quieta por años; hoy una aplicación te sube las expectativas en meses, o aparece un competidor chico más simple y te mueve el piso. El caso más claro son las fintech, empresas que compiten en servicios financieros con procesos mucho más simples y una experiencia por celular directa.", "c": false}, {"t": "Piensa en Nubank. Entendió que la forma de atender también es parte del servicio: todo por el celular, sin filas, casi sin sucursales. Llegó a más de cien millones de clientes en Latinoamérica. No inventó el crédito, ojo; cambió la experiencia de pedirlo.", "c": false}, {"t": "¿Y dónde entra la inteligencia artificial en todo esto? Acá una advertencia que vale para el resto del audio: un modelo predictivo, esa herramienta que anticipa un comportamiento como quién está por irse, no crea valor por el solo hecho de existir, sino cuando mejora una decisión concreta, como priorizar a quién llamas primero.", "c": false}, {"t": "Como dice el curso, el dato es el punto de partida, no el resultado final. Y si te llevas una sola frase de este capítulo, que sea esta: digitalizar es hacer lo mismo más cómodo; transformar es preguntarte si lo mismo todavía sirve.", "c": false}, {"t": "Capítulo dos. Las barreras que no salen en el presupuesto.", "c": true}, {"t": "Ya tienes la distinción de fondo: comprar no es transformar. Entonces surge la pregunta obvia: si transformar es tan buena idea, ¿por qué fracasan tantos proyectos? Y la respuesta es incómoda, porque casi nunca es culpa de la herramienta.", "c": false}, {"t": "Hay proyectos técnicamente impecables que después casi nadie usa. No falla la plataforma: falla todo lo que la rodea, las rutinas y las relaciones de años. Cambiar el sistema es rápido; cambiar cómo se coordina la gente toma paciencia. Te voy a nombrar las cuatro barreras que nunca salen en la cotización, pero que hunden más proyectos que cualquier falla técnica.", "c": false}, {"t": "La primera es la resistencia al cambio, que es el rechazo a una nueva forma de trabajar. Y ojo, no es pura mala voluntad: casi siempre es miedo. Miedo a perder autonomía, a quedar en evidencia frente al resto, o a no tener tiempo para aprender algo nuevo mientras cumples tus metas.", "c": false}, {"t": "Si esas dudas no se conversan, el proyecto queda en el papel y la gente sigue trabajando como antes. Y fíjate en esto, porque con la inteligencia artificial la resistencia se intensifica: si la presentas solo como una forma de producir más, la gente escucha una amenaza a su trabajo y se defiende todavía más.", "c": false}, {"t": "La segunda barrera son las contradicciones de la dirección. No sirve pedir innovación y después castigar cada intento que salió imperfecto. Si el discurso invita a experimentar pero la evaluación premia solo el cumplimiento rígido, el equipo aprende rapidísimo a no arriesgarse. Como dicen los que estudian esto, las decisiones cotidianas de los líderes muestran, con mucha más claridad que un discurso, qué conductas se valoran de verdad y cuáles se castigan.", "c": false}, {"t": "La tercera son los silos. Los silos son áreas que trabajan como compartimentos cerrados, cada una en su isla, sin compartir información ni decisiones. Y un buen proyecto de inteligencia artificial casi siempre necesita varias áreas a la vez: comercial, operaciones, lo legal, lo técnico. Si cada equipo protege su información y decide por su lado, la solución queda coja, o de plano imposible de implementar.", "c": false}, {"t": "Y la cuarta es la falta de un propósito claro. Adoptar tecnología porque está de moda, o porque la competencia la usa, te impide priorizar y, peor todavía, saber si el esfuerzo valió la pena. Sin un problema definido, no hay forma de medir el éxito. La gente necesita un propósito compartido: una explicación clara de hacia dónde se va, por qué se cambia y qué apoyo van a recibir en el camino.", "c": false}, {"t": "Piénsalo en tu experiencia. La última vez que llegó un sistema nuevo y el equipo lo sintió como una tarea más encima de las metas, muchos siguieron con su Excel de siempre. Eso no fue que la gente sea floja: fue resistencia por miedo y por falta de tiempo, más un propósito que nunca les explicaron bien. Los proyectos no mueren por la tecnología, mueren por lo que no se conversó.", "c": false}, {"t": "Capítulo tres. La cultura, la ventaja que la competencia no te puede copiar.", "c": true}, {"t": "Si las barreras son el miedo, los equipos que no se hablan y el para qué que falta, entonces la solución no es comprar mejor. Es construir algo que no está a la venta. Y eso nos lleva a la palabra más importante de toda la unidad, la cultura. Hay una frase del curso que resume este capítulo entero: la tecnología se compra, la cultura no.", "c": false}, {"t": "El software lo copia cualquiera en un mes; las creencias y los comportamientos compartidos de un equipo, no. La cultura organizacional es la manera habitual en que una empresa funciona, aunque nadie la haya escrito nunca. Se nota en cosas chicas: quién puede hablar en una reunión, qué pasa cuando alguien reconoce un error, cuánto cuesta compartir información entre áreas.", "c": false}, {"t": "Y como el mundo cambia rápido, transformarse exige aprendizaje continuo: aprender como parte del trabajo, no en un curso suelto de vez en cuando. El ejemplo grande es Microsoft con Satya Nadella. Su recuperación no fue solo cosa de decisiones tecnológicas; fue un cambio de cultura, de una gente que creía saberlo todo a una gente dispuesta a aprender siempre. Por eso el curso insiste: la cultura no es un adorno de la estrategia, es el lugar donde la estrategia se vuelve práctica.", "c": false}, {"t": "Ahora, ¿cómo se construye una organización que de verdad innova? Y acá hay una buena noticia: no depende de una idea brillante ni de tener a un genio creativo. Depende de tres condiciones que sí se pueden cultivar. Te las nombro una por una.", "c": false}, {"t": "La primera es la seguridad psicológica, que es la confianza para preguntar, opinar distinto o reconocer un error sin miedo a quedar mal. Una investigadora, Amy Edmondson, mostró algo bien contraintuitivo: los equipos de alto desempeño no son los que nunca fallan, son los que pueden hablar de sus errores, pedir ayuda y avisar de una dificultad antes de que se haga grande.", "c": false}, {"t": "Y ojo con un matiz que huele a pregunta de examen. Seguridad psicológica no significa aceptar cualquier idea sin discutirla. Significa analizar la propuesta con dureza, pero sin ridiculizar a la persona que la trajo. Se critica la idea, no a quien la dijo.", "c": false}, {"t": "La segunda condición es que el aprendizaje quede para todos. Que aprenda una sola persona no basta. El aprendizaje organizacional es convertir esa experiencia en mejoras compartidas, que cambian cómo trabaja el equipo completo. Hay que abrir espacios para poner en común lo aprendido, no dejarlo guardado en la cabeza de quien lo vivió.", "c": false}, {"t": "Y la tercera es la experimentación, que no es improvisar, ojo. Una prueba útil parte de una pregunta clara, tiene un alcance acotado y define de antemano cómo se va a evaluar. Su gracia es que es asimétrica: aun si falla, te ahorró una inversión mayor y te dejó un aprendizaje. Amazon es el ejemplo: aprende barato y temprano. Y la versión barata de esa prueba tiene nombre, se llama prototipo: una prueba acotada para validar una idea antes de comprometer recursos grandes.", "c": false}, {"t": "Cuando juntas esas tres cosas, tienes lo que se llama una cultura de innovación: un ambiente donde se puede proponer, probar y aprender sin que cada error se convierta en una amenaza. Pero atención, y esto es importante: sin eliminar la exigencia. No es un ambiente relajado donde todo vale, es uno donde equivocarte probando algo bien pensado no te cuesta la cabeza.", "c": false}, {"t": "Imagínate una reunión donde puedes decir: perdí este afiliado y esto fue lo que aprendí, sin que nadie te deje en ridículo, y ese aprendizaje se comparte para que el resto no tropiece igual. Esa sala vale oro. El equipo que puede hablar de sus fugas es el que aprende a evitarlas.", "c": false}, {"t": "Capítulo cuatro. La inteligencia artificial con criterio: primero el problema, después la herramienta.", "c": true}, {"t": "Recién ahora, con la cultura sobre la mesa, tiene sentido hablar de la inteligencia artificial. Son herramientas que reconocen patrones, procesan información, generan contenido o apoyan decisiones. Sus caras cotidianas ya las conoces: un asistente virtual, esos chatbots que responden consultas frecuentes solos; o un sistema de recomendaciones, que te sugiere productos según tu perfil, como el también te puede interesar de una tienda.", "c": false}, {"t": "Y acá está la regla más importante del capítulo, la misma del comienzo pero aplicada a la I.A.: primero el problema, después la herramienta. La I.A. se incorpora desde una necesidad concreta del negocio, no solo para ahorrar tiempo. Usarla para escribir un borrador u ordenar información te ahorra minutos, sí, pero eso es apenas una fracción de lo que puede hacer. El cambio grande aparece cuando rediseñas un servicio a partir de entender mejor a tus clientes.", "c": false}, {"t": "Por eso, antes de meter I.A. en cualquier proceso, el curso te exige responder cuatro preguntas que vale la pena memorizar. La primera: ¿qué decisión queremos mejorar? No usemos I.A. y ya, sino qué decisión concreta va a quedar mejor, por ejemplo a qué afiliado llamar primero. La segunda: ¿qué datos vamos a usar? Y acá una verdad dura: si los datos son malos, la respuesta va a ser mala, por sofisticada que sea la herramienta.", "c": false}, {"t": "La tercera pregunta: ¿quién revisará el resultado? Qué persona valida lo que la I.A. propone antes de actuar. Y la cuarta: ¿qué hacemos si el sistema se equivoca? Porque el plan para el error se define antes del error, nunca después. Fíjate: la tercera y la cuarta meten a una persona en el medio a propósito. Y eso tiene nombre.", "c": false}, {"t": "Un modelo puede equivocarse, o darte una respuesta que en los números se ve razonable pero que no encaja con la realidad. Y puede tener sesgo, que es una distorsión que hace que repita prejuicios que venían metidos en los datos. Si los datos históricos discriminaban a cierto grupo, el modelo aprende esa discriminación y la repite, prolijo y calladito.", "c": false}, {"t": "Por eso siempre hace falta supervisión humana: una persona que revise y valide los resultados, y que decida qué usos son aceptables y cuáles necesitan una segunda mirada. Grábate esta frase, porque es el corazón de todo: la máquina sugiere, tú decides. Y esto no es solo tarea del área de sistemas; la I.A. toca a todos, incluida tú, el área comercial.", "c": false}, {"t": "El valor estratégico de la I.A. aparece cuando mejora un servicio, descubre una oportunidad o te ayuda a decidir mejor, no solo cuando ahorra tiempo. Y para entenderlo hay tres niveles de análisis, cada uno más potente que el anterior.", "c": false}, {"t": "El primero es el análisis descriptivo, que usa los datos para entender lo que ya pasó: por ejemplo, cuántos afiliados se traspasaron el mes pasado. El segundo es el análisis predictivo, que anticipa lo que podría pasar: cuáles de tu cartera tienen alto riesgo de traspasarse el próximo trimestre. Y el tercero, el más potente, es el análisis prescriptivo, que recomienda qué acción tomar: a este afiliado en riesgo, ofrécele esto y llámalo esta semana.", "c": false}, {"t": "Pero cuidado con embalarse, porque hay una frase que el curso repite: la velocidad no reemplaza el criterio. Siempre hay que decidir qué cuenta como un buen resultado, qué riesgo se acepta y quién responde. Piénsalo así: un modelo predictivo es esa corazonada tuya de este afiliado se me va, pero hecha con datos de miles de casos en vez de solo tu instinto. No reemplaza tu olfato, lo amplifica y lo ordena. La I.A. acelera; no te exime de pensar.", "c": false}, {"t": "Capítulo cinco. Liderar cuando nadie tiene todas las respuestas, y hacer que todo converse.", "c": true}, {"t": "Transformarse te obliga a decidir sin tener toda la información, y lo que le funcionó a otra empresa a lo mejor a ti no te sirve. En ese escenario, la vieja imagen del jefe que lo sabe todo pierde sentido. Eso es el liderazgo digital: la capacidad de guiar personas en medio de cambios tecnológicos, explicar el propósito, escuchar las inquietudes, facilitar el aprendizaje y decidir con responsabilidad.", "c": false}, {"t": "No es un liderazgo técnico, ojo. Es liderazgo de personas en un contexto que se mueve rápido. Como decía Kotter, liderar un cambio implica construir una visión que se entienda y mover a la gente hacia ella. No basta con anunciar una meta; hay que traducirla en prioridades, decisiones y conversaciones de todos los días.", "c": false}, {"t": "En un mismo equipo pueden convivir el entusiasmo, la curiosidad, la desconfianza y hasta el miedo frente a la I.A. Ignorar esas emociones no las borra, solo las manda a los pasillos. Un buen líder hace tres cosas. Una: crea espacios para preguntar y probar, pero pone límites claros, qué usos son válidos y qué datos hay que proteger. Es libertad con reglas, no barra libre.", "c": false}, {"t": "Dos: escucha sin dejar de decidir, porque escuchar no es complacer a todos; explicar con qué criterios se decide fortalece la confianza aunque no todos queden conformes. Y tres, el punto más contraintuitivo y que huele a examen: la I.A. aumenta la importancia del liderazgo, no la reduce. Mientras más capaz es la herramienta, más necesario es orientar su uso con propósito. Una herramienta poderosa sin dirección es más peligrosa, no menos.", "c": false}, {"t": "Y todo esto necesita un método para llevarse a la práctica, que se llama gestión del cambio: el conjunto de acciones para dejar una forma conocida de trabajar y adoptar otra. Comunicar, capacitar, hacer participar a la gente, hacer seguimiento y ajustar cuando la cosa no avanza. Es el lado humano del proyecto: no el qué se instala, sino el cómo logras que la gente de verdad cambie de hábito.", "c": false}, {"t": "Hasta acá revisamos por separado la tecnología, la cultura, la innovación, el liderazgo y la I.A. Pero en la práctica están todos mezclados. Hay una cadena que conviene entender: una tecnología cambia las tareas, esas tareas cambian las relaciones entre las personas, y esas relaciones son las que facilitan o bloquean la mejora.", "c": false}, {"t": "Los problemas aparecen cuando tratas cada asunto como un proyecto aislado: instalar una plataforma sin preparar a quien la va a usar, o contratar expertos en I.A. sin conectarlos con el negocio. La respuesta a eso tiene nombre: convergencia. Es hacer que las piezas conversen entre sí: la estrategia aclara qué valor crear, las personas aportan su experiencia, la cultura define cómo se colabora y la tecnología amplía lo posible. Ninguna basta sola; juntas se sostienen.", "c": false}, {"t": "Y un punto que suele sorprender: la transformación digital no tiene fecha final. Las herramientas y las expectativas van a seguir cambiando. No existe el momento de empresa completamente transformada; existe una organización mejor o peor preparada para el próximo cambio. Y esa preparación, la capacidad de observar, aprender y ajustar, es uno de los resultados más valiosos de todo el proceso.", "c": false}, {"t": "El curso resume todo con una imagen de tres piezas que vale la pena llevarse. Una: la cultura, el terreno donde se aprende e innova. Dos: la inteligencia artificial, con un uso responsable y estratégico, datos adecuados y revisión humana. Y tres: el liderazgo, que no aparenta tener todas las respuestas, sino que explica el propósito, escucha, pone límites y decide con evidencia. Cultura, inteligencia artificial y liderazgo, las tres remando juntas.", "c": false}, {"t": "Capítulo seis. AgroAndes y tu ejercicio: el orden correcto de las cosas.", "c": true}, {"t": "Toda esta teoría se ve clarísima en un caso real que trae el curso. Se llama AgroAndes, una distribuidora chilena de insumos agrícolas que creció con trato cercano y asesoría técnica, muy de la mano de sus clientes. Pero el modelo se le quedó corto: los clientes empezaron a exigir información en línea, el estado de sus pedidos, respuestas rápidas, y ya había competidores ofreciendo compra por internet y atención automatizada.", "c": false}, {"t": "¿Y qué hicieron primero? Lo que haría casi cualquiera: comprar tecnología. Invirtieron en un ce-ere-eme, en un e-ere-pe, que es un software de gestión que junta compras, inventario y ventas en un solo lugar, y en una plataforma web. Al año, la mejora era mínima. Los vendedores seguían con sus planillas de siempre, todo dependía del correo y el cliente no notaba ningún cambio. Digitalización pura, sin transformación.", "c": false}, {"t": "La jefa comercial, Camila Rojas, lo dijo con todas sus letras: al principio pensaron que bastaba con instalar plataformas nuevas, pero entendieron que el verdadero cambio era aprender a trabajar distinto. ¿Y qué los frenaba? Las mismas barreras del capítulo dos: resistencia al cambio, porque el ce-ere-eme se sentía como una tarea extra; silos, porque las áreas no se coordinaban; y la más profunda, falta de propósito compartido, porque para todos era el proyecto de sistemas, ajeno a su trabajo.", "c": false}, {"t": "El segundo intento fue al revés: partieron por las personas. Explicaron el porqué, que no se trataba de reemplazar gente sino de sacar tareas inútiles y no quedar atrás. Armaron equipos de varias áreas y capacitaron con situaciones reales de trabajo. Y acá el detalle más revelador de todo el caso: la inteligencia artificial llegó recién dos años después. Solo con los procesos ya ordenados y la gente alineada sumaron un asistente virtual, modelos predictivos de demanda y un sistema de recomendaciones.", "c": false}, {"t": "Y ahí sí llegaron los resultados: consultas más rápidas, inventarios mejor estimados, clientes mejor atendidos y más gente proponiendo ideas. Fíjate bien en la lección, porque es la síntesis de toda la unidad: lo llamativo del caso no es la inteligencia artificial, es todo lo que tuvo que ocurrir antes de que sirviera para algo. Primero las personas y el para qué, después la herramienta.", "c": false}, {"t": "Y el curso cierra con un ejercicio que, da la casualidad, es casi tu trabajo con otras palabras. Una empresa llamada FreshExpress, de logística de comidas, compró un sistema de rutas, una app para los repartidores y un chatbot. ¿El resultado? Los tiempos no mejoran, los conductores terminan usando sus teléfonos personales y los clientes reclaman que nadie les informa nada. El mismo cuento de AgroAndes: compraron herramientas sin transformar el trabajo.", "c": false}, {"t": "La tarea es rediseñar un proceso crítico, y vamos a tomar el que más te toca a ti: la retención, o sea frenar la fuga de clientes. Esa fuga, en el mundo comercial, tiene un nombre en inglés que se dice chern, la pérdida de clientes que se van a la competencia. Hoy se maneja mal: la opinión de los clientes está dispersa, los problemas se detectan cuando ya explotaron, y el cliente molesto se va sin que nadie lo vea venir.", "c": false}, {"t": "¿Cómo debería hacerse entonces? Se integran los datos históricos de cada cliente, un modelo predictivo estima el riesgo de fuga y le pone un puntaje dentro del ce-ere-eme, y con eso armas campañas para los de mayor riesgo. Y mira cómo aparecen otra vez los tres niveles, en cadena: primero el descriptivo, cuántos se fueron y por qué; después el predictivo, el puntaje de riesgo; y por último el prescriptivo, a quién contactar primero y con qué. Del qué pasó al qué hago.", "c": false}, {"t": "Y presta atención a la gran lección, porque resume todo: la columna de cómo debería hacerse nunca empieza por la herramienta. Empieza por el objetivo, reducir la fuga, o por los datos. Después suma lo humano, equipos que trabajan juntos y gestión del cambio, más lo técnico, la inteligencia artificial predictiva. Y el impacto no se mide en lo bonita que quedó la app, sino en el cliente y en el negocio: menos fuga, más ventas.", "c": false}, {"t": "Piénsalo aplicado a ti, palabra por palabra. Imagina abrir tu cartera y ver a cada afiliado con un puntaje de riesgo de traspaso: en rojo el que se va, en verde el que está firme. Sabrías a quién llamar primero, con qué argumento y en qué semana. Eso es análisis prescriptivo puro aplicado a la retención. Pero ojo con lo de siempre: el puntaje te ordena la mañana, el cierre sigue siendo tuyo.", "c": false}, {"t": "Y con eso cerramos. Si de todo este rato te quedas con cuatro cosas, que sean estas. Una: digitalizar no es transformar; comprar un sistema hace lo mismo más cómodo, transformar es preguntarte si lo mismo todavía le sirve al afiliado. Dos: las barreras no salen en el presupuesto; los proyectos mueren por el miedo, por las áreas que no se hablan y por un para qué que nunca se explicó.", "c": false}, {"t": "Tres: la cultura es tu ventaja que nadie te puede copiar; un equipo que habla de sus fugas sin miedo y prueba cosas nuevas vale más que cualquier software caro. Y cuatro: con la inteligencia artificial, primero el problema; qué decisión mejorar, con qué datos, quién revisa y qué haces si se equivoca. La máquina sugiere, el criterio comercial sigue siendo tuyo.", "c": false}, {"t": "Y si tuvieras que quedarte con una sola frase para repetírtela cuando llegue el próximo sistema nuevo a la A F P, que sea esta: la tecnología se compra, la forma de trabajar se construye. Y esa, la competencia no te la puede copiar. Nos vemos en la próxima unidad.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
