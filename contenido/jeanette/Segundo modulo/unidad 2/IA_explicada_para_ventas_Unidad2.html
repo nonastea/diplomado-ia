@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La IA en la venta previsional: guía sin tecnicismos</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde tu mundo comercial</p>
+    <h1>Lo que la IA cambia en tu forma de vender</h1>
+    <p class="lead">En tu día a día ya intuyes patrones sin ponerles nombre técnico: sabes qué afiliado suena a que se va a traspasar, qué guion está funcionando esta semana y a quién conviene llamar primero en la mañana. Esta unidad le pone nombre técnico exactamente a eso, y agrega un actor nuevo a la mesa: sistemas que detectan esos mismos patrones a una escala que ninguna persona podría cubrir sola.</p>
+    <p class="lead">La buena noticia, y la idea que sostiene todo este documento: la IA no viene a reemplazar tu criterio comercial. Viene a <strong>amplificarlo</strong>. Esta guía te explica, sin tecnicismos crudos, qué son estas herramientas, qué competencias te conviene fortalecer y qué cargos nuevos está creando esto en empresas como la tuya.</p>
+    <span class="nota">No necesitas saber programar ni entender matemática. Esto es puro criterio comercial, con nombre técnico puesto encima.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>El cambio de marco: de automatizar a amplificar</a></li>
+      <li><a href="#p2"><span class="n">2</span>Las dos alfabetizaciones que te conviene tener</a></li>
+      <li><a href="#p3"><span class="n">3</span>Tres olas de cambio, y por qué esta es distinta</a></li>
+      <li><a href="#p4"><span class="n">4</span>Ni fe ciega ni desconfianza ciega</a></li>
+      <li><a href="#p5"><span class="n">5</span>Las competencias que la IA no te quita</a></li>
+      <li><a href="#p6"><span class="n">6</span>Aprender rápido o quedar obsoleta</a></li>
+      <li><a href="#p7"><span class="n">7</span>Liderar el cambio sin que se sienta impuesto</a></li>
+      <li><a href="#p8"><span class="n">8</span>Cargos nuevos que esto está creando</a></li>
+      <li><a href="#p9"><span class="n">9</span>Caso BBVA: cuando el algoritmo no era el problema</a></li>
+      <li><a href="#p10"><span class="n">10</span>Caso TuDiagnóstico: aprender a confiar con criterio</a></li>
+      <li><a href="#p11"><span class="n">11</span>Un ejemplo resuelto: filtrar currículums con IA</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">El marco de todo</span></div>
+    <h2 class="titulo">De automatizar a amplificar</h2>
+
+    <p>Partamos por el concepto que ordena absolutamente todo lo que sigue. Si te quedas con una sola idea de este documento, que sea esta.</p>
+
+    <p>Durante años, la tecnología en tu industria significó <span class="term">automatización</span>: sistemas que ejecutan tareas ya definidas, sin que nadie tenga que intervenir cada vez. El sistema que calcula solo tu comisión, el que genera la cartola mensual, el que manda el recordatorio de pago: todo eso ordenó procesos administrativos y redujo errores en tareas repetitivas. Pero tenía un techo claro: solo hacía lo que ya estaba definido de antemano, ni una gota más.</p>
+
+    <p>Lo que está pasando ahora es distinto, y por eso merece un nombre propio: <span class="term">inteligencia aumentada</span>. La idea central es que la IA no reemplaza tu criterio, lo <strong>amplía</strong>. La máquina aporta lo que ninguna persona puede igualar —revisar miles de historiales de cotización en segundos, detectar un patrón sutil de traspaso antes de que sea evidente—; tú aportas lo que ninguna máquina tiene —el tono correcto para esa llamada, el criterio ético, la lectura fina de si este cliente en particular necesita otro enfoque—.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre el sistema viejo que solo emitía la cartola, y uno nuevo que además te dice "este afiliado bajó su frecuencia de ingreso al portal en los últimos dos meses, y ese patrón históricamente antecede a un traspaso". La máquina no llama a nadie ni convence a nadie: solo te entrega la señal antes de que sea demasiado tarde para actuar sobre ella.
+    </div>
+
+    <p>Una pieza más de vocabulario que te vas a encontrar seguido: la <span class="term">inteligencia artificial generativa</span>. A diferencia de un sistema que solo clasifica o predice, esta genera contenido nuevo —textos, ideas, borradores— a partir de una instrucción escrita en lenguaje normal. Pedirle que te arme diez variantes de un guion de retención en un minuto es exactamente eso. La calidad de lo que te entrega depende de qué tan bien se lo pediste, y de qué tanto revisas y ajustas el resultado antes de usarlo: la máquina no sabe cuál de esas diez variantes conecta con tu cliente específico. Eso lo decides tú.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA no compite contigo: hace lo que tú no puedes (ver patrones en miles de casos a la vez), para que tú hagas mejor lo que ella no puede (decidir, con criterio, qué hacer con cada persona real).</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">Saber usarlo con criterio</span></div>
+    <h2 class="titulo">Las dos alfabetizaciones que te conviene tener</h2>
+
+    <p>Si la IA va a acompañarte en el trabajo diario, hay dos capacidades que conviene distinguir, porque no son lo mismo.</p>
+
+    <p>La primera es amplia: <span class="term">competencias digitales</span>, la capacidad de usar cualquier tecnología digital de forma efectiva y segura, sea cual sea. Es tu "licencia de conducir" general del mundo digital: te habilita para moverte con soltura en el portal, las apps internas, la firma electrónica, cualquier plataforma nueva que llegue, sin que te tengan que enseñar cada una desde cero como si fuera la primera vez que ves una pantalla.</p>
+
+    <p>La segunda es más específica y es la que más te va a servir de aquí en adelante: <span class="term">alfabetización en IA</span>. No es saber programar. Es entender, a grandes rasgos, qué puede hacer un sistema de IA, qué no puede hacer, y cuándo un resultado necesita que tú lo revises antes de actuar sobre él.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      No necesitas ser actuario para leer una libreta de ahorro previsional y tomar una decisión razonable con un afiliado: te basta con saber qué significa cada línea y cuándo algo no cuadra. La alfabetización en IA es exactamente esa misma clase de competencia, aplicada a lo que te sugiere un sistema en vez de a un estado de cuenta.
+    </div>
+
+    <p>Si quieres un mapa más fino de esto, existen dos marcos de referencia que ordenan el tema (no hace falta memorizarlos, solo saber que existen): el <span class="term">marco DigComp</span> organiza las competencias digitales generales en 5 áreas —información y datos, comunicación, creación de contenido, seguridad, resolución de problemas— con 8 niveles de dominio en cada una. Y el <span class="term">marco de la UNESCO</span> hace lo mismo específicamente para IA: 4 dimensiones (mirada centrada en las personas, ética, técnica, diseño) cruzadas con 3 niveles de progresión (comprender, aplicar, crear). Ambos te dicen lo mismo de fondo: esto no es un "sí lo sé" o "no lo sé" binario, es un progreso, y siempre se puede subir un nivel más.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Las competencias digitales son el paraguas: te mueves bien en cualquier pantalla. La alfabetización en IA es la especialización: sabes cuándo confiar en lo que la pantalla te está sugiriendo.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">El panorama</span></div>
+    <h2 class="titulo">Tres olas de cambio, y por qué esta es distinta</h2>
+
+    <p>Para entender por qué esto merece tu atención y no es solo "otra moda tecnológica", ayuda ver la secuencia completa.</p>
+
+    <p>La primera ola fue la mecanización: reemplazó fuerza física y repetición manual en la producción. La segunda fue la informática —los sistemas que ordenaron el papeleo, digitalizaron cotizaciones y cartolas, redujeron errores en tareas repetitivas pero ya bien definidas de antemano—. La tercera ola, la que estás viviendo ahora, es distinta en un sentido preciso: por primera vez, el cambio no se queda en lo físico ni en lo administrativo. Entra al terreno donde antes solo entraba el juicio humano —sugerir, analizar, incluso redactar—.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Son tres olas de la misma marea, cada una llegando más arriba en la playa. La primera cubrió el trabajo físico. La segunda, el papeleo y las cotizaciones. La tercera está llegando hasta el terreno que hasta hace poco parecía a salvo de cualquier automatización: a quién llamar, qué decirle, y con qué prioridad.
+    </div>
+
+    <p>El Foro Económico Mundial (2025) puso números a esto en su informe sobre el futuro del empleo, y la cifra vale la pena repetirla: estima que un <strong>39% de las competencias clave</strong> del mercado laboral va a cambiar de aquí al 2030. Casi 4 de cada 10 habilidades que hoy se consideran importantes en tu puesto se van a modificar en cinco años. El mismo informe ubica el <span class="term">pensamiento analítico</span> como la competencia individual más valorada por los empleadores —por delante incluso del pensamiento creativo—, seguida de la <span class="term">resolución de problemas complejos</span>, la creatividad, la comunicación, el liderazgo y el aprendizaje continuo. Fíjate en el patrón: ninguna de esas seis es una habilidad técnica de manejar un programa. Son, todas, formas de criterio humano.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">No es que lo técnico deje de importar: es que crece en paralelo con habilidades humanas que ninguna máquina resuelve sola, y esas son las que hoy se valoran más.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">El punto medio</span></div>
+    <h2 class="titulo">Ni fe ciega ni desconfianza ciega</h2>
+
+    <p>Ya viste que la IA te entrega señales. Lo que falta responder es una pregunta más incómoda: ¿cuánto le crees a esa señal? Aquí es donde entra la competencia que sostiene todo lo demás.</p>
+
+    <p>El <span class="term">pensamiento crítico</span> es la capacidad de analizar la información que te entrega un sistema, revisar los supuestos detrás de esa recomendación y contrastarla con lo que tú sabes, antes de actuar. La UNESCO lo dice con una frase que vale la pena repetir: esta capacidad "evita que las decisiones se tomen únicamente porque el sistema lo dijo".</p>
+
+    <p>Esa frase —"porque el sistema lo dijo"— tiene nombre técnico, y te conviene conocer los dos extremos que describe, porque casi con seguridad ya viste a algún colega caer en uno de los dos.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Sesgo de automatización</div>
+        <p>Confiar de más en lo que sugiere el sistema, solo porque lo sugirió un sistema. Se acepta la alerta o la prioridad sin revisar si tiene sentido para ese caso puntual.</p>
+        <small>El riesgo: actuar sobre una recomendación que, en ese caso particular, estaba equivocada.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Aversión al algoritmo</div>
+        <p>Desconfiar de una recomendación automática más de lo razonable, incluso cuando el sistema viene acertando más que el criterio propio en ese tipo de caso.</p>
+        <small>El riesgo: ignorar una señal buena solo porque "prefiero confiar en mi olfato".</small>
+      </div>
+    </div>
+
+    <p>El pensamiento crítico es, en el fondo, el punto medio entre estos dos extremos: ni fe ciega ni desconfianza ciega, sino evaluar caso a caso.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un sistema marca a un afiliado con "alta probabilidad de traspaso". La vendedora que cae en sesgo de automatización llama de inmediato con el guion de retención, sin mirar que ese afiliado acaba de recibir un ascenso y probablemente solo actualizó sus datos por eso. La que cae en aversión al algoritmo ignora la alerta porque "yo conozco a mis clientes", aunque ese mismo sistema haya acertado las últimas diez veces. Ninguna de las dos está pensando con criterio: están en los dos polos que el pensamiento crítico existe para evitar.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La máquina te da la alerta; tú decides si esta vez aplica. Ni tragarte todo lo que dice, ni descartarlo por sistema: revisar caso a caso.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Lo que sigue siendo tuyo</span></div>
+    <h2 class="titulo">Las competencias que la IA no te quita</h2>
+
+    <p>Ya viste la cifra del Foro Económico Mundial en la parte anterior: pensamiento analítico, resolución de problemas complejos, creatividad, comunicación, liderazgo y aprendizaje continuo son las seis competencias más valoradas hacia 2030. Vale la pena mirar una por una qué significan en tu día a día, porque no son conceptos abstractos: son, básicamente, lo que ya haces bien.</p>
+
+    <p>El <span class="term">pensamiento analítico</span> es la capacidad de descomponer una situación compleja en partes para encontrarle el patrón: por qué un cliente duda, qué parte de la oferta no quedó clara, qué variable está pesando más en su decisión. La <span class="term">resolución de problemas complejos</span> es un paso más allá: no basta con entender las partes, hay que decidir qué hacer cuando varias causas se mezclan a la vez y no hay una respuesta de manual.</p>
+
+    <p>La <span class="term">creatividad e innovación</span> sigue siendo profundamente humana porque conecta algo que ninguna IA generativa tiene: conocimiento de ese cliente específico, sensibilidad frente a lo que le preocupa, capacidad de imaginar un enfoque distinto. Una IA generativa puede armarte diez variantes de un guion en un minuto —eso ya lo viste en la primera parte—, pero no sabe cuál de esas diez conecta con la persona que tienes al teléfono ahora mismo. Esa lectura fina sigue siendo tuya.</p>
+
+    <p>La <span class="term">comunicación interdisciplinaria</span> —a veces también llamada <span class="term">colaboración interdisciplinaria</span>, son dos caras de lo mismo— es el mecanismo con el que un equipo de ventas, uno de tecnología y uno de servicio al cliente logran entenderse sin hablar el mismo idioma técnico. Y la <span class="term">adaptabilidad</span> es la disposición para ajustarte rápido cuando una herramienta o un proceso cambia sin previo aviso: ninguna capacitación inicial alcanza para toda tu vida laboral, porque las herramientas van a seguir cambiando.</p>
+
+    <p>Todas estas se agrupan en algo más grande: las <span class="term">competencias para la innovación</span>, que no son una sola habilidad sino un ciclo de cuatro pasos que probablemente ya recorres sin ponerle nombre.</p>
+
+    <ol class="pasos">
+      <li><b>Detectar.</b> Identificar dónde hay una oportunidad real —no inventada— dentro de tu cartera o tu proceso de venta.</li>
+      <li><b>Proponer.</b> Idear una mejora concreta: un guion distinto, una forma nueva de priorizar contactos.</li>
+      <li><b>Experimentar.</b> Probarla en chico, con pocos clientes, antes de comprometerte del todo.</li>
+      <li><b>Transformar.</b> Si funcionó, convertirla en la forma normal de trabajar, no en una excepción que se olvida al mes siguiente.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es exactamente el ciclo que sigues cuando notas que un tipo de objeción se repite (detectar), armas una respuesta nueva para ella (proponer), la pruebas con los próximos clientes que te la planteen (experimentar) y, si funciona mejor que la anterior, la adoptas para todo el equipo (transformar). La IA puede ayudarte a acelerar cada paso; el ciclo completo sigue siendo tuyo.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Ninguna de las seis competencias que más se valoran hacia 2030 es "saber manejar un programa". Todas son formas de criterio humano, y todas ya las practicas.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Mantenerse vigente</span></div>
+    <h2 class="titulo">Aprender rápido o quedar obsoleta</h2>
+
+    <p>Si casi 4 de cada 10 competencias clave van a cambiar hacia 2030, como ya vimos, quedarte con lo que sabes hoy tiene fecha de vencimiento. Por eso el <span class="term">aprendizaje continuo</span> —la disposición permanente para actualizar lo que sabes— dejó de ser un curso puntual que tomas cuando cambias de pega, y se volvió un hábito estructural, tanto tuyo como de tu organización.</p>
+
+    <p>Ese aprendizaje continuo se ejerce en la práctica de dos maneras distintas, y conviene no confundirlas:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Upskilling</div>
+        <div class="sub">Profundizas en lo mismo</div>
+        <ul>
+          <li>Fortaleces competencias del rol que ya tienes hoy.</li>
+          <li>Vas más rápido, con más criterio, en la misma dirección.</li>
+        </ul>
+        <p class="nm">En una línea: afilas el mismo cuchillo que usas todos los días.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Reskilling</div>
+        <div class="sub">Cambias de dirección</div>
+        <ul>
+          <li>Desarrollas competencias para un rol distinto al actual.</li>
+          <li>La familia de habilidades es parecida, pero la aplicación cambia por completo.</li>
+        </ul>
+        <p class="nm">En una línea: cambias el cuchillo de cocina por un bisturí.</p>
+      </div>
+    </div>
+
+    <p>Peter Senge, uno de los autores que más ha estudiado esto, describe a las mejores organizaciones como <span class="term">organización que aprende</span>: no gana la que más sabe en un momento dado, sino la que aprende más rápido que su competencia. Para que eso sea real —y no una frase en una presentación— hace falta instalar una <span class="term">cultura de experimentación</span>: aceptar que no todas las pruebas van a funcionar a la primera, y tratar eso como parte del aprendizaje, no como un fracaso que hay que esconder.</p>
+
+    <p>Y una cultura de experimentación de verdad necesita algo más profundo debajo: <span class="term">seguridad psicológica</span>. Es la creencia compartida, dentro de un equipo, de que nadie va a ser castigado ni humillado por hacer una pregunta, admitir un error o proponer una idea que podría no funcionar. Sin eso, "probamos cosas nuevas" es solo un discurso: nadie se anima a decir en voz alta "esto que probé no resultó", y el equipo deja de aprender justo donde más lo necesita.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Seguridad psicológica es que un ejecutivo de tu equipo pueda decir en la reunión semanal "probé el guion nuevo con cinco clientes y me fue peor que con el anterior" sin que eso se lea como un fracaso personal, sino como información útil para todos. El equipo que castiga esa honestidad termina con vendedores que ocultan lo que no funcionó, y entonces nadie aprende de eso.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Upskilling profundiza, reskilling cambia de rumbo. Y ninguno de los dos ocurre de verdad si el equipo tiene miedo de admitir que algo no funcionó.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">Gestionar el cambio</span></div>
+    <h2 class="titulo">Liderar el cambio sin que se sienta impuesto</h2>
+
+    <p>Incorporar IA a un equipo de ventas no es un problema de instalar un software. Es un problema de gestión del cambio humano, con todo lo que eso implica: miedo a equivocarse, desconfianza hacia la herramienta nueva, o temor a que la experiencia propia deje de valer.</p>
+
+    <p>El <span class="term">liderazgo digital</span> es la capacidad de orientar a un equipo durante ese cambio, promoviendo aprendizaje, colaboración y una adopción responsable de la herramienta nueva —en vez de simplemente anunciarla y esperar que se use—. El modelo más citado para esto es el de John Kotter, con ocho pasos que valen para cualquier cambio organizacional, incluido el de sumar IA a un equipo comercial.</p>
+
+    <ol class="pasos">
+      <li><b>Crear urgencia genuina.</b> Explicar con claridad por qué este cambio es necesario ahora, no "porque sí" ni "porque lo pide la matriz".</li>
+      <li><b>Armar una coalición guía.</b> Un grupo interno, con credibilidad real entre sus pares, que empuje el proceso desde adentro.</li>
+      <li><b>Formar una visión clara.</b> Dejar dicho, en una frase, cómo se va a ver el trabajo distinto una vez que el cambio esté funcionando.</li>
+      <li><b>Sumar voluntarios.</b> Movilizar a la gente que genuinamente quiere aportar, en vez de imponerlo parejo a todo el equipo de un día para otro.</li>
+      <li><b>Sacar los obstáculos.</b> Eliminar las trabas que frenan el avance: procesos viejos, permisos que no llegan, sistemas que no conversan entre sí.</li>
+      <li><b>Mostrar triunfos tempranos.</b> Conseguir y comunicar una victoria chica y rápida, para que el equipo vea que sí funciona.</li>
+      <li><b>Sostener el impulso.</b> No declarar la victoria antes de tiempo: seguir construyendo sobre los primeros logros.</li>
+      <li><b>Anclarlo en la cultura.</b> Que la nueva forma de trabajar quede instalada de verdad, y no se abandone apenas baje la atención inicial.</li>
+    </ol>
+
+    <p>Un ingrediente más, que ya viste en la parte anterior: sin cultura de experimentación ni seguridad psicológica sosteniendo el proceso, cualquiera de estos ocho pasos se siente impuesto en vez de aprendido en conjunto.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre un jefe de equipo que un lunes anuncia "desde hoy todos usan el sistema nuevo de alertas" sin más explicación, y uno que primero muestra por qué hace falta (urgencia), consigue que dos o tres vendedores referentes lo prueben primero y cuenten cómo les fue (coalición y triunfo temprano), y recién después lo extiende a todo el equipo. El primero genera resistencia; el segundo, adopción real.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un cambio que se anuncia se resiste. Un cambio que se explica, se prueba en chico y se sostiene en el tiempo, se adopta.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">Los perfiles que están apareciendo</span></div>
+    <h2 class="titulo">Cargos nuevos que esto está creando</h2>
+
+    <p>Todo lo anterior no se queda en el terreno de las "competencias": ya está dando origen a roles concretos, o transformando radicalmente cargos que ya existían. No es un mundo laboral aparte del actual; son las profesiones de siempre, exigiendo ahora algo distinto dentro del mismo puesto.</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Analista de negocios con IA</div>
+        <div class="sub">El puente</div>
+        <ul>
+          <li>Identifica oportunidades de mejora y evalúa dónde la IA aporta valor real, no en cualquier caso.</li>
+          <li>No necesariamente programa, pero entiende lo suficiente para dialogar con el equipo técnico.</li>
+        </ul>
+        <p class="nm">En una línea: como un traductor diplomático entre el negocio y la tecnología.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Profesional de datos / analítica</div>
+        <div class="sub">Quien construye el modelo</div>
+        <ul>
+          <li>Recopila y analiza datos, y construye los modelos que generan las recomendaciones.</li>
+          <li>Su éxito no depende solo de la técnica: también de comunicar hallazgos con claridad a quien decide.</li>
+        </ul>
+        <p class="nm">En una línea: un modelo impecable que nadie entiende no genera ningún valor.</p>
+      </div>
+    </div>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Especialista en IA responsable</div>
+        <div class="sub">Quien cuida los límites</div>
+        <ul>
+          <li>Revisa sesgos, riesgos y que el sistema respete principios éticos durante todo su uso.</li>
+          <li>Decide qué datos se pueden usar y qué decisiones no deberían automatizarse sin supervisión.</li>
+        </ul>
+        <p class="nm">En una línea: lleva la ética de la IA al terreno operativo concreto.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Diseñador de experiencias</div>
+        <div class="sub">Quien traduce a pantalla</div>
+        <ul>
+          <li>Diseña cómo se muestra una recomendación de IA para que sea clara y confiable.</li>
+          <li>Si la interfaz confunde, el equipo confía de más o de menos: las dos fallas que ya viste en la parte 4.</li>
+        </ul>
+        <p class="nm">En una línea: el tablero que te dice qué está haciendo el sistema y cuánto control conservas tú.</p>
+      </div>
+    </div>
+
+    <p>Y hay una habilidad transversal que no se volvió un cargo aparte, aunque por un tiempo pareció que lo haría: formular instrucciones claras para un sistema de IA generativa —dar contexto suficiente, pedir el formato que necesitas, anticipar ambigüedades antes de que el modelo las resuelva por su cuenta y, probablemente, mal—. A esto se le llamó <span class="term">prompt engineering</span>, y durante un tiempo se habló de él casi como una profesión nueva e independiente. Vale la pena que sepas cómo viene evolucionando: como puesto de trabajo separado, está en franco declive; en cambio, la habilidad se está disolviendo dentro de otros roles —el mismo analista de negocios, el mismo diseñador de experiencias— porque resultó ser, más que un cargo, una forma transversal de comunicarte con estas herramientas.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Pedirle bien las cosas a una IA generativa es, en el fondo, lo mismo que armar un buen briefing para un colega nuevo: si le das contexto de sobra, un ejemplo de lo que esperas y el formato exacto de lo que necesitas, te devuelve algo usable a la primera. Si le pides "escríbeme algo para un cliente" a secas, te va a devolver algo genérico que vas a tener que rehacer igual.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA no solo reemplaza tareas: también está creando cargos nuevos y cambiando las responsabilidades de los que ya existían.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 9 -->
+  <section class="parte reveal" id="p9">
+    <div class="kicker"><span class="num">9</span><span class="tag">Caso real</span></div>
+    <h2 class="titulo">BBVA: cuando el algoritmo no era el problema</h2>
+
+    <p>BBVA es uno de los bancos que más ha invertido en transformación digital e inteligencia artificial: modelos que detectan fraude, personalizan productos financieros y mejoran la experiencia del cliente mediante asistentes digitales. Este es un caso real, no armado para la clase.</p>
+
+    <p>Pero los principales problemas no aparecieron en la tecnología. En las primeras etapas, los equipos reaccionaron de dos formas opuestas frente a las recomendaciones del modelo: algunos desconfiaban y seguían decidiendo como antes —aversión al algoritmo—; otros aceptaban automáticamente lo que el sistema sugería, sin revisar con suficiente profundidad —sesgo de automatización—. Los mismos dos extremos que ya conoces de la parte 4, ocurriendo a escala de un banco completo.</p>
+
+    <p>La respuesta de BBVA no fue técnica, fue de personas: programas de formación digital para fortalecer pensamiento crítico, análisis de datos y colaboración entre áreas, y equipos mixtos donde especialistas de negocio, analistas de datos e ingenieros trabajaban juntos desde el principio —evitando que un proyecto de IA quedara aislado del funcionamiento cotidiano del banco—. Las pruebas piloto dejaron de tratarse como experimentos técnicos y empezaron a usarse como espacios para aprender y ajustar antes de escalar.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el mismo patrón que se repite en cualquier área comercial que compra una plataforma nueva y espera que "se use sola": si al equipo de venta no se le enseña a interpretar lo que la herramienta sugiere y por qué, unos van a ignorarla y otros van a seguirla a ciegas. La plataforma no es el problema; la preparación del equipo, sí.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Tener el mejor algoritmo no garantiza mejores decisiones. La ventaja aparece cuando las personas saben qué hacer con lo que el algoritmo les entrega.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 10 -->
+  <section class="parte reveal" id="p10">
+    <div class="kicker"><span class="num">10</span><span class="tag">Caso de clase</span></div>
+    <h2 class="titulo">TuDiagnóstico: aprender a confiar con criterio</h2>
+
+    <p>Este segundo caso —TuDiagnóstico, un centro de apoyo diagnóstico— es construido para la clase, no una empresa real. Pero muestra, a escala humana y con nombres y apellidos, la misma lección que BBVA muestra a escala de organización completa.</p>
+
+    <p>TuDiagnóstico incorporó un sistema de IA para revisar imágenes médicas, clasificar casos por complejidad y elaborar reportes preliminares, liberando tiempo de los especialistas para los casos que de verdad exigían su criterio clínico. Técnicamente, funcionó: los tiempos bajaron y los primeros números entusiasmaron a la dirección.</p>
+
+    <p>Pero en el día a día, la Dra. Elena Ferrando, con más de veinte años de oficio, desconfiaba de los reportes automáticos y prefería dejar la plataforma en segundo plano. Al otro lado, el ingeniero Marco no entendía esa resistencia: los modelos estaban validados y la precisión era alta. Los dos querían lo mismo —lo mejor para el paciente—, pero hablaban idiomas distintos, y la organización terminó usando la IA de manera caótica: unos con fe casi ciega, otros evitándola por sistema.</p>
+
+    <p>La dirección investigó y encontró algo revelador: el sistema funcionaba, pero nadie tenía un criterio compartido para usarlo. Cuando la Dra. Elena preguntó en voz alta "¿cuándo debo confiar en esta recomendación y cuándo debo cuestionarla?", nadie tuvo una respuesta clara. Se había enseñado a operar una aplicación, no a trabajar con criterio junto a ella.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">La capacitación vieja</div>
+        <p>Un manual de instrucciones: cómo navegar la plataforma, cómo extraer un reporte. Enseña a apretar botones, no a decidir cuándo confiar en lo que el botón entrega.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">La capacitación nueva</div>
+        <p>Un espacio de reflexión clínica: revisar casos reales, contrastar la recomendación de la IA con los antecedentes del paciente, y explicar en voz alta el razonamiento para aceptarla, ajustarla o rechazarla.</p>
+      </div>
+    </div>
+
+    <p>Meses después, la Dra. Elena ya no miraba la IA con desconfianza sino con curiosidad crítica, y Marco dejó de medir el éxito solo en precisión matemática. La organización entendió que la ventaja real no estaba en tener el mejor algoritmo, sino en tener personas capaces de decidir con criterio junto a él.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Capacitar a un equipo de ventas en "cómo se usa el sistema nuevo" —qué botón apretar, dónde aparece la alerta— es exactamente la capacitación vieja de este caso. Enseñarles, además, a leer cuándo una alerta de traspaso amerita una llamada urgente y cuándo probablemente es ruido, es la diferencia que TuDiagnóstico tuvo que aprender por las malas.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA no transforma sola: transforma cuando las personas están preparadas para decidir con criterio junto a ella, no solo para operarla.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 11 -->
+  <section class="parte reveal" id="p11">
+    <div class="kicker"><span class="num">11</span><span class="tag">Un ejemplo resuelto</span></div>
+    <h2 class="titulo">Filtrar currículums con IA: el ejemplo completo</h2>
+
+    <p>Para cerrar, vale la pena recorrer un ejemplo ya resuelto —viene del área de recursos humanos, pero cada pieza se traduce directo a cualquier proceso donde hay que revisar muchos casos y priorizar cuáles atender primero—.</p>
+
+    <p>La oportunidad: usar IA para filtrar candidatos según palabras clave, experiencia relevante y alineación con el perfil, reduciendo el tiempo de revisión inicial en un <strong>60%</strong>. Para lograrlo hacen falta tres piezas técnicas que vale la pena conocer por nombre: <span class="term">NLP</span> (procesamiento de lenguaje natural), la capacidad del sistema de leer texto libre —un currículum no es un formulario con campos exactos, así que el sistema necesita entender lenguaje natural para extraer de ahí la experiencia relevante—; <span class="term">clasificación</span>, la tarea que asigna una categoría a cada caso (por ejemplo, "prioritario" o "no prioritario") según patrones aprendidos de casos anteriores; y el <span class="term">modelo de aprendizaje automático</span> de fondo, que aprendió esos patrones mirando datos históricos en vez de seguir reglas escritas a mano.</p>
+
+    <p>Las competencias que hacen falta para usar esto bien son las mismas cuatro que ya conoces de este documento: interpretar resultados (entender por qué el sistema priorizó ciertos perfiles), pensamiento crítico (no aceptar automáticamente lo que sugiere), colaboración (ajustar los criterios junto al equipo técnico) y alfabetización en IA (entender los límites del modelo y con qué datos se entrenó).</p>
+
+    <p>El riesgo que el ejemplo identifica es concreto: sin ese criterio, nadie puede detectar un <span class="term">sesgo algorítmico</span> —una desviación sistemática en los resultados, causada por datos de entrenamiento no representativos, que puede repetir en silencio un patrón de discriminación del pasado sin que exista ninguna regla explícita que lo ordene—. Por eso la propuesta de implementación combina cuatro acciones:</p>
+
+    <ol class="pasos">
+      <li><b>Taller de alfabetización en IA.</b> Dos sesiones prácticas para entender cómo funciona el filtro.</li>
+      <li><b>Pilotaje controlado.</b> Probar el sistema con cien casos reales y comparar sus resultados con el criterio humano antes de confiar en él a plena escala.</li>
+      <li><b>Revisión ética específica.</b> Analizar posibles sesgos por género, edad o procedencia.</li>
+      <li><b>Feedback continuo.</b> El equipo califica la utilidad de las sugerencias y ajusta los parámetros con esa retroalimentación.</li>
+    </ol>
+
+    <p>Dos ideas más que cierran el ejemplo, y que aplican a cualquier sistema de IA que uses: la <span class="term">transparencia algorítmica</span> —poder explicar por qué el sistema llegó a un resultado— y la <span class="term">privacidad de datos</span> —cuidar la información personal que ese sistema usa para funcionar— no son requisitos legales aburridos: son lo que te permite defender una decisión cuando alguien te pregunta por qué.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es exactamente la misma lógica que un sistema que prioriza a qué afiliados contactar según su riesgo de traspaso: si nadie audita con qué datos se entrenó, puede estar penalizando en silencio a cierto tipo de perfiles —por edad, por zona, por historial— sin que nadie lo haya ordenado explícitamente. La revisión ética no es un trámite: es lo que evita que automatices, sin darte cuenta, un sesgo que ya traían tus propios datos.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA puede acelerar la revisión de cien casos. El criterio para decidir qué hacer con cada uno —y para detectar cuándo el sistema se equivocó— sigue siendo tuyo.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Alfabetización en IA</dt><dd>Saber qué puede y qué no puede hacer una IA, y cuándo confiar en lo que te dice.</dd>
+        <dt>Aprendizaje continuo</dt><dd>El hábito de seguir aprendiendo cosas nuevas todo el tiempo, no solo cuando cambias de pega.</dd>
+        <dt>Colaboración interdisciplinaria</dt><dd>Juntar a gente de áreas distintas para resolver algo que ninguna, por sí sola, resuelve bien.</dd>
+        <dt>Competencias digitales</dt><dd>Moverte con soltura en cualquier plataforma digital, sin que te enseñen cada pantalla nueva desde cero.</dd>
+        <dt>Competencias para la innovación</dt><dd>Detectar una oportunidad, proponerla, probarla en chico y recién ahí llevarla a todos.</dd>
+        <dt>Inteligencia aumentada</dt><dd>La IA como ayudante que te hace mejor a ti, no como reemplazo.</dd>
+        <dt>Liderazgo digital</dt><dd>Guiar a un equipo durante un cambio tecnológico sin que se sienta impuesto.</dd>
+        <dt>Pensamiento crítico</dt><dd>Revisar lo que sugiere un sistema antes de actuar, en vez de aceptarlo solo porque "lo dijo la máquina".</dd>
+        <dt>Reskilling</dt><dd>Aprender habilidades para un rol distinto al que tienes hoy.</dd>
+        <dt>Upskilling</dt><dd>Mejorar las habilidades del rol que ya tienes.</dd>
+        <dt>Automatización</dt><dd>Un sistema que ejecuta siempre la misma tarea ya definida, sin que nadie intervenga cada vez.</dd>
+        <dt>Inteligencia artificial generativa</dt><dd>La IA que crea contenido nuevo —textos, ideas— a partir de una instrucción escrita, no solo la que clasifica o predice.</dd>
+        <dt>Pensamiento analítico</dt><dd>Separar un problema complejo en partes para encontrarle el patrón.</dd>
+        <dt>Resolución de problemas complejos</dt><dd>Resolver situaciones con varias causas mezcladas, sin una respuesta obvia.</dd>
+        <dt>Creatividad e innovación</dt><dd>Imaginar una solución que ninguna máquina te va a proponer sola, porque no conoce tu contexto real.</dd>
+        <dt>Comunicación interdisciplinaria</dt><dd>Traducir entre el lenguaje técnico y el comercial para que ambos equipos se entiendan.</dd>
+        <dt>Adaptabilidad</dt><dd>La rapidez para ajustarte cuando una herramienta o un proceso cambia sin aviso.</dd>
+        <dt>Sesgo algorítmico</dt><dd>Cuando un sistema repite, sin darse cuenta, un patrón injusto que ya venía en los datos con los que aprendió.</dd>
+        <dt>Sesgo de automatización</dt><dd>Confiar de más en lo que sugiere un sistema, solo porque lo sugirió un sistema.</dd>
+        <dt>Aversión al algoritmo</dt><dd>Desconfiar de una sugerencia automática más de lo razonable, aunque el sistema esté acertando.</dd>
+        <dt>Ética de la IA / uso responsable</dt><dd>Las reglas de fondo para que un sistema respete a las personas: privacidad, transparencia, revisión humana.</dd>
+        <dt>Transparencia algorítmica</dt><dd>Poder explicar por qué un sistema llegó a la recomendación que dio.</dd>
+        <dt>Privacidad de datos</dt><dd>Cuidar la información personal que un sistema usa para funcionar.</dd>
+        <dt>Cultura de experimentación</dt><dd>Que en tu equipo esté bien visto probar algo nuevo, aunque no resulte a la primera.</dd>
+        <dt>Seguridad psicológica</dt><dd>Que nadie en tu equipo tenga miedo de decir "esto no lo entendí" o "esto que probé no funcionó".</dd>
+        <dt>Analista de negocios con IA</dt><dd>Quien traduce una necesidad comercial en un proyecto de IA que de verdad se puede construir.</dd>
+        <dt>Profesional de datos / analítica</dt><dd>Quien junta y analiza datos para sacar conclusiones útiles para decidir.</dd>
+        <dt>Especialista en IA responsable</dt><dd>Quien revisa que un sistema de IA no esté discriminando ni usando datos de forma indebida.</dd>
+        <dt>Diseñador de experiencias</dt><dd>Quien diseña cómo se ve y se entiende una recomendación de IA para quien la va a usar.</dd>
+        <dt>Prompt engineering / ingeniería de instrucciones</dt><dd>Saber pedirle bien las cosas a una IA generativa: con contexto, ejemplos y el formato que necesitas.</dd>
+        <dt>Procesamiento de Lenguaje Natural (NLP)</dt><dd>La parte de la IA que le permite a un sistema leer y entender texto escrito en lenguaje normal.</dd>
+        <dt>Clasificación</dt><dd>Cuando un sistema pone cada caso en una categoría —"prioritario", "no prioritario"— según patrones que aprendió antes.</dd>
+        <dt>Modelo de aprendizaje automático</dt><dd>Un sistema que aprende patrones mirando datos pasados, en vez de seguir reglas programadas a mano.</dd>
+        <dt>DigComp (Marco de Competencias Digitales)</dt><dd>Una guía europea que ordena las competencias digitales en 5 áreas y 8 niveles de manejo.</dd>
+        <dt>Marco de competencias en IA de la UNESCO</dt><dd>Una guía que ordena la alfabetización en IA en 4 dimensiones y 3 niveles de progreso.</dd>
+        <dt>Modelo de cambio de Kotter (8 pasos)</dt><dd>Los ocho pasos clásicos para que un cambio dentro de una organización realmente pegue y no se diluya.</dd>
+        <dt>Organización que aprende</dt><dd>Una organización cuya ventaja no es lo que ya sabe, sino lo rápido que aprende cosas nuevas.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con cinco cosas, que sean estas</h2>
+    <ol>
+      <li><strong>La IA amplía, no reemplaza.</strong> Ella aporta velocidad y patrones sobre volúmenes que ningún humano revisaría a tiempo; tú aportas el criterio, el contexto y la responsabilidad sobre la decisión final.</li>
+      <li><strong>Ni fe ciega ni desconfianza ciega.</strong> Aceptar cualquier alerta sin mirarla e ignorar cualquier alerta por sistema son, en el fondo, el mismo error: los dos reemplazan el criterio caso a caso por un reflejo automático.</li>
+      <li>Las competencias que hoy más se valoran —pensamiento analítico, resolución de problemas, creatividad, comunicación, liderazgo, aprendizaje continuo— <strong>ya las practicas</strong>. Ninguna es "saber manejar un programa".</li>
+      <li>Un cambio que se anuncia de golpe se resiste. Uno que <strong>se explica, se prueba en chico y se sostiene en el tiempo</strong>, se adopta —vale igual para un guion nuevo que para una plataforma completa.</li>
+      <li>Antes de confiar del todo en un sistema, <strong>pregúntale con qué datos aprendió</strong>. Es la única forma de detectar si está repitiendo, sin que nadie lo haya ordenado, un sesgo que ya traía de antes.</li>
+    </ol>
+    <p class="remate">Y lo más importante: nada de esto es tecnología pura. Es el mismo criterio comercial que ya usas todos los días —revisar antes de confiar, probar en chico antes de escalar, aprender de lo que no funcionó— con un nombre técnico puesto encima.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para entender, sin tecnicismos, cómo la IA está cambiando los roles y las competencias que más importan en tu trabajo.
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
