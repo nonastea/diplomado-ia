@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Roles y competencias en la era de la IA</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 2 &middot; voz del dispositivo</p>
+    <h1>Roles y competencias en la era de la IA</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "En este rato vas a entender algo que probablemente ya intuyes en tu trabajo, pero que ahora va a tener nombre y orden. La inteligencia artificial no llegó a quitarte la venta. Llegó a darte información que antes no tenías, para que decidas mejor y más rápido.", "c": false}, {"t": "Vamos a recorrer juntos qué cambia de verdad, qué sigue siendo completamente tuyo pase lo que pase, y qué cargos nuevos está creando todo esto. Dale play cuando quieras, y si te interrumpen a mitad de camino, este mismo audio retoma justo donde quedaste.", "c": false}, {"t": "Capítulo uno. De automatizar a amplificar", "c": true}, {"t": "Durante años, la tecnología en tu rubro significó automatización, es decir, sistemas que ejecutan siempre la misma tarea ya definida, sin que nadie tenga que intervenir cada vez. El sistema que calculaba tu comisión, el que armaba la cartola, el que mandaba el recordatorio de pago. Todo eso ordenó procesos, pero tenía un techo bien claro: solo hacía lo que ya estaba programado de antemano, ni una gota más.", "c": false}, {"t": "Lo que está pasando ahora es distinto, y por eso tiene un nombre propio: inteligencia aumentada. La idea de fondo es esta. La I.A. no reemplaza tu criterio, lo amplía. La máquina hace algo que tú no podrías hacer sola, revisar miles de casos en segundos y detectar un patrón sutil antes de que sea evidente. Y tú aportas algo que ninguna máquina tiene, el tono correcto para esa llamada, el criterio ético, la lectura fina de si esta persona en particular necesita otro enfoque.", "c": false}, {"t": "Piénsalo así. Es la diferencia entre el sistema viejo que solo te mostraba la cartola, y uno nuevo que además te dice que cierto afiliado bajó su actividad en el portal en las últimas semanas, y que ese patrón históricamente antecede a un traspaso. La máquina no llama a nadie ni convence a nadie. Solo te entrega la señal antes de que sea tarde para actuar sobre ella.", "c": false}, {"t": "Otra palabra que vas a escuchar seguido es I.A. generativa. A diferencia de un sistema que solo clasifica o predice, esta genera contenido nuevo, textos, ideas, borradores, a partir de una instrucción escrita en lenguaje normal. Pedirle diez variantes de un guion de retención en un minuto es exactamente eso.", "c": false}, {"t": "Pero ojo, la calidad depende de qué tan bien se lo pediste, y de cuánto revisas el resultado antes de usarlo. La máquina no sabe cuál de esas diez variantes conecta con tu cliente específico. Eso lo decides tú.", "c": false}, {"t": "Ahora, para trabajar bien con todo esto conviene distinguir dos capacidades que se parecen pero no son lo mismo. La primera es amplia, se llama competencias digitales, y es tu licencia de conducir general del mundo digital, moverte con soltura en cualquier plataforma nueva, sin que te tengan que enseñar cada pantalla desde cero. La segunda es más específica, se llama alfabetización en I.A., y es la que más te va a servir de aquí en adelante. No es saber programar. Es entender, a grandes rasgos, qué puede hacer un sistema, qué no puede hacer, y cuándo un resultado necesita que tú lo revises antes de actuar sobre él.", "c": false}, {"t": "Y aquí conviene detenerse un segundo, porque el matiz importa. Durante décadas, tu relación con cualquier tecnología fue simple, la sabías usar o no la sabías usar. Con la I.A. esa relación se volvió de tres niveles. Puedes no saber usarla.", "c": false}, {"t": "Puedes saber usarla mecánicamente, apretando botones y escribiendo instrucciones sin entender qué hay detrás. O puedes usarla con criterio, sabiendo cuándo confiar, cuándo dudar, y cuándo el resultado necesita que tú lo revises antes de actuar sobre él. Alfabetización en I.A. es precisamente ese tercer nivel, y es al que quieres llegar.", "c": false}, {"t": "No necesitas ser actuaria para leer una libreta de ahorro previsional y tomar una decisión razonable con un afiliado. Te basta con saber qué significa cada línea y cuándo algo no cuadra. Alfabetización en I.A. es exactamente esa misma clase de competencia, aplicada a lo que te sugiere un sistema en vez de a un estado de cuenta. Y si alguna vez escuchas nombrar el marco Digcomp o el marco de la Unesco, son solo dos guías que ordenan estas competencias en niveles. No hace falta que te los aprendas de memoria, solo que sepas que existen, y que esto se mide en progreso, no en un simple lo sé o no lo sé.", "c": false}, {"t": "Capítulo dos. Por qué esta ola es distinta, y el punto medio entre confiar y desconfiar", "c": true}, {"t": "Para entender por qué esto merece tu atención, y no es solo una moda tecnológica más, ayuda ver la secuencia completa. Hubo tres olas de cambio en el mundo del trabajo. La primera fue la mecanización, que reemplazó fuerza física y repetición manual. La segunda fue la informática, los sistemas que ordenaron el papeleo, las cotizaciones y las cartolas.", "c": false}, {"t": "Y la tercera, la que estás viviendo tú ahora, es distinta en un sentido preciso. Por primera vez, el cambio no se queda en lo físico ni en lo administrativo. Entra al terreno donde antes solo entraba el juicio humano, sugerir, analizar, incluso redactar.", "c": false}, {"t": "Piénsalo como tres olas de una misma marea, cada una llegando más arriba en la playa. La primera cubrió el trabajo manual. La segunda cubrió el papeleo y las cotizaciones. Y esta tercera está llegando hasta un terreno que hasta hace poco parecía a salvo de cualquier automatización, a quién llamar, qué decirle, y con qué prioridad.", "c": false}, {"t": "El Foro Económico Mundial puso un número a esto en su informe del año dos mil veinticinco, y vale la pena que te quede grabado. Estima que treinta y nueve por ciento de las competencias clave del mercado laboral va a cambiar de aquí al año dos mil treinta. Eso es casi cuatro de cada diez habilidades que hoy consideras importantes en tu puesto, modificándose en cinco años.", "c": false}, {"t": "Y el mismo informe pone el pensamiento analítico como la competencia individual más valorada por los empleadores, por delante incluso de la creatividad. Fíjate en el patrón, ninguna de las más valoradas es una habilidad técnica de manejar un programa. Todas son formas de criterio humano, y de esas vamos a hablar en el próximo capítulo.", "c": false}, {"t": "Ahora, hay una competencia que sostiene a todas las demás, y es la que decide cuánto le crees a lo que un sistema te sugiere. Se llama pensamiento crítico, y es la capacidad de analizar la información que te entrega un sistema, revisar los supuestos detrás de esa recomendación, y contrastarla con lo que tú sabes, antes de actuar. La Unesco lo resume bien, esta capacidad evita que las decisiones se tomen únicamente porque el sistema lo dijo.", "c": false}, {"t": "Y esa idea, porque el sistema lo dijo, describe dos errores opuestos que seguramente ya viste en algún colega. El primero se llama sesgo de automatización, confiar de más en lo que sugiere un sistema solo porque lo sugirió un sistema, aceptando una alerta sin revisar si tiene sentido para ese caso puntual. El segundo se llama aversión al algoritmo, desconfiar de una recomendación automática más de lo razonable, incluso cuando el sistema viene acertando más que el criterio propio en ese tipo de caso.", "c": false}, {"t": "Imagina que un sistema marca a un afiliado con alta probabilidad de traspaso. La vendedora que cae en sesgo de automatización llama de inmediato con el guion de retención, sin mirar que ese afiliado simplemente acaba de actualizar sus datos por un ascenso. La que cae en aversión al algoritmo ignora la alerta porque, según ella, conoce a sus clientes mejor que una máquina, aunque ese mismo sistema haya acertado las últimas diez veces. Ninguna de las dos está pensando con criterio. El pensamiento crítico es exactamente el punto medio entre esos dos extremos, ni fe ciega ni desconfianza ciega, sino revisar caso a caso.", "c": false}, {"t": "Capítulo tres. Las competencias que siguen siendo tuyas, y cómo mantenerte vigente", "c": true}, {"t": "Ya sabes que hay seis competencias que el mercado más valora de aquí al año dos mil treinta. Vamos a verlas una por una, porque no son ideas abstractas, son básicamente lo que tú ya haces bien. El pensamiento analítico es separar una situación compleja en partes para encontrarle el patrón, por qué un cliente duda, qué parte de la oferta no quedó clara. La resolución de problemas complejos va un paso más allá, decidir qué hacer cuando varias causas se mezclan a la vez y no hay una respuesta de manual.", "c": false}, {"t": "La creatividad sigue siendo profundamente humana porque conecta algo que ninguna I.A. generativa tiene, conocimiento de ese cliente específico, sensibilidad frente a lo que le preocupa. Una I.A. generativa puede armarte diez variantes de un guion en un minuto, pero no sabe cuál de esas diez conecta con la persona que tienes al teléfono ahora mismo. Y la comunicación interdisciplinaria, a veces llamada colaboración interdisciplinaria, es el mecanismo con el que un equipo de ventas, uno de tecnología y uno de servicio al cliente logran entenderse sin hablar el mismo idioma técnico.", "c": false}, {"t": "La quinta es la adaptabilidad, la rapidez para ajustarte cuando una herramienta cambia sin previo aviso, porque ninguna capacitación inicial te alcanza para toda tu vida laboral. Y todas estas se agrupan en algo más grande, las competencias para la innovación, que no son una sola habilidad sino un ciclo de cuatro pasos que tú probablemente ya recorres sin ponerle nombre. Detectar una oportunidad real dentro de tu cartera, proponer una mejora concreta, experimentarla en chico con pocos clientes, y si funciona, transformarla en la forma normal de trabajar de todo el equipo.", "c": false}, {"t": "Es exactamente lo que haces cuando notas que una misma objeción se repite mucho, ahí estás detectando. Armas una respuesta nueva para esa objeción, ahí estás proponiendo. La pruebas con los próximos clientes que te la planteen, ahí estás experimentando. Y si te funciona mejor que la anterior, la vuelves la forma normal de trabajar de todo tu equipo, ahí estás transformando. La I.A. puede ayudarte a acelerar cada uno de esos cuatro pasos, pero el ciclo completo sigue siendo tuyo.", "c": false}, {"t": "Y aquí viene algo importante. Si casi cuatro de cada diez competencias clave van a cambiar hacia el año dos mil treinta, quedarte con lo que sabes hoy tiene fecha de vencimiento. Por eso el aprendizaje continuo, la disposición permanente para actualizar lo que sabes, dejó de ser un curso puntual que tomas cuando cambias de pega, y se volvió un hábito estructural.", "c": false}, {"t": "Es como mantener la condición física. Un maratón corrido una sola vez no te deja en forma para siempre, necesitas entrenamiento recurrente, porque en cuanto dejas de ejercitarte, pierdes capacidad. El aprendizaje continuo es el equivalente de ir al gimnasio con regularidad, no de correr un maratón cada cinco años.", "c": false}, {"t": "Y ese aprendizaje continuo se ejerce de dos maneras que conviene no confundir. Upskilling, que se dice ápskilin, es afilar el mismo cuchillo que usas todos los días, fortalecer las competencias del rol que ya tienes. Reskilling, que se dice rískilin, es cambiar ese cuchillo de cocina por un bisturí, prepararte para un rol completamente distinto.", "c": false}, {"t": "Las organizaciones que hacen esto bien se conocen como una organización que aprende, un concepto de Peter Senge que dice algo simple, no gana la que más sabe en un momento dado, sino la que aprende más rápido que su competencia. Para que eso sea real hace falta instalar una cultura de experimentación, aceptar que no todas las pruebas van a funcionar a la primera, y tratar eso como aprendizaje, no como fracaso.", "c": false}, {"t": "Y una cultura de experimentación de verdad necesita algo más profundo debajo, que se llama seguridad psicológica. Es la creencia compartida, dentro de un equipo, de que nadie va a ser castigado por hacer una pregunta, admitir un error, o proponer una idea que podría no funcionar. Piensa en un ejecutivo de tu equipo diciendo en la reunión semanal que probó el guion nuevo con cinco clientes y le fue peor que con el anterior. Si eso se castiga, el equipo empieza a esconder lo que no funciona, y entonces nadie aprende justo donde más lo necesita.", "c": false}, {"t": "Capítulo cuatro. Liderar el cambio sin que se sienta impuesto, y los cargos nuevos que esto está creando", "c": true}, {"t": "Incorporar I.A. a un equipo de ventas no es un problema de instalar un programa nuevo. Es un problema de gestión del cambio humano, con todo lo que eso implica, miedo a equivocarse, desconfianza hacia la herramienta, o temor a que la experiencia propia deje de valer. A esa capacidad de guiar a un equipo durante el cambio se le llama liderazgo digital, y el modelo más citado para lograrlo es el de John Kotter, con ocho pasos que valen para cualquier cambio organizacional, incluido sumar I.A. a un equipo comercial.", "c": false}, {"t": "Es como un capitán que cambia su flota de barcos a vela por barcos a motor, mientras la tripulación todavía confía ciegamente en el viento. Liderar ese cambio no es solo instalar el motor, la parte técnica. Es explicar por qué el viento ya no basta, entrenar a la tripulación en maniobras completamente nuevas, y sostener la moral cuando las primeras salidas con motor no salen perfectas.", "c": false}, {"t": "Los primeros pasos de Kotter son de arranque. Crear una urgencia genuina sobre por qué el cambio es necesario ahora, armar un grupo interno con credibilidad real que empuje el proceso, y dejar clara en una frase cómo se va a ver el trabajo una vez que el cambio funcione.", "c": false}, {"t": "Después viene la parte de movimiento, sumar a la gente que genuinamente quiere aportar en vez de imponerlo parejo de un día para otro, sacar los obstáculos que frenan el avance, y mostrar una victoria chica y rápida para que el equipo vea que sí funciona. Y al final, sostener el impulso sin cantar victoria antes de tiempo, hasta que la nueva forma de trabajar quede anclada en la cultura del equipo, y no como una excepción que se abandona apenas baja la atención.", "c": false}, {"t": "Piensa en la diferencia entre un jefe de equipo que anuncia de un día para otro que desde hoy todos usan el sistema nuevo de alertas, sin más explicación, y uno que primero muestra por qué hace falta, consigue que dos o tres vendedores referentes lo prueben primero y cuenten cómo les fue, y recién después lo extiende a todo el equipo. El primero genera resistencia. El segundo, adopción real.", "c": false}, {"t": "Todo esto que hemos visto no se queda solo en el terreno de las competencias. Ya está creando cargos concretos, o transformando radicalmente los que ya existían. Son las profesiones de siempre, exigiendo ahora algo distinto dentro del mismo puesto. El analista de negocios con I.A. es el puente entre lo que el negocio necesita y lo que la tecnología puede ofrecer, como un traductor diplomático entre dos países con idiomas distintos. El profesional de datos y analítica construye los modelos, pero su éxito depende de comunicar los hallazgos con claridad, porque un modelo impecable que nadie entiende no genera ningún valor.", "c": false}, {"t": "El especialista en I.A. responsable revisa sesgos y riesgos, y decide qué decisiones no deberían automatizarse sin supervisión humana. Y el diseñador de experiencias define cómo se muestra una recomendación para que sea clara y confiable, porque si la interfaz confunde, el equipo termina confiando de más o de menos, los dos mismos errores que ya vimos antes.", "c": false}, {"t": "Y hay una habilidad transversal que por un tiempo pareció que se iba a volver un cargo aparte, formular instrucciones claras para un sistema de I.A. generativa. A esto se le llamó ingeniería de instrucciones, en inglés prompt engineering, que se dice más o menos prómpt-enyíniring. Vale la pena que sepas cómo viene evolucionando esto.", "c": false}, {"t": "Como puesto de trabajo separado está en franco declive, mientras la habilidad se disuelve dentro de otros roles, porque resultó ser, más que un cargo, una forma transversal de comunicarte con estas herramientas. Pedirle bien las cosas a una I.A. generativa es, en el fondo, lo mismo que armar un buen resumen para un colega nuevo. Si le das contexto de sobra y el formato exacto de lo que necesitas, te devuelve algo usable a la primera.", "c": false}, {"t": "Capítulo cinco. Dos historias reales sobre lo mismo", "c": true}, {"t": "Vamos con dos historias que muestran todo lo anterior en la práctica. La primera es real, no armada para ninguna clase. El banco Be-Be-Uve-A invirtió fuerte en I.A., modelos que detectan fraude, personalizan productos, mejoran la experiencia del cliente. Pero los problemas principales no aparecieron en la tecnología.", "c": false}, {"t": "En las primeras etapas, unos equipos desconfiaban de las recomendaciones del modelo y seguían decidiendo como antes, aversión al algoritmo. Otros aceptaban automáticamente lo que el sistema sugería sin revisar a fondo, sesgo de automatización. Los mismos dos extremos que ya conoces, ocurriendo a escala de un banco entero.", "c": false}, {"t": "La respuesta de ese banco no fue técnica, fue de personas. Programas de formación para fortalecer el pensamiento crítico, y equipos mixtos donde gente de negocio, analistas de datos e ingenieros trabajaban juntos desde el principio, evitando que los proyectos de I.A. quedaran aislados del día a día del banco. Es el mismo patrón que se repite en cualquier área comercial que compra una plataforma nueva y espera que se use sola. Si al equipo no se le enseña a interpretar lo que la herramienta sugiere, unos la van a ignorar y otros la van a seguir a ciegas.", "c": false}, {"t": "La segunda historia es un caso construido para la clase, pero con la misma lección a escala más humana. En un centro de diagnóstico médico, la doctora a cargo de radiología, con más de veinte años de oficio, desconfiaba de los reportes automáticos del sistema nuevo, prefería dejarlo en segundo plano. Al otro lado, el ingeniero a cargo del proyecto no entendía esa resistencia, porque los modelos estaban validados y la precisión era alta. Los dos querían lo mismo, lo mejor para el paciente, pero hablaban idiomas distintos, cada uno en el vocabulario de su propia disciplina.", "c": false}, {"t": "La dirección investigó y encontró algo revelador. El sistema funcionaba, pero nadie tenía un criterio compartido para usarlo. Cuando la doctora preguntó en voz alta cuándo debía confiar en una recomendación y cuándo debía cuestionarla, ninguno de sus colegas tuvo una respuesta clara. Se había enseñado a operar una aplicación, apretar botones, sacar un reporte, pero no a trabajar con criterio junto a ella.", "c": false}, {"t": "Entonces la capacitación cambió por completo. De un manual de instrucciones, pasó a ser un espacio de reflexión real, revisar casos juntos, contrastar cada recomendación con los antecedentes del paciente, y explicar en voz alta el razonamiento para aceptarla, ajustarla, o rechazarla. Al principio las conversaciones eran torpes, pero con el tiempo esa incomodidad se transformó en el mayor activo de la organización.", "c": false}, {"t": "Meses después, la doctora ya no miraba el sistema con desconfianza sino con curiosidad crítica. Y la organización entendió que la ventaja real no estaba en tener el mejor algoritmo, sino en tener personas capaces de decidir con criterio junto a él. Capacitar a un equipo de ventas en cómo se usa un sistema nuevo, qué botón apretar, dónde aparece la alerta, es exactamente la capacitación vieja de esta historia. Enseñarles además a leer cuándo una alerta amerita una llamada urgente y cuándo probablemente es ruido, es la diferencia que esta organización tuvo que aprender por las malas.", "c": false}, {"t": "Capítulo seis. Un ejemplo que lo junta todo, y lo que te llevas de aquí", "c": true}, {"t": "Para cerrar, vale la pena un ejemplo completo. Viene del área de selección de personal, pero se traduce directo a cualquier proceso donde hay que revisar muchos casos y decidir cuáles atender primero. La idea, usar I.A. para filtrar candidatos según palabras clave y experiencia relevante, reduciendo el tiempo de revisión inicial en sesenta por ciento. Para lograrlo hacen falta tres piezas.", "c": false}, {"t": "El procesamiento de lenguaje natural, que se conoce por sus siglas en inglés como ene-ele-pe, es la capacidad del sistema de leer texto libre, porque un currículum no es un formulario con casilleros exactos. La clasificación es la tarea de poner cada caso en una categoría, prioritario o no prioritario, según patrones aprendidos de casos anteriores. Y detrás de todo eso hay un modelo de aprendizaje automático, un sistema que aprendió esos patrones mirando datos históricos, en vez de seguir reglas escritas a mano.", "c": false}, {"t": "El riesgo, si nadie audita esto con criterio, es un sesgo algorítmico, una desviación sistemática en los resultados, causada por datos de entrenamiento poco representativos, que puede repetir en silencio un patrón de discriminación del pasado sin que nadie lo haya ordenado explícitamente. Es exactamente la misma lógica que un sistema que prioriza a qué afiliados contactar según su riesgo de traspaso. Si nadie audita con qué datos se entrenó, puede estar penalizando en silencio cierto tipo de perfiles, por edad, por zona, por historial, sin que nadie lo haya decidido a propósito.", "c": false}, {"t": "Por eso la propuesta para implementar algo así combina cuatro acciones concretas que también te sirven a ti como plantilla. Un taller corto para entender cómo funciona el filtro, un pilotaje controlado probando el sistema con un grupo chico de casos reales antes de confiar en él a plena escala, una revisión ética específica buscando sesgos por edad, género o procedencia, y un mecanismo de retroalimentación continua, donde el equipo va calificando la utilidad de las sugerencias y ajustando el sistema con eso.", "c": false}, {"t": "Y dos ideas más que aplican a cualquier sistema que uses. La transparencia algorítmica, poder explicar por qué el sistema llegó a un resultado. Y la privacidad de datos, cuidar la información personal que ese sistema usa para funcionar. No son requisitos legales aburridos, son lo que te permite defender una decisión cuando alguien te pregunta por qué se hizo así.", "c": false}, {"t": "Y con esto ya recorrimos toda la unidad. Si te quedas con algunas ideas, que sean estas. Primero, la I.A. amplía, no reemplaza. Ella aporta velocidad y patrones sobre volúmenes que ningún humano revisaría a tiempo, tú aportas el criterio y la responsabilidad sobre la decisión final. Segundo, ni fe ciega ni desconfianza ciega, revisa cada recomendación caso a caso, porque aceptarlo todo sin mirar e ignorarlo todo por sistema son, en el fondo, el mismo error.", "c": false}, {"t": "Tercero, las competencias que hoy más se valoran, pensamiento analítico, resolución de problemas, creatividad, comunicación, liderazgo, aprendizaje continuo, ya las practicas, ninguna es saber manejar un programa. Cuarto, un cambio que se anuncia de golpe se resiste, uno que se explica, se prueba en chico y se sostiene en el tiempo, se adopta. Y quinto, antes de confiar del todo en un sistema, pregúntale con qué datos aprendió, es la única forma de detectar si está repitiendo, sin que nadie lo haya ordenado, un sesgo que ya traía de antes.", "c": false}, {"t": "Y lo más importante para llevarte de este audio. Nada de esto es tecnología pura. Es el mismo criterio comercial que ya usas todos los días, revisar antes de confiar, probar en chico antes de escalar, aprender de lo que no funcionó, con un nombre técnico puesto encima. La máquina te da la alerta. Tú decides si esta vez aplica.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
