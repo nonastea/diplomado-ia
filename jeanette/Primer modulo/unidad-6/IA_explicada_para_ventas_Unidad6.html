@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- TÍTULO: un gancho propio, NO el título del curso.
+     Bien: "Cómo aprende de verdad una inteligencia artificial"
+     Mal:  "Análisis descriptivo potenciado por IA" -->
+<title>De "funcionó una vez" a "funciona todos los días"</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .idea .frase{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial</p>
+    <h1>De "funcionó una vez" a "funciona todos los días"</h1>
+    <p class="lead">En la unidad de los prototipos viste cómo probar una idea barato, en chico, para saber si servía. Perfecto. Pero entre una prueba que salió bien y algo que funciona de verdad —todos los días, con toda la cartera, sin que se caiga— hay un mundo. Y ese mundo es esta unidad.</p>
+    <p class="lead">Piénsalo así: cerrar una venta con un guion nuevo un día de suerte es una cosa. Montar todo para que ese guion le funcione a <strong>todo el equipo, mes a mes</strong>, sin depender de nadie en particular, es otra muy distinta. De eso se trata pasar "a producción". Y lo vas a entender rápido, porque tú ya sabes la diferencia entre una buena racha y un sistema que rinde parejo.</p>
+    <span class="nota">No necesitas saber de tecnología ni de matemáticas. Solo seguir la idea.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>La gran diferencia: que funcione una vez vs. que funcione siempre</a></li>
+      <li><a href="#p2"><span class="n">2</span>Los cuatro fierros que aguantan el día a día</a></li>
+      <li><a href="#p3"><span class="n">3</span>No es solo tecnología: cinco cosas que crecen juntas</a></li>
+      <li><a href="#p4"><span class="n">4</span>Que el modelo no envejezca: mantenerlo vivo</a></li>
+      <li><a href="#p5"><span class="n">5</span>De hacerlo a mano a que funcione solo</a></li>
+      <li><a href="#p6"><span class="n">6</span>Todo junto: la empresa que lo hizo funcionar de verdad</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">La gran idea</span></div>
+    <h2 class="titulo">La gran diferencia: que funcione una vez vs. que funcione siempre</h2>
+
+    <p>En la unidad de los prototipos viste la primera mitad de la historia: probar una idea rápido y barato para ver si vale la pena. En el curso, a esa fase de "probar si la idea tiene futuro" se le llama <span class="term">descubrimiento</span> (en inglés, <em>discovery</em>). Ahí todo vale: hacerlo a mano, con pocos datos, con parches. La gracia es aprender rápido, no que quede perfecto.</p>
+
+    <p>Pero acá viene el detalle que casi nadie te cuenta: que un prototipo funcione no significa que esté listo para la vida real. Son dos cosas distintas. Y la segunda mitad de la historia —convertir esa prueba en algo que opere todos los días, para todos, sin caerse— se llama <span class="term">entrega</span> (en inglés, <em>delivery</em>).</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">La prueba (descubrimiento)</div>
+        <p>Lo hiciste una vez, quizás a mano, con una muestra chica y algunos parches. Salió bien. Perfecto para saber si la idea servía. Pero funcionó en condiciones de laboratorio, no en la cancha.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">La operación (entrega)</div>
+        <p>Ahora tiene que funcionar solo, todos los días, con toda la información, para muchas áreas a la vez, sin depender de que tú estés ahí apagando incendios. Estable, seguro y sostenible en el tiempo.</p>
+      </div>
+    </div>
+
+    <p>Es exactamente la diferencia entre cerrar una venta con suerte un martes, y montar un sistema para que todo el equipo cierre parejo, mes a mes. Lo primero te da una alegría; lo segundo te da un negocio.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Tú ya conoces esta diferencia en carne propia. Una cosa es que un mes te vaya bien porque te tocó una buena racha; otra muy distinta es tener un proceso que da resultados todos los meses, con o sin racha. Producción es eso: dejar de depender de la suerte y del héroe de turno.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Que la idea funcione una vez es descubrimiento. Que funcione todos los días, para todos y sin caerse, es entrega. Son dos ligas distintas.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">Lo que se necesita</span></div>
+    <h2 class="titulo">Los cuatro fierros que aguantan el día a día</h2>
+
+    <p>Para que una idea buena aguante la vida real, tiene que cumplir cuatro condiciones. El curso las llama "atributos", pero piénsalas como los cuatro fierros que sostienen la estructura. Si falta uno, se viene abajo.</p>
+
+    <ol class="pasos">
+      <li><b>Que aguante cuando crece.</b> Una cosa es que funcione con 100 clientes y otra con toda tu cartera y todo el equipo usándolo a la vez. Tiene que crecer sin caerse ni ponerse lento. En el curso: <span class="term">escalabilidad</span>.</li>
+      <li><b>Que funcione bien cada vez, no de casualidad.</b> Un vendedor confiable es el que rinde parejo todos los días, no el que un día la rompe y al otro desaparece. La solución tiene que ser igual: resultados consistentes, siempre, y avisar cuando algo falla. En el curso: <span class="term">fiabilidad</span>.</li>
+      <li><b>Que sea rápida.</b> Un reporte que llega después de la reunión no sirve de nada. La alerta de quién se va tiene que llegar mientras todavía puedes llamarlo, no cuando ya se fue. En el curso: <span class="term">rendimiento</span>.</li>
+      <li><b>Que otro la pueda entender y arreglar.</b> Si "solo la Juanita sabe cómo se hace", estás en problemas el día que la Juanita sale de vacaciones. Tiene que estar ordenada y documentada para que cualquiera la mantenga. En el curso: <span class="term">mantenibilidad</span>.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">Por qué importa</div>
+      Fíjate que ninguno de los cuatro es "que el modelo sea más inteligente". Son cosas de operación pura: que aguante, que sea confiable, que sea rápido, que se pueda mantener. Por eso el curso dice algo importante: la mayoría de los proyectos de IA no fracasan porque el modelo esté malo, sino porque nadie pensó en estos cuatro fierros.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Una idea buena aguanta el día a día solo si crece sin caerse, funciona parejo, responde a tiempo y cualquiera la puede mantener.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">Todo crece junto</span></div>
+    <h2 class="titulo">No es solo tecnología: cinco cosas que crecen juntas</h2>
+
+    <p>Aquí va uno de los puntos más importantes de la unidad, y el que más te conviene a ti. Llevar la IA a la vida real <em>no</em> es un tema de tecnología. Es un tema de organización. El curso dice que hay cinco cosas que tienen que avanzar juntas, y si una se queda atrás, arrastra a las demás.</p>
+
+    <p>Y adivina cuál va primero: las <strong>personas</strong>. La IA es, ante todo, un proyecto de personas. No importa cuán bueno sea el sistema si el equipo no lo usa, si las jefaturas no lo apoyan o si nadie alineó las expectativas. Por eso hay que tener de tu lado a todos los que influyen o les interesa el proyecto —los patrocinadores, los usuarios, las áreas técnicas—. A esos actores el curso los llama <span class="term">stakeholders</span>, y manejarlos bien es la mitad de la pelea.</p>
+
+    <p>Las otras cuatro que crecen junto a las personas: los <strong>procesos</strong> (un proyecto de IA también es un proyecto de software: tiene que seguir las reglas y estándares de la empresa); los <strong>datos</strong> (que lleguen limpios, disponibles, protegidos y bien conectados); la <strong>tecnología</strong> (una plataforma que aguante seguridad, monitoreo y crecimiento por años, no el parche que armaste para la prueba); y una quinta que es tan importante que le dedicamos el próximo capítulo entero: mantener el modelo vivo en el tiempo.</p>
+
+    <div class="mundo">
+      <div class="lab">Por qué te conviene saberlo</div>
+      Esto te deja bien parada, y no es adorno. Cuando escuches "vamos a meter IA", tú ya sabes la verdad que muchos técnicos olvidan: sin las personas —sin el equipo convencido y las expectativas claras— el mejor sistema del mundo se muere solo. Esa pelea, la de la gente, la sabes dar tú mejor que cualquier ingeniero.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Llevar IA a la realidad no es tecnología: son personas, procesos, datos, tecnología y mantenimiento creciendo juntos. Y las personas van primero.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">Mantenerlo vivo</span></div>
+    <h2 class="titulo">Que el modelo no envejezca: mantenerlo vivo</h2>
+
+    <p>Tú sabes que un guion de ventas que funcionaba de maravilla hace tres años hoy suena viejo. El mercado cambió, los clientes cambiaron, la competencia cambió. Si no lo actualizas, deja de funcionar. Con los modelos de IA pasa exactamente lo mismo: envejecen.</p>
+
+    <p>Un modelo aprende de cómo era el mundo cuando lo entrenaron. Cuando el mundo cambia, sus predicciones se van poniendo malas sin que nadie se dé cuenta. Por eso hay que vigilarlo, medirlo y reentrenarlo cada cierto tiempo, igual que afilas tu pitch. A todo ese trabajo de mantener los modelos vivos y al día se le llama <span class="term">MLOps</span>.</p>
+
+    <h3>El ejemplo que lo dejó clarísimo</h3>
+    <p>El curso da un ejemplo que se explica solo: la pandemia. De un día para otro, la gente cambió cómo compraba, cómo se movía, cómo gastaba. Un montón de modelos que venían funcionando perfecto empezaron a fallar, porque el mundo con el que habían aprendido ya no existía. Los que tenían a alguien vigilando y reentrenando se adaptaron. Los que no, se quedaron dando pronósticos de un mundo que ya no estaba.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es como tu cartera: si el modelo que predice quién se va se entrenó con datos de hace dos años, y en el medio cambió la competencia o subió una comisión, sus alertas empiezan a fallar. Alguien tiene que estar mirando que siga acertando, y refrescarlo cuando cambian las condiciones. Un modelo no es un electrodoméstico que se instala y se olvida; es más como una planta: hay que regarla.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Los modelos envejecen igual que un guion viejo. Mantenerlos vivos —vigilarlos y reentrenarlos cuando el mundo cambia— tiene nombre: MLOps.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Que trabaje solo</span></div>
+    <h2 class="titulo">De hacerlo a mano a que funcione solo</h2>
+
+    <p>En la prueba, seguramente alguien sacó los datos a mano: bajó un archivo, lo limpió en Excel, lo pegó en otro lado, apretó un botón. Una vez, funciona. Pero hacer eso todos los días, sin equivocarse nunca, es imposible y agotador.</p>
+
+    <p>La solución en producción es armar una cadena que haga todo ese trabajo sola, de principio a fin, sin que nadie tenga que estar ahí. A esa cadena automática se le llama <span class="term">pipeline</span>. Piénsala como una línea de producción para tus datos: entran por un lado en bruto y salen por el otro convertidos en una decisión, sin manos humanas en el medio.</p>
+
+    <p>Un pipeline típico hace, solito, esta secuencia:</p>
+
+    <ol class="pasos">
+      <li><b>Va a buscar los datos donde viven.</b> Los saca automáticamente de los sistemas de la empresa —el CRM, las bases de clientes, los registros de pagos—. Ese pasito de sacar, limpiar y dejar listos los datos tiene su nombre: <span class="term">mini ETL</span>.</li>
+      <li><b>Los limpia y los ordena.</b> Los datos vienen sucios: con errores, duplicados, formatos distintos. Antes de usarlos hay que emparejarlos, como cuando depuras una base de prospectos antes de una campaña.</li>
+      <li><b>Se los pasa al modelo.</b> Los datos limpios entran al modelo de IA, que hace lo suyo: predice quién se va, clasifica, recomienda.</li>
+      <li><b>Traduce el resultado a algo usable.</b> Lo que devuelve el modelo suele ser medio técnico; hay que convertirlo en tablas y números que los sistemas de la empresa entiendan.</li>
+      <li><b>Lo guarda para después.</b> Los resultados se archivan, para tener histórico y para no repetir todo el proceso cada vez que alguien quiere consultar.</li>
+      <li><b>Lo muestra a quien decide.</b> Al final aparece en un panel o reporte donde marketing, ventas o tú pueden mirarlo y actuar.</li>
+    </ol>
+
+    <p>Un par de detalles que vas a escuchar. Cuando el modelo tiene que procesar montones de datos de una vez —por ejemplo, revisar toda la cartera de noche en vez de cliente por cliente en vivo— eso se llama <span class="term">inferencia por lotes</span> (en inglés, <em>batch</em>). Y cuando le mandas datos a un servicio de IA externo y la respuesta no llega al toque sino un ratito después, se llama <span class="term">operación asíncrona</span>: como dejar un encargo y que te avisen cuando está listo, en vez de esperar parada en el mostrador.</p>
+
+    <p>Ah, y un aviso honesto: cada servicio de IA que enchufas es un compromiso a futuro. Hay que mantenerlo, actualizarlo, pagarlo. Esa cuenta que se va acumulando el curso la llama <span class="term">deuda técnica</span>: como cuando juntas muchas suscripciones y después tienes que administrarlas todas. Mientras más piezas conectas, más hay que cuidar.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre que tú tengas que armar el reporte de riesgo cada mañana a pulso, y que llegue solo a tu pantalla a las 8 AM, actualizado, sin que nadie lo toque. Lo segundo no solo te ahorra tiempo: no se equivoca, no se enferma y no se va de vacaciones.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un pipeline es una línea de producción para tus datos: entran en bruto y salen como decisión, solos, todos los días, sin manos en el medio.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Todo junto</span></div>
+    <h2 class="titulo">Todo junto: la empresa que lo hizo funcionar de verdad</h2>
+
+    <p>¿Te acuerdas de la empresa de teléfono de la unidad pasada, la que perdía clientes que se pasaban a la competencia? Volvamos a ella, pero ahora para ver cómo lo hicieron funcionar de verdad, no solo en una prueba. Es tu mundo tal cual: es el traspaso de siempre, pero del lado de una compañía que decidió tomárselo en serio.</p>
+
+    <p>Antes, el equipo comercial solo miraba reportes de cuántos se habían ido —puro pasado, cuando ya no había nada que hacer—. Así armaron algo que sí anticipa, por capas:</p>
+
+    <ol class="pasos">
+      <li><b>Juntaron todo lo que sabían del cliente.</b> Por un lado, los datos duros: contratos, antigüedad, consumo, pagos, reclamos. Por otro, algo que normalmente se desperdicia: los comentarios en texto libre de las encuestas de satisfacción, donde el cliente dice lo que realmente siente.</li>
+      <li><b>Le enseñaron a la máquina a leer el ánimo.</b> Con una técnica que convierte texto en señales —el <span class="term">análisis de sentimiento</span>— transformaron esos comentarios sueltos en algo medible: este cliente está molesto, este conforme, y por qué (precio, atención, cobertura). Es lo que tú haces al leer entre líneas en una llamada, pero a gran escala.</li>
+      <li><b>Cruzaron todo para anticipar.</b> Metieron esas señales de ánimo junto con los datos duros en un modelo que predice quién está por irse. Y apareció algo valioso: un cliente que paga al día y consume harto, pero que viene dejando comentarios negativos hace meses, igual está en riesgo. Sin leer el ánimo, ese se habría escapado.</li>
+      <li><b>Lo pusieron en un panel para el equipo.</b> Marketing y ventas podían ver los segmentos en riesgo, los ingresos en juego, y hasta preguntarle al panel en lenguaje natural. Con eso, marketing armó campañas focalizadas y ventas ofertas de retención distintas según el cliente —porque no todos se retienen con lo mismo—.</li>
+    </ol>
+
+    <p>Pero acá está la jugada más inteligente, y es la que más te sirve a ti: no lo hicieron todo de una. No esperaron el gran proyecto perfecto y terminado. Fueron por pedazos, cada uno ya útil por sí solo: primero armaron el equipo y consiguieron el apoyo de las jefaturas, después los datos, después el modelo, y lo fueron soltando de a poco —primero unos segmentos, después toda la empresa—. A esa forma de avanzar, por trozos que ya entregan valor, el curso la llama <span class="term">incrementos funcionales</span>.</p>
+
+    <p>Fíjate que es puro sentido común: partir con un piloto en una sucursal que ya da resultados, y de ahí ampliar, en vez de apostar todo a un lanzamiento gigante que capaz falla.</p>
+
+    <p>Y lo más importante, de nuevo, es dónde entras tú. Todo ese sistema no retuvo a un solo cliente. Solo le dijo al equipo a quién priorizar, qué le dolía a cada uno y qué probar. La llamada, la conversación, la oferta que de verdad convence a alguien de quedarse… eso siguió siendo cien por ciento humano. La máquina montó la mesa; el que cierra el trato sigues siendo tú.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Se llevó a la realidad por pedazos, cada uno ya útil, sin apostar todo de una. Y aun con todo funcionando, al cliente lo retiene una persona, no la máquina.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <p>No necesitas memorizarlas para entender la idea. Están aquí por si en el curso las nombran y quieres ubicarlas al toque.</p>
+    <div class="glos">
+      <dl>
+        <dt>Descubrimiento (discovery)</dt><dd>La fase de probar rápido si la idea sirve (el prototipo).</dd>
+        <dt>Entrega (delivery)</dt><dd>Convertir esa prueba en algo que funcione todos los días, para todos.</dd>
+        <dt>Escalabilidad</dt><dd>Que aguante cuando crece: más clientes, más uso, sin caerse.</dd>
+        <dt>Fiabilidad</dt><dd>Que funcione bien cada vez, no de casualidad.</dd>
+        <dt>Rendimiento</dt><dd>Que sea rápida: que el dato llegue a tiempo.</dd>
+        <dt>Mantenibilidad</dt><dd>Que cualquiera la pueda entender y arreglar, no solo una persona.</dd>
+        <dt>Stakeholders</dt><dd>Todos los que influyen o les interesa el proyecto (jefaturas, usuarios, áreas).</dd>
+        <dt>MLOps</dt><dd>Mantener los modelos vivos y al día: vigilarlos y reentrenarlos cuando el mundo cambia.</dd>
+        <dt>Pipeline</dt><dd>La cadena automática que hace todo el trabajo con los datos, de principio a fin.</dd>
+        <dt>Mini ETL</dt><dd>El pasito que saca los datos, los limpia y los deja listos.</dd>
+        <dt>Inferencia por lotes (batch)</dt><dd>Procesar montones de datos de una vez (toda la cartera de noche).</dd>
+        <dt>Operación asíncrona</dt><dd>Mandar la pregunta y recibir la respuesta un rato después, no al toque.</dd>
+        <dt>Deuda técnica</dt><dd>La cuenta futura de mantener cada servicio que enchufas.</dd>
+        <dt>Análisis de sentimiento</dt><dd>Leer si un comentario es positivo, negativo o neutro.</dd>
+        <dt>Incrementos funcionales</dt><dd>Avanzar por pedazos que ya sirven, en vez de todo de una.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con tres cosas, que sean estas</h2>
+    <ol>
+      <li>Que algo funcione una vez no es que funcione siempre. Producción es dejar de depender de la suerte y del héroe de turno: que rinda <strong>parejo, todos los días, para todos</strong>.</li>
+      <li>No es tecnología, es <strong>organización</strong>. Personas, procesos, datos, tecnología y mantenimiento tienen que crecer juntos. Y las personas van primero —esa pelea la das tú mejor que nadie—.</li>
+      <li>Nada se instala y se olvida. Los modelos <strong>envejecen</strong> como un guion viejo: hay que mantenerlos vivos, o dejan de servir.</li>
+    </ol>
+    <p class="remate">Y el remate de siempre: por más automático que sea todo, la máquina solo monta la mesa. A quién llamar, qué decirle, cómo convencerlo de quedarse… eso sigue siendo tuyo. La IA te saca del rol de apaga-incendios y te sube a estratega. Por eso estás mejor parada de lo que crees.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para entender, en tu idioma, cómo una idea de IA pasa de una buena prueba a algo que funciona de verdad, todos los días. Sin tecnicismos.
+</footer>
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
