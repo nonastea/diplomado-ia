@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo probar una idea de IA antes de invertir en ella</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial</p>
+    <h1>Antes de gastar en la campaña: cómo saber si un proyecto de IA vale la pena</h1>
+    <p class="lead">Te llegan mil ideas de IA para la AFP: un sistema que diga a qué afiliado llamar primero, otro que avise quién está por traspasarse a la competencia, otro que arme una recomendación para cada cotizante. Todas suenan lindas. La pregunta cara es otra: <em>¿cuáles de esas ideas se pueden ejecutar de verdad y cuáles son puro humo?</em> Lanzarlas todas para averiguarlo costaría una fortuna.</p>
+    <p class="lead">Esta unidad te da el método para <strong>filtrar</strong> esas ideas antes de invertir: mirar la calidad de tus datos de afiliados, ordenar el proceso, decidir si conviene software propio o contratado, cuidar la ética, y armar una hoja de ruta que te diga por dónde partir. En la unidad anterior aprendiste <em>dónde</em> la IA crea valor; acá aprendes <em>cuáles</em> de esas oportunidades son realmente viables.</p>
+    <span class="nota">No necesitas saber de tecnología. Esto es puro criterio comercial —el mismo que ya usas para decidir en qué campaña gastar— aplicado a la IA.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>Del reporte a la predicción: qué es que un proyecto sea "viable"</a></li>
+      <li><a href="#p2"><span class="n">2</span>Antes del algoritmo, los datos: las preguntas que van primero</a></li>
+      <li><a href="#p3"><span class="n">3</span>CRISP-DM: los seis pasos de una campaña bien hecha</a></li>
+      <li><a href="#p4"><span class="n">4</span>Las 4 V: ¿tus datos de afiliados dan el ancho?</a></li>
+      <li><a href="#p5"><span class="n">5</span>¿Software propio o contratado? Fabricar o comprar</a></li>
+      <li><a href="#p6"><span class="n">6</span>Las tres capas: lo que ve el ejecutivo y el motor de atrás</a></li>
+      <li><a href="#p7"><span class="n">7</span>La ética: no discriminar a tus afiliados</a></li>
+      <li><a href="#p8"><span class="n">8</span>La hoja de ruta: por dónde partir</a></li>
+      <li><a href="#p9"><span class="n">9</span>Todo junto: el caso del banco y el crédito</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">El salto</span></div>
+    <h2 class="titulo">Del reporte a la predicción: qué es que un proyecto sea "viable"</h2>
+
+    <p>Piensa en los reportes que ya miras: cuántos traspasos hubo el mes pasado, cuántas cotizaciones nuevas entraron, cómo viene la cartera comparada con el año anterior. Eso tiene un nombre: <span class="term">Business Intelligence</span> (BI, o inteligencia de negocios). Es la disciplina de <strong>mirar el pasado</strong>: tomas una cifra, la ordenas en tablas y la muestras en un tablero. Describe lo que ya pasó.</p>
+
+    <p>La <span class="term">Inteligencia Artificial</span> aplicada a decisiones da un paso más: no solo describe el pasado, <strong>aprende patrones para predecir o recomendar</strong>. En vez de decirte cuántos afiliados se fueron, intenta decirte <em>quién</em> se va a ir el próximo mes, para que llames antes.</p>
+
+    <p>Y acá está la diferencia que lo cambia todo: el BI es <strong>predecible</strong>. Si tienes las cotizaciones por mes, sabes de antemano que vas a poder graficarlas. La IA no. Nunca sabes por adelantado si el modelo va a lograr aprender algo útil; eso solo se descubre <em>probándolo con datos reales</em>. Un reporte casi siempre "funciona"; un proyecto de IA puede fracasar aunque esté perfectamente hecho, simplemente porque los datos no traían la señal que buscabas.</p>
+
+    <p>Por eso aparece la palabra clave de toda la unidad: la <span class="term">viabilidad de un proyecto de IA</span>. Viable quiere decir que el proyecto <strong>se puede ejecutar de verdad</strong>, considerando tres cosas: los datos que tienes, la capacidad técnica, y la responsabilidad ética. Evaluar la viabilidad es, ni más ni menos, decidir si vale la pena meterle plata a la campaña <em>antes</em> de gastarla.</p>
+
+    <p>¿Por qué importa tanto? Porque toda idea de IA arrastra una <span class="term">incertidumbre</span> alta: al empezar no sabes si la idea va a servir, si la gente la va a usar, ni si los datos alcanzan. Lanzarse sin evaluar te lleva a dos errores caros: gastar meses en algo que nunca iba a funcionar, o quedarte paralizado sin distinguir qué idea da resultados rápidos y cuál necesita más trabajo.</p>
+
+    <h3>El motivo de fondo: el remolino</h3>
+    <p>El curso le pone un nombre a por qué esto no es opcional: el <span class="term">vórtice digital</span>. La imagen es la de un remolino que arrastra al centro —obliga a transformarse— a las empresas que no se adaptan. En cristiano: la AFP que aprende a usar datos e IA con criterio le saca ventaja a la que no; y la que se queda mirando, tarde o temprano la absorbe la competencia. No se trata de sumarse a la moda, sino de no quedar fuera.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre el reporte que dice "este mes perdimos 300 afiliados" y una alerta que te dice "estos 300 afiliados están por irse, llámalos esta semana". El primero te cuenta la historia cuando ya terminó; el segundo te deja actuar a tiempo. Ese salto —de mirar el pasado a anticipar el futuro— es todo lo que separa al BI de la IA.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">El BI describe lo que ya pasó, con certeza; la IA intenta predecir lo que viene, con incertidumbre. Por eso, antes de construir, hay que evaluar si el proyecto es viable de verdad.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">Primero los datos</span></div>
+    <h2 class="titulo">Antes del algoritmo, los datos: las preguntas que van primero</h2>
+
+    <p>La primera regla es contraintuitiva para quien viene de lo técnico, pero para ti va a sonar de puro sentido común: al empezar, lo importante <strong>no</strong> es el algoritmo ni la tecnología, sino el objetivo del caso y los datos que tienes a mano. La mayoría de las iniciativas no fracasa por falta de tecnología, sino porque los datos son insuficientes, están inconsistentes o simplemente no existen.</p>
+
+    <p>El curso usa un ejemplo que va a reaparecer toda la unidad, y que es casi tu día a día: <em>"queremos usar los datos históricos del sistema de clientes y del sistema de gestión para predecir qué clientes tienen riesgo de abandonar el servicio el próximo mes"</em>. Cambia "clientes" por "afiliados" y "abandonar" por "traspasarse", y es tu pega. Esos dos sistemas tienen nombre técnico: el <span class="term">CRM</span> (el sistema donde vive la relación y el historial con cada cliente) y el <span class="term">ERP</span> (el sistema que integra los procesos internos de la empresa, como finanzas y operaciones).</p>
+
+    <p>Con esa sola frase ya puedes evaluar si el proyecto tiene bases. De ahí salen las <strong>preguntas fundamentales</strong> que hay que responder al arrancar cualquier proyecto de IA:</p>
+
+    <ol class="pasos">
+      <li><b>¿Qué datos necesito exactamente?</b> Y de esos, ¿cuáles tengo realmente y cuáles estoy suponiendo que tengo.</li>
+      <li><b>¿Están disponibles hoy?</b> No "deberían estar en algún lado", sino accesibles de verdad.</li>
+      <li><b>¿Quién tiene el permiso legal y técnico</b> para usarlos? Datos de afiliados no se tocan sin autorización.</li>
+      <li><b>¿La empresa es dueña de esos datos</b> o tendría que comprarlos afuera?</li>
+      <li><b>¿Hay suficiente historial</b> para que el modelo aprenda? Un mes de datos no alcanza.</li>
+    </ol>
+
+    <p>La conclusión es afilada: si estas preguntas no se pueden responder con claridad, probablemente el problema principal todavía no sea construir un modelo de IA, sino <strong>ordenar los datos primero</strong>. A ese trabajo de reglas y procesos que aseguran que los datos estén disponibles, consistentes y confiables se le llama <span class="term">gobernanza de datos</span>. A veces el "proyecto de IA" correcto es, en realidad, un proyecto previo de poner la casa en orden.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que quieres predecir traspasos, pero descubres que el motivo por el que un afiliado se fue se anota a mano, en un campo libre, sin estandarizar, y solo la mitad de las fichas lo tiene lleno. No hay IA que arregle eso: primero hay que definir el campo, hacerlo obligatorio y poblarlo. Eso es gobernanza de datos, y suele ser el paso cero que nadie quiere hacer.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Antes de soñar con el modelo, contesta cinco preguntas sobre tus datos. Si no puedes, tu primer proyecto no es de IA: es ordenar los datos.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">El proceso</span></div>
+    <h2 class="titulo">CRISP-DM: los seis pasos de una campaña bien hecha</h2>
+
+    <p>Los proyectos de IA no avanzan en línea recta, justamente por esa incertidumbre. Por eso existe un método para ordenarlos, y es el más usado del mundo: se llama <span class="term">CRISP-DM</span> (en español, "proceso estándar para minería de datos"). No te asustes con la sigla: es simplemente una receta de seis pasos que se repiten en ciclo, con los <strong>datos en el centro</strong>. Piénsalo como una campaña bien hecha, donde vas ajustando sobre la marcha en vez de disparar y rezar.</p>
+
+    <p>Un detalle clave: no es una escalera donde terminas un paso y nunca vuelves atrás. Es un <strong>círculo</strong>, con flechas que van y vuelven. El negocio y los datos se entienden a la vez y se corrigen mutuamente. Y también aparece acá el concepto de <span class="term">machine learning</span> (aprendizaje de máquina): la capacidad del sistema de aprender patrones desde los datos para predecir o clasificar. Los seis pasos:</p>
+
+    <ol class="pasos">
+      <li><b>Comprensión del negocio.</b> Definir qué quieres lograr y traducirlo a un problema de datos. "Quiero retener afiliados" se vuelve "quiero predecir quién se traspasa el próximo mes".</li>
+      <li><b>Comprensión de los datos.</b> Mirar qué datos hay, si son de calidad y si de verdad traen la señal que buscas. Esta y la anterior conversan todo el tiempo.</li>
+      <li><b>Preparación de los datos.</b> Limpiar, juntar y ordenar la información. Es el paso más laborioso y menos glamoroso, como armar la base de una campaña antes de llamar.</li>
+      <li><b>Modelado.</b> Recién acá se entrena el modelo, el "cerebro" que aprende de los datos.</li>
+      <li><b>Evaluación.</b> Medir si el modelo cumple el objetivo del <em>negocio</em>, no solo el número técnico. Desde acá puedes volver al paso uno si algo no cuadra.</li>
+      <li><b>Despliegue.</b> Poner el modelo a trabajar de verdad, para que genere valor en el día a día.</li>
+    </ol>
+
+    <p>Y el ciclo no termina: cuando despliegas, se generan datos nuevos que reinician la vuelta. Es exactamente cómo trabajas una campaña que mejora mes a mes con lo que aprendiste del mes anterior.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Lo que te preguntan en el examen</div>
+        <small>CRISP-DM tiene <strong>seis fases</strong> y <strong>termina en el despliegue</strong>. Punto. Así se evalúa y así lo respondes.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Lo que sabe la práctica actual</div>
+        <small>CRISP-DM no cubre lo que viene <em>después</em> de desplegar: vigilar el modelo, reentrenarlo cuando se desactualiza. De eso se encarga otra disciplina, <span class="term">MLOps</span> (y una metodología llamada TDSP). Si te preguntan por "operar el modelo en el tiempo", la respuesta es MLOps, no CRISP-DM.</small>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la misma lógica de una campaña de retención bien llevada: defines la meta, revisas a quién tienes en la cartera, ordenas los contactos, pruebas un guion, mides si convirtió, y según el resultado ajustas y vuelves a empezar. Nadie que sepa vender arma la campaña entera de una y no la toca nunca más.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">CRISP-DM son seis pasos en círculo, con los datos al centro, que terminan en el despliegue. Lo que viene después de desplegar ya es harina de otro costal: se llama MLOps.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">La materia prima</span></div>
+    <h2 class="titulo">Las 4 V: ¿tus datos de afiliados dan el ancho?</h2>
+
+    <p>Ya confirmaste que tienes datos (parte 2). Ahora falta lo otro: que esos datos <strong>sirvan</strong>. Tener datos no es lo mismo que tener datos útiles: pueden existir pero estar incompletos, viejos o mal registrados. Para revisarlo sin meterse en tecnicismos existe una herramienta simple y muy usada, el <span class="term">marco 4V</span>. Son cuatro preguntas sobre la calidad de tu materia prima:</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Las cuatro dimensiones para evaluar tus datos, traducidas a la AFP</caption>
+        <thead><tr><th>Dimensión</th><th>Qué revisa</th><th>Señal de alarma</th></tr></thead>
+        <tbody>
+          <tr><td class="lab-col">Volumen</td><td>¿Tienes suficientes casos y suficiente detalle de cada afiliado?</td><td>Muy pocos ejemplos para lo que quieres predecir.</td></tr>
+          <tr><td class="lab-col">Variedad</td><td>¿Tus datos cubren todos los tipos de afiliado, incluidos los casos raros?</td><td>Solo tienes los casos "normales"; falta el caso atípico.</td></tr>
+          <tr><td class="lab-col">Velocidad</td><td>¿Cada cuánto se actualizan los datos?</td><td>Se actualizan tan rápido que se desactualizan solos.</td></tr>
+          <tr><td class="lab-col">Veracidad</td><td>¿Los datos tienen la respuesta correcta anotada de verdad?</td><td>Sin etiquetas confiables, el modelo no tiene de qué aprender.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><span class="term">Volumen</span> es cuántos casos tienes y cuánto detalle de cada uno. La regla práctica: distintas tareas piden distinta cantidad. Predecir algo simple puede necesitar cientos de casos; leer texto o imágenes suele pedir miles de ejemplos por cada categoría. Si quieres clasificar los reclamos de tus afiliados en cinco tipos y solo tienes sesenta reclamos en total, no alcanza —por muy bueno que sea el sistema.</p>
+
+    <p><span class="term">Variedad</span> es que los datos representen <strong>todos los escenarios</strong>, incluidos los raros: el afiliado que se fue por un motivo insólito, el fraude nunca visto. Ojo con esto: muchas veces la información viene como <span class="term">datos no estructurados</span> —textos de llamadas, correos, audios del call center— que hay que ordenar bastante antes de que un modelo los pueda "digerir".</p>
+
+    <p><span class="term">Velocidad</span> es cada cuánto cambian los datos. Datos muy rápidos (movimientos minuto a minuto) piden más infraestructura y traen un riesgo llamado <span class="term">deriva de datos</span>: la realidad cambia y el modelo, entrenado con datos viejos, empieza a fallar. Su primo cercano es la <span class="term">deriva de concepto</span>, cuando cambia la relación misma entre causa y efecto (por ejemplo, si de un año a otro cambia por qué se traspasa la gente). En ambos casos hay que reentrenar el modelo cada cierto tiempo.</p>
+
+    <p><span class="term">Veracidad</span> es la más importante de las cuatro, y la más fácil de descuidar. Es tener anotada la <strong>respuesta correcta</strong>: saber si un afiliado <em>realmente</em> se traspasó. Se le llama la "verdad fundamental" o etiqueta, y es la que necesita el <span class="term">aprendizaje supervisado</span> (cuando el modelo aprende de ejemplos que ya traen la respuesta puesta). Es el "profesor" del sistema: si el profesor da respuestas equivocadas, el alumno aprende mal. Si en tu histórico mezclas como "baja" al que se traspasó por decisión propia, al que falleció y al que se cambió por una fusión, la veracidad es baja: el modelo aprende una mezcla, no la fuga real.</p>
+
+    <p>Lo valioso del 4V no es dar una nota exacta, sino <strong>comparar ideas entre sí</strong> y detectar debilidades temprano. Una idea de alto impacto puede ser inviable si sus datos no tienen volumen o veracidad; y una idea que parecía difícil puede volverse una "victoria rápida" si resulta que ya tienes datos abundantes y bien ordenados. La moraleja del curso: muchas veces la gobernanza de los datos importa más que la tecnología del modelo.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">En el examen</div>
+        <small>Este curso evalúa datos con <strong>4 V: volumen, variedad, velocidad y veracidad</strong>.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Un dato extra</div>
+        <small>En material sobre "Big Data" vas a ver <strong>5 V</strong>: las mismas cuatro más el <span class="term">Valor</span> (el retorno que los datos aportan al negocio). Si te preguntan por Big Data en general, la quinta es Valor.</small>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es revisar tu cartera antes de prometer una campaña: ¿tengo suficientes afiliados con ficha completa (volumen)?, ¿tengo de todos los perfiles o solo de los fáciles (variedad)?, ¿los datos están al día (velocidad)?, ¿sé de verdad quién se traspasó y por qué (veracidad)? Si la respuesta a la última es "más o menos", ahí tienes el problema más grande.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Volumen, variedad, velocidad y veracidad: cuatro preguntas simples que te dicen si tus datos dan el ancho antes de construir nada. La veracidad —tener la respuesta correcta anotada— es la que más pesa.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Propio o contratado</span></div>
+    <h2 class="titulo">¿Software propio o contratado? Fabricar o comprar</h2>
+
+    <p>Construir una solución de IA desde cero es caro y complejo: no es solo el modelo, también hay que manejar la infraestructura, el almacenamiento, la integración y el mantenimiento. Por eso casi nadie lo hace todo internamente; se combina lo propio con servicios externos según el presupuesto, la urgencia y la experiencia del equipo. A esa decisión se le llama <span class="term">fabricar o comprar</span> (en inglés, <em>make or buy</em>), y el curso la ordena en cuatro enfoques, de <strong>menos a más control</strong> (y más responsabilidad) de tu parte:</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Los cuatro enfoques, del más liviano al más pesado</caption>
+        <thead><tr><th>Enfoque</th><th>Qué maneja la empresa</th><th>Control</th><th>Ideal para</th></tr></thead>
+        <tbody>
+          <tr><td class="lab-col">IA como Servicio</td><td>Solo usa el modelo ya hecho, conectándose a él</td><td>Bajo</td><td>Tareas generales, validar rápido</td></tr>
+          <tr><td class="lab-col">Plataforma como Servicio</td><td>Entrena sus propios modelos; no maneja los servidores</td><td>Medio</td><td>Modelos propios sin operar infraestructura</td></tr>
+          <tr><td class="lab-col">Infraestructura como Servicio</td><td>Arrienda el cómputo y maneja modelos y herramientas</td><td>Alto</td><td>Equipos especializados</td></tr>
+          <tr><td class="lab-col">Propiedad integral</td><td>Todo, internamente</td><td>Total</td><td>Entornos muy regulados</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>La <span class="term">IA como Servicio</span> (AIaaS) es conectarse a un modelo que otro ya entrenó y usarlo tal cual, ideal para tareas generales como leer el texto de una foto o transcribir una llamada. Rapidísimo, pero con poco control. La <span class="term">Plataforma como Servicio</span> (PaaS) te deja entrenar <strong>tus propios modelos</strong> sin preocuparte de los servidores; ahí aparece el <span class="term">AutoML</span>, una herramienta que prueba muchos modelos sola y se queda con el mejor, de modo que hasta alguien sin experiencia técnica arma un primer intento. La <span class="term">Infraestructura como Servicio</span> (IaaS) es arrendar la capacidad de cómputo y manejar tú los modelos: más control, pero necesitas un equipo especializado. Y la <span class="term">propiedad integral</span> (on-premise) es tener todo en casa: control absoluto, necesario en rubros muy regulados como banca o salud, pero con el mayor costo y complejidad.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es como tener comida. La IA como Servicio es pedir delivery: rápido, cero esfuerzo, pero comes del menú que hay. La Plataforma como Servicio es un kit con los ingredientes cortados y la receta: tú cocinas, pero no lavas ollas industriales. La Infraestructura como Servicio es arrendar una cocina profesional: traes ingredientes y cocineros. Y la propiedad integral es construir tu propio restaurante: mandas en todo, pero pagas arriendo, personal y cada reparación.
+    </div>
+
+    <p>La recomendación práctica del curso: <strong>empieza liviano</strong>. En la mayoría de los casos conviene arrancar con servicios administrados (IA como Servicio o Plataforma) para validar rápido la idea, y solo después avanzar hacia algo más propio y complejo si el proyecto lo justifica. Un pequeño detalle de vocabulario, por si te lo preguntan: en la nube "clásica" se habla de tres modelos (infraestructura, plataforma y software como servicio); la IA como Servicio se comporta como una capa de software especializado, y la plataforma de modelos, como la de plataforma. El orden de control del curso es correcto y estándar.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Para probar, contrata; no fabriques. Empieza con lo que ya está hecho y validas rápido; recién si la idea rinde, invierte en algo más propio y más caro.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">La estructura</span></div>
+    <h2 class="titulo">Las tres capas: lo que ve el ejecutivo y el motor de atrás</h2>
+
+    <p>Para evaluar la viabilidad conviene entender, al menos por encima, <strong>cómo se arma</strong> una solución de IA. Aunque por dentro sean complejas, casi todas se explican con tres capas, y cada una responde a una pregunta que tú le harías a cualquier campaña.</p>
+
+    <ol class="pasos">
+      <li><b>Capa de datos — ¿de dónde sale la información?</b> Es el lugar donde vive y se carga la data: tablas ordenadas, pero también correos, audios del call center, documentos. Acá están el CRM, el ERP, archivos y sensores, y todo el trabajo de limpiar y ordenar (la misma "preparación de los datos" de CRISP-DM).</li>
+      <li><b>Capa de análisis — ¿dónde se arma el modelo?</b> La sala de máquinas: donde se entrenan los modelos y se sacan las predicciones. Aquí viven los clasificadores, los sistemas de recomendación y la <span class="term">detección de anomalías</span> (encontrar el caso que se sale de lo esperado, como un movimiento raro). A veces se mezclan reglas de negocio de siempre con IA.</li>
+      <li><b>Capa de usuario — ¿cómo le llega el resultado a quien decide?</b> La cara visible: un <span class="term">dashboard</span> (un tablero con los resultados), una aplicación, un <span class="term">chatbot</span> (un asistente que conversa) o una <span class="term">API</span> (la pieza que permite que dos sistemas se conecten y se pasen datos). Es lo único que ve el ejecutivo comercial.</li>
+    </ol>
+
+    <p>Las tres tienen nombres técnicos: <span class="term">capa de datos</span>, <span class="term">capa de análisis</span> y <span class="term">capa de usuario</span>. Y la que más se olvida es justo la última, que para ti es la más importante: una predicción brillante que nunca llega al piso de ventas es como un prospecto caliente que nadie llama. No sirve de nada. El resultado tiene que aterrizar en manos de quien toma la decisión.</p>
+
+    <p>Un detalle bonito sobre el chatbot: su flujo es de ida y vuelta. Las conversaciones de los usuarios generan datos nuevos que después sirven para <strong>reentrenar</strong> y mejorar el modelo, cerrando el ciclo de CRISP-DM que viste antes.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es un restaurante. La capa de datos es la despensa y la cocina donde se preparan los ingredientes; la capa de análisis es el chef que los transforma en un plato (la inteligencia); la capa de usuario es el mesero y el plato servido, lo único que el comensal ve. En una alerta de traspaso: los datos salen del CRM y el ERP, un modelo decide quién está en riesgo, y el resultado llega en un tablero para que el equipo llame.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Datos (de dónde sale la info), análisis (dónde se arma el modelo) y usuario (cómo le llega a quien decide). Si falla la tercera, el mejor modelo se queda guardado en un cajón.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">La responsabilidad</span></div>
+    <h2 class="titulo">La ética: no discriminar a tus afiliados</h2>
+
+    <p>La ética en IA <strong>no</strong> es sobre máquinas conscientes tomando decisiones morales. Es sobre la <strong>responsabilidad de las personas y las empresas</strong> que diseñan y usan estos sistemas. Cada caso puede tener consecuencias reales para la gente, así que hay que pensarlo desde las primeras etapas, no al final.</p>
+
+    <p>Y no todos los sistemas tienen el mismo riesgo. Clasificar automáticamente los tickets de soporte es inofensivo; en cambio, decidir un diagnóstico médico, aprobar un crédito o filtrar candidatos a un empleo influye directamente en la vida de la gente. El curso propone mirar dos dimensiones:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Criticidad ética</div>
+        <div class="sub">¿Afecta la vida?</div>
+        <p style="margin:0;font-size:.97rem">La <span class="term">criticidad ética</span> mide si la decisión de la IA afecta el bienestar, la libertad o la vida de las personas. Controlar la calidad de unos teclados en una fábrica es de baja criticidad; aprobar créditos o dar diagnósticos es de altísima criticidad.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Criticidad de privacidad</div>
+        <div class="sub">¿Qué tan íntimos son los datos?</div>
+        <p style="margin:0;font-size:.97rem">La <span class="term">criticidad de la privacidad</span> mide qué tan personales son los datos, desde datos anónimos de máquinas hasta <span class="term">datos personales o sensibles</span> (los que identifican a alguien o revelan aspectos íntimos). Datos de afiliados: aquí hay que pisar con cuidado.</p>
+      </div>
+    </div>
+
+    <p>Un punto sutil, con olor a examen: <strong>aunque los datos sean anónimos, el caso puede ser éticamente crítico si el resultado afecta la vida de la gente</strong>. Un ejemplo son las pruebas de medicamentos: los datos pueden ir sin nombre, pero la decisión afecta la salud de personas. Anonimato no es lo mismo que bajo riesgo.</p>
+
+    <p>Además, la evaluación ética no se hace una sola vez. Los modelos se degradan, pueden incorporar <span class="term">sesgos</span> no previstos o producir efectos no deseados cuando cambia el entorno (otra vez la deriva). Por eso hace falta monitoreo y gobernanza permanentes.</p>
+
+    <h3>Sesgos y discriminación: el riesgo más silencioso</h3>
+    <p>El <span class="term">sesgo</span> aparece cuando el modelo aprende de datos históricos un patrón injusto y lo perpetúa como <span class="term">discriminación algorítmica</span>: trato desigual producido por la máquina. Y no está en el código, está en los datos. Dos casos reales que conviene conocer:</p>
+
+    <ul style="margin:0 0 16px;padding-left:20px">
+      <li><strong>Amazon, 2018.</strong> Descartó una herramienta interna que filtraba currículums porque <strong>penalizaba a las mujeres</strong>: entrenada con CVs de una década dominada por hombres, "aprendió" a castigar términos asociados a lo femenino.</li>
+      <li><strong>COMPAS, 2016.</strong> Un algoritmo de riesgo usado en tribunales de EE. UU. que, según una investigación periodística, marcaba con más frecuencia como "alto riesgo" a acusados de raza negra.</li>
+    </ul>
+
+    <p>Cuando un caso es de alta criticidad, la respuesta técnica tiene nombre: se le exige una capa de <span class="term">IA explicable</span> (en inglés, <em>Explainable AI</em> o XAI), que permite <strong>justificar por qué</strong> el sistema decidió lo que decidió —por ejemplo, por qué rechazó un crédito— ante el cliente y ante el regulador.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">En el examen</div>
+        <small>Para clasificar el riesgo, el curso usa <strong>dos dimensiones</strong>: criticidad ética y criticidad de privacidad.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">En la práctica profesional</div>
+        <small>El estándar europeo de <span class="term">IA fiable</span> (<em>Trustworthy AI</em>) define <strong>siete requisitos</strong> (supervisión humana, seguridad, privacidad, transparencia, no discriminación, bienestar social y rendición de cuentas). Si te preguntan por ese marco, son siete; para priorizar en el curso, dos dimensiones.</small>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en un modelo que decide a qué afiliados ofrecerles un beneficio. Si aprende de un histórico sesgado, podría empezar a dejar fuera sistemáticamente a un grupo —por su comuna, su edad o su género— sin que nadie lo haya decidido a propósito. Eso es discriminación algorítmica, y a una AFP le puede costar la confianza de sus afiliados y un problema regulatorio serio.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La ética se mide en dos ejes —cuánto afecta a la persona y cuán íntimos son los datos— y su peor trampa es el sesgo: la máquina aprende una injusticia del pasado y la repite sin que nadie lo note.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">El plan</span></div>
+    <h2 class="titulo">La hoja de ruta: por dónde partir</h2>
+
+    <p>Ya sabes evaluar el impacto (unidad anterior) y la viabilidad (esta unidad). Con eso puedes armar una <span class="term">hoja de ruta priorizada</span>: no una lista de ideas bonitas, sino un orden de <strong>por dónde partir</strong>. La herramienta es la <span class="term">matriz impacto-viabilidad</span>, que ubica cada idea según dos preguntas:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Impacto</div>
+        <div class="sub">¿Cuánto mueve la aguja?</div>
+        <p style="margin:0;font-size:.97rem">El valor para el negocio: más ingresos, menos costos, mejor experiencia del afiliado.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Viabilidad</div>
+        <div class="sub">¿Qué tan factible es?</div>
+        <p style="margin:0;font-size:.97rem">Qué tan realista es hacerlo, mirando datos, infraestructura, capacidades internas y límites éticos.</p>
+      </div>
+    </div>
+
+    <p>No necesitas números perfectos: al principio basta con comparar las ideas <strong>de forma relativa</strong>. En palabras simples, la prioridad de una idea es su impacto combinado con su viabilidad: una idea de impacto altísimo pero viabilidad casi nula rinde poco, igual que una muy fácil pero de impacto trivial. De ahí salen cuatro grupos:</p>
+
+    <ol class="pasos">
+      <li><b>Campeones.</b> Alto impacto y alta viabilidad. Son tu <strong>prioridad número uno</strong>: hazlos ya.</li>
+      <li><b>Victorias rápidas.</b> Alta viabilidad pero impacto menor. Sirven para <strong>generar confianza</strong> rápido en la tecnología y en el equipo.</li>
+      <li><b>Casos de investigación.</b> Alto impacto pero baja viabilidad hoy. Mantenlos <strong>en el radar</strong>, pero sin meterles toda la plata de golpe.</li>
+      <li><b>Reevaluar más tarde.</b> Bajo impacto y baja viabilidad. Consumen recursos sin aportar; déjalos para después.</li>
+    </ol>
+
+    <p>Dos criterios extra que ayudan: prioriza proyectos que <strong>compartan las mismas fuentes de datos</strong> (aprovechas el trabajo ya hecho), y <strong>combina iniciativas ambiciosas con proyectos simples</strong>, para mostrar resultados visibles mientras desarrollas las capacidades más difíciles.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es planificar arreglos en una casa con presupuesto justo. Campeón: cambiar las ventanas viejas por eficientes (mucho ahorro, obra sencilla) → hazlo ya. Victoria rápida: pintar el living (barato, impacto modesto) → sube el ánimo. Caso de investigación: instalar paneles solares (gran ahorro futuro, pero caro y complejo hoy) → cotiza, no ejecutes aún. Reevaluar: una fuente decorativa en el jardín → ni impacto ni facilidad, déjala.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Ordena tus ideas en cuatro cajones —campeones, victorias rápidas, investigación y reevaluar— y parte por los campeones: mucho impacto y fáciles de hacer.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 9 -->
+  <section class="parte reveal" id="p9">
+    <div class="kicker"><span class="num">9</span><span class="tag">Todo junto</span></div>
+    <h2 class="titulo">Todo junto: el caso del banco y el crédito</h2>
+
+    <p>El curso cierra aplicando <em>todo</em> lo anterior a un caso, y es tan cercano a tu mundo que lo vas a seguir sin esfuerzo. Un banco quiere usar IA para <strong>automatizar la aprobación de créditos</strong>, lo que se llama <span class="term">scoring de crédito</span>. Mira cómo aplican cada herramienta que aprendiste:</p>
+
+    <ol class="pasos">
+      <li><b>Revisaron las 4 V.</b> El volumen es alto (millones de operaciones históricas), pero la <strong>veracidad es baja</strong>: muchos registros viejos no tienen bien anotado si el cliente pagó o no, por culpa de <span class="term">sistemas legacy</span> (sistemas heredados y obsoletos). Muchos datos, pero de etiqueta dudosa —justo la dimensión más crítica.</li>
+      <li><b>Eligieron cómo construirlo.</b> Optaron por Plataforma como Servicio: mantener el control total del modelo (el negocio es sensible) pero delegar la infraestructura. Ni todo contratado (perderían control) ni todo propio (complejidad innecesaria).</li>
+      <li><b>Evaluaron la ética.</b> Clasificaron el caso como de <strong>máxima criticidad</strong>: usa datos personales y afecta el acceso de la gente al dinero. Eso los obliga a incorporar <span class="term">IA explicable</span>, para poder justificar cada rechazo ante el cliente y el regulador.</li>
+      <li><b>Lo pusieron en la matriz.</b> Con esa veracidad baja y esa exigencia regulatoria, el scoring quedó como <strong>caso de investigación</strong>: alto impacto, pero viabilidad comprometida.</li>
+    </ol>
+
+    <p>Y acá está la lección central de toda la unidad: el banco <strong>no partió por el proyecto más deseable</strong>. Decidió arrancar primero por una <span class="term">predicción de fuga de clientes</span> (lo que tú conoces como churn: anticipar quién se va a ir), que usa datos menos sensibles y por eso es más viable. Ese fue su <em>campeón</em>; el scoring quedó esperando, como caso de investigación, hasta resolver la veracidad de los datos y la explicabilidad.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la misma decisión que tomarías tú: entre una campaña ambiciosa pero llena de incógnitas y una más humilde que sabes que puede funcionar, partes por la segunda para generar confianza y capacidades, y dejas la grande para cuando tengas los datos ordenados. El proyecto más brillante no siempre es el que se hace primero.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un análisis ordenado —4 V, cómo construirlo, ética y matriz— puede recomendarte empezar por un campeón humilde (el churn) y dejar el proyecto estrella (el scoring) para más adelante.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Business Intelligence (BI)</dt><dd>Mirar el pasado con reportes y tableros; describe lo que ya pasó, de forma predecible.</dd>
+        <dt>Inteligencia Artificial (IA)</dt><dd>Aprender patrones de los datos para predecir o recomendar lo que viene.</dd>
+        <dt>Machine learning</dt><dd>La capacidad de un sistema de aprender patrones desde datos para predecir o clasificar.</dd>
+        <dt>Viabilidad de un proyecto de IA</dt><dd>Qué tan ejecutable es, según datos, infraestructura, capacidades y ética.</dd>
+        <dt>Incertidumbre</dt><dd>No saber de antemano si la idea servirá, si la usarán y si los datos alcanzan.</dd>
+        <dt>Gobernanza de datos</dt><dd>Reglas y procesos que aseguran datos disponibles, consistentes y confiables.</dd>
+        <dt>Vórtice digital</dt><dd>La idea de que la disrupción arrastra a transformarse a quien no se adapta.</dd>
+        <dt>CRISP-DM</dt><dd>Método cíclico de seis fases para ordenar un proyecto de datos e IA.</dd>
+        <dt>Comprensión del negocio</dt><dd>Fase que define el objetivo y lo traduce a un problema de datos.</dd>
+        <dt>Comprensión de los datos</dt><dd>Fase que explora qué datos hay, su calidad y si traen la señal buscada.</dd>
+        <dt>Preparación de los datos</dt><dd>Fase de limpiar, juntar y ordenar los datos; la más laboriosa.</dd>
+        <dt>Modelado</dt><dd>Fase donde se entrena el modelo.</dd>
+        <dt>Evaluación (fase)</dt><dd>Fase que mide si el modelo cumple el objetivo del negocio, no solo el técnico.</dd>
+        <dt>Despliegue</dt><dd>Fase que pone el modelo a trabajar de verdad para generar valor.</dd>
+        <dt>MLOps</dt><dd>Disciplina que cubre lo que viene después de desplegar: vigilar y reentrenar el modelo.</dd>
+        <dt>Marco 4V</dt><dd>Herramienta que evalúa datos según volumen, variedad, velocidad y veracidad.</dd>
+        <dt>Volumen</dt><dd>Cuántos casos tienes y cuánto detalle de cada uno.</dd>
+        <dt>Variedad</dt><dd>Que los datos representen todos los escenarios, incluidos los raros.</dd>
+        <dt>Velocidad</dt><dd>Cada cuánto se actualizan los datos; a más velocidad, más riesgo de deriva.</dd>
+        <dt>Veracidad</dt><dd>Que los datos tengan la respuesta correcta anotada; la dimensión más crítica.</dd>
+        <dt>Valor (5ª V)</dt><dd>La quinta V del Big Data: el retorno que los datos aportan al negocio.</dd>
+        <dt>Datos no estructurados</dt><dd>Textos, imágenes o audios que hay que ordenar antes de que un modelo los use.</dd>
+        <dt>Aprendizaje supervisado</dt><dd>Aprender de ejemplos que ya traen la respuesta correcta puesta.</dd>
+        <dt>Deriva de datos</dt><dd>Cuando la realidad cambia y el modelo, entrenado con datos viejos, empieza a fallar.</dd>
+        <dt>Deriva de concepto</dt><dd>Cuando cambia la relación misma entre causa y efecto, invalidando el patrón aprendido.</dd>
+        <dt>Fabricar o comprar</dt><dd>Decidir si desarrollar la IA internamente o contratar servicios externos.</dd>
+        <dt>IA como Servicio (AIaaS)</dt><dd>Usar un modelo ya hecho conectándose a él; rápido, pero con poco control.</dd>
+        <dt>Plataforma como Servicio (PaaS)</dt><dd>Entrenar modelos propios sin manejar los servidores.</dd>
+        <dt>Infraestructura como Servicio (IaaS)</dt><dd>Arrendar el cómputo y manejar tú los modelos y herramientas.</dd>
+        <dt>Propiedad integral (On-premise)</dt><dd>Tener todo internamente; control total, pero máximo costo y complejidad.</dd>
+        <dt>AutoML</dt><dd>Herramienta que prueba muchos modelos sola y se queda con el mejor.</dd>
+        <dt>Capa de usuario</dt><dd>La cara visible: tablero, aplicación, asistente o conexión para quien decide.</dd>
+        <dt>Capa de análisis</dt><dd>La sala de máquinas: donde se entrenan los modelos y se sacan predicciones.</dd>
+        <dt>Capa de datos</dt><dd>De dónde sale la información y dónde se prepara antes de usarla.</dd>
+        <dt>Dashboard</dt><dd>Un tablero visual que muestra los resultados a quien decide.</dd>
+        <dt>Chatbot</dt><dd>Un asistente que conversa; sus diálogos generan datos para reentrenar el modelo.</dd>
+        <dt>API</dt><dd>La pieza que permite que dos sistemas se conecten y se pasen datos.</dd>
+        <dt>ERP</dt><dd>Sistema que integra procesos internos como finanzas, inventario y operaciones.</dd>
+        <dt>CRM</dt><dd>Sistema que guarda la relación y el historial con cada cliente o afiliado.</dd>
+        <dt>Detección de anomalías</dt><dd>Encontrar el caso que se sale de lo esperado.</dd>
+        <dt>Criticidad ética</dt><dd>Cuánto afecta la decisión de la IA al bienestar, la libertad o la vida de la gente.</dd>
+        <dt>Criticidad de la privacidad</dt><dd>Qué tan personales y sensibles son los datos usados.</dd>
+        <dt>Datos personales o sensibles</dt><dd>Información que identifica a alguien o revela aspectos íntimos.</dd>
+        <dt>Sesgo</dt><dd>Un patrón injusto que el modelo aprende del pasado y tiende a repetir.</dd>
+        <dt>Discriminación algorítmica</dt><dd>Trato desigual producido por un modelo a partir de sus sesgos.</dd>
+        <dt>IA explicable (XAI)</dt><dd>Enfoque que permite justificar y entender por qué el modelo decidió algo.</dd>
+        <dt>IA fiable (Trustworthy AI)</dt><dd>IA legal, ética y robusta según los siete requisitos europeos.</dd>
+        <dt>Hoja de ruta priorizada</dt><dd>Un plan que ordena las ideas según impacto y viabilidad.</dd>
+        <dt>Matriz impacto-viabilidad</dt><dd>Cuadro que ubica cada idea según su valor de negocio y su facilidad de hacerla.</dd>
+        <dt>Campeones</dt><dd>Ideas de alto impacto y alta viabilidad; prioridad número uno.</dd>
+        <dt>Victorias rápidas</dt><dd>Ideas fáciles pero de impacto menor; generan confianza rápido.</dd>
+        <dt>Casos de investigación</dt><dd>Ideas de alto impacto pero baja viabilidad hoy; se mantienen en el radar.</dd>
+        <dt>Reevaluar más tarde</dt><dd>Ideas de bajo impacto y baja viabilidad; consumen recursos sin aportar.</dd>
+        <dt>Scoring de crédito</dt><dd>Usar IA para evaluar y automatizar la aprobación de créditos.</dd>
+        <dt>Predicción de fuga (churn)</dt><dd>Modelo que anticipa qué clientes o afiliados se van a ir.</dd>
+        <dt>Sistemas legacy</dt><dd>Sistemas heredados y obsoletos cuyos datos suelen tener baja veracidad.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con tres cosas, que sean estas</h2>
+    <ol>
+      <li><strong>Evalúa antes de invertir.</strong> No lances la campaña grande sin filtrar: mira si la idea vale la pena (impacto) y si de verdad se puede hacer (viabilidad). Tú ya lo haces cuando pruebas un guion con pocos afiliados antes de soltarlo a toda la cartera.</li>
+      <li><strong>Los datos mandan.</strong> El algoritmo es lo de menos al principio. Si tus datos de afiliados no tienen volumen ni veracidad, no hay IA que lo salve. Ordena la casa primero.</li>
+      <li><strong>Parte por los campeones.</strong> Entre todas las ideas, empieza por las de alto impacto y alta viabilidad. El proyecto más brillante puede esperar; el que rinde rápido genera confianza y capacidades.</li>
+    </ol>
+    <p class="remate">Y lo más lindo: nada de esto es tecnología, es criterio comercial. Ya sabes que no se invierte a ciegas, que los datos ordenados valen oro, y que conviene empezar por lo que rinde. La IA solo le puso nombre técnico a algo que tú haces todos los días con tu cartera.</p>
+  </section>
+
+</main>
+
+<footer>
+  IA explicada para ventas · Unidad 2 — Del BI a la inteligencia: viabilidad de los proyectos de IA · Curso "Toma de decisiones basadas en datos con IA", Diplomado UDD · Guía autocontenida, funciona sin internet.
+</footer>
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
