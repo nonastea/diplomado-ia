@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuándo la IA deja de ser una herramienta y pasa a ser el negocio</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial</p>
+    <h1>Cuándo la IA deja de ser una herramienta y pasa a ser el negocio</h1>
+    <p class="lead">Hay dos cosas muy distintas que una empresa puede hacer con inteligencia artificial. Una es <em>hacer más rápido lo que ya hace</em>: que el call center atienda más llamadas, que un informe salga en la mañana en vez del viernes. La otra es <em>cambiar el negocio</em>: atender a gente que antes no atendía, ofrecer algo que antes no existía, cobrar de una manera nueva.</p>
+    <p class="lead">Esta guía te enseña a distinguir una de otra, porque casi todos los proyectos que fracasan lo hacen por confundirlas. Y te da el vocabulario para sentarte en cualquier reunión donde se hable de esto y saber exactamente <strong>qué están proponiendo y si vale la pena</strong>.</p>
+    <span class="nota">No necesitas saber de tecnología. Esto es criterio comercial puro: quién es el cliente, qué problema tiene, quién paga y por qué no te lo copian mañana.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>La trampa: por qué "necesitamos IA" es una pésima forma de empezar</a></li>
+      <li><a href="#p2"><span class="n">2</span>Dónde nacen las oportunidades (y qué hace la IA de verdad)</a></li>
+      <li><a href="#p3"><span class="n">3</span>Qué es un modelo de negocio: mover una pieza mueve las demás</a></li>
+      <li><a href="#p4"><span class="n">4</span>La frontera que define todo: mejorar vs. cambiar el negocio</a></li>
+      <li><a href="#p5"><span class="n">5</span>Los cuatro caminos que ya están funcionando</a></li>
+      <li><a href="#p6"><span class="n">6</span>Por qué dos empresas con la misma herramienta terminan distinto</a></li>
+      <li><a href="#p7"><span class="n">7</span>Lo que hace que dure: cultura, coordinación, gente y datos cuidados</a></li>
+      <li><a href="#p8"><span class="n">8</span>La historia de Mercado Cercano, contada entera</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">El error de partida</span></div>
+    <h2 class="titulo">Por qué "necesitamos IA" es una pésima forma de empezar</h2>
+
+    <p>Imagina la reunión. Alguien de la mesa dice: "necesitamos inteligencia artificial". Nadie pregunta para qué. Seis meses después hay un chatbot en la página web, la gerencia está contenta porque se ve moderno, y los afiliados siguen traspasándose a la competencia exactamente al mismo ritmo.</p>
+
+    <p>Esto pasa todo el tiempo, y el curso lo diagnostica con una frase muy precisa: en las conversaciones sobre innovación <em>suele hablarse primero de la herramienta</em>, porque la tecnología es visible y fácil de mostrar. El problema aparece cuando el proyecto parece moderno pero el cliente casi no percibe una mejora.</p>
+
+    <p>La razón de fondo es simple: <strong>la herramienta se puede demostrar y el valor no</strong>. Una demo de un chatbot se ve en cinco minutos. "Bajamos en un tercio la fricción del afiliado" no se ve, hay que medirlo. Como la demo es más fácil de presentar, la conversación arranca por ahí y el problema real nunca queda definido.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es lo mismo que comprar un CRM carísimo porque "hay que digitalizarse", sin haber definido antes qué está fallando. Si el problema era que los ejecutivos llaman tarde a los afiliados en riesgo, el CRM no lo resuelve solo: resuelve un problema que no era el tuyo. Y el sistema queda ahí, precioso, con la mitad de los campos vacíos.
+    </div>
+
+    <h3>El orden correcto tiene tres pasos, y la tecnología va última</h3>
+
+    <p>El curso lo deja escrito como regla: primero se reconoce una <span class="term">necesidad insatisfecha</span> —algo que el cliente necesita y que hoy nadie le resuelve bien—, después se aclara qué beneficio se espera generar, y <em>recién entonces</em> se decide qué herramienta puede contribuir. Necesidad, beneficio, herramienta. En ese orden.</p>
+
+    <p>Y hay evidencia detrás. Un estudio muy citado (Westerman, Bonnet y McAfee) observó que las empresas con mejores resultados digitales <strong>no son las que más invierten</strong>, sino las que vinculan la tecnología con sus objetivos. Otro autor, Rogers, llega a lo mismo: tener herramientas nuevas importa menos que saber revisar tu oferta cuando cambian los clientes y el mercado.</p>
+
+    <h3>Qué significa "crear valor" (y por qué no es lo mismo que trabajar mucho)</h3>
+
+    <p>El curso define <span class="term">creación de valor</span> como resolver un problema, eliminar una dificultad o mejorar de forma <em>apreciable</em> la experiencia de clientes o socios. Fíjate en dos cosas. Primero: el valor se mide por el efecto en alguien, no por el esfuerzo que te costó. Segundo, y más importante: la palabra <strong>apreciable</strong>. Si la mejora no se nota, no hubo creación de valor. Punto.</p>
+
+    <p>Y el valor tiene tres momentos que conviene no mezclar, porque en el examen los mezclan a propósito:</p>
+
+    <ol class="pasos">
+      <li><b>Crear valor.</b> ¿Qué beneficio existe que antes no existía? Netflix te ahorra el esfuerzo de elegir qué ver.</li>
+      <li><b>Entregar valor.</b> ¿Cómo le llega ese beneficio al cliente? La app, la fila de recomendaciones, el catálogo ordenado.</li>
+      <li><b>Capturar valor.</b> ¿Qué parte de ese beneficio se queda la empresa? La suscripción mensual.</li>
+    </ol>
+
+    <p>Se llaman <span class="term">creación</span>, <span class="term">entrega</span> y <span class="term">captura de valor</span>, y son independientes. Puedes crear muchísimo valor y capturar cero. Un buscador gratis crea un valor enorme y no te cobra nada por buscar: cobra por publicidad. Si propones algo que crea valor pero no explicas quién paga, la propuesta está a medias.</p>
+
+    <h3>Las molestias que nadie reclama son la mina de oro</h3>
+
+    <p>El curso dice algo hermoso: innovar no siempre es inventar algo nuevo; muchas veces es <em>corregir una dificultad que se había vuelto habitual</em>. Eso tiene nombre: <span class="term">fricción</span>. Y la peor fricción es la que el cliente ya dejó de reclamar porque asumió que el mundo es así.</p>
+
+    <p>La fila de la notaría. Imprimir un papel para firmarlo y volver a escanearlo. Tener que llamar por teléfono para dar de baja algo que contrataste con dos clics. Nadie protesta demasiado, porque "siempre fue así". El día que alguien elimina esa molestia, el cliente lo nota al instante y no vuelve atrás.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      ¿Cuántos pasos tiene hoy un afiliado para cambiarse de fondo, entender su saldo proyectado o resolver una duda simple? Cada paso que sobra es fricción. Y probablemente nadie te lo reclama: se resignaron. Ahí, justo ahí, hay una oportunidad que ningún dato de ventas te va a mostrar, porque el que se resigna no llama para quejarse.
+    </div>
+
+    <h3>La vara con la que se mide todo: ¿lo nota el cliente?</h3>
+
+    <p>Osterwalder y Pigneur ponen la <span class="term">propuesta de valor</span> en el centro del modelo de negocio: es el beneficio que recibe el cliente y la razón por la que te elige a ti en vez de a otro. Dos precisiones que importan: está escrita <strong>desde el cliente</strong> (no es la lista de funciones que construiste), y es <strong>comparativa</strong> (responde "en lugar de la otra opción").</p>
+
+    <p>De ahí sale el criterio más citable de toda la unidad, la <span class="term">mejora perceptible</span>: la innovación <em>no se mide por la cantidad de funciones agregadas, sino por la mejora que la persona realmente alcanza a notar</em>. Contar funciones es una métrica interna, fácil y completamente irrelevante. Lo que el cliente nota es difícil de medir y es lo único que cuenta.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre agregarle ocho pestañas nuevas a la app de la AFP, y que el afiliado entienda en diez segundos cuánta plata va a tener cuando se jubile. Ocho pestañas se pueden contar en un informe. Entender en diez segundos es lo que hace que no se traspase.
+    </div>
+
+    <h3>El caso Netflix: el valor estaba en el esfuerzo que te ahorra</h3>
+
+    <p>El curso usa a Netflix con mucha intención. Netflix no se distingue por tener un sistema de recomendaciones —otras plataformas usan tecnología parecida—. Lo que hizo fue reconocer una dificultad cotidiana: <strong>elegir qué ver cuando el catálogo parece interminable</strong>. La recomendación vale porque reduce ese esfuerzo. El algoritmo es el medio; la experiencia más simple es el beneficio.</p>
+
+    <p>Lo fino del caso: un catálogo gigante parece una ventaja de la oferta, pero para el usuario es un costo. El <span class="term">sistema de recomendación</span> no está ahí para mostrarte más, sino para mostrarte <em>menos y mejor elegido</em>. Cambia la pregunta y cambia todo lo que construyes.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Primero el problema, después el beneficio, y la herramienta al final. Si empiezas por la herramienta, terminas con algo moderno que a nadie le cambió el día.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">De dónde salen las ideas</span></div>
+    <h2 class="titulo">Dónde nacen las oportunidades, y qué hace la IA de verdad</h2>
+
+    <p>El curso es tajante: las oportunidades de negocio no aparecen por casualidad ni por la creatividad de la gerencia. Surgen cuando una empresa <strong>interpreta un cambio del entorno antes que sus competidores</strong> y entiende cómo convertirlo en una forma nueva de crear valor. A eso se le llama <span class="term">descubrimiento de oportunidades</span>.</p>
+
+    <p>Y enumera cinco cosas que provocan esos cambios. Vale la pena tenerlas de memoria, porque es una lista cerrada y muy preguntable:</p>
+
+    <ol class="pasos">
+      <li><b>Cambios tecnológicos.</b> Aparece algo que antes no se podía hacer, o se abarata tanto que ahora cualquiera puede.</li>
+      <li><b>Nuevas regulaciones.</b> Una ley cambia las reglas del juego. En tu industria esto pasa seguido y mueve carteras enteras.</li>
+      <li><b>Cambios en lo que la gente prefiere.</b> El cliente empieza a valorar otra cosa: rapidez, transparencia, poder hacerlo solo desde el teléfono.</li>
+      <li><b>Competidores nuevos.</b> Entra alguien que juega distinto y te obliga a responder.</li>
+      <li><b>Avances científicos.</b> Conocimiento nuevo que habilita productos nuevos.</li>
+    </ol>
+
+    <p>Pero ojo con el matiz: mirar la tendencia es el piso, no el trabajo. El trabajo es <strong>cruzar la tendencia con una necesidad que sigue insatisfecha</strong>. Todo el mundo vio que la gente se fue al teléfono; muy pocos preguntaron qué es lo que la gente quiere resolver desde el teléfono.</p>
+
+    <h3>Las tres cosas que la IA hace bien</h3>
+
+    <p>El curso le atribuye a la IA tres capacidades distintas, y conviene separarlas porque no son lo mismo:</p>
+
+    <ol class="pasos">
+      <li><b>Integrar.</b> Juntar información que vivía en sistemas separados y hacerla comparable. Lo que hoy está en tres planillas y un correo, junto y hablando entre sí.</li>
+      <li><b>Detectar patrones.</b> Encontrar regularidades que a ojo humano se pierden. No porque seamos tontos, sino porque son cien mil casos.</li>
+      <li><b>Ubicar el momento exacto.</b> Precisar dónde y cuándo pasa algo: en qué punto una persona abandona una compra, en qué mes se dispara el riesgo de traspaso.</li>
+    </ol>
+
+    <p>Y de inmediato pone el límite, que es la frase que se repite cuatro veces en toda la unidad: <strong>esa información no decide por sí sola</strong>. Alguien tiene que interpretarla y relacionarla con una oportunidad que tenga sentido para el negocio.</p>
+
+    <p>Un hallazgo interpretado que revela algo no evidente y sugiere una acción se llama <span class="term">insight</span>. Y hay una brecha clásica entre tener el insight y que alguien haga algo con él: se llama la <span class="term">última milla de la analítica</span>. Casi siempre la causa no es técnica sino organizacional: nadie es dueño de la acción.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el informe precioso que llega el lunes con "estos 300 afiliados están en riesgo de traspaso" y que nadie baja a la fila de llamadas del martes. El hallazgo era correcto. La última milla estaba rota: no había un responsable de convertir esa lista en llamadas concretas con nombre y hora. Una lista fea que se usa vale infinitamente más que un informe brillante que se archiva.
+    </div>
+
+    <h3>Tres familias de IA, y qué tipo de información desbloquea cada una</h3>
+
+    <p>El curso nombra tres técnicas. Como esta unidad es de negocio y no de programación, lo único que necesitas saber es <strong>qué información libera cada una</strong>, que es lo estratégicamente valioso:</p>
+
+    <ol class="pasos">
+      <li><b><span class="term">Aprendizaje automático</span> (machine learning).</b> Trabaja con datos ordenados en tablas: transacciones, cotizaciones, registros. Sirve para predecir demanda, riesgo o fuga de clientes. Es el que te diría quién está por traspasarse.</li>
+      <li><b><span class="term">Procesamiento del lenguaje natural</span> (NLP).</b> Trabaja con texto y voz. Reclamos, correos, tickets, reseñas, <strong>las grabaciones del call center</strong>. Todo eso que hoy nadie lee porque son miles de horas.</li>
+      <li><b><span class="term">Visión computacional</span> (computer vision).</b> Trabaja con imágenes y video: leer documentos escaneados, revisar calidad, contar cosas.</li>
+    </ol>
+
+    <p>Las dos últimas abren lo que se llama <span class="term">datos no estructurados</span>: texto, audio e imagen sin formato de tabla. En una empresa típica son la <em>mayoría</em> de la información que existe, y casi nadie los usa. Si algún día tienes que proponer "dos fuentes de datos" para un proyecto, esas suelen ser la respuesta más fuerte, justamente porque están tiradas ahí sin que nadie las aproveche.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en todo lo que se dice en las llamadas de retención y que nunca queda registrado en ningún campo: las objeciones que se repiten, la frase exacta con la que un afiliado dice que se va, lo que funciona para convencerlo. Eso es oro puro y hoy se evapora al colgar. Es exactamente el tipo de fuente que casi ningún competidor está usando.
+    </div>
+
+    <h3>Conocer al cliente no sirve si no cambia la operación</h3>
+
+    <p>El curso trae a Amazon para un punto muy concreto: Amazon usa la información de sus usuarios para sugerir productos, <em>pero el análisis no termina en la página de compra</em>. Los mismos datos apoyan decisiones de inventario, demanda y logística. La conclusión del curso es la que hay que retener: <strong>conocer al cliente solo produce resultados cuando esa información modifica la operación</strong>.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el almacén de barrio donde el dueño conoce a sus clientas: no solo le sugiere a la señora del 12 el pan que le gusta, además le pide más de ese pan al proveedor porque sabe que ella y cinco vecinas lo van a comprar. Usa el mismo dato hacia adelante y hacia atrás. Tener la ficha del afiliado llena no es conocerlo; conocerlo es que esa ficha cambie a quién llamas primero mañana.
+    </div>
+
+    <h3>El modelo no sabe tres cosas, y las tres son de contexto</h3>
+
+    <p>Brynjolfsson y McAfee sostienen que la IA rinde mejor cuando <strong>complementa el juicio humano</strong>. Eso tiene nombre: <span class="term">complementariedad humano-máquina</span>. Un modelo puede reconocer una relación estadística, pero no sabe: las prioridades de la empresa (¿este trimestre priorizamos margen o crecimiento?), las particularidades del mercado (¿esto es estacional o es un cambio de verdad?) ni los efectos de una decisión sobre las personas.</p>
+
+    <p>Ninguna de las tres está en los datos. Son contexto. Por eso el curso remata con algo muy fino: <strong>"¿funciona?" es una pregunta técnica; "¿conviene usarlo y para qué?" es una pregunta de negocio</strong>. Un proyecto encerrado en el área de tecnología solo puede contestar la primera.</p>
+
+    <p>Y hay un modo de diferenciarse que Porter dejó escrito hace cuarenta años y que sigue vigente: una empresa se distingue <strong>haciendo actividades distintas</strong> o <strong>ejecutando mejor las mismas actividades</strong>. Guarda esa dupla; vuelve en la parte 6.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA amplía lo que puedes ver; no decide por ti. El hallazgo vale cero hasta que alguien con nombre y apellido lo convierte en una acción concreta.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">La máquina por dentro</span></div>
+    <h2 class="titulo">Qué es un modelo de negocio: mover una pieza mueve las demás</h2>
+
+    <p>Un <span class="term">modelo de negocio</span> es, según la definición que usa el curso, la lógica con la que una organización <strong>crea, entrega y captura valor</strong>. No es el plan financiero ni la estrategia: es la arquitectura de decisiones que hace que el valor y la plata circulen de cierta manera.</p>
+
+    <p>Esa lógica se puede abrir en nueve piezas. Se llama <span class="term">Business Model Canvas</span> y es la herramienta más usada del mundo para esto. El curso las nombra todas, aunque no le ponga el nombre al conjunto. Míralas pensando en tu AFP:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Qué y a quién</div>
+        <div class="sub">Lo que se ofrece</div>
+        <ul>
+          <li><b>Propuesta de valor:</b> ¿qué beneficio recibe el afiliado?</li>
+          <li><b>Segmentos de clientes:</b> ¿a quién está dirigido? ¿Al que recién empieza a cotizar o al que está a cinco años de jubilar?</li>
+          <li><b>Canales:</b> ¿por dónde llega? Sucursal, app, ejecutivo, call center.</li>
+          <li><b>Relación con los clientes:</b> ¿cómo se mantiene el vínculo en el tiempo?</li>
+        </ul>
+      </div>
+      <div class="card a">
+        <div class="q">Con qué se sostiene</div>
+        <div class="sub">Lo que hay detrás</div>
+        <ul>
+          <li><b>Recursos clave:</b> ¿qué activos son indispensables? La cartera, la marca, los datos.</li>
+          <li><b>Actividades clave:</b> ¿qué hay que hacer todos los días sí o sí?</li>
+          <li><b>Socios clave:</b> ¿quién hace lo que nosotros no hacemos?</li>
+          <li><b>Estructura de costos</b> y <b>fuentes de ingresos:</b> qué se gasta y por dónde entra el dinero.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>El efecto dominó: aquí está la clave de toda la unidad</h3>
+
+    <p>El curso dice: <em>estos elementos están conectados; un cambio en una pieza obliga a revisar varias más</em>. Esto no es un detalle, es <strong>el argumento estructural completo</strong>. Un modelo de negocio no son nueve casillas independientes: es un sistema donde todo está amarrado.</p>
+
+    <p>Y de ahí sale la consecuencia que hay que entender: por eso cambiar el modelo de negocio es caro y difícil, y por eso <strong>agregar una función no cuenta como innovación</strong>. Una función no propaga. No mueve nada más.</p>
+
+    <p>El ejemplo del propio curso es una suscripción. Una empresa que vendía productos sueltos decide cobrar una mensualidad. No basta con ponerle precio. Mira todo lo que se mueve:</p>
+
+    <ol class="pasos">
+      <li><b>Los ingresos cambian de naturaleza.</b> De venta única a ingreso que se repite. Cambia el flujo de caja y cambia la medida de éxito: ya no es vender, es <strong>retener</strong>.</li>
+      <li><b>La propuesta de valor tiene que rendir todos los meses.</b> Hay que definir qué incluye y qué no, y el cliente tiene que percibir el valor cada mes, no solo el día que firmó.</li>
+      <li><b>Nace una relación continua.</b> Y con ella aparece un riesgo permanente que tú conoces de memoria: la fuga de clientes, el <span class="term">churn</span>.</li>
+      <li><b>Hacen falta recursos y actividades nuevas.</b> Facturación recurrente, soporte continuo, gestión de cancelaciones.</li>
+      <li><b>Aparecen costos que antes no existían.</b> Todo lo anterior cuesta plata.</li>
+    </ol>
+
+    <p>Cinco piezas movidas por una sola decisión. <strong>Eso</strong> es innovación del modelo de negocio. Poner un chatbot en el sitio no mueve ninguna.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      El churn es tu pan de cada día: son los traspasos a la competencia. Y hay un número que explica por qué pelear cada traspaso vale tanto: el <span class="term">valor de vida del cliente</span> —lo que un afiliado te deja mientras se queda contigo—. Bajar un poquito la fuga sube ese valor mucho más de lo que uno intuye, porque el cliente que no se va sigue aportando mes tras mes. Retener no es "defender lo que ya tienes": es una de las formas más baratas de crecer.
+    </div>
+
+    <h3>La trampa de digitalizar sin cambiar nada</h3>
+
+    <p>El curso abre el capítulo con una analogía histórica excelente. Durante años, muchas empresas trasladaron formularios y trámites a internet <em>sin cambiar su manera de competir</em>. Un proceso digital ahorra tiempo, pero el negocio puede seguir siendo exactamente el mismo. Eso tiene nombre: <span class="term">digitalización sin cambio de modelo</span>.</p>
+
+    <p>El caso más ridículo y más común: el formulario de papel que ahora es un PDF que hay que imprimir, firmar y escanear. Es literalmente el mismo trámite con un paso más.</p>
+
+    <p>Y el curso avisa: <strong>con la IA está pasando lo mismo</strong>. Se puede predecir, recomendar y automatizar sin modificar en nada el valor que recibe el cliente. Un modelo que predice la demanda pero cuyo resultado nadie usa para cambiar la compra es cómputo caro sin efecto sobre el negocio.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Cambiar el soporte no es cambiar el modelo. Si tu idea no obliga a mover al menos dos o tres piezas del negocio, es una función nueva, no una innovación.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">La frontera</span></div>
+    <h2 class="titulo">Mejorar lo que ya haces vs. cambiar el negocio</h2>
+
+    <p>Si te llevas una sola cosa de toda esta unidad, que sea esta. El curso la enuncia sin rodeos: uno de los errores más frecuentes es <em>asumir que incorporar inteligencia artificial equivale automáticamente a innovar</em>. Muchas organizaciones implementan asistentes virtuales y sistemas predictivos sin modificar la esencia de su negocio. En esos casos la IA <strong>mejora la eficiencia, pero no transforma la forma en que la empresa compite</strong>.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Eficiencia operativa</div>
+        <p>Hacer lo mismo, más rápido o más barato. El chatbot que da el saldo. El informe que sale automático. Sirve, ahorra plata, está muy bien. Pero el cliente recibe el mismo beneficio, el segmento es el mismo y el dinero entra igual. Se llama <b>automatización</b>, no innovación.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Innovación del modelo de negocio</div>
+        <p>Se modifican decisiones importantes: a quién atiendes, qué le ofreces, cómo te relacionas con él o de dónde sale la plata. Cambia la <em>forma de competir</em>, no solo la velocidad.</p>
+      </div>
+    </div>
+
+    <p>La <span class="term">automatización</span> y la <span class="term">eficiencia operativa</span> son dos planos distintos del modelo de negocio. Se pueden tocar sin tocarlo. Por eso el curso repite la frase clave: <em>hacer lo mismo con más rapidez</em> no es innovar.</p>
+
+    <h3>Los tres gatillos: con cualquiera de ellos, sí es innovación</h3>
+
+    <p>Hay <span class="term">innovación del modelo de negocio</span> cuando la empresa modifica decisiones importantes y no solo mejora una tarea aislada. Y basta con que ocurra <strong>una</strong> de estas tres cosas:</p>
+
+    <ol class="pasos">
+      <li><b>Responde a una necesidad poco atendida.</b> Le resuelves algo a alguien que hoy no tiene solución.</li>
+      <li><b>Crea una diferencia frente a los competidores.</b> Ofreces algo que los demás no.</li>
+      <li><b>Incorpora una forma de ingreso que antes no existía.</b> Entra plata por una puerta nueva.</li>
+    </ol>
+
+    <p>El curso también habla de <span class="term">transformación del modelo de negocio</span>, que es lo mismo dicho desde el otro lado: el modelo cambia de verdad cuando se revisan <em>decisiones centrales</em> y no solamente un procedimiento. Para efectos prácticos, trátalos como sinónimos y quédate con la frontera.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Esto NO es innovación del modelo</div>
+        <small>Un banco pone un chatbot que responde el saldo. El cliente recibe el mismo beneficio (saber su saldo), el segmento es el mismo, el ingreso es el mismo. Es automatización, y está bien que lo sea, pero no le cambia el negocio a nadie.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Esto SÍ lo es</div>
+        <small>El mismo banco usa información alternativa para evaluar crédito a personas <em>sin historial bancario</em>. Cambia a quién atiende, cambia lo que ofrece y aparece un ingreso que antes no existía. Tres piezas movidas de una.</small>
+      </div>
+    </div>
+
+    <h3>El caso Nubank: la innovación estuvo en la experiencia</h3>
+
+    <p>Nubank no se limitó a trasladar el banco tradicional a una aplicación —eso habría sido la trampa de la digitalización—. Usó datos y modelos para agilizar la evaluación de crédito, personalizar la atención y eliminar pasos que los usuarios consideraban innecesarios. La innovación estuvo en la experiencia: <strong>menos burocracia, respuestas más rápidas y una relación principalmente digital</strong>.</p>
+
+    <p>Y ahora la frase decisiva del curso, que conviene entender bien: <em>la IA adquirió importancia porque sostuvo esa forma distinta de prestar el servicio</em>. La IA no es el modelo de negocio. Es lo que lo hace <strong>posible</strong>. Sin evaluación automática de riesgo, prometerle respuesta en minutos a millones de personas sin historial simplemente no se aguanta con el costo de un comité de personas revisando caso a caso.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Traducido: ninguna AFP gana por "tener IA". Gana si esa IA le permite hacer algo que antes no podía costear. Por ejemplo, darle acompañamiento personalizado al afiliado de saldo bajo, ese que hoy nadie llama porque no da el margen para dedicarle un ejecutivo. Si la tecnología te deja atender bien a un segmento que antes era inviable, ahí cambiaste el negocio.
+    </div>
+
+    <h3>Por qué la propuesta de valor es la pieza que más se mueve</h3>
+
+    <p>De los nueve bloques, el que más se transforma con IA es la propuesta de valor. La razón: la IA permite entender mejor las preferencias y los comportamientos, y eso habilita soluciones más relevantes para cada persona. El curso dice que las empresas <strong>ya no compiten únicamente por tener mejor producto</strong>, sino por dar experiencias adaptadas al contexto de cada usuario.</p>
+
+    <p>Y hay una escalera de tres peldaños, cada uno más difícil de copiar que el anterior:</p>
+
+    <ol class="pasos">
+      <li><b>Adaptar.</b> Ajustar la experiencia a lo que le pasa al cliente <em>ahora</em>.</li>
+      <li><b>Anticipar.</b> Predecir lo que va a necesitar y adelantarse.</li>
+      <li><b>Relación continua.</b> Cada interacción alimenta la siguiente; el vínculo mejora con el tiempo.</li>
+    </ol>
+
+    <p>El tercero es el interesante, y aquí está la joya: un competidor puede copiar la adaptación y la anticipación comprando la misma tecnología. Lo que <strong>no puede copiar es el historial de interacciones</strong> que tu cliente construyó contigo. Eso se acumula y no se compra.</p>
+
+    <h3>Una propiedad que hace posible todo esto: escalar</h3>
+
+    <p>Un negocio es <span class="term">escalable</span> cuando puede atender a mucha más gente sin que los costos suban al mismo ritmo. Una consultoría no escala: para atender el doble de clientes necesitas el doble de consultores. Un sistema sí: atender a cien mil o a doscientas mil personas cuesta prácticamente lo mismo en trabajo humano.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un ejecutivo puede acompañar bien a doscientos afiliados. Para acompañar a veinte mil necesitas cien ejecutivos: eso no escala. Un sistema que le arma a cada afiliado un mensaje que le calza puede llegar a veinte mil o a doscientos mil casi al mismo costo. Ese es el salto que hace que atender bien al cliente chico deje de ser un lujo.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Mejorar la eficiencia es hacer lo mismo más rápido; innovar el modelo es cambiar a quién atiendes, qué le ofreces o cómo cobras. Casi todos los proyectos que fracasan confundieron una cosa con la otra.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Los cuatro caminos</span></div>
+    <h2 class="titulo">Los cuatro patrones que ya están funcionando</h2>
+
+    <p>Cuando se comparan experiencias de industrias muy distintas, aparecen caminos que se repiten. El curso los llama <strong>patrones</strong> y aclara algo importante: <em>no son recetas para copiar de manera literal</em>. Son referencias para pensar qué se podría adaptar a tu realidad.</p>
+
+    <p>La diferencia práctica entre una receta y un patrón: la receta te dice qué hacer; el patrón te dice qué preguntas hacerte. Copiar el patrón de plataforma sin tener dos lados que se necesiten mutuamente produce una plataforma vacía.</p>
+
+    <h3>Patrón 1 — Los datos como activo estratégico</h3>
+
+    <p>Vivimos en lo que el curso llama una <span class="term">economía basada en datos</span>: un mundo donde la información ya no se guarda solo como registro de lo que pasó, sino que se usa para aprender, anticipar y decidir. La diferencia es la que hay entre un libro de contabilidad —te cuenta qué pasó— y un sensor con alarma —te avisa antes de que el problema ocurra—.</p>
+
+    <p>Durante mucho tiempo los activos principales de una empresa fueron las instalaciones, las máquinas y el capital. Hoy los <span class="term">datos como activo estratégico</span> pueden ocupar ese lugar, <strong>pero no por acumularlos</strong>. El curso lo dice sin anestesia: <em>una base de datos que nadie entiende o utiliza aporta muy poco</em>.</p>
+
+    <p>Lo que define a una <span class="term">organización orientada por datos</span> no es tener un área de análisis. Es que el análisis esté metido en las <strong>decisiones cotidianas</strong>, no en informes ocasionales. Y la frase que hay que memorizar: <em>la ventaja no está en guardar más datos que la competencia, sino en aprender de ellos y actuar a tiempo</em>.</p>
+
+    <p>Eso arma un <span class="term">ciclo de valor de los datos</span>: los datos mejoran el sistema, el sistema apoya decisiones, y esas decisiones generan información nueva que vuelve a entrar. Si cortas cualquier flecha, el ciclo deja de acumular: datos que nadie usa son datos muertos; un sistema cuyo resultado nadie mira es la última milla rota; decisiones que no se registran significan que nadie aprendió nada.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      La diferencia entre <b>tener la ficha del afiliado llena</b> y <b>conocer al afiliado</b>. La ficha llena es un archivo. Conocerlo es que esa información cambie a quién llamas primero el martes en la mañana. Si la lista de riesgo no altera el orden de tus llamadas, tus datos están muertos por más completos que estén.
+    </div>
+
+    <p>El trabajo de sacarles respuestas a los datos se llama <span class="term">analítica</span>, y cuando sirve para estimar lo que va a pasar —quién va a comprar, quién se va a ir— se llama <span class="term">analítica predictiva</span>. Pero el curso avisa: la analítica rinde cuando se combina con conocimiento del negocio y con preguntas relevantes. Datos sin una buena pregunta no producen decisiones.</p>
+
+    <div class="mundo">
+      <div class="lab">Un matiz honesto</div>
+      Cuidado con creer que juntar datos, por sí solo, te protege de la competencia. La investigación reciente muestra dos cosas: pasado cierto volumen, <b>más datos del mismo tipo casi no mejoran nada</b> —un competidor con la décima parte puede llegar a un resultado parecido—; y los datos solo funcionan como muralla cuando son frescos, propios del cliente, difíciles de conseguir por otra vía y cuando la mejora se nota. Fuera de eso, la ventaja real viene de los otros tres ingredientes: lo que sabes del cliente, tu experiencia operando y tu capacidad de ejecutar. El propio curso ya trae la mitad del matiz cuando dice que la ventaja no está en <em>guardar</em> más datos.
+    </div>
+
+    <p>El curso usa Mercado Libre: sus transacciones alimentan modelos que detectan fraude, estiman riesgos, recomiendan productos y organizan la distribución. <strong>Una sola fuente de datos, cuatro usos distintos.</strong> Y ahí está el rasgo económico raro de los datos: no se gastan al usarse. La misma transacción sirve para las cuatro cosas a la vez. Una máquina, en cambio, solo puede hacer una pieza a la vez.</p>
+
+    <h3>Patrón 2 — Hiperpersonalización</h3>
+
+    <p>La personalización de toda la vida agrupa a las personas en segmentos amplios. Eso se llama <span class="term">segmentación</span>: mujeres de 25 a 34 de la región metropolitana. La <span class="term">hiperpersonalización</span> trabaja con mucho más detalle: adapta contenidos, recomendaciones o servicios <strong>a cada usuario y al contexto en que está</strong>, y aprende de cada interacción.</p>
+
+    <p>Son dos saltos, no uno. Primero, se pasa del grupo al individuo. Segundo, y más importante, se pasa de algo estático a algo que cambia según el momento: no es lo mismo un lunes a las siete de la mañana que un sábado a medianoche.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Segmentar es la campaña que se manda igual a "todos los afiliados entre 30 y 40 años". Hiperpersonalizar es que a cada afiliado le llegue el mensaje que le calza: al que acaba de cambiar de trabajo, al que lleva tres meses sin cotizar, al que entró cinco veces a mirar su saldo esta semana. Es la diferencia entre el volante que se reparte en la esquina y la conversación que tienes con un cliente que conoces hace años.
+    </div>
+
+    <p>Pero el curso pone una advertencia con dientes. Bien diseñada, la experiencia se vuelve más simple y pertinente. <strong>Usada sin criterio, hay dos formas de arruinarla</strong>, y son distintas entre sí:</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Repetitiva</div>
+        <small>El sistema se encierra en lo que ya sabe y nunca explora. El cliente piensa: "me muestra siempre lo mismo, lo que ya compré". Le pasa exactamente al recomendador de Mercado Cercano en la parte 8.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Invasiva</div>
+        <small>El sistema usa señales que el cliente no sabía que se estaban recogiendo, o deduce cosas demasiado íntimas. El cliente piensa: "¿cómo sabe eso de mí?". Y ahí lo perdiste.</small>
+      </div>
+    </div>
+
+    <p>Contra eso el curso exige dos cosas, y no son opcionales: <span class="term">transparencia</span> —que el cliente sepa qué información se usa sobre él— y <strong>control</strong> —que pueda cambiar sus preferencias—. Son requisitos de diseño, no adornos.</p>
+
+    <p>La lógica de negocio es directa: una personalización útil fortalece la relación y <strong>reduce la probabilidad de que el cliente se cambie</strong>. O sea, baja el churn. Y hay un contraste afilado de Rogers: usar los datos para <em>entregar algo relevante</em> versus usarlos <em>solo para dirigir publicidad</em>. Lo primero fideliza; lo segundo, mal calibrado, es justamente lo que se siente invasivo.</p>
+
+    <p>El ejemplo del curso es Spotify, y las tres señales que usa valen la pena: <em>qué</em> escuchas (preferencia), <em>cuándo</em> lo haces (contexto) y <em>cómo</em> armas tus listas (porque al armar una lista, tú mismo estás etiquetando tu música). Y fíjate en la simetría con Netflix: otra vez el problema es el exceso de catálogo, y otra vez el valor es reducir el esfuerzo de elegir. El curso repite el patrón a propósito.</p>
+
+    <h3>Patrón 3 — Plataformas inteligentes</h3>
+
+    <p>Una <span class="term">plataforma digital</span> crea valor de una forma distinta a una empresa normal: <strong>no necesita producir ella misma lo que ofrece</strong>. Su tarea es juntar a participantes que necesitan relacionarse y hacer más fácil ese intercambio. Por eso Uber no es dueña de los autos y Airbnb no es dueña de los departamentos. A eso se le llama un <span class="term">negocio multilado</span>: su producto es la interacción, no un bien propio.</p>
+
+    <p>Cuando le metes IA, la plataforma pasa a ser una <span class="term">plataforma inteligente</span> y la tecnología hace cuatro cosas: ordena oferta y demanda (el <span class="term">emparejamiento</span>: quién con quién), asigna recursos donde hacen falta, detecta anomalías —fraude, abuso— y reduce las dificultades de uso.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Una feria libre es una plataforma sin IA: junta caseros y compradores, y su gracia es que están todos en el mismo lugar el mismo día. Ahora imagina una feria que además <em>sabe</em> que hoy hay pocas paltas y muchos buscándolas, y le avisa a tres caseros que traigan más; que detecta al que vende fruta mala y lo saca; y que a ti te dice por qué pasillo entrar. Sigue sin ser dueña de una sola palta. Pero ahora coordina.
+    </div>
+
+    <p>Y aquí aparece el mecanismo que hace peligrosos a estos negocios: cada interacción produce información nueva, esa información mejora los modelos, y los modelos hacen más útil la plataforma, lo que atrae más uso. Es un círculo que se retroalimenta. La versión clásica se llama <span class="term">efecto de red</span> —cada participante nuevo hace más valiosa la plataforma para los demás— y la versión con datos, <span class="term">efectos de red de datos</span>. Por eso estos negocios tienden a concentrarse en pocos ganadores. Cuando hay un conjunto de participantes que dependen unos de otros alrededor de una plataforma, se habla de un <span class="term">ecosistema digital</span>.</p>
+
+    <p>El caso del curso es Uber, y trae el mejor test de toda la unidad. Uber conecta pasajeros y conductores sin ser dueña de los autos; sus algoritmos estiman tiempos, calculan rutas y asignan conductores. La frase decisiva: <strong>"aquí la IA no es un complemento decorativo"</strong>.</p>
+
+    <div class="mundo">
+      <div class="lab">La prueba de fuego</div>
+      Pregúntate: <b>si apagas el modelo, ¿el negocio sigue funcionando?</b> Si apagas el recomendador de una tienda online, vende menos pero vende. Si apagas la asignación de Uber, no hay servicio: nadie sabe qué auto va a qué pasajero. Cuando la respuesta es "no funciona", la IA dejó de ser una función y pasó a ser la infraestructura. Y ahí sí estás frente a un modelo de negocio basado en IA.
+    </div>
+
+    <h3>Patrón 4 — IA como servicio</h3>
+
+    <p>Desarrollar modelos propios no siempre conviene. La <span class="term">IA como servicio</span> —en inglés <em>AI as a Service</em>, AIaaS— permite contratar desde <span class="term">la nube</span> capacidades ya hechas: entender lenguaje, leer imágenes, hacer pronósticos, generar contenido. Te conectas y funcionan, sin construir nada.</p>
+
+    <p>Para una empresa chica esto derriba la barrera de entrada: puede probar una idea sin comprometer una inversión grande. Si resulta, la amplía; si no, todavía tiene espacio para corregir el rumbo. Lo que hace en el fondo es <strong>convertir una apuesta enorme e irreversible en un gasto chico y reversible</strong>. Y eso no solo abarata: cambia la naturaleza de la decisión, porque te deja equivocarte barato.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es exactamente lo que haces cuando pruebas un guion de venta nuevo con diez clientes antes de lanzarlo a toda la cartera. No capacitas a cien personas para averiguar si sirve: lo pruebas chico, miras cómo cae, y recién ahí decides. A esa prueba acotada el curso la llama <span class="term">prueba piloto</span>, y es el mecanismo más barato que existe para comprar información antes de comprometer plata.
+    </div>
+
+    <p>Los proveedores que el curso nombra son Microsoft Azure AI, Google Cloud AI y Amazon Web Services. Que todas las empresas del mundo puedan acceder a lo mismo se llama <span class="term">democratización de la IA</span>. Y aquí viene el argumento más importante de todo el capítulo, que el curso deja escrito con toda claridad: <em>precisamente por eso la estrategia se vuelve más importante; cuando muchos acceden a la misma herramienta, la diferencia está en el problema elegido y en la forma de resolverlo</em>.</p>
+
+    <p>Eso es la <span class="term">paradoja de la democratización</span>: <strong>mientras más accesible es la tecnología, menos ventaja da tenerla, y más ventaja da saber para qué usarla</strong>.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Cuando internet era escaso, tener sitio web era una ventaja. Hoy no tenerlo es una desventaja, y tenerlo no distingue a nadie. Con "usar IA" está pasando lo mismo, y rápido. Lo que sigue siendo escaso es otra cosa: tus propios datos, lo que tú sabes del cliente, y qué tan bien ejecutas.
+    </div>
+
+<div class="mundo">
+      <div class="lab">Cómo termina la historia</div>
+      El curso deja a Nubank en la primera mitad del cuento. La segunda mitad es un patrón <b>de dos tiempos</b> que conviene conocer: se empieza contratando capacidades en la nube para probar barato, y <em>cuando esa capacidad se vuelve el corazón de la ventaja, se internaliza</em>. Nubank terminó desarrollando su propio modelo para decisiones de crédito, porque ahí estaba su diferencia. La regla práctica: arrienda mientras estás probando; construye lo tuyo solo cuando ya sabes que eso es lo que te distingue.
+    </div>
+
+    <h3>Los patrones son posibilidades, no destinos</h3>
+
+    <p>El curso cierra el capítulo con tres preguntas de diagnóstico que sirven de checklist para evaluar cualquier propuesta:</p>
+
+    <ol class="pasos">
+      <li><b>¿A qué clientes atendemos?</b></li>
+      <li><b>¿Qué dolores <em>persistentes</em> tienen?</b> Fíjate en la palabra: molestias crónicas, no algo que pasó una vez.</li>
+      <li><b>¿Qué capacidades <em>reales</em> podemos movilizar?</b> Lo que la empresa efectivamente puede hacer, no lo que le gustaría.</li>
+    </ol>
+
+    <p>Y remata con una frase que vale la pena repetir en voz alta: <em>la tecnología avanza rápido, pero la estrategia avanza con preguntas</em>.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Cuatro caminos: usar bien tus datos, hablarle distinto a cada cliente, juntar a gente que se necesita, o arrendar la tecnología en vez de construirla. Elegir mal el camino cuesta lo mismo que elegir mal la herramienta.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">La diferencia real</span></div>
+    <h2 class="titulo">Por qué dos empresas con la misma herramienta terminan distinto</h2>
+
+    <p>Esta es la pregunta que el curso deja planteada en el capítulo 2 y recién responde en el 4, y por eso mismo es la más probable de todas: <strong>si todos pueden contratar lo mismo, ¿por qué a unos les resulta y a otros no?</strong></p>
+
+    <p>El punto de partida es duro: hace algunos años, acceder a capacidades avanzadas era una barrera importante. Hoy se contratan en la nube o se encuentran gratis. Por lo tanto, <em>utilizar IA, por sí solo, ya no distingue a una empresa</em>. Pasó a ser lo que en negocios se llama un <span class="term">requisito de entrada</span>: no tenerlo te penaliza, pero tenerlo no te hace especial.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es como tener app. Ninguna AFP gana afiliados por tener app; pero la que no la tuviera los perdería. Ese es exactamente el lugar donde está quedando "usar IA".
+    </div>
+
+    <h3>Qué es una ventaja competitiva de verdad</h3>
+
+    <p>Una <span class="term">ventaja competitiva</span> se nota cuando una empresa mantiene una diferencia que <strong>sigue siendo valiosa incluso después de que otros intentan imitarla</strong>. Son dos requisitos y hacen falta los dos: que sea valiosa, y que resista la copia. Algo valioso y fácil de copiar se convierte en el estándar de la industria en un trimestre y deja de dar ventaja. Eso es justamente lo que le pasó a "usar IA".</p>
+
+    <p>Y aquí viene lo que a ti te conviene escuchar: el curso dice explícitamente que esa diferencia <em>no siempre proviene de una tecnología exclusiva</em>. Puede construirse con <strong>experiencia, conocimiento del cliente, relaciones de confianza o una forma de trabajar difícil de reproducir</strong>. Ninguna de las cuatro es tecnología, y eso es deliberado.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      El ejecutivo que lleva veinte años y sabe, con solo escuchar el tono al otro lado del teléfono, si ese afiliado se va a quedar o ya tomó la decisión. Eso no está escrito en ningún sistema y no se compra. Es el ejemplo perfecto de una <b>forma de trabajo difícil de reproducir</b>. La competencia puede contratar el mismo software mañana; no puede contratar esos veinte años.
+    </div>
+
+    <p>A lo que hace difícil que te copien se le llama <span class="term">barrera de imitación</span>. Sin barrera de imitación no hay ventaja sostenible, solo una función nueva que todos tendrán en seis meses. Y cuando la diferencia aguanta el paso del tiempo, se habla de <span class="term">ventaja competitiva sostenible</span>.</p>
+
+    <p>Porter agrega las dos únicas vías que existen para diferenciarse: hacer <strong>actividades distintas</strong> (cambiar el <em>qué</em>) o ejecutar <strong>mejor las mismas actividades</strong> (cambiar el <em>cómo</em>). No hay una tercera.</p>
+
+    <h3>La respuesta oficial del curso: tres requisitos</h3>
+
+    <p>Dos organizaciones pueden usar el mismo servicio y obtener resultados muy diferentes. Gana la que tenga estas tres cosas —y fíjate en que ninguna es el algoritmo—:</p>
+
+    <ol class="pasos">
+      <li><b>Datos confiables.</b> Completos, consistentes, con historia y con alguien responsable de su calidad. Toman años de disciplina; no se compran.</li>
+      <li><b>Procesos claros.</b> Que el resultado del modelo entre en una decisión concreta, con un responsable y un criterio. Es capital organizacional acumulado, invisible desde afuera.</li>
+      <li><b>Propuesta de valor consistente.</b> Que lo que la IA hace sea coherente con lo que la marca promete. Requiere alineación sostenida, no un proyecto de seis meses.</li>
+    </ol>
+
+    <p>Y presta atención a cómo lo formula el curso: se trata de <em>convertir la IA en una capacidad difícil de copiar</em>. No dice "tener IA". <strong>Una tecnología se compra; una capacidad se construye.</strong> Ahí está toda la diferencia.</p>
+
+    <p>El cierre del capítulo 2 lo dice con cuatro ingredientes que hay que tener juntos: <em>la diferencia rara vez está solo en el algoritmo; suele estar en la combinación de datos, conocimiento del cliente, experiencia operativa y capacidad de ejecución</em>. Son cuatro y son conjuntivos: si falta uno, el sistema no rinde.</p>
+
+    <div class="alarma">
+      <div class="a fn">
+        <div class="tt">La empresa A</div>
+        <small>Tiene datos limpios de cinco años; sabe que en su zona la demanda sube los días de pago; sus jefes de tienda saben leer un pronóstico y ajustar el pedido; y el sistema de compras acepta el pronóstico automáticamente. Resultado: menos quiebres de stock y menos pérdida.</small>
+      </div>
+      <div class="a fa">
+        <div class="tt">La empresa B</div>
+        <small>Contrató el mismo servicio, al mismo proveedor, al mismo precio. Pero sus datos vienen con errores de formato, ningún proceso consume el pronóstico y los jefes de tienda siguen pidiendo "como siempre". Resultado: un informe bonito que nadie abre.</small>
+      </div>
+    </div>
+
+    <h3>Cómo se llama la habilidad de moverse a tiempo</h3>
+
+    <p>Hay un concepto que el curso repite tres veces y que va a estar en la evaluación: las <span class="term">capacidades dinámicas</span>. Es la habilidad de <strong>reconocer una señal a tiempo, reorganizar lo que tienes y actuar antes de que la oportunidad se cierre</strong>. No es un recurso; es la habilidad de recombinar recursos rápido.</p>
+
+    <p>Tiene tres momentos:</p>
+
+    <ol class="pasos">
+      <li><b><span class="term">Detectar</span>.</b> Percibir la señal —un cambio de conducta del cliente, un competidor nuevo, una regulación— antes que el resto.</li>
+      <li><b><span class="term">Aprovechar</span>.</b> Comprometer recursos y decidir. Esta es la etapa donde mueren más oportunidades: se detectan y no se hace nada.</li>
+      <li><b><span class="term">Reconfigurar</span>.</b> Reorganizar procesos y personas para que la forma nueva de operar sea la forma <em>normal</em> de operar.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Dos sucursales pueden tener exactamente las mismas herramientas. Una monta una campaña nueva en dos semanas; la otra tarda dos meses en ponerse de acuerdo. Esa diferencia —no las herramientas— es la capacidad dinámica. Y ojo con la segunda etapa: todos vemos la señal, casi nadie hace algo con ella a tiempo.
+    </div>
+
+    <p>Importante para el examen: cuando te pidan demostrar una capacidad dinámica, no respondas con un adjetivo ("hay que ser ágiles"). Responde con un <strong>mecanismo repetible</strong>: un comité mensual que revisa indicadores, un piloto de seis semanas con criterio de corte escrito, una métrica que dispara una revisión automática.</p>
+
+    <p>Y a la vinculación explícita entre lo que la tecnología puede hacer y los objetivos del negocio se le llama <span class="term">estrategia digital</span>. Es exactamente lo que separaba a las empresas del estudio de Westerman: no invertían más, alineaban mejor.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La herramienta la compran todos. Lo que no se compra son tus datos limpios, lo que sabes del cliente y la confianza que te tienen. Ahí está la ventaja, y por eso no te la copian.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">Que dure en el tiempo</span></div>
+    <h2 class="titulo">Cultura, coordinación, gente. Y el cuidado con los datos</h2>
+
+    <p>Llegar a un buen modelo es una cosa. Quedarse ahí es otra, y según la evidencia que el propio curso cita, bastante más difícil.</p>
+
+    <p>El diagnóstico: una propuesta atractiva no garantiza que el modelo se mantenga. <strong>Los clientes cambian, la competencia responde y la tecnología envejece rápido.</strong> Y hay una cuarta dificultad, esta interna: muchas iniciativas que funcionaron en una prueba piloto pierden fuerza cuando tienen que incorporarse a procesos reales, presupuestos, equipos y responsabilidades. Ninguno de esos cuatro puntos de falla es técnico.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un piloto exitoso es como una receta que te salió perfecta cocinando para cuatro un domingo con tiempo. Llevarla al restaurante no es "hacer lo mismo pero más": hay que definir quién compra los insumos, cuánto se cobra, quién la prepara cuando tú no estás, qué pasa si falla el proveedor y de quién es la culpa si sale mal. La receta era la parte fácil. En un proyecto de IA la receta es el modelo, y también era la parte fácil.
+    </div>
+
+    <p>Hay un libro muy citado —<em>The Technology Fallacy</em>, de Kane y otros— cuyo título dice el argumento entero: la falacia es creer que el problema de la transformación digital es tecnológico. Los tres factores que ponen por delante son <strong>liderazgo, coordinación y gestión del cambio</strong>. Los tres son de personas.</p>
+
+    <h3>La innovación tiene que dejar de ser un proyecto</h3>
+
+    <p>El curso lo dice bonito: la innovación no debería depender de un proyecto especial que desaparece cuando se acaba el presupuesto. Para que dure hay que convertirla en <strong>una forma habitual de trabajar</strong>. Eso se llama <span class="term">cultura de experimentación</span> y son cuatro verbos:</p>
+
+    <ol class="pasos">
+      <li><b>Probar.</b> Con un propósito definido, no por probar.</li>
+      <li><b>Medir.</b> Contra un indicador que se declaró antes de empezar.</li>
+      <li><b>Conversar sobre los errores.</b> Este es el que siempre se rompe. En la mayoría de las organizaciones hablar de un error tiene costo político, y por eso el aprendizaje no circula.</li>
+      <li><b>Usar lo aprendido</b> en la decisión siguiente.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre hacer una dieta y cambiar cómo comes. La dieta tiene fecha de término y cuando termina todo vuelve atrás: ese es el "proyecto especial que muere con el presupuesto". Cambiar el hábito no tiene fecha de término porque no es un evento, es la forma normal de operar.
+    </div>
+
+    <p>El curso también exige juntar miradas que suelen estar separadas: hace falta gente técnica, pero también quien conoce el proceso, quien conoce la experiencia del cliente y quien tiene criterio comercial. A eso se le llama <span class="term">coordinación interfuncional</span>, y son tres condiciones: compartir información, acordar prioridades y <strong>definir cómo se va a medir el resultado</strong>. La tercera es la que más se olvida: si cada área mide el éxito con un indicador distinto, el proyecto no puede ganar.</p>
+
+    <p>Cuando esas áreas no se entienden, pasa el fracaso arquetípico de toda la unidad —el curso lo repite dos veces con casi las mismas palabras—: <strong>"una solución correcta desde lo técnico que después casi nadie usa"</strong>.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Y por eso tu voz vale en esa reunión. Tú eres la que sabe si el equipo va a usar la herramienta o la va a ignorar, si el mensaje suena a la marca o suena a robot, y si el afiliado se va a sentir acompañado o vigilado. Esa es la mirada que falta cuando el proyecto se queda encerrado en el área de tecnología.
+    </div>
+
+    <div class="mundo">
+      <div class="lab">Un caso que lo prueba</div>
+      El curso trae a <b>Microsoft bajo Satya Nadella</b>: metió IA en Azure, en Microsoft 365, en GitHub Copilot y en Copilot. Pero el curso subraya que los resultados <em>no se explican por los algoritmos</em> —Microsoft siempre tuvo capacidad técnica—. Se explican por tres cosas de personas: colaboración entre equipos, aprendizaje continuo y una dirección estratégica compartida. Y por algo más: la tecnología entró en líneas de negocio muy distintas, no en un piloto aislado en un rincón.
+    </div>
+
+    <h3>Crecer trae sus propios problemas</h3>
+
+    <p>Una solución de IA puede atender a mucha gente sin que los costos suban igual, y además <strong>mejora a medida que recibe información nueva</strong>. Eso segundo se llama <span class="term">aprendizaje continuo</span>, y la combinación de las dos cosas explica buena parte de por qué estos negocios crecen tan rápido.</p>
+
+    <p>Pero el curso pone el contrapeso, y es de lo más honesto del material: los hábitos cambian, aparecen datos incompletos y <em>un modelo que ayer funcionaba bien puede perder precisión</em>. Eso tiene nombre técnico: <span class="term">deriva del modelo</span>. La consecuencia de negocio, que es la que importa: <strong>un modelo es un activo que se deprecia</strong>, igual que una máquina. Exige mantenimiento presupuestado. Un plan que no contempla el costo de mantenerlo está subestimando la inversión.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el guion de venta que funcionaba de maravilla hace tres años y que hoy ya no pega, porque cambió el perfil de la gente que llama y cambió lo que la competencia está ofreciendo. Nadie lo "rompió". Simplemente el mundo se movió y el guion se quedó. Con los modelos pasa exactamente lo mismo, y por eso hay que revisarlos.
+    </div>
+
+    <p>Por eso el curso pide tres mecanismos permanentes: revisiones periódicas, reglas de <span class="term">gobernanza de datos</span> y formas de detectar resultados poco pertinentes o sesgados. La gobernanza es simplemente el conjunto de reglas sobre <strong>quién puede usar qué datos, quién aprueba un modelo, quién responde por sus decisiones y cada cuánto se revisa</strong>.</p>
+
+    <p>Y el tercero introduce el <span class="term">sesgo algorítmico</span>: resultados sistemáticamente desfavorables para un grupo, normalmente heredados de los datos históricos. Si el sistema aprendió de decisiones pasadas que ya eran injustas, va a repetir la injusticia con cara de objetividad. En una industria regulada como la tuya, esto no es un tema filosófico: es riesgo real.</p>
+
+    <h3>Las tres preguntas que hace el equipo (y hay que contestarlas)</h3>
+
+    <p>La IA modifica tareas y redistribuye responsabilidades. Es natural que aparezcan preguntas, y el curso las nombra: <em>¿qué va a pasar con mi trabajo?</em>, <em>¿quién responde si el sistema se equivoca?</em>, <em>¿qué decisiones van a seguir dependiendo de las personas?</em> Y remata con una advertencia que vale para cualquier jefatura: <strong>evitar estas conversaciones aumenta la resistencia</strong>. El silencio no calma el miedo; lo deja crecer sin información.</p>
+
+    <p>La respuesta se llama <span class="term">gestión del cambio</span> y tiene tres componentes: comunicación, capacitación y <strong>participación</strong>. Los dos primeros van en una sola dirección. El tercero significa que quienes van a usar la solución influyen en cómo se diseña, y es el remedio más eficaz contra la solución correcta que nadie usa.</p>
+
+    <p>Kane y sus coautores concluyen que las organizaciones con más <span class="term">madurez digital</span> —que no mide cuánta tecnología tienes, sino cuán adaptadas están tu gente, tu cultura y tu forma de decidir— son las que cuidan liderazgo, cultura y gestión del cambio. Y la capacidad directiva de vincular la tecnología con los objetivos se llama <span class="term">liderazgo digital</span>: explica los resultados mucho mejor que el monto invertido.</p>
+
+    <p>La conclusión del curso es de una línea y es un requisito de sincronía: <strong>la transformación tecnológica y la adaptación de las personas deben avanzar al mismo tiempo</strong>. Si la tecnología corre más que la gente, terminas con la solución que nadie usa. Si la gente corre más que la tecnología, terminas con frustración y un proyecto sin credibilidad.</p>
+
+    <h3>Y ahora lo que más te toca a ti: el cuidado con los datos</h3>
+
+    <p>El curso menciona el cumplimiento normativo de manera genérica —"privacidad, seguridad y normativa vigente"—. Para una empresa chilena, y sobre todo para una AFP, eso es demasiado vago. Aquí va concreto.</p>
+
+    <div class="mundo">
+      <div class="lab">Atención — esto aplica directo a tu trabajo</div>
+      Chile tiene una ley nueva de <span class="term">privacidad de datos</span>: la <b>Ley 21.719</b> de protección de datos personales, publicada en diciembre de 2024, que entra en plena vigencia el <b>1 de diciembre de 2026</b>. Tres cosas que te importan:
+      <br><br>
+      <b>1. Hay una autoridad.</b> Se crea la Agencia de Protección de Datos Personales, con dientes para fiscalizar.
+      <br>
+      <b>2. Las multas son serias.</b> Hasta 20.000 UTM, y si hay reincidencia, hasta el 4% de los ingresos anuales de la empresa. No es una amonestación: es un porcentaje de la facturación.
+      <br>
+      <b>3. Perfilar y decidir automáticamente son "alto riesgo".</b> La ley exige una evaluación de impacto <em>previa</em> cuando se hace perfilamiento sistemático de personas o se toman decisiones automatizadas sobre ellas.
+      <br><br>
+      Traducción para tu día a día: un sistema que puntúa afiliados, decide a quién llamar, arma mensajes personalizados con datos previsionales o clasifica gente por su comportamiento <strong>cae de lleno en lo regulado</strong>. Los datos de una AFP son de los más sensibles que existen: cuánto gana una persona, cuánto tiene ahorrado, cómo está su historia laboral.
+    </div>
+
+    <p>Esto no es un freno a la hiperpersonalización, es la forma correcta de hacerla. Y se conecta con lo que ya vimos: las dos contramedidas que el curso exige —<span class="term">transparencia algorítmica</span> (que el cliente sepa qué información se usa sobre él) y control (que pueda cambiar sus preferencias)— <strong>ahora además son exigencia legal</strong>, no solo buena práctica.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Y hay un argumento comercial además del legal. Un afiliado que siente que lo conocen bien se queda. Un afiliado que siente que lo están vigilando se va, y encima lo cuenta. La línea entre "qué bueno que me avisaron" y "cómo saben eso de mí" es exactamente la línea entre bajar el churn y provocarlo. En tu industria, donde la <b>confianza</b> es literalmente el producto, esa línea vale más que en casi cualquier otra.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La tecnología es la parte fácil. Lo difícil —y lo que decide si esto dura— es la gente, la coordinación entre áreas y el cuidado con los datos de quienes confiaron en ti.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">Todo junto</span></div>
+    <h2 class="titulo">La historia de Mercado Cercano, contada entera</h2>
+
+    <p>El curso cierra con un caso que es toda la unidad convertida en historia. Léelo como historia, porque cada tropiezo tiene nombre en lo que acabas de aprender.</p>
+
+    <h3>El éxito que se volvió cómodo</h3>
+
+    <p>Mercado Cercano S.A. llevaba años funcionando como una cadena de supermercados bien posicionada. Buena variedad, buenos precios y, sobre todo, cerca de casa. Durante mucho tiempo eso bastó.</p>
+
+    <p>Hasta que Lidia, la gerente de innovación, empezó a notar algo raro: <strong>las ventas online crecían, pero los clientes no terminaban las compras</strong>. Entraban, miraban, llenaban el carro y se iban.</p>
+
+    <p>Fíjate en el tipo de señal: no es una caída en las ventas. Es una <em>discrepancia</em> —sube el tráfico y no sube la conversión— y es ambigua, porque puede tener diez causas distintas. Eso es exactamente lo que el curso llama <strong>detectar</strong>: percibir el cambio antes de que aparezca en los números finales. Ahí empieza el problema, no termina.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es tu equivalente de "entran muchas consultas pero no se cierra nada". El teléfono suena igual, la gente pregunta igual, y las firmas bajaron. Sabes que algo cambió; todavía no sabes qué. Ese momento de incomodidad, antes de tener la explicación, es el más valioso del proceso.
+    </div>
+
+    <h3>La primera solución: tecnología sin estrategia</h3>
+
+    <p><em>"Necesitamos IA"</em>, sentenció el directorio. Y Lidia implementó un sistema de recomendaciones y un chatbot. La idea sonaba moderna. Los resultados fueron malos:</p>
+
+    <ol class="pasos">
+      <li><b>El recomendador solo sugería lo que el cliente ya había comprado.</b> Es la falla repetitiva de la parte 5: explotar el historial sin explorar nada nuevo. Aburre y no sirve.</li>
+      <li><b>El chatbot se estrellaba con las preguntas complejas.</b> Automatizar la atención sin rediseñar el proceso ni definir cuándo pasarle la pelota a una persona.</li>
+      <li><b>Los datos estaban desordenados y no se entendían entre sí.</b> Faltaba el primer requisito de la parte 6: datos confiables. Sin eso, nada de lo demás importa.</li>
+      <li><b>Y el error de origen:</b> el proyecto empezó por la herramienta y no por el problema. Exactamente la trampa de la parte 1.</li>
+    </ol>
+
+    <p>Lidia lo diagnosticó con una frase que resume la unidad completa: <strong>"no estaban innovando, solo estaban automatizando lo que ya hacían"</strong>.</p>
+
+    <h3>El momento brillante: cambiar la pregunta</h3>
+
+    <p>Lidia ordenó frenar la máquina y hacer algo que ningún dato le iba a dar: <strong>hablar con la gente</strong>. Y descubrieron que sus clientes no pedían un súper más tecnológico. Pedían orden. Dos frases textuales:</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">"Compro cosas repetidas porque no sé lo que tengo en la alacena."</div>
+        <small>Un problema de gestión de despensa. Ocurre en la casa del cliente, no en el supermercado.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">"Tardo horas comparando precios para no pasarme del presupuesto."</div>
+        <small>Un problema de gestión de plata. Ocurre en la cabeza del cliente, tampoco en el supermercado.</small>
+      </div>
+    </div>
+
+    <p>Ninguno de los dos es un problema de la tienda. Son problemas de la <strong>vida del cliente</strong>, y por eso <em>ningún dato de transacciones los iba a revelar nunca</em>. Había que ir a preguntar. Es un contrapunto honestísimo del propio curso a su entusiasmo con los datos.</p>
+
+    <p>Y entonces Lidia formuló la frase que cambia todo: <em>la IA no debía servir para vender más, sino para ayudar a comprar mejor. El problema no era la tecnología, era la pregunta que le estaban haciendo.</em></p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el mismo giro. La pregunta ingenua es "¿cómo consigo más afiliados?". La buena es "¿qué problema real tiene esta persona con su plata y su jubilación, y cómo se lo resuelvo?". Fíjate que la herramienta puede ser la misma: lo que cambia es la meta. Y cuando cambia la meta, cambia lo que mides, y cuando cambia lo que mides, cambia el negocio entero.
+    </div>
+
+    <h3>El nuevo rumbo: "Compra Inteligente"</h3>
+
+    <p>Lidia formó un equipo con marketing, datos y logística —el equipo interfuncional de la parte 7, no un proyecto encerrado en tecnología— y nació "Compra Inteligente". El enfoque cambió de raíz:</p>
+
+    <ol class="pasos">
+      <li><b>De sugerir productos a planificar la despensa.</b> Cambia la propuesta de valor.</li>
+      <li><b>De mostrar ofertas a ayudar a ajustarse al presupuesto.</b> Cambia la propuesta de valor y la relación con el cliente.</li>
+      <li><b>De envíos individuales a agrupar pedidos para ahorrar en despacho.</b> Cambian las actividades clave y los costos.</li>
+      <li><b>Y se agregó filtrado por restricciones alimentarias</b>, para quienes no pueden comer ciertas cosas. Hiperpersonalización real, adaptada a cada hogar.</li>
+    </ol>
+
+    <p>El remate del curso es precioso: <em>la IA pasó de ser un "motor de ventas" a ser un "asistente personal del bolsillo". Mercado Cercano dejó de vender solo productos: empezó a vender tranquilidad y organización.</em> Esa es la definición perfecta de un cambio de propuesta de valor: <strong>cambió lo que el cliente cree que está comprando</strong>.</p>
+
+    <h3>El efecto dominó, en vivo</h3>
+
+    <p>Y aquí se ve el acoplamiento de la parte 3 funcionando de verdad. El cambio movió tres cosas más:</p>
+
+    <ol class="pasos">
+      <li><b>Ingresos.</b> La versión gratuita se mantuvo, pero nació una <span class="term">suscripción</span> mensual con funciones premium. Una fuente de ingresos que antes no existía. Ese esquema —gratis abajo, pago arriba— se llama <span class="term">freemium</span>.</li>
+      <li><b>Proveedores.</b> Usaron IA para predecir la demanda por zona, evitando faltantes y desperdicios. El mismo dato hacia adelante (al cliente) y hacia atrás (a la logística), igual que Amazon.</li>
+      <li><b>Comunidad.</b> Pequeños productores locales entraron a la plataforma. El supermercado se convirtió en intermediario entre dos lados: dejó de ser solo una tienda y empezó a ser una plataforma.</li>
+    </ol>
+
+    <p>Vale la pena contar los patrones que aparecen en esta sola historia: hiperpersonalización, economía basada en datos y plataforma. Tres de los cuatro. El caso es, a propósito, una síntesis de todo el capítulo.</p>
+
+    <h3>La lección final</h3>
+
+    <p>Lidia lo resume así: <strong>"la IA por sí sola no innova. Lo que nos salvó fue cambiar la pregunta de 'cómo vender más' a 'cómo ayudar mejor'."</strong> La innovación no vino de los algoritmos, sino de rediseñar cómo se crea, se entrega y se captura valor.</p>
+
+    <p>Y la última frase del caso nombra los dos activos que de verdad escasean: <em>el verdadero desafío no es la tecnología, sino <strong>la confianza del cliente y la calidad de los datos</strong></em>. Ninguno de los dos se compra. Los dos toman años. Y los dos son exactamente el tipo de recurso que produce ventaja competitiva sostenible.</p>
+
+    <div class="mundo">
+      <div class="lab">Para practicar</div>
+      El curso deja un ejercicio con el mismo esqueleto: <b>Librerías "El Saber"</b>, una cadena con 30 años, 15 tiendas, libreros con criterio, clubes de lectura y una caída de 25% en ventas en dos años. Te piden una propuesta de valor nueva con IA al centro que <em>mantenga la esencia</em>, explicar por qué es innovación y no una mejora operativa, y decir cuál recurso propio será la ventaja sostenible. Truco del enunciado: la ventaja <b>no puede ser "usar IA"</b>. Tiene que ser algo suyo —el criterio acumulado de los libreros, la comunidad de los clubes—. Es el mismo razonamiento que harías con tu cartera: ¿qué tienes tú que la competencia no puede comprar mañana?
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Lo que salvó a Mercado Cercano no fue mejor tecnología: fue cambiar la pregunta. De "cómo vendo más" a "cómo ayudo mejor".</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Modelo de negocio</dt><dd>La lógica con la que una empresa crea, entrega y captura valor. En inglés, <em>business model</em>.</dd>
+        <dt>Business Model Canvas</dt><dd>El modelo de negocio dibujado en nueve piezas conectadas; mover una obliga a revisar varias.</dd>
+        <dt>Propuesta de valor</dt><dd>El beneficio que recibe el cliente y la razón por la que te elige a ti y no a otro (<em>value proposition</em>).</dd>
+        <dt>Segmentos de clientes</dt><dd>A quiénes está dirigida esa propuesta (<em>customer segments</em>).</dd>
+        <dt>Canales</dt><dd>Por dónde le llega el beneficio al cliente: app, sucursal, ejecutivo, call center (<em>channels</em>).</dd>
+        <dt>Relación con los clientes</dt><dd>El tipo de vínculo que se establece y se mantiene con cada segmento.</dd>
+        <dt>Fuentes de ingresos</dt><dd>Por dónde entra la plata (<em>revenue streams</em>).</dd>
+        <dt>Recursos clave</dt><dd>Los activos sin los cuales el negocio no funciona: la cartera, la marca, los datos.</dd>
+        <dt>Actividades clave</dt><dd>Lo que hay que hacer todos los días sí o sí para sostener la propuesta.</dd>
+        <dt>Socios clave</dt><dd>Quienes hacen lo que la empresa no hace por sí misma.</dd>
+        <dt>Estructura de costos</dt><dd>Todo lo que cuesta operar el modelo.</dd>
+        <dt>Innovación del modelo de negocio</dt><dd>Cambiar decisiones importantes del negocio, no solo mejorar una tarea suelta.</dd>
+        <dt>Transfo&shy;rmación del modelo de negocio</dt><dd>Lo mismo visto desde el resultado: el modelo cambió de verdad porque se revisaron decisiones centrales.</dd>
+        <dt>Creación de valor</dt><dd>Resolver un problema o quitar una molestia de forma que el cliente <em>lo note</em>.</dd>
+        <dt>Entrega de valor</dt><dd>Cómo ese beneficio llega efectiva&shy;mente hasta el cliente.</dd>
+        <dt>Captura de valor</dt><dd>La parte del valor creado que se queda la empresa, por ingreso o por ahorro.</dd>
+        <dt>Necesidad insatisfecha</dt><dd>Algo que el cliente necesita de verdad y que hoy nadie le resuelve bien.</dd>
+        <dt>Fricción</dt><dd>Molestia cotidiana en la experiencia del cliente, muchas veces tan habitual que ya nadie reclama.</dd>
+        <dt>Descubri&shy;miento de oportuni&shy;dades</dt><dd>Leer un cambio del entorno antes que la competencia y convertirlo en una forma nueva de crear valor.</dd>
+        <dt>Mejora perceptible</dt><dd>La vara del curso: la innovación se mide por lo que el cliente alcanza a notar, no por cuántas funciones agregaste.</dd>
+        <dt>Insight</dt><dd>Un hallazgo interpretado que revela algo no evidente y que sugiere una acción concreta.</dd>
+        <dt>Última milla de la analítica</dt><dd>La brecha entre tener el hallazgo y que alguien haga algo con él. Casi siempre falla por falta de dueño, no de tecnología.</dd>
+        <dt>Digitali&shy;zación sin cambio de modelo</dt><dd>Pasar trámites a lo digital sin cambiar cómo compites. Ahorra tiempo; no innova.</dd>
+        <dt>Automati&shy;zación</dt><dd>Hacer sin intervención humana algo que ya se hacía. Mejora la eficiencia, no el modelo.</dd>
+        <dt>Eficiencia operativa</dt><dd>Hacer lo mismo más rápido o más barato. Es un plano distinto al del modelo de negocio.</dd>
+        <dt>Economía basada en datos</dt><dd>El contexto donde la información no se guarda solo como registro del pasado, sino que se usa para anticipar y decidir.</dd>
+        <dt>Organización orientada por datos</dt><dd>La que mete el análisis en sus decisiones de todos los días, no solo en informes ocasionales.</dd>
+        <dt>Datos como activo estratégico</dt><dd>Los datos ocupan el lugar que antes tenían las máquinas, pero solo si alguien los usa. Guardados no valen nada.</dd>
+        <dt>Analítica</dt><dd>Usar datos de forma sistemática para responder preguntas de negocio; rinde cuando se combina con conocimiento del rubro.</dd>
+        <dt>Analítica predictiva</dt><dd>Estimar comporta&shy;mientos futuros a partir de lo que ya pasó: quién va a comprar, quién se va a ir.</dd>
+        <dt>Ciclo de valor de los datos</dt><dd>Los datos mejoran el sistema, el sistema apoya decisiones, y esas decisiones generan datos nuevos. Si cortas una flecha, deja de acumular.</dd>
+        <dt>Hiperpe&shy;rsonali&shy;zación</dt><dd>Adaptar el mensaje, la recomen&shy;dación o el servicio a cada persona y a su momento, aprendiendo de cada interacción.</dd>
+        <dt>Segmentación</dt><dd>La persona&shy;lización de toda la vida: agrupar gente en segmentos amplios y bastante estáticos.</dd>
+        <dt>Sistema de recomen&shy;dación</dt><dd>Lo que sugiere opciones relevantes; su valor está en reducir el esfuerzo de elegir, no en mostrar más.</dd>
+        <dt>Recomen&shy;dación repetitiva</dt><dd>Falla en que el sistema solo repite el historial y sugiere lo que el cliente ya compró.</dd>
+        <dt>Persona&shy;lización invasiva</dt><dd>Falla en que el sistema usa o deduce cosas que el cliente no esperaba, y la experiencia incomoda.</dd>
+        <dt>Plataforma digital</dt><dd>Negocio cuyo aporte es juntar a partici&shy;pantes que necesitan relacionarse y facilitarles el intercambio.</dd>
+        <dt>Plataforma inteligente</dt><dd>Plataforma donde los datos y los modelos son parte del mecanismo central, no un adorno.</dd>
+        <dt>Ecosistema digital</dt><dd>El conjunto de partici&shy;pantes que dependen unos de otros alrededor de una plataforma.</dd>
+        <dt>Negocio multilado</dt><dd>Aquel cuyo producto es la interacción entre dos o más grupos, no un bien propio.</dd>
+        <dt>Empareja&shy;miento</dt><dd>El problema de decidir quién con quién dentro de una plataforma: qué conductor con qué pasajero.</dd>
+        <dt>Efecto de red</dt><dd>Cada participante nuevo hace más valiosa la plataforma para todos los demás.</dd>
+        <dt>Efectos de red de datos</dt><dd>Más uso genera más datos, que mejoran el servicio, que atrae más uso. Solo protege de verdad bajo condiciones exigentes.</dd>
+        <dt>IA como servicio (AIaaS)</dt><dd>Contratar capacidades de IA ya hechas desde la nube, pagando por uso, sin construir infraestru&shy;ctura.</dd>
+        <dt>Nube</dt><dd>Cómputo y servicios que se contratan bajo demanda y se pagan según lo que se usa (<em>cloud</em>).</dd>
+        <dt>Democra&shy;tización de la IA</dt><dd>Que empresas de cualquier tamaño accedan a capacidades antes reservadas a los gigantes.</dd>
+        <dt>Paradoja de la democra&shy;tización</dt><dd>Mientras más accesible es la tecnología, menos ventaja da tenerla y más ventaja da saber para qué usarla.</dd>
+        <dt>Modelo de suscripción</dt><dd>Ingreso que se repite mes a mes; cambia la medida de éxito de vender a retener.</dd>
+        <dt>Freemium</dt><dd>Una versión gratuita que convive con una de pago con funciones extra.</dd>
+        <dt>Ventaja competitiva</dt><dd>Una diferencia que sigue valiendo incluso después de que otros intentan copiarla.</dd>
+        <dt>Ventaja competitiva sostenible</dt><dd>La que aguanta el paso del tiempo. Con IA viene de los datos, los procesos y la propuesta, no del algoritmo.</dd>
+        <dt>Barrera de imitación</dt><dd>Lo que le hace difícil al competidor replicarte. Sin ella no hay ventaja, solo una función que todos tendrán pronto.</dd>
+        <dt>Capacidades dinámicas</dt><dd>Reconocer una señal a tiempo, reorganizar lo que tienes y actuar antes de que la oportunidad se cierre.</dd>
+        <dt>Detectar</dt><dd>Primera etapa: ver el cambio antes que los demás (<em>sensing</em>).</dd>
+        <dt>Aprovechar</dt><dd>Segunda etapa: comprometer recursos y decidir. Aquí mueren la mayoría de las oportuni&shy;dades (<em>seizing</em>).</dd>
+        <dt>Reconfigurar</dt><dd>Tercera etapa: reorganizar procesos y personas para que lo nuevo sea lo normal (<em>transforming</em>).</dd>
+        <dt>Requisito de entrada</dt><dd>Algo que ya no te distingue, pero cuya ausencia sí te castiga. Hoy "usar IA" está ahí.</dd>
+        <dt>Estrategia digital</dt><dd>Vincular de forma explícita lo que la tecnología puede hacer con los objetivos del negocio.</dd>
+        <dt>Escalabi&shy;lidad</dt><dd>Poder atender a mucha más gente sin que los costos suban al mismo ritmo.</dd>
+        <dt>Costo marginal</dt><dd>Lo que cuesta atender a un cliente más. Si es bajo, el negocio escala; si crece parejo con el volumen, no.</dd>
+        <dt>Aprendizaje continuo</dt><dd>Que el sistema mejore a medida que recibe información nueva, y que la organización aprenda de operar.</dd>
+        <dt>Cultura de experime&shy;ntación</dt><dd>Probar, medir, conversar sobre los errores y usar lo aprendido en la decisión siguiente, como forma habitual de trabajar.</dd>
+        <dt>Prueba piloto</dt><dd>Ensayo acotado que compra información sobre una idea antes de comprometer la inversión completa.</dd>
+        <dt>Coordinación interfu&shy;ncional</dt><dd>Que áreas distintas compartan información, acuerden prioridades y definan juntas cómo se mide el éxito.</dd>
+        <dt>Gestión del cambio</dt><dd>Comunicación, capacitación y partici&shy;pación de quienes van a usar la solución, para bajar la resistencia.</dd>
+        <dt>Madurez digital</dt><dd>Qué tan adaptadas están la cultura, el liderazgo y la forma de decidir de una empresa. No mide cuánta tecnología tiene.</dd>
+        <dt>Liderazgo digital</dt><dd>La capacidad de la dirección de amarrar tecnología y objetivos. Explica los resultados mejor que el monto invertido.</dd>
+        <dt>Valor de vida del cliente</dt><dd>Todo lo que un cliente te deja mientras se queda contigo. Sube mucho cuando baja poquito la fuga (<em>LTV</em>).</dd>
+        <dt>Fuga de clientes (churn)</dt><dd>La proporción de clientes que se va en un período. En tu mundo, los traspasos.</dd>
+        <dt>Aprendizaje automático</dt><dd>Técnica que aprende patrones de datos ordenados en tablas para predecir demanda, riesgo o fuga (<em>machine learning</em>).</dd>
+        <dt>Procesa&shy;miento del lenguaje natural</dt><dd>Técnica que analiza texto y voz: reclamos, correos, llamadas. Libera lo que nadie alcanzaba a leer (<em>NLP</em>).</dd>
+        <dt>Visión computa&shy;cional</dt><dd>Técnica que interpreta imágenes y video: leer documentos, revisar calidad, contar cosas.</dd>
+        <dt>Datos no estructu&shy;rados</dt><dd>Texto, audio e imagen sin formato de tabla. Suelen ser la mayoría de lo que una empresa tiene, y casi nadie los usa.</dd>
+        <dt>Gobernanza de datos</dt><dd>Las reglas de quién usa qué datos, quién aprueba un modelo, quién responde y cada cuánto se revisa.</dd>
+        <dt>Sesgo algorítmico</dt><dd>Resultados sistemá&shy;ticamente desfavo&shy;rables para un grupo, heredados de decisiones históricas injustas.</dd>
+        <dt>Deriva del modelo</dt><dd>Un modelo que funcionaba bien pierde puntería porque el mundo cambió. Como el guion de venta que ya no pega.</dd>
+        <dt>Transpa&shy;rencia algorítmica</dt><dd>Que el cliente sepa qué información se usa sobre él y pueda cambiar sus preferencias.</dd>
+        <dt>Privacidad de datos</dt><dd>Manejo responsable de la información personal. En Chile, exigible con la Ley 21.719 desde el 1 de diciembre de 2026.</dd>
+        <dt>Compleme&shy;ntariedad humano-máquina</dt><dd>El sistema ordena, sugiere y predice; las personas definen los criterios, revisan los errores y ponen el límite.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con tres cosas, que sean estas</h2>
+    <ol>
+      <li><strong>Primero el problema, la herramienta al final.</strong> "Necesitamos IA" no es un punto de partida: es la forma más cara de empezar. La pregunta correcta es qué molestia real tiene el cliente y qué cambiaría si se la resolvieras. Tú ya piensas así cuando decides a quién llamar primero.</li>
+      <li><strong>Mejorar no es innovar.</strong> Hacer lo mismo más rápido es eficiencia, y está muy bien. Cambiar el modelo es otra cosa: a quién atiendes, qué le ofreces o de dónde sale la plata. Si tu idea no mueve al menos dos o tres piezas del negocio, es una función nueva, no una innovación.</li>
+      <li><strong>La ventaja no está en la herramienta.</strong> La herramienta la contrata cualquiera esta tarde. Lo que no se compra son tus datos limpios, lo que sabes del cliente, la confianza que te tienen y la forma de trabajar que te tomó años. Eso es lo que hay que cuidar y hacer crecer.</li>
+    </ol>
+    <p class="remate">Y fíjate en algo: nada de esto es tecnología. Es criterio comercial. Tú ya sabes que un cliente se queda por cómo lo tratan y no por cuántos botones tiene la app. La IA no vino a cambiar esa verdad: vino a permitirte cumplirla con veinte mil personas a la vez.</p>
+  </section>
+
+</main>
+
+<footer>
+  Unidad 3 · «Nuevos modelos de negocio basados en IA» · Curso <b>Innovación empresarial con IA</b> — Máster en IA.<br>
+  Una guía para reconocer cuándo la IA cambia de verdad un negocio, y cuándo solo lo hace ir más rápido.
+</footer>
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
