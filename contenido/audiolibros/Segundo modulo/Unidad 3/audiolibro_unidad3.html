@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nuevos modelos de negocio basados en IA</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 3 &middot; voz del dispositivo</p>
+    <h1>Nuevos modelos de negocio basados en IA</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t":"En el rato que viene vas a entrar a cualquier reunión donde alguien diga que hay que usar inteligencia artificial, y vas a saber si eso cambia el negocio o solo lo hace ir más rápido.","c":false},{"t":"Casi todos los proyectos que fracasan confunden esas dos cosas. Y lo mejor: nada de esto es tecnología, es criterio comercial. Quién es el cliente, qué problema tiene y quién paga.","c":false},{"t":"Capítulo uno. Empezar por la herramienta es el error","c":true},{"t":"Imagínate la reunión. Alguien dice que necesitan inteligencia artificial y nadie pregunta para qué. Seis meses después hay un chatbot y los afiliados se siguen traspasando igual.","c":false},{"t":"El curso lo diagnostica fino: se habla primero de la herramienta porque es visible y fácil de mostrar. La herramienta se demuestra y el valor no. Un chatbot se ve en cinco minutos; bajar la fricción hay que medirlo.","c":false},{"t":"El orden correcto tiene tres pasos y la tecnología va última. Primero se reconoce una necesidad insatisfecha, algo que el cliente necesita y que hoy nadie le resuelve bien. Después el beneficio esperado. Y recién ahí la herramienta. Westerman y Rogers coinciden: gana quien amarra la tecnología con sus objetivos, no quien más invierte.","c":false},{"t":"Crear valor es resolver un problema o mejorar de forma apreciable la experiencia del cliente. Fíjate en la palabra apreciable: si la mejora no se nota, no hubo creación de valor.","c":false},{"t":"Y el valor tiene tres momentos que en el examen mezclan a propósito. Creación de valor: qué beneficio existe que antes no existía. Entrega de valor: cómo le llega. Y captura: qué parte se queda la empresa.","c":false},{"t":"Innovar tampoco es siempre inventar; muchas veces es corregir una dificultad que se volvió habitual, y eso se llama fricción. La peor es la que el cliente ya dejó de reclamar, porque el que se resigna no llama.","c":false},{"t":"Osterwalder y Pigneur ponen la propuesta de valor en el centro: el beneficio que recibe el cliente y la razón por la que te elige a ti. Está escrita desde el cliente y es comparativa.","c":false},{"t":"De ahí sale el criterio más citable, la mejora perceptible: la innovación no se mide por cuántas funciones agregaste, sino por la mejora que la persona alcanza a notar.","c":false},{"t":"Por eso el curso usa a Netflix: no se distingue por tener recomendador, sino por reconocer una dificultad cotidiana, elegir qué ver cuando el catálogo parece interminable. Está para mostrarte menos y mejor elegido.","c":false},{"t":"Capítulo dos. De dónde salen las oportunidades","c":true},{"t":"Ya sabemos que hay que partir por el problema. Pero de dónde sale. Las oportunidades aparecen cuando una empresa interpreta un cambio del entorno antes que sus competidores. Eso se llama descubrimiento de oportunidades.","c":false},{"t":"Cinco cosas provocan esos cambios, y es lista cerrada y muy preguntable. Cambios tecnológicos. Nuevas regulaciones, que en tu industria mueven carteras enteras. Cambios en lo que la gente prefiere. Competidores nuevos. Y avances científicos.","c":false},{"t":"La inteligencia artificial hace tres cosas. Integrar: juntar información que vivía en sistemas separados. Detectar patrones: encontrar regularidades que a ojo humano se pierden, porque son cien mil casos. Y ubicar el momento exacto en que algo pasa.","c":false},{"t":"Y ahí viene el límite que la unidad repite cuatro veces: esa información no decide por sí sola. Alguien tiene que interpretarla y relacionarla con una oportunidad que tenga sentido para el negocio.","c":false},{"t":"Un hallazgo interpretado que revela algo no evidente y sugiere una acción se llama insight. La brecha entre tenerlo y que alguien actúe se llama la última milla de la analítica, y falla porque nadie es dueño de la acción.","c":false},{"t":"El curso nombra tres familias de técnicas. El aprendizaje automático, en inglés machine learning, que se dice másin lérning, trabaja con datos en tablas y predice demanda, riesgo o fuga de clientes.","c":false},{"t":"El procesamiento del lenguaje natural, las siglas ene ele pe, trabaja con texto y voz: reclamos, correos, las grabaciones del call center. Y la visión computacional trabaja con imágenes y video.","c":false},{"t":"Las dos últimas abren lo que se llama datos no estructurados: texto, audio e imagen sin formato de tabla. En una empresa típica son la mayoría de lo que existe y casi nadie los usa.","c":false},{"t":"Amazon aparece para un punto concreto: los mismos datos con que sugiere productos apoyan inventario, demanda y logística. Conocer al cliente solo produce resultados cuando esa información modifica la operación.","c":false},{"t":"Brynjolfsson y McAfee sostienen que la I.A. rinde mejor cuando complementa el juicio humano, y eso se llama complementariedad humano máquina. Un modelo reconoce una relación estadística, pero hay tres cosas que no sabe.","c":false},{"t":"No sabe las prioridades de la empresa, ni las particularidades del mercado, si esto es estacional o un cambio real, ni los efectos de una decisión sobre las personas. Ninguna está en los datos: son contexto.","c":false},{"t":"Por eso preguntar si funciona es una pregunta técnica, y preguntar si conviene usarlo es una pregunta de negocio. Guárdate esta dupla de Porter: una empresa se distingue haciendo actividades distintas, o ejecutando mejor las mismas.","c":false},{"t":"Capítulo tres. El modelo de negocio y el efecto dominó","c":true},{"t":"Ahora necesitamos la máquina donde esas ideas se meten. Un modelo de negocio es la lógica con la que una organización crea, entrega y captura valor. No es el plan financiero: es la arquitectura de decisiones.","c":false},{"t":"Se abre en nueve piezas y el conjunto se llama el lienzo del modelo de negocio, en inglés Business Model Canvas. La propuesta de valor: qué beneficio recibe el afiliado. Los segmentos de clientes: a quién está dirigido.","c":false},{"t":"Los canales: sucursal, aplicación, ejecutivo, call center. Y la relación con los clientes: cómo se mantiene el vínculo en el tiempo.","c":false},{"t":"Las otras cinco son con qué se sostiene. Los recursos clave: la cartera, la marca, los datos. Las actividades clave, lo que hay que hacer todos los días. Los socios clave. Y la estructura de costos con las fuentes de ingresos.","c":false},{"t":"Y aquí está la clave de toda la unidad: estos elementos están conectados, un cambio en una pieza obliga a revisar varias más. Por eso agregar una función no cuenta como innovación: una función no propaga.","c":false},{"t":"El ejemplo del curso es una suscripción. Los ingresos cambian de naturaleza y con ellos la medida del éxito: ya no es vender, es retener. Y la propuesta de valor tiene que rendir todos los meses.","c":false},{"t":"Nace una relación continua y con ella la fuga de clientes, en inglés churn, que se dice chern. Hacen falta actividades nuevas, facturación recurrente y gestión de cancelaciones. Y aparecen costos que antes no existían.","c":false},{"t":"Cinco piezas movidas por una sola decisión: eso es innovación del modelo de negocio. Poner un chatbot en el sitio no mueve ninguna.","c":false},{"t":"El churn es tu pan de cada día: son los traspasos. Y hay un número que explica por qué pelear cada uno vale tanto, el valor de vida del cliente: todo lo que un afiliado te deja mientras se queda.","c":false},{"t":"Y ahora la trampa que hay que oler. Muchas empresas trasladaron trámites a internet sin cambiar su manera de competir, y eso se llama digitalización sin cambio de modelo: el formulario que ahora hay que imprimir, firmar y escanear.","c":false},{"t":"Con la inteligencia artificial pasa igual: predecir la demanda y que nadie use el resultado es cómputo caro sin efecto en el negocio.","c":false},{"t":"Capítulo cuatro. La frontera entre mejorar e innovar","c":true},{"t":"Si te llevas una sola cosa de todo este audio, que sea esta. Uno de los errores más frecuentes es asumir que incorporar inteligencia artificial equivale automáticamente a innovar.","c":false},{"t":"A un lado está la eficiencia operativa: hacer lo mismo, más rápido o más barato. El chatbot que da el saldo, el informe automático. Sirve, pero el cliente recibe el mismo beneficio y el dinero entra igual.","c":false},{"t":"Eso se llama automatización, y no es innovación. Al otro lado está la innovación del modelo de negocio: se modifican decisiones importantes, a quién atiendes, qué le ofreces o de dónde sale la plata.","c":false},{"t":"Y basta uno de tres gatillos: que responda a una necesidad poco atendida, que cree una diferencia frente a los competidores, o que incorpore una forma de ingreso que antes no existía.","c":false},{"t":"El curso también la llama transformación del modelo de negocio; trátalos como sinónimos. Un banco que pone un chatbot para dar el saldo no innova. El mismo banco evaluando crédito a gente sin historial bancario, sí.","c":false},{"t":"Y ese ejemplo tiene nombre real: Nubank, que se dice niubank. No se limitó a trasladar el banco tradicional a una aplicación, eso habría sido la trampa de la digitalización: usó datos para agilizar el crédito y eliminar pasos.","c":false},{"t":"Y ahora la frase decisiva: la inteligencia artificial adquirió importancia porque sostuvo esa forma distinta de prestar el servicio. La I.A. no es el modelo de negocio, es lo que lo hace posible.","c":false},{"t":"De las nueve piezas, la que más se transforma es la propuesta de valor, porque ya no se compite solo por tener mejor producto, sino por dar experiencias adaptadas al contexto de cada usuario.","c":false},{"t":"Hay una escalera de tres peldaños: adaptar la experiencia a lo que le pasa al cliente ahora, anticipar lo que va a necesitar, y la relación continua, donde cada interacción alimenta la siguiente.","c":false},{"t":"Aquí está la joya: un competidor puede copiar la adaptación y la anticipación comprando la misma tecnología. Lo que no puede copiar es el historial de interacciones que tu cliente construyó contigo.","c":false},{"t":"Todo esto se apoya en la escalabilidad: atender a mucha más gente sin que los costos suban igual. Lo que cuesta atender a un cliente más se llama costo marginal, y si es bajo, el negocio escala.","c":false},{"t":"Capítulo cinco. Los cuatro caminos que ya funcionan","c":true},{"t":"Ya tienes el cuchillo para separar mejora de innovación. Ahora, cuando el modelo sí cambia, se repiten cuatro caminos. El curso los llama patrones: la receta te dice qué hacer, el patrón te dice qué preguntas hacerte.","c":false},{"t":"Patrón uno: los datos como activo estratégico. Vivimos en una economía basada en datos, donde la información ya no se guarda solo como registro del pasado, sino que se usa para anticipar y decidir.","c":false},{"t":"Lo que define a una organización orientada por datos es que el análisis esté metido en las decisiones cotidianas. Y memoriza: la ventaja no está en guardar más datos, sino en aprender de ellos y actuar a tiempo.","c":false},{"t":"Eso arma el ciclo de valor de los datos: los datos mejoran el sistema, el sistema apoya decisiones, y esas decisiones generan información nueva. Si cortas una flecha, deja de acumular.","c":false},{"t":"Sacarle respuestas a los datos se llama analítica, y cuando estima lo que va a pasar, analítica predictiva. Pero rinde solo combinada con conocimiento del negocio y buenas preguntas.","c":false},{"t":"El caso es Mercado Libre: sus transacciones alimentan modelos que detectan fraude, estiman riesgos, recomiendan productos y organizan la distribución. Una sola fuente, cuatro usos, porque los datos no se gastan al usarse.","c":false},{"t":"Patrón dos: la hiperpersonalización. La personalización de toda la vida agrupa gente en grupos amplios y eso se llama segmentación. La hiperpersonalización adapta el contenido a cada usuario y a su contexto, y aprende de cada interacción.","c":false},{"t":"Son dos saltos: del grupo al individuo, y de algo estático a algo que cambia según el momento. Segmentar es la campaña que se manda igual a todos los afiliados entre treinta y cuarenta años.","c":false},{"t":"Pero hay dos formas de arruinarla. La recomendación repetitiva: el sistema se encierra en lo que ya sabe y el cliente siente que siempre le muestran lo que ya compró.","c":false},{"t":"Y la personalización invasiva: usa señales que el cliente no sabía que se recogían, y el cliente se pregunta cómo saben eso de él. Ahí lo perdiste.","c":false},{"t":"Contra eso el curso exige dos cosas que no son opcionales: transparencia algorítmica, que el cliente sepa qué información se usa sobre él; y control, que pueda cambiar sus preferencias. Y una personalización útil baja el churn.","c":false},{"t":"El ejemplo es Spotify y sus tres señales: qué escuchas, o sea preferencia; cuándo lo haces, o sea contexto; y cómo armas tus listas, porque al armarlas tú misma estás etiquetando tu música.","c":false},{"t":"Patrón tres: las plataformas inteligentes. Una plataforma digital no produce ella misma lo que ofrece: junta a participantes que necesitan relacionarse. Por eso Uber no es dueña de los autos ni Airbnb de los departamentos.","c":false},{"t":"A eso se le llama un negocio multilado: su producto es la interacción, no un bien propio. Con inteligencia artificial pasa a ser una plataforma inteligente, y la tecnología hace cuatro cosas.","c":false},{"t":"Ordena oferta y demanda, lo que se llama emparejamiento, o sea quién con quién; asigna recursos donde hacen falta; detecta anomalías como el fraude; y reduce las dificultades de uso.","c":false},{"t":"Y aquí aparece el mecanismo que los hace peligrosos: cada interacción produce información, esa información mejora los modelos, y los modelos hacen más útil la plataforma. Eso se llama efecto de red, y con datos, efectos de red de datos.","c":false},{"t":"Por eso tienden a concentrarse en pocos ganadores. Y al conjunto de participantes que dependen unos de otros alrededor de una plataforma se le llama ecosistema digital.","c":false},{"t":"Uber trae el mejor test de toda la unidad, la prueba de fuego: si apagas el modelo, el negocio sigue funcionando. Si apagas el recomendador de una tienda, vende menos pero vende. Si apagas la asignación de Uber, no hay servicio.","c":false},{"t":"Cuando la respuesta es que no funciona, la inteligencia artificial dejó de ser una función y pasó a ser la infraestructura. Y ahí sí estás frente a un modelo de negocio basado en I.A.","c":false},{"t":"Patrón cuatro: la inteligencia artificial contratada como servicio. Se contratan desde la nube capacidades ya hechas: entender lenguaje, leer imágenes, hacer pronósticos. La nube es cómputo que se paga según lo que se usa.","c":false},{"t":"Es lo mismo que pruebas un guion de venta nuevo con diez clientes antes de lanzarlo a toda la cartera. A esa prueba acotada el curso la llama prueba piloto: gastas poquito para saber si vale la pena gastar mucho, y eso es mejor retorno de la inversión, el ar o ái.","c":false},{"t":"Los proveedores que nombra el curso son Microsoft Azure, Google Cloud y Amazon Web Services, y que todas las empresas accedan a lo mismo se llama democratización de la inteligencia artificial.","c":false},{"t":"Y aquí viene el argumento más importante: precisamente por eso la estrategia se vuelve más importante, porque cuando muchos acceden a la misma herramienta, la diferencia está en el problema elegido y en la forma de resolverlo.","c":false},{"t":"Eso es la paradoja de la democratización: mientras más accesible es la tecnología, menos ventaja da tenerla y más ventaja da saber para qué usarla. Con el sitio web pasó igual, y hoy tenerlo no distingue a nadie.","c":false},{"t":"Y así termina el cuento de niubank, un patrón de dos tiempos: se contrata en la nube para probar barato, y cuando esa capacidad se vuelve el corazón de la ventaja, se internaliza, como su propio modelo de crédito.","c":false},{"t":"El capítulo cierra con tres preguntas de diagnóstico. A qué clientes atendemos. Qué dolores persistentes tienen, y fíjate en la palabra, molestias crónicas. Y qué capacidades reales podemos movilizar, no lo que nos gustaría.","c":false},{"t":"Capítulo seis. Por qué dos empresas terminan distinto","c":true},{"t":"Hace algunos años acceder a capacidades avanzadas era una barrera; hoy se contratan en la nube o se encuentran gratis. Por lo tanto, usar inteligencia artificial ya no distingue: pasó a ser un requisito de entrada.","c":false},{"t":"Una ventaja competitiva de verdad se nota cuando una empresa mantiene una diferencia que sigue siendo valiosa después de que otros intentan imitarla. Son dos requisitos: que sea valiosa y que resista la copia.","c":false},{"t":"Y aquí viene lo que a ti te conviene escuchar: esa diferencia no siempre viene de una tecnología exclusiva. Puede construirse con experiencia, conocimiento del cliente, relaciones de confianza o una forma de trabajar difícil de reproducir.","c":false},{"t":"A lo que hace difícil que te copien se le llama barrera de imitación, y sin ella no hay ventaja sostenible, solo una función que todos van a tener en seis meses.","c":false},{"t":"Cuando la diferencia aguanta el paso del tiempo se habla de ventaja competitiva sostenible. Y acuérdate de Porter: actividades distintas, que es cambiar el qué, o ejecutar mejor las mismas, que es cambiar el cómo.","c":false},{"t":"La respuesta oficial del curso son tres requisitos, y ninguno es el algoritmo. Datos confiables: completos, consistentes y con alguien responsable de su calidad. Procesos claros: que el resultado del modelo entre en una decisión concreta.","c":false},{"t":"Y propuesta de valor consistente: que lo que la I.A. hace sea coherente con lo que la marca promete. Fíjate cómo lo formula el curso: convertir la inteligencia artificial en una capacidad difícil de copiar.","c":false},{"t":"Una tecnología se compra, una capacidad se construye. Y lo remata con cuatro ingredientes que hay que tener juntos: datos, conocimiento del cliente, experiencia operativa y capacidad de ejecución. Si falta uno, el sistema no rinde.","c":false},{"t":"Y hay un concepto que el curso repite tres veces y que va a estar en la evaluación: las capacidades dinámicas, la habilidad de reconocer una señal a tiempo y actuar antes de que la oportunidad se cierre.","c":false},{"t":"Tiene tres momentos: detectar, ver la señal antes que el resto; aprovechar, comprometer recursos y decidir, que es donde mueren la mayoría de las oportunidades; y reconfigurar, que la forma nueva de operar sea la forma normal.","c":false},{"t":"Y para el examen: no respondas con un adjetivo como hay que ser ágiles; responde con un mecanismo repetible, un comité mensual que revisa indicadores o un piloto con criterio de corte escrito.","c":false},{"t":"Y a la vinculación explícita entre lo que la tecnología puede hacer y los objetivos del negocio se le llama estrategia digital. Es lo que separaba a las empresas del estudio de Westerman: no invertían más, alineaban mejor.","c":false},{"t":"Capítulo siete. Lo que hace que dure, y Mercado Cercano","c":true},{"t":"Llegar a un buen modelo es una cosa; quedarse ahí es otra. El curso da cuatro puntos de falla y ninguno es técnico: los clientes cambian, la competencia responde, la tecnología envejece rápido.","c":false},{"t":"Hay un libro muy citado, La falacia tecnológica, de Kane y otros: la falacia es creer que el problema de la transformación digital es tecnológico. Ponen por delante liderazgo, coordinación y gestión del cambio.","c":false},{"t":"Para que la innovación dure no puede depender de un proyecto que muere con el presupuesto: hay que convertirla en una forma habitual de trabajar, y eso se llama cultura de experimentación.","c":false},{"t":"Son cuatro verbos: probar con un propósito definido; medir contra un indicador declarado antes de empezar; conversar sobre los errores, que es el que siempre se rompe porque hablar de un error tiene costo político; y usar lo aprendido.","c":false},{"t":"También hay que juntar miradas separadas: gente técnica, quien conoce el proceso, quien conoce al cliente y quien tiene criterio comercial. Eso se llama coordinación interfuncional: compartir información, acordar prioridades y definir juntos cómo se mide el éxito.","c":false},{"t":"Y cuando esas áreas no se entienden pasa el fracaso arquetípico de toda la unidad: una solución correcta desde lo técnico que después casi nadie usa.","c":false},{"t":"El caso que lo prueba es Microsoft con Satya Nadella. Los resultados no se explican por los algoritmos, porque capacidad técnica siempre tuvo: se explican por colaboración entre equipos, aprendizaje continuo y una dirección estratégica compartida.","c":false},{"t":"Crecer también trae problemas. Una solución de I.A. mejora a medida que recibe información nueva, y eso se llama aprendizaje continuo. Pero los hábitos cambian y un modelo puede perder puntería: eso se llama deriva del modelo.","c":false},{"t":"Y la consecuencia de negocio es la que importa: un modelo es un activo que se deprecia, igual que una máquina, y exige mantenimiento presupuestado. Es tu guion de venta que hace tres años funcionaba y hoy no pega.","c":false},{"t":"Por eso el curso pide tres mecanismos permanentes: revisiones periódicas, reglas de gobernanza de datos, y formas de detectar resultados sesgados. La gobernanza es quién usa qué datos, quién aprueba un modelo y quién responde por sus decisiones.","c":false},{"t":"Y el tercero introduce el sesgo algorítmico: resultados sistemáticamente desfavorables para un grupo, heredados de los datos históricos. Si el sistema aprendió de decisiones pasadas injustas, va a repetir la injusticia con cara de objetividad.","c":false},{"t":"El equipo también hace tres preguntas que hay que contestar: qué va a pasar con mi trabajo, quién responde si el sistema se equivoca, y qué decisiones seguirán dependiendo de las personas. Evitarlas aumenta la resistencia. La respuesta se llama gestión del cambio: comunicación, capacitación y participación.","c":false},{"t":"Kane concluye que las organizaciones con más madurez digital cuidan liderazgo, cultura y gestión del cambio. Y ojo: la madurez digital no mide cuánta tecnología tienes, sino qué tan adaptadas están tu gente y tu forma de decidir.","c":false},{"t":"A la capacidad de la dirección de amarrar tecnología con objetivos se le llama liderazgo digital, y explica los resultados mejor que el monto invertido. La conclusión es un requisito de sincronía: tecnología y personas deben avanzar juntas.","c":false},{"t":"Y ahora lo que más te toca a ti. Chile tiene una ley nueva de privacidad, la ley veintiún mil setecientos diecinueve, publicada en diciembre de dos mil veinticuatro, que entra en plena vigencia el primero de diciembre de dos mil veintiséis.","c":false},{"t":"Se crea una Agencia de Protección de Datos Personales con dientes para fiscalizar, y las multas llegan hasta veinte mil unidades tributarias mensuales, o el cuatro por ciento de los ingresos anuales si hay reincidencia. Perfilar o decidir automáticamente cuentan como alto riesgo.","c":false},{"t":"Los datos de una A F P son de los más sensibles que existen: cuánto gana una persona, cuánto tiene ahorrado, su historia laboral. Esto no es un freno a la hiperpersonalización, es la forma correcta de hacerla.","c":false},{"t":"Y aquellas dos contramedidas, transparencia y control, ahora además son exigencia legal. Con un argumento comercial encima: un afiliado que siente que lo conocen bien se queda; uno que siente que lo vigilan se va, y encima lo cuenta.","c":false},{"t":"Y ahora la historia que el curso deja para el final. Mercado Cercano era una cadena de supermercados bien posicionada, hasta que Lidia, la gerente de innovación, notó que las ventas en línea crecían pero los clientes no terminaban las compras.","c":false},{"t":"Fíjate en el tipo de señal: no es una caída en las ventas, es una discrepancia, sube el tráfico y no sube la conversión, y es ambigua porque puede tener diez causas. Eso es lo que el curso llama detectar.","c":false},{"t":"La primera solución fue tecnología sin estrategia. Lidia implementó un recomendador y un chatbot. El recomendador solo sugería lo que el cliente ya había comprado: la falla repetitiva. El chatbot se estrellaba con las preguntas complejas. Y empezaron por la herramienta, no por el problema.","c":false},{"t":"Lidia lo diagnosticó con una frase que resume la unidad: no estaban innovando, solo automatizando lo que ya hacían. Entonces frenó la máquina e hizo algo que ningún dato le iba a dar: hablar con la gente.","c":false},{"t":"Y descubrió que sus clientes no pedían un súper más tecnológico, pedían orden. Uno compraba cosas repetidas porque no sabía lo que tenía en la alacena. Otro tardaba horas comparando precios para no pasarse del presupuesto.","c":false},{"t":"Ninguno de los dos es un problema de la tienda: son problemas de la vida del cliente, y ningún dato de transacciones los iba a revelar. Había que ir a preguntar.","c":false},{"t":"Y entonces Lidia formuló la frase que cambia todo: la inteligencia artificial no debía servir para vender más, sino para ayudar a comprar mejor. Es el mismo giro que te toca a ti.","c":false},{"t":"Lidia formó un equipo con marketing, datos y logística, o sea el equipo interfuncional, y nació Compra Inteligente. De sugerir productos pasaron a planificar la despensa. De mostrar ofertas pasaron a ayudar a ajustarse al presupuesto.","c":false},{"t":"El remate del curso es precioso: la inteligencia artificial pasó de ser un motor de ventas a ser un asistente personal del bolsillo. Mercado Cercano dejó de vender productos y empezó a vender tranquilidad y organización.","c":false},{"t":"Los ingresos: nació una suscripción mensual con funciones premium sobre la versión gratuita, y ese esquema se llama freemium. Los proveedores: predijeron la demanda por zona. Y la comunidad: pequeños productores entraron a la plataforma, y el supermercado pasó de tienda a intermediario.","c":false},{"t":"La lección final de Lidia: la inteligencia artificial por sí sola no innova; lo que los salvó fue cambiar la pregunta de cómo vender más a cómo ayudar mejor. Los dos activos que escasean son la confianza del cliente y la calidad de los datos.","c":false},{"t":"El curso deja un ejercicio con el mismo esqueleto: Librerías El Saber, treinta años, quince tiendas, libreros con criterio, clubes de lectura, y una caída de veinticinco por ciento en ventas en dos años.","c":false},{"t":"Te piden una propuesta de valor nueva y decir cuál recurso propio será la ventaja sostenible. El truco: la ventaja no puede ser usar inteligencia artificial, tiene que ser algo suyo, el criterio de los libreros o la comunidad de los clubes.","c":false},{"t":"Y con eso ya lo tienes completo. Si te quedas con tres cosas: primero, el problema y la herramienta al final. Segundo, mejorar no es innovar: si tu idea no mueve dos o tres piezas, es una función nueva. Y tercero, la ventaja no está en la herramienta.","c":false},{"t":"Y si tuvieras que llevarte una sola frase para la próxima reunión, llévate esta: la pregunta no es si usamos inteligencia artificial, sino qué problema del cliente se resuelve y qué tenemos nosotros que no se pueda comprar mañana.","c":false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
