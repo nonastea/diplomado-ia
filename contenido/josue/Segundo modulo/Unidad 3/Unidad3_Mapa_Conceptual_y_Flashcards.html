@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 3 · Nuevos modelos de negocio basados en IA — Mapa conceptual y Flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Innovación empresarial con IA · Máster en IA</div>
+  <h1>Unidad 3 · <b>Nuevos modelos de negocio basados en IA</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 79 conceptos del glosario. Todo offline, en un solo archivo, funciona sin internet.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Tres puntos donde la investigación complementaria actualiza, matiza o concreta lo que dice el curso. Ninguno lo contradice de frente: los tres lo completan. Dominar las dos versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> Nubank: del consumo de IA como servicio al modelo propio</h3>
+      <p><b>Qué dice el curso:</b> Nubank innovó en la experiencia usando «datos y modelos» para agilizar la evaluación crediticia, y la IA como servicio es la vía por la que las empresas acceden a capacidades avanzadas sin construir infraestructura. <b>Qué muestra la práctica actual:</b> Nubank desarrolló <b>nuFormer</b>, un modelo fundacional propio y autosupervisado para decisiones de crédito, aplicado a su mayor segmento crediticio en Brasil y en expansión hacia préstamos personales en México y Colombia; en marzo de 2026 superó los 130 millones de clientes. El patrón completo es de dos tiempos: se contrata en la nube para probar barato y, cuando la capacidad se vuelve el núcleo de la ventaja, se internaliza.</p>
+      <div class="regla"><b>Regla:</b> pregunta sobre el caso tal como lo presenta la unidad → «la innovación estuvo en la experiencia y la IA la sostuvo». Pregunta abierta sobre IA como servicio versus modelo propio → usa el patrón de dos tiempos; es coherente con la propia frase del curso de que la IA «pasa a ser un componente central de la estrategia».</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> Los datos como foso competitivo: el matiz de la literatura reciente</h3>
+      <p><b>Qué dice el curso:</b> los datos pueden ser el activo principal de la empresa, y la ventaja está en aprender de ellos y actuar a tiempo (Davenport &amp; Harris; Brynjolfsson &amp; McAfee). <b>Qué matiza la literatura:</b> los retornos marginales de los datos <b>saturan</b> —pasado cierto volumen, más datos del mismo tipo apenas mejoran el modelo— y los <b>efectos de red de datos</b> solo constituyen una barrera de imitación bajo condiciones estrictas: datos perecederos, específicos del cliente, difíciles de obtener por otra vía y con una mejora que el usuario perciba. El propio curso ya trae la mitad del matiz cuando dice que la ventaja no está en «guardar más datos que la competencia».</p>
+      <div class="regla"><b>Regla:</b> pregunta por la posición del curso → los datos son activo estratégico <b>cuando se usan para aprender y actuar</b>. Pregunta de análisis crítico o sobre sostenibilidad de la ventaja → agrega que la acumulación de datos por sí sola no es barrera de imitación, y que la sostenibilidad viene de la integración con procesos, el conocimiento del cliente y la capacidad de ejecución.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> «Cumplimiento de la normativa vigente» tiene fecha y multa en Chile</h3>
+      <p><b>Qué dice el curso:</b> la hiperpersonalización exige privacidad, seguridad y cumplimiento de la normativa vigente, en términos genéricos. <b>Qué concreta la realidad chilena:</b> la <b>Ley 21.719</b> de protección de datos personales fue publicada el 13 de diciembre de 2024 y entra en plena vigencia el <b>1 de diciembre de 2026</b>; crea la <b>Agencia de Protección de Datos Personales (APDP)</b>; contempla multas de hasta <b>20.000 UTM</b> y, en reincidencia, hasta el <b>4% de los ingresos anuales</b>; y exige <b>evaluación de impacto (EIPD)</b> previa para tratamientos de alto riesgo, incluyendo el perfilamiento sistemático y las decisiones automatizadas.</p>
+      <div class="regla"><b>Regla:</b> pregunta conceptual → responde con lo del curso (transparencia, control del usuario, privacidad, seguridad, cumplimiento). Pregunta aplicada a una empresa chilena o plan de acción realista → nombra la Ley 21.719 y la EIPD; convierte una respuesta genérica en una respuesta con criterio profesional.</div>
+    </div>
+  </div>
+
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 3 — Nuevos modelos de negocio basados en IA» · Curso: Innovación empresarial con IA · Archivo autocontenido, funciona sin internet</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Unidad 3"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Fundamentos del modelo"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"De la oportunidad a la innovación"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Los cuatro patrones"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"Consolidación y ventaja"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Casos de la unidad"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Errores comunes"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Marco teórico y autores"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Unidad 3"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Fundamentos del modelo"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"De la oportunidad a la innovación"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Los cuatro patrones"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"Consolidación y ventaja"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Casos de la unidad"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Errores comunes"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Marco teórico y autores"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+id:"root", t:"NUEVOS\nMODELOS DE\nNEGOCIO\nBASADOS\nEN IA", c:"root",
+d:"La unidad responde una sola pregunta: ¿cuándo la inteligencia artificial deja de ser una herramienta y pasa a ser el modelo de negocio? Va de lo abstracto a lo operativo: primero las oportunidades nacen donde hay valor por crear, después se abre el modelo de negocio como estructura de decisiones, luego los cuatro patrones que ya se observan en la industria y finalmente lo que sostiene el modelo en el tiempo. No hay fórmulas: la dificultad no está en el cálculo sino en la precisión conceptual —distinguir mejorar de innovar es literalmente la mitad de la evaluación—.",
+k:[
+ {e:"parte de", t:"1 · FUNDAMENTOS\nDEL MODELO DE\nNEGOCIO", c:"azul",
+  d:"Un modelo de negocio es la lógica mediante la cual una organización crea, entrega y captura valor (Osterwalder & Pigneur, 2010). No es un plan financiero ni una estrategia: es la arquitectura de decisiones que hace que el valor y el dinero circulen de cierta manera. Esta rama fija el vocabulario con el que se juzga todo lo demás de la unidad.",
+  k:[
+   {id:"modneg", e:"se define como", t:"Modelo de negocio", c:"azul",
+    d:"«Explica qué ofrece una organización, cómo entrega ese valor a sus clientes y de qué manera obtiene resultados a partir de esa actividad» (Osterwalder & Pigneur, 2010). Las tres partes de esa definición son crear – entregar – capturar. Frase con olor a examen: crear valor y capturarlo son independientes; se puede crear muchísimo valor y capturar cero —un buscador gratuito crea enorme valor y captura por publicidad—.",
+    k:[
+     {id:"triada", e:"se descompone en", t:"Crear · Entregar · Capturar", c:"azul",
+      d:"Crear valor: ¿qué beneficio existe que antes no existía? Netflix reduce el esfuerzo de elegir. Entregar valor: ¿cómo llega ese beneficio hasta el cliente? La app, la fila de recomendaciones, el catálogo ordenado. Capturar valor: ¿qué parte se queda la empresa? La suscripción mensual. En el ejercicio evaluado, una innovación que crea valor pero no explica cómo se captura está incompleta según la propia rúbrica del curso."},
+     {id:"canvas", e:"se representa en el", t:"Business Model Canvas · 9 bloques", c:"azul",
+      d:"El curso enumera los nueve bloques sin nombrar el Canvas: propuesta de valor, segmentos de clientes, canales, relación con los clientes, recursos clave, actividades clave, socios clave, estructura de costos y fuentes de ingresos. Se agrupan en cuatro preguntas —qué se ofrece, a quién, cómo se entrega y con qué se sostiene— más la economía. Osterwalder y Pigneur sitúan la propuesta de valor en el centro porque allí se resume lo que recibe el cliente.",
+      k:[
+       {id:"propval", e:"el centro:", t:"Qué · Propuesta de valor", c:"azul",
+        d:"Expresa el beneficio que recibe el cliente y responde por qué una persona escogería esa alternativa en lugar de otra disponible en el mercado. Dos precisiones que el curso usa después: está expresada desde el cliente —no es la lista de funciones que la empresa construyó— y es comparativa. De ahí el criterio central: «la innovación no se mide por la cantidad de funciones agregadas, sino por la mejora que la persona realmente alcanza a notar»."},
+       {e:"a quién:", t:"Segmentos de clientes", c:"azul",
+        d:"Grupos de personas u organizaciones a quienes está dirigida la propuesta de valor. Cuando la IA reconoce un segmento que antes no se atendía —Nubank con personas sin historial bancario formal— el bloque se mueve y hay innovación del modelo, no solo eficiencia. Reconocer segmentos es una de las cuatro intervenciones de la IA en el Canvas que el curso lista."},
+       {e:"cómo llega:", t:"Canales y relación con clientes", c:"azul",
+        d:"Los canales son los medios por los que la propuesta de valor llega hasta el cliente; la relación con los clientes es el tipo de vínculo que la empresa establece y mantiene con cada segmento. Automatizar parte de la atención toca canales y estructura de costos: normalmente es eficiencia, salvo que habilite atender un volumen o un segmento que antes era inviable."},
+       {e:"con qué:", t:"Recursos, actividades y socios clave", c:"azul",
+        d:"Recursos clave: los activos indispensables para que el modelo funcione. Actividades clave: lo que la empresa debe ejecutar de forma habitual para sostener su propuesta. Socios clave: terceros que aportan recursos o realizan actividades que la empresa no hace por sí misma. En Mercado Cercano, la entrada de pequeños productores locales movió exactamente el bloque de socios."},
+       {e:"economía:", t:"Costos e ingresos", c:"azul",
+        d:"La estructura de costos es el conjunto de costos que genera la operación del modelo; las fuentes de ingresos son los mecanismos por los que la empresa captura parte del valor que crea. Incorporar una forma de ingreso que antes no existía es uno de los tres gatillos de innovación del modelo de negocio según Teece, y es el más fácil de defender ante un directorio porque se ve en el estado de resultados."}
+      ]},
+     {id:"domino", e:"sus bloques se acoplan por el", t:"Efecto dominó", c:"azul",
+      d:"«Un cambio en una pieza obliga a revisar varias más». Es el argumento estructural de toda la unidad: el modelo de negocio no es una lista de nueve casillas independientes, es un sistema acoplado. Ejemplo del curso: agregar una suscripción mensual mueve fuentes de ingresos, propuesta de valor, relación con el cliente, recursos y actividades clave, y estructura de costos —cinco bloques con una sola decisión—. Agregar un chatbot al sitio no mueve ninguno."}
+    ]},
+   {id:"frontera", e:"su concepto central es", t:"LA FRONTERA · eficiencia vs. modelo", c:"azul",
+    d:"«Buscamos comprender cuándo la IA adquiere un papel estratégico. A veces su aporte consiste en agilizar un proceso; en otros casos cambia la oferta, permite atender a un público nuevo o abre la posibilidad de cobrar por un servicio que antes no existía». Hay dos regímenes, no uno. Si te llevas una sola idea al examen es esta: eficiencia y modelo de negocio son dos planos distintos, y la IA puede tocar uno sin tocar el otro.",
+    k:[
+     {id:"eficiencia", e:"de un lado", t:"Eficiencia: automatizar y digitalizar", c:"azul",
+      d:"Digitalización sin cambio de modelo: trasladar formularios y trámites a internet sin cambiar realmente la manera de competir. Automatización: ejecutar tareas existentes sin intervención humana. Eficiencia operativa: hacer lo mismo más rápido o más barato. «La IA mejora la eficiencia, pero no transforma la forma en que la empresa compite» —la formulación más precisa del curso—. Un formulario en papel que pasa a PDF que hay que imprimir, firmar y escanear es el mismo trámite con un paso más."},
+     {id:"innovacion", e:"del otro", t:"Innovación del modelo de negocio", c:"azul",
+      d:"«Existe innovación del modelo de negocio cuando la empresa modifica decisiones importantes y no solo mejora una tarea aislada» (Teece, 2018). Contiene un umbral —decisiones importantes, no una tarea aislada— y tres gatillos alternativos, cualquiera de los cuales califica. La transformación del modelo de negocio es lo mismo dicho desde el resultado: el modelo cambia de verdad cuando se revisan decisiones centrales y no solamente un procedimiento.",
+      k:[
+       {e:"gatillo 1", t:"Necesidad poco atendida", c:"azul",
+        d:"Responder a una necesidad insatisfecha: un requerimiento real del cliente que ninguna alternativa disponible resuelve bien. Es el gatillo que activa Nubank al atender a personas sin historial bancario formal, un segmento que el banco tradicional dejaba fuera. La necesidad insatisfecha es también la primera de las cinco preguntas de la rúbrica del curso."},
+       {e:"gatillo 2", t:"Diferencia frente a competidores", c:"azul",
+        d:"Crear una diferencia frente a los competidores. Conecta directo con Porter: una empresa puede diferenciarse realizando actividades distintas o ejecutando mejor las mismas actividades. Ojo con el requisito doble: la diferencia debe ser valiosa y además resistente a la imitación, porque algo valioso y fácil de copiar se convierte en el estándar de la industria en un trimestre."},
+       {e:"gatillo 3", t:"Forma de ingreso que antes no existía", c:"azul",
+        d:"Incorporar una fuente de ingresos nueva. En Mercado Cercano es la suscripción mensual premium sobre una versión gratuita —un modelo freemium—; en Librerías El Saber sería una suscripción de curaduría lectora. Ofrecer información procesada como servicio también cae aquí: es literalmente una fuente de ingresos que antes no existía."},
+       {e:"se comprueba con el", t:"Test aplicado: el chatbot del banco", c:"azul",
+        d:"Un banco pone un chatbot que responde el saldo: el beneficio al cliente es el mismo, el segmento es el mismo, el ingreso es el mismo → es automatización, no innovación del modelo de negocio. El mismo banco usa datos alternativos para evaluar crédito a personas sin historial bancario: cambia el segmento atendido, cambia la propuesta de valor y aparece un ingreso que antes no existía → eso sí es innovación del modelo. Es exactamente el caso Nubank."}
+      ]}
+    ]},
+   {id:"rubrica", e:"se evalúa con las", t:"5 preguntas de la rúbrica", c:"azul",
+    d:"El curso entrega su propia rúbrica: ¿qué problema resuelve? (que exista una necesidad insatisfecha real, no una tecnología buscando dónde aplicarse); ¿quién recibe el beneficio? (segmento identificado y beneficio perceptible por él, no por el área de TI); ¿qué cambios exige dentro de la empresa? (el efecto dominó); ¿cómo se recuperará la inversión? (captura de valor); ¿qué dificultaría que un competidor copiara la propuesta? (barreras de imitación). Son al proyecto de IA lo que la revisión técnica al auto: no dicen si es bonito, dicen si puede circular."}
+  ]},
+
+ {e:"empieza en", t:"2 · DE LA\nOPORTUNIDAD\nA LA INNOVACIÓN", c:"verde",
+  d:"Capítulo 1 del curso. Establece el orden correcto de las decisiones: primero el problema, después el valor y solo al final la tecnología. «La IA amplía lo que podemos ver, pero no decide por nosotros. Antes de elegir una herramienta, conviene preguntarse: ¿qué problema merece atención y qué valor real genera resolverlo?».",
+  k:[
+   {id:"orden", e:"impone el", t:"Orden: necesidad ► beneficio ► herramienta", c:"verde",
+    d:"«La elección tecnológica debería venir después. Primero es necesario reconocer una necesidad y aclarar qué beneficio se espera generar. Solo entonces tiene sentido decidir qué herramienta puede contribuir». El error de partida es el inverso, y tiene explicación: la tecnología es demostrable y el valor no. Un directorio ve una demo de chatbot en cinco minutos; no puede ver «una fricción del cliente reducida en 30%» sin haberla medido antes.",
+    k:[
+     {e:"lo respalda", t:"No gana quien más invierte", c:"verde",
+      d:"Westerman, Bonnet y McAfee (2014) observaron que las empresas con mejores resultados digitales no siempre son las que más invierten, sino las que vinculan la tecnología con sus objetivos: eso es liderazgo digital y estrategia digital, no gasto. Rogers (2023) plantea una conclusión semejante: contar con nuevas herramientas importa menos que saber revisar la propuesta de valor cuando cambian los clientes y el mercado."}
+    ]},
+   {id:"creavalor", e:"nace de la", t:"Creación de valor", c:"verde",
+    d:"«Una organización crea valor al resolver un problema, eliminar una dificultad o mejorar de forma apreciable la experiencia de clientes, socios u otros grupos vinculados con su actividad». Tres cosas para notar: el valor se define por su efecto en alguien, no por el esfuerzo invertido; la palabra apreciable manda —si la mejora no se percibe, no hubo creación de valor—; y los beneficiarios no son solo clientes, también socios y otros grupos de la cadena.",
+    k:[
+     {e:"se expresa en", t:"Cuatro formas de crear valor", c:"verde",
+      d:"El curso enumera producto confiable, trámite breve, costo razonable y experiencia con menos obstáculos. Solo la primera tiene que ver con el producto en sí: las otras tres son sobre fricción. «Innovar no siempre implica inventar algo completamente nuevo; en muchas ocasiones consiste en corregir una dificultad que se había vuelto habitual»."},
+     {id:"friccion", e:"su mina de oro es la", t:"Fricción normalizada", c:"verde",
+      d:"Dificultad cotidiana en la experiencia del cliente, tan habitual que ya nadie la reclama: la fila de la notaría, imprimir un formulario para firmarlo y volver a escanearlo, llamar por teléfono para dar de baja un servicio que contrataste con dos clics. Esa resignación es una mina de oportunidades: cuando alguien elimina la dificultad, el cliente lo nota inmediatamente y no vuelve atrás."}
+    ]},
+   {id:"perceptible", e:"se mide con el", t:"Criterio de mejora perceptible", c:"verde",
+    d:"«La innovación no se mide por la cantidad de funciones agregadas, sino por la mejora que la persona realmente alcanza a notar» (Osterwalder & Pigneur en el PDF). Es una de las frases con más olor a examen de la unidad. Contrasta el número de funciones —métrica interna, fácil de contar, irrelevante— con la mejora percibida —métrica externa, difícil de medir y la única que importa—."},
+   {id:"oportunidades", e:"se descubren con el", t:"Descubrimiento de oportunidades · 5 factores", c:"verde",
+    d:"«Las oportunidades surgen cuando una organización logra interpretar cambios en el entorno antes que sus competidores y comprende cómo esos cambios pueden transformarse en nuevas formas de crear valor». Los cinco factores del entorno son una enumeración cerrada muy citable: transformaciones tecnológicas, nuevas regulaciones, modificaciones en las preferencias de los consumidores, aparición de nuevos competidores y avances científicos. Observar la tendencia es el piso; el trabajo real es cruzarla con una necesidad insatisfecha."},
+   {id:"habilitador", e:"la IA actúa como", t:"La IA como habilitador", c:"verde",
+    d:"«La IA puede reunir datos que estaban separados y mostrar comportamientos que antes pasaban inadvertidos. Puede indicar en qué momento una persona abandona una compra o qué problemas se repiten». Tres capacidades distintas: integrar (hacer comparables fuentes que vivían en sistemas separados), detectar patrones (regularidades que a escala humana pasan inadvertidas) y localizar el evento (precisar dónde y cuándo ocurre). Porter (1985): la IA amplía la capacidad de observación.",
+    k:[
+     {id:"tecnicas", e:"mediante", t:"Tres familias técnicas", c:"verde",
+      d:"Aprendizaje automático: datos estructurados —transacciones, sensores, registros— para predecir demanda, riesgo o fuga de clientes. Procesamiento del lenguaje natural (NLP): texto y voz que antes nadie leía —reclamos, correos, tickets de soporte, reseñas, llamadas—. Visión computacional: imagen y video para inspección de calidad, conteo en góndola, seguridad y lectura de documentos. NLP y visión liberan los datos no estructurados, que en una empresa típica son la mayoría del acervo y estaban fuera de alcance."},
+     {id:"limite", e:"pero tiene un", t:"LÍMITE: el insight no decide solo", c:"verde",
+      d:"«Esa información no decide por sí sola: alguien debe interpretarla y relacionarla con una oportunidad que tenga sentido para el negocio». Brynjolfsson y McAfee (2017): el modelo no conoce las prioridades de la empresa, las particularidades del mercado ni los efectos de una decisión sobre las personas —las tres son contexto, no datos—. Distinción fina y muy evaluable: «¿funciona?» es una pregunta técnica; «¿conviene usarlo y con qué propósito?» es una pregunta de negocio."},
+     {id:"ultimamilla", e:"su brecha es la", t:"Última milla de la analítica", c:"verde",
+      d:"Brecha entre producir un insight —un hallazgo interpretado que revela algo no evidente y sugiere una acción concreta— y convertirlo en una decisión operativa o comercial. El propio curso la nombra en su pregunta de discusión: información valiosa que no se traduce en decisión. Su causa suele ser organizacional —nadie es dueño de la acción— antes que técnica."}
+    ]},
+   {id:"salto", e:"culmina en el", t:"El salto al modelo · 4 gatillos", c:"verde",
+    d:"«Cuando una empresa modifica su propuesta de valor, incorpora nuevas fuentes de ingresos, redefine la relación con sus clientes o establece nuevas formas de colaboración con socios estratégicos, comienza a transformar su modelo de negocio. En este punto, la Inteligencia Artificial deja de ser una herramienta de apoyo y pasa a convertirse en un componente central de la estrategia organizacional». Cada uno de los cuatro gatillos mapea contra un bloque del Canvas."}
+  ]},
+
+ {e:"se concreta en", t:"3 · LOS CUATRO PATRONES", c:"ambar",
+  d:"Capítulo 3. «La ventaja no está en la herramienta, sino en el problema que se elige resolver y en cómo se integra la tecnología a la operación». Un patrón es una regularidad estructural observada, no una plantilla: «no son recetas para copiar de manera literal, sirven como referencias para pensar qué podría adaptarse». Si la unidad tiene una pregunta de memoria, está aquí.",
+  k:[
+   {id:"patrona", e:"(a)", t:"Economía basada en datos", c:"ambar",
+    d:"«Hoy los datos también pueden ocupar el lugar de las instalaciones y la maquinaria como activo principal, pero no por el simple hecho de acumularlos: una base de datos que nadie entiende o utiliza aporta muy poco». Los datos son activo estratégico solo bajo condición de uso. La IA relaciona información dispersa, detecta regularidades y estima escenarios, lo que mejora la lectura de la demanda, la prevención de riesgos y la planificación.",
+    k:[
+     {e:"exige una", t:"Organización orientada por datos", c:"ambar",
+      d:"Davenport y Harris (2017): «las organizaciones orientadas por datos incorporan la analítica en sus decisiones cotidianas, no solo en informes ocasionales». La palabra clave es cotidianas: el criterio no es tener un área de analítica, sino que la analítica esté en el flujo de decisiones diarias. Y la advertencia: la analítica funciona mejor combinada con conocimiento del negocio y con preguntas relevantes; acumular datos no asegura una buena decisión."},
+     {id:"ciclo", e:"se mueve por el", t:"Ciclo de valor de los datos", c:"ambar",
+      d:"Brynjolfsson y McAfee (2017): los datos mejoran el sistema, el sistema apoya decisiones y esas decisiones generan nueva información. Si se corta cualquier flecha el ciclo deja de acumular: datos que no alimentan al sistema son datos muertos; un sistema cuyo output nadie usa es el problema de la última milla; decisiones que no se registran no producen aprendizaje y el error se repite."},
+     {id:"flujo", e:"su tesis:", t:"La ventaja es flujo, no inventario", c:"ambar",
+      d:"«La ventaja no está en guardar más datos que la competencia, sino en aprender de ellos y actuar a tiempo» (Brynjolfsson & McAfee). Formulación compacta: la ventaja es un flujo, no un inventario. ⚠️ La literatura reciente matiza: los retornos marginales de los datos saturan y los efectos de red de datos solo funcionan como foso bajo condiciones estrictas —datos perecederos, específicos del cliente, difíciles de obtener por otra vía y con mejora perceptible por el usuario—."}
+    ]},
+   {id:"patronb", e:"(b)", t:"Hiperpersonalización", c:"ambar",
+    d:"«La personalización tradicional agrupa a las personas en segmentos relativamente amplios. La hiperpersonalización intenta trabajar con mayor detalle y adaptar contenidos, recomendaciones o servicios a lo que hace cada usuario y al contexto en que se encuentra. Para lograrlo se combinan distintas fuentes de información y se aprende de cada interacción». Son dos saltos, no uno, y un mecanismo: aprender de cada interacción es lo que crea el ciclo acumulativo.",
+    k:[
+     {e:"se contrasta con la", t:"Segmentación · 3 diferencias", c:"ambar",
+      d:"Unidad de análisis: el segmento (mujeres 25–34, región metropolitana) versus el individuo. Temporalidad: estática —el segmento se recalcula cada tanto— versus contextual —cambia con el momento del día, el dispositivo, la sesión—. Fuente: datos declarados en formulario versus comportamiento observado. Segmentar es la talla S, M, L; hiperpersonalizar es el sastre que te toma las medidas cada vez que entras."},
+     {id:"fallas", e:"falla de dos formas:", t:"Repetitiva e invasiva", c:"ambar",
+      d:"Recomendación repetitiva: el sistema explota lo que ya sabe y nunca explora, se encierra en el historial —«me muestra siempre lo mismo, lo que ya compré»—. Personalización invasiva: usa o infiere señales que el cliente no esperaba —«¿cómo sabe eso de mí?»—. Las dos contramedidas que el curso exige son requisitos de diseño y no funcionalidades opcionales: transparencia algorítmica (saber qué información se usa) y control (poder modificar las preferencias)."},
+     {id:"churn", e:"su efecto de negocio:", t:"Reduce churn, sube el LTV", c:"ambar",
+      d:"«Una personalización útil puede fortalecer la relación con el cliente y reducir la probabilidad de que cambie de plataforma»: eso es reducir la fuga de clientes. Con un margen mensual de USD 10 y un churn de 5% mensual, el valor de vida del cliente es 10/0,05 = USD 200; bajando el churn a 4% pasa a 10/0,04 = USD 250, un 25% más por cliente sin vender un peso más. La relación no es lineal: bajar un punto de churn vale muchísimo."},
+     {e:"su criterio de uso:", t:"Rogers: valor, no publicidad", c:"ambar",
+      d:"Rogers (2023) sostiene que las organizaciones digitales construyen vínculos más dinámicos cuando utilizan los datos para entregar algo relevante, y no únicamente para dirigir publicidad. El contraste es afilado: el primer uso fideliza; el segundo, mal calibrado, produce justamente la percepción de invasión que el curso advierte."}
+    ]},
+   {id:"patronc", e:"(c)", t:"Plataformas inteligentes", c:"ambar",
+    d:"«Una plataforma crea valor de una forma distinta a una empresa tradicional: su tarea principal es facilitar la interacción entre varios participantes». Es un negocio multilado: su producto es la interacción entre grupos distintos, no un bien propio. La frase clave del curso —«no necesita producir por sí misma todo lo que ofrece»— explica que Uber no sea dueña de los autos ni Airbnb de los departamentos.",
+    k:[
+     {e:"la IA cumple", t:"Cuatro funciones en la plataforma", c:"ambar",
+      d:"Ordenar oferta y demanda resuelve el emparejamiento (matching): quién con quién, qué conductor toma qué viaje. Asignar recursos distribuye capacidad escasa en el tiempo y el espacio: mover conductores hacia zonas de demanda alta. Detectar anomalías sostiene la confianza: fraude, abuso, cuentas falsas. Reducir dificultades de uso ataca la fricción en ambos lados: estimar el tiempo de llegada, calcular la ruta."},
+     {id:"redes", e:"se refuerza con", t:"Efecto de red y efectos de red de datos", c:"ambar",
+      d:"Efecto de red: cada participante adicional aumenta el valor de la plataforma para los demás. Efectos de red de datos: más uso genera más datos, que mejoran los modelos y hacen más útil el servicio, que atrae más uso. Iansiti y Lakhani (2020) describen estas organizaciones como estructuras escalables en las que los datos y los algoritmos forman parte de la operación central: eso es un ecosistema digital, y es la razón de que estos negocios tiendan a concentrarse."},
+     {id:"test", e:"se verifica con el", t:"TEST: apaga el modelo", c:"ambar",
+      d:"El test más limpio para saber si el patrón es real: si apagas el modelo, ¿el negocio sigue funcionando? Si apagas el recomendador de un e-commerce, vende menos pero vende. Si apagas la asignación de Uber, no hay servicio: nadie sabe qué auto va a qué pasajero. Cuando la respuesta es «no funciona», la IA es infraestructura y no funcionalidad —«aquí la IA no es un complemento decorativo»— y ahí sí hay un modelo de negocio basado en IA."}
+    ]},
+   {id:"patrond", e:"(d)", t:"IA como servicio (AIaaS)", c:"ambar",
+    d:"«Desarrollar modelos propios no siempre es la alternativa más conveniente. La IA como servicio ofrece, desde la nube, funciones de lenguaje, visión, predicción o generación de contenido que pueden incorporarse a una aplicación o a un proceso existente». Estructuralmente convierte costo fijo hundido en costo variable reversible, y esa conversión no solo abarata: cambia la naturaleza de la decisión, porque permite equivocarse barato.",
+    k:[
+     {id:"probarbarato", e:"su lógica:", t:"Probar barato · el número", c:"ambar",
+      d:"Construir internamente una capacidad de clasificación de documentos exige, digamos, USD 300.000 comprometidos antes de saber si sirve; contratarla como servicio para una prueba de tres meses cuesta USD 4.000. Con una probabilidad de éxito de 50%, nadie apuesta 300 mil a cara o sello; con la segunda opción arriesgas 4 mil para comprar información. El ahorro esperado es 0,5 × 300.000 − 4.000 = USD 146.000. Eso es, en dinero, «probar una idea sin comprometer una inversión elevada desde el comienzo»."},
+     {e:"produce la", t:"Democratización de la IA", c:"ambar",
+      d:"Iansiti y Lakhani (2020) relacionan esta disponibilidad con una democratización de la IA: Microsoft Azure AI, Google Cloud AI y Amazon Web Services ofrecen capacidades avanzadas a empresas de distintos tamaños. La barrera de entrada cayó por dos lados —la nube y las soluciones de código abierto—, y por eso el curso concluye en el capítulo 4 que «utilizar IA, por sí solo, ya no distingue a una empresa»."},
+     {id:"paradoja", e:"y con ella la", t:"PARADOJA de la democratización", c:"ambar",
+      d:"«Precisamente por eso la estrategia se vuelve más importante: cuando muchos acceden a la misma herramienta, la diferencia está en el problema elegido y en la forma de resolverlo». Mientras más accesible es la tecnología, menos ventaja da tenerla y más ventaja da saber para qué usarla. Cuando el acceso a internet era escaso, tener sitio web era ventaja competitiva; hoy no tenerlo es solo una desventaja. La democratización no reduce la importancia de la estrategia: la aumenta."},
+     {id:"suscripcion", e:"habilita el", t:"Suscripción y freemium", c:"ambar",
+      d:"El modelo de suscripción es una fuente de ingresos recurrente que cambia la métrica de éxito de la venta a la retención; el freemium mantiene una versión gratuita conviviendo con una de pago con funciones adicionales. Es exactamente lo que hace Mercado Cercano: «la versión gratuita se mantuvo, pero nació una suscripción mensual con funciones premium. Una nueva fuente de ingresos»."}
+    ]}
+  ]},
+
+ {e:"se sostiene con", t:"4 · CONSOLIDACIÓN Y VENTAJA", c:"violeta",
+  d:"Capítulo 4. Los tres capítulos anteriores explican cómo llegar a un modelo de negocio con IA; este explica cómo quedarse ahí, que es un problema distinto y bastante más difícil. Tres fuerzas erosionan un modelo —el cliente cambia, el competidor responde, la tecnología envejece— y una cuarta dificultad es interna: el salto del piloto a la operación.",
+  k:[
+   {id:"piloto", e:"su primer riesgo:", t:"El piloto que no sobrevive", c:"violeta",
+    d:"«Muchas iniciativas que funcionaron en una prueba piloto pierden fuerza cuando deben incorporarse a procesos reales, presupuestos, equipos y responsabilidades». Los cuatro puntos donde falla el salto no son técnicos. Kane et al. (2019): «las dificultades de la transformación digital suelen estar más relacionadas con el liderazgo, la coordinación y la gestión del cambio que con la herramienta misma». La receta era la parte fácil."},
+   {id:"ventaja", e:"su meta:", t:"Ventaja competitiva", c:"violeta",
+    d:"«Se nota cuando una empresa consigue mantener una diferencia que continúa siendo valiosa incluso después de que otros intentan imitarla» (Porter, 1985). Dos requisitos: valiosa y resistente a la imitación —eso último es la barrera de imitación—. Porter: la ventaja aparece cuando se realizan actividades distintas o se ejecutan mejor las mismas actividades. Las cuatro fuentes que el curso nombra —experiencia, conocimiento del cliente, relaciones de confianza y una forma de trabajo difícil de reproducir— no son tecnología, y eso es deliberado.",
+    k:[
+     {id:"tablestakes", e:"por eso", t:"«Usar IA» ya no distingue", c:"violeta",
+      d:"«Hace algunos años, acceder a capacidades avanzadas constituía una barrera importante. Hoy muchas de ellas se contratan en la nube o se encuentran en soluciones de código abierto. Utilizar IA, por sí solo, ya no distingue a una empresa». Es un requisito de entrada (table stakes): no distingue a nadie, pero su ausencia sí penaliza. Trampa del ejercicio evaluado: la ventaja sostenible NO puede ser «usar IA»; tiene que ser un recurso propio de la empresa."},
+     {id:"tresreq", e:"y se construye con", t:"Los 3 requisitos del recuadro", c:"violeta",
+      d:"«Dos organizaciones pueden utilizar el mismo servicio y obtener resultados muy diferentes. La que cuente con datos confiables, procesos claros y una propuesta de valor consistente tendrá mejores posibilidades de convertir la IA en una capacidad difícil de copiar». Los datos confiables toman años de disciplina y no se compran; los procesos claros son capital organizacional invisible desde fuera; la propuesta consistente exige alineación sostenida. Nota el verbo: convertir la IA en capacidad, no tenerla."},
+     {id:"ingredientes", e:"o con", t:"Los 4 ingredientes del capítulo 2", c:"violeta",
+      d:"«La diferencia rara vez se encuentra solo en el algoritmo. Suele estar en la combinación de datos, conocimiento del cliente, experiencia operativa y capacidad de ejecución». Los cuatro son conjuntivos: si falta uno, el sistema no rinde. Dos retailers contratan el mismo servicio de predicción de demanda: el que tiene los cuatro reduce quiebres de stock y merma; el que no, produce un informe bonito que nadie abre."}
+    ]},
+   {id:"capdin", e:"se renueva con", t:"Capacidades dinámicas (Teece)", c:"violeta",
+    d:"«La posibilidad de reconocer una señal a tiempo, reorganizar lo disponible y actuar antes de que la oportunidad desaparezca» (Teece, 2018). No es un recurso sino una habilidad organizacional de segundo orden: la capacidad de cambiar las capacidades. Un recurso es tu caja de herramientas; una capacidad dinámica es tu capacidad de reorganizar el taller completo cuando llega un trabajo que nunca habías hecho. El curso la evalúa pidiendo un mecanismo repetible, no un adjetivo como «ser ágiles».",
+    k:[
+     {e:"fase 1", t:"Detectar (sensing)", c:"violeta",
+      d:"Percibir la señal —un cambio de conducta del cliente, un competidor nuevo, una regulación— antes que el resto. En Mercado Cercano es el momento en que Lidia nota la discrepancia: las ventas online crecen pero los clientes no terminan las compras. La señal es ambigua —crecer y no convertir puede tener diez causas— y ahí empieza el problema."},
+     {e:"fase 2", t:"Aprovechar (seizing)", c:"violeta",
+      d:"Comprometer recursos y decidir. Esta es la etapa donde mueren más oportunidades: se detectan y no se actúa. La IA como servicio es justamente el mecanismo que abarata el seizing, porque permite comprometer poco dinero para comprar información sobre si la idea sirve, y corregir el rumbo sin arrastrar a la empresa entera."},
+     {e:"fase 3", t:"Reconfigurar (transforming)", c:"violeta",
+      d:"Reorganizar activos, procesos y personas para que la nueva forma de operar sea la forma normal de operar. El curso lo traduce a tres mecanismos concretos: experimentar con un propósito definido —no experimentar por experimentar—, establecer indicadores para saber si funcionó, y corregir antes de que el problema se vuelva demasiado costoso."}
+    ]},
+   {id:"escala", e:"crece por", t:"Escalabilidad + aprendizaje continuo", c:"violeta",
+    d:"«Una solución de IA puede atender a muchas personas sin que los costos aumenten en la misma proporción, y además mejora a medida que recibe información nueva». Son dos propiedades combinadas, no una, y su interacción explica el crecimiento acelerado. Un negocio escala cuando el costo marginal —lo que cuesta atender al usuario n+1— es bajo respecto del ingreso marginal: USD 0,02 de costo contra USD 5 de ingreso deja USD 4,98 de margen por usuario nuevo. Una consultoría que necesita 10 consultores para 100 clientes y 20 para 200 no escala.",
+    k:[
+     {id:"contrapeso", e:"con el contrapeso de", t:"Deriva, gobernanza y sesgo", c:"violeta",
+      d:"«Los hábitos cambian, aparecen datos incompletos y un modelo que ayer funcionaba bien puede perder precisión. La supervisión no termina el día en que la solución entra en operación». Eso es la deriva del modelo: data drift si cambia la distribución de las entradas, concept drift si cambia la relación entrada→salida. Se necesitan revisiones periódicas, reglas de gobernanza de datos y mecanismos para detectar sesgo algorítmico. Consecuencia de negocio: un modelo es un activo que se deprecia y exige mantenimiento presupuestado."}
+    ]},
+   {id:"caporg", e:"se ancla en", t:"Capacidades organizacionales", c:"violeta",
+    d:"«La innovación no debería depender de un proyecto especial que desaparece cuando termina el presupuesto. Para sostenerla, la empresa necesita convertirla en una forma habitual de trabajar». Es la diferencia entre hacer una dieta —que tiene fecha de término y después todo vuelve atrás— y cambiar cómo comes. Una organización que innova por proyectos está a dieta; una que innova por cultura cambió cómo come.",
+    k:[
+     {id:"cultura", e:"requiere", t:"Cultura de experimentación", c:"violeta",
+      d:"El ciclo en cuatro verbos: probar → medir → conversar sobre los errores → utilizar lo aprendido en la decisión siguiente. El tercero es el que suele romperse: en la mayoría de las organizaciones conversar sobre un error tiene costo político, y por eso el aprendizaje no circula. La prueba piloto es su instrumento: un ensayo acotado que compra información sobre una idea antes de comprometer la inversión completa."},
+     {e:"y", t:"Coordinación interfuncional", c:"violeta",
+      d:"«Un proyecto de IA necesita especialistas técnicos, pero igualmente requiere conocimiento del proceso, experiencia del cliente y criterio comercial». Tres condiciones: compartir información, acordar prioridades y definir cómo medir los resultados. La tercera es la que más se olvida y la que más consecuencias tiene: si cada área mide el éxito con un indicador distinto, el proyecto no puede ganar."},
+     {id:"fracaso", e:"si faltan:", t:"El fracaso arquetípico", c:"violeta",
+      d:"«Cuando esas áreas no se entienden, es común construir una solución correcta desde lo técnico que después casi nadie usa». El curso repite esta frase dos veces a propósito —también como «una solución técnicamente atractiva que después casi nadie utiliza»—. Es el modo de falla característico de la unidad, y su antídoto más eficaz es la participación de quienes usarán la solución en el diseño."}
+    ]},
+   {id:"cambio", e:"y se implanta con", t:"Gestión del cambio y madurez digital", c:"violeta",
+    d:"«La IA modifica tareas y también redistribuye responsabilidades». Las tres preguntas de los equipos son de naturaleza distinta: ¿qué ocurrirá con mi trabajo? (comunicación honesta y capacitación), ¿quién responderá si el sistema se equivoca? (gobernanza escrita de quién aprueba y quién responde), ¿qué decisiones seguirán dependiendo de las personas? (definir explícitamente el límite humano-máquina). «Evitar estas conversaciones suele aumentar la resistencia»: el silencio no neutraliza el miedo, lo deja crecer sin información.",
+    k:[
+     {e:"con tres componentes", t:"Comunicación · capacitación · participación", c:"violeta",
+      d:"Los tres componentes de la gestión del cambio que el curso exige. El tercero es cualitativamente distinto de los dos primeros: comunicar y capacitar son de una vía; participar significa que quienes usarán la solución influyen en cómo se diseña. «Las personas necesitan comprender qué problema se busca resolver, qué cambios se esperan y qué papel conservará el criterio profesional»."},
+     {id:"madurez", e:"para lograr", t:"Madurez digital (Kane et al.)", c:"violeta",
+      d:"No mide cuánta tecnología tiene una empresa, sino cuán bien están adaptadas su gente, su cultura y su forma de decidir. «Las organizaciones digitalmente maduras prestan especial atención al liderazgo, la cultura y la gestión del cambio». La conclusión es un requisito de sincronía: la transformación tecnológica y la adaptación de las personas deben avanzar al mismo tiempo; si la tecnología corre más, aparece la solución que nadie usa."},
+     {id:"complement", e:"con", t:"Complementariedad humano-máquina", c:"violeta",
+      d:"«El modelo puede ordenar, sugerir o predecir. La organización, en cambio, define los criterios, revisa los errores y decide hasta dónde es razonable personalizar» (Brynjolfsson & McAfee, 2017). Es una división del trabajo escrita con precisión quirúrgica: al sistema, tres verbos que producen opciones; a la organización, tres verbos que producen decisiones y responsabilidad."}
+    ]}
+  ]},
+
+ {e:"se ilustra en", t:"5 · CASOS DE LA UNIDAD", c:"coral",
+  d:"Siete casos y un ejercicio evaluado. El curso no los pone de adorno: cada uno ilustra un patrón o una frontera, y el examen puede pedir exactamente que los etiquetes con el vocabulario de los cuatro capítulos.",
+  k:[
+   {id:"netflix", e:"patrón (b)", t:"Netflix · reducir el esfuerzo de elegir", c:"coral",
+    d:"«Netflix no se distingue únicamente por disponer de un sistema de recomendaciones, ya que otras plataformas usan tecnologías parecidas. Su aporte fue reconocer una dificultad muy cotidiana: elegir qué ver cuando el catálogo parece interminable. El algoritmo es el medio; la experiencia más sencilla para el usuario es el beneficio que realmente importa». El catálogo gigante, que parece una ventaja de la oferta, genera parálisis por exceso de opciones: el algoritmo no está para mostrar más, sino menos y mejor elegido."},
+   {id:"amazon", e:"patrón (a)", t:"Amazon · el mismo dato, dos veces", c:"coral",
+    d:"«Amazon utiliza la información de sus usuarios para sugerir productos, pero el análisis no termina en la página de compra: los mismos datos apoyan decisiones relacionadas con inventario, demanda y logística. Conocer al cliente solo produce resultados cuando esa información modifica la operación». El mismo dato se usa hacia adelante (recomendación) y hacia atrás (operación). Si la señal de demanda no llega al centro de distribución, la mitad del valor se pierde."},
+   {id:"nubank", e:"Canvas completo", t:"Nubank · la innovación en la experiencia", c:"coral",
+    d:"«Nubank no se limitó a trasladar el banco tradicional a una aplicación: utilizó datos y modelos para agilizar la evaluación crediticia, personalizar la atención y eliminar pasos innecesarios. La innovación estuvo en la experiencia; la IA adquirió importancia porque sostuvo esa forma distinta de prestar el servicio». Movió tres bloques del Canvas a la vez: propuesta de valor, segmentos y canales/relación. La IA no es el modelo de negocio: es lo que hace factible el modelo de negocio."},
+   {id:"meli", e:"patrón (a)", t:"Mercado Libre · una fuente, cuatro usos", c:"coral",
+    d:"«Las transacciones de Mercado Libre alimentan modelos que ayudan a detectar fraude, estimar riesgos, recomendar productos y organizar la distribución. La información no queda guardada como un registro del pasado». Una sola fuente alimenta cuatro usos: riesgo, crédito, ingresos y costos. Ese es el rasgo económico peculiar de los datos: no se consumen al usarse y el costo de reutilizarlos es casi cero. Un torno, en cambio, solo puede tornear una pieza a la vez."},
+   {id:"spotify", e:"patrón (b)", t:"Spotify · qué, cuándo y cómo organiza", c:"coral",
+    d:"«Spotify aprende de lo que escucha cada persona, del momento en que lo hace y de la forma en que organiza sus listas; a partir de esas señales genera Discover Weekly o Daily Mix». Tres señales distintas: preferencia (qué), contexto (cuándo: no es lo mismo un lunes a las 7 AM que un sábado a medianoche) y comportamiento declarativo (al armar una lista, el usuario etiqueta su propia música). Misma simetría que Netflix: el problema vuelve a ser el exceso de catálogo."},
+   {id:"uber", e:"patrón (c)", t:"Uber · la IA como mecanismo", c:"coral",
+    d:"«Uber conecta pasajeros y conductores sin ser propietaria de la mayoría de los vehículos. Sus algoritmos estiman tiempos, calculan rutas y apoyan la asignación de conductores según la demanda del momento. Aquí la IA no es un complemento decorativo: forma parte del mecanismo que coordina ambos lados de la plataforma y permite que el servicio funcione»."},
+   {id:"microsoft", e:"capacidades org.", t:"Microsoft (Nadella) · cultura + IA", c:"coral",
+    d:"«Durante el liderazgo de Satya Nadella, Microsoft combinó una transformación cultural con la incorporación de IA en servicios como Azure, Microsoft 365, GitHub Copilot y Microsoft Copilot. Los resultados no se explican únicamente por los algoritmos». Los tres factores que el curso nombra son organizacionales: colaboración entre equipos, aprendizaje continuo y dirección estratégica compartida. Y los cuatro productos atraviesan líneas de negocio distintas: eso es integrar, no un piloto aislado."},
+   {id:"mercadocercano", e:"síntesis a+b+c", t:"Mercado Cercano · cambiar la pregunta", c:"coral",
+    d:"Primera versión: «Necesitamos IA», dijo el directorio; el recomendador solo sugería lo que el cliente ya había comprado, el chatbot se estrellaba con preguntas complejas y los datos estaban desordenados → «no estaban innovando, solo estaban automatizando lo que ya hacían». El giro fue frenar la máquina y hablar con la gente: «compro cosas repetidas porque no sé lo que tengo en la alacena», «tardo horas comparando precios». La IA no debía servir para vender más, sino para ayudar a comprar mejor.",
+    k:[
+     {id:"compraint", e:"produjo", t:"«Compra Inteligente» y el dominó", c:"coral",
+      d:"De sugerir productos a planificar la despensa; de mostrar ofertas a ayudar a ajustarse al presupuesto; agrupar pedidos para ahorrar envíos y filtrar por restricciones alimentarias. «La IA pasó de ser un motor de ventas a ser un asistente personal del bolsillo: Mercado Cercano dejó de vender solo productos, empezó a vender tranquilidad y organización». El dominó: suscripción freemium (ingresos), predicción de demanda por zona (costos), productores locales en la plataforma (socios). El caso recorre tres de los cuatro patrones."},
+     {e:"y deja la", t:"Lección final: confianza y datos", c:"coral",
+      d:"«La IA por sí sola no innova. Lo que nos salvó fue cambiar la pregunta de cómo vender más a cómo ayudar mejor. La innovación no vino de los algoritmos, sino de rediseñar cómo creamos, entregamos y capturamos valor. El verdadero desafío no es la tecnología, sino la confianza del cliente y la calidad de los datos». Los dos activos escasos: ninguno se compra, ambos toman años y ambos son el tipo de recurso que produce ventaja competitiva sostenible."}
+    ]},
+   {id:"elsaber", e:"evaluación", t:"Librerías «El Saber» · el ejercicio", c:"coral",
+    d:"Cadena con 30 años de trayectoria, 15 tiendas físicas, libreros expertos, espacios cálidos y clubes de lectura; ventas −25% en dos años. Cada dato está puesto para usarse: hay historial, un activo físico que la competencia digital no tiene, conocimiento tácito, comunidad y urgencia cuantificada. El enunciado advierte «no solo modernizar la operación»: si tu propuesta es «un e-commerce con recomendador», reprobaste el enunciado. Y la ventaja sostenible no puede ser «usar IA»: tiene que ser un recurso propio de El Saber."}
+  ]},
+
+ {e:"debe evitar", t:"6 · ERRORES\nCOMUNES", c:"cian",
+  d:"Los ocho errores que la unidad nombra por su nombre. Casi todos aparecen concentrados en la primera fase del caso Mercado Cercano, que está construido justamente para que los reconozcas y los etiquetes.",
+  k:[
+   {id:"err1", t:"Empezar por la herramienta", c:"cian",
+    d:"«En las conversaciones sobre innovación suele hablarse primero de la herramienta: una plataforma, un algoritmo o un sistema automatizado. El problema aparece cuando el proyecto parece moderno, pero el cliente casi no percibe una mejora». Es comprar una máquina de ejercicios carísima antes de definir qué quieres lograr. El antídoto es el orden necesidad → beneficio esperado → herramienta."},
+   {id:"err2", t:"Confundir automatizar con innovar", c:"cian",
+    d:"«Muchas organizaciones implementan asistentes virtuales, sistemas predictivos o herramientas de automatización sin modificar la esencia de su negocio. En estos casos, la IA mejora la eficiencia, pero no transforma la forma en que la empresa compite». Es el error central de la unidad y literalmente la mitad de la evaluación: distinguir mejorar una operación de innovar el modelo de negocio."},
+   {id:"err3", t:"Acumular datos que nadie usa", c:"cian",
+    d:"«Una base de datos que nadie entiende o utiliza aporta muy poco». Los datos son activo estratégico solo bajo condición de uso. En Mercado Cercano: «los datos estaban desordenados y no se entendían entre sí» —falta el requisito de datos confiables y no hay gobernanza ni integración de fuentes—. Corolario: la ventaja no está en el stock sino en el flujo de aprender y actuar."},
+   {id:"err4", t:"Recomendar solo lo ya comprado", c:"cian",
+    d:"La falla por explotación sin exploración. En el caso, «el recomendador solo sugería lo que el cliente ya había comprado»: es la recomendación repetitiva del capítulo 3. Su gemela es la personalización invasiva. Las contramedidas son de diseño: transparencia sobre qué información se usa y control del usuario sobre sus preferencias."},
+   {id:"err5", t:"Proyecto encerrado en tecnología", c:"cian",
+    d:"«Los proyectos más útiles no suelen quedar aislados en el área tecnológica: se conectan con operaciones, marketing, atención al cliente y planificación. Esa mirada conjunta permite discutir no solo si el sistema funciona, sino también si conviene utilizarlo y con qué propósito». Un proyecto encerrado en TI solo puede responder la primera pregunta."},
+   {id:"err6", t:"La solución correcta que nadie usa", c:"cian",
+    d:"«Cuando esas áreas no se entienden, es común construir una solución correcta desde lo técnico que después casi nadie usa». Es el fracaso arquetípico de la unidad, repetido dos veces en el PDF. Se evita con coordinación interfuncional —compartir información, acordar prioridades, definir cómo medir— y con participación real de los usuarios en el diseño."},
+   {id:"err7", t:"El piloto que muere al escalar", c:"cian",
+    d:"«Muchas iniciativas que funcionaron en una prueba piloto pierden fuerza cuando deben incorporarse a procesos reales, presupuestos, equipos y responsabilidades». Escalar una receta que salió perfecta para cuatro personas exige definir quién compra los insumos, cuánto se cobra, quién la prepara cuando tú no estás y de quién es la culpa si sale mal. La receta era la parte fácil."},
+   {id:"err8", t:"Evitar las conversaciones difíciles", c:"cian",
+    d:"«Evitar estas conversaciones suele aumentar la resistencia». El silencio no neutraliza el miedo: lo deja crecer sin información. Las tres preguntas de los equipos —qué pasa con mi trabajo, quién responde si el sistema se equivoca, qué decisiones siguen siendo humanas— exigen respuestas explícitas de comunicación, gobernanza y límite humano-máquina."}
+  ]},
+
+ {e:"se apoya en", t:"7 · MARCO TEÓRICO Y AUTORES", c:"gris",
+  d:"Los nueve autores que la unidad cita y qué aporta cada uno. En el examen, poner el apellido correcto junto al concepto correcto rinde más que cualquier adorno: casi todas las definiciones del glosario vienen atribuidas.",
+  k:[
+   {id:"teece", t:"Teece (2018)", c:"gris",
+    d:"Business models and dynamic capabilities. Aporta dos piezas centrales: la definición de innovación del modelo de negocio —modificar decisiones importantes, no una tarea aislada— con sus tres gatillos, y las capacidades dinámicas: detectar, aprovechar y reconfigurar. El ejercicio evaluado pide explícitamente «un mecanismo concreto que demuestre una capacidad dinámica (Teece)», es decir un mecanismo, no una definición."},
+   {id:"oster", t:"Osterwalder & Pigneur (2010)", c:"gris",
+    d:"Business Model Generation / Generación de modelos de negocio. Aportan la definición de modelo de negocio como «la lógica mediante la cual una organización crea, entrega y captura valor», la propuesta de valor situada en el centro del modelo y los nueve bloques del Canvas que el capítulo 2 usa sin nombrarlo. Es el material complementario más relevante de la unidad."},
+   {id:"porter", t:"Porter (1985)", c:"gris",
+    d:"Competitive Advantage. Aporta la definición de ventaja competitiva —una diferencia que continúa siendo valiosa incluso después de que otros intentan imitarla— y las dos vías de diferenciación: realizar actividades distintas o ejecutar mejor las mismas actividades. El curso lo cita dos veces, en el capítulo 1 y en el 4, y de él salen las cuatro fuentes de ventaja no tecnológica."},
+   {id:"brynjolfsson", t:"Brynjolfsson & McAfee (2017)", c:"gris",
+    d:"Machine, Platform, Crowd. Aportan la complementariedad humano-máquina —el modelo ordena, sugiere y predice; la organización define criterios, revisa errores y pone el límite—, el ciclo de valor de los datos y la frase clave del patrón (a): «la ventaja no está en guardar más datos que la competencia, sino en aprender de ellos y actuar a tiempo»."},
+   {id:"davenport", t:"Davenport & Harris (2017)", c:"gris",
+    d:"Competing on Analytics. Aportan la organización orientada por datos: «incorporan la analítica en sus decisiones cotidianas, no solo en informes ocasionales». Y la advertencia de que la analítica funciona mejor cuando se combina con conocimiento del negocio y con preguntas relevantes: acumular datos no asegura una buena decisión."},
+   {id:"iansiti", t:"Iansiti & Lakhani (2020)", c:"gris",
+    d:"Competing in the Age of AI. Aportan la descripción de las plataformas inteligentes como estructuras escalables en las que los datos y los algoritmos forman parte de la operación central, y la idea de democratización de la IA a través de la nube —Azure AI, Google Cloud AI, AWS—, de la que el curso deriva la paradoja de la democratización."},
+   {id:"kane", t:"Kane et al. (2019)", c:"gris",
+    d:"The Technology Fallacy: el título dice el argumento entero. Las dificultades de la transformación digital tienen más que ver con liderazgo, coordinación y gestión del cambio que con la herramienta misma. Aportan también el concepto de madurez digital: no mide cuánta tecnología hay, sino cuán adaptadas están la gente, la cultura y la forma de decidir."},
+   {id:"westerman", t:"Westerman, Bonnet & McAfee (2014)", c:"gris",
+    d:"Leading Digital. Aportan el hallazgo de que las empresas con mejores resultados digitales no siempre son las que más invierten, sino las que vinculan la tecnología con sus objetivos. El diferencial es el liderazgo digital y la estrategia digital, no el monto invertido en tecnología."},
+   {id:"rogers", t:"Rogers (2023)", c:"gris",
+    d:"The Digital Transformation Roadmap. Aporta dos ideas que el curso usa en capítulos distintos: contar con nuevas herramientas importa menos que saber revisar la propuesta de valor cuando cambian los clientes y el mercado; y las organizaciones digitales construyen vínculos más dinámicos cuando usan los datos para entregar algo relevante, no únicamente para dirigir publicidad."}
+  ]}
+]
+};
+
+const CROSS = [
+ {from:"patrond", to:"ventaja", label:"al abaratarse, sube el peso de la", bend:70},
+ {from:"ciclo", to:"escala", label:"alimenta la", bend:-90},
+ {from:"churn", to:"suscripcion", label:"manda en el", bend:55},
+ {from:"netflix", to:"perceptible", label:"es el caso canónico de la", bend:100},
+ {from:"mercadocercano", to:"frontera", label:"ilustra de lleno la", bend:-120},
+ {from:"capdin", to:"cultura", label:"se operacionaliza en la", bend:60},
+ {from:"err2", to:"frontera", label:"es no ver la", bend:-70},
+ {from:"teece", to:"innovacion", label:"define la", bend:90},
+ {from:"nubank", to:"canvas", label:"movió tres bloques del", bend:-80},
+ {from:"limite", to:"complement", label:"es la", bend:80}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["fund","Modelo de negocio","Business model","Lógica mediante la cual una organización crea, entrega y captura valor (Osterwalder & Pigneur, 2010)."],
+["fund","Business Model Canvas","Business Model Canvas","Representación del modelo de negocio en nueve bloques interconectados; un cambio en uno obliga a revisar varios."],
+["fund","Propuesta de valor","Value proposition","Beneficio que recibe el cliente y razón por la que escogería esa alternativa en lugar de otra."],
+["fund","Segmentos de clientes","Customer segments","Grupos de personas u organizaciones a quienes está dirigida la propuesta de valor."],
+["fund","Canales","Channels","Medios por los que la propuesta de valor llega hasta el cliente."],
+["fund","Relación con los clientes","Customer relationships","Tipo de vínculo que la empresa establece y mantiene con cada segmento."],
+["fund","Fuentes de ingresos","Revenue streams","Mecanismos por los que la empresa captura parte del valor que crea."],
+["fund","Recursos clave","Key resources","Activos indispensables para que el modelo de negocio funcione."],
+["fund","Actividades clave","Key activities","Acciones que la empresa debe ejecutar de forma habitual para sostener su propuesta de valor."],
+["fund","Socios clave","Key partners","Terceros que aportan recursos o realizan actividades que la empresa no hace por sí misma."],
+["fund","Estructura de costos","Cost structure","Conjunto de costos que genera la operación del modelo de negocio."],
+["fund","Innovación del modelo de negocio","Business model innovation","Modificación de decisiones importantes del negocio, no de una tarea aislada (Teece, 2018)."],
+["fund","Transformación del modelo de negocio","Business model transformation","Cambio real del modelo, que ocurre cuando se revisan decisiones centrales y no solo un procedimiento."],
+["flujo","Creación de valor","Value creation","Resolver un problema, eliminar una dificultad o mejorar de forma apreciable la experiencia de clientes o socios."],
+["flujo","Entrega de valor","Value delivery","Forma en que el beneficio creado llega efectivamente hasta el cliente."],
+["flujo","Captura de valor","Value capture","Parte del valor creado que la empresa retiene, normalmente vía ingresos o ahorro."],
+["flujo","Necesidad insatisfecha","Unmet need","Requerimiento real del cliente que ninguna alternativa disponible resuelve bien."],
+["flujo","Fricción","Friction","Dificultad cotidiana en la experiencia del cliente, a menudo tan habitual que ya nadie la reclama."],
+["flujo","Descubrimiento de oportunidades","Opportunity discovery","Interpretar cambios del entorno antes que los competidores y traducirlos en nuevas formas de crear valor."],
+["flujo","Mejora perceptible","Perceived improvement","Criterio del curso: la innovación se mide por lo que el cliente alcanza a notar, no por funciones agregadas."],
+["flujo","Insight","Insight","Hallazgo interpretado que revela algo no evidente y que sugiere una acción concreta."],
+["flujo","Última milla de la analítica","Analytics last mile","Brecha entre producir un insight y convertirlo en una decisión operativa o comercial."],
+["flujo","Digitalización sin cambio de modelo","Digitization without model change","Trasladar procesos a medios digitales sin modificar la forma de competir; ahorra tiempo, no innova."],
+["flujo","Automatización","Automation","Ejecutar tareas existentes sin intervención humana; mejora la eficiencia sin transformar el modelo."],
+["flujo","Eficiencia operativa","Operational efficiency","Hacer lo mismo más rápido o más barato; plano distinto al del modelo de negocio."],
+["err","Economía basada en datos","Data-driven economy","Contexto en que la información se usa para aprender, anticipar y decidir, no solo como registro del pasado."],
+["err","Organización orientada por datos","Data-driven organization","Aquella que incorpora la analítica en sus decisiones cotidianas, no solo en informes ocasionales."],
+["err","Datos como activo estratégico","Data as a strategic asset","Los datos ocupan el lugar de la maquinaria como activo principal, pero solo bajo condición de uso."],
+["err","Analítica","Analytics","Uso sistemático de datos para responder preguntas de negocio; rinde combinada con conocimiento del negocio."],
+["err","Analítica predictiva","Predictive analytics","Estimación de escenarios y comportamientos futuros a partir de datos históricos."],
+["err","Ciclo de valor de los datos","Data feedback loop","Los datos mejoran el sistema, el sistema apoya decisiones y esas decisiones generan nueva información."],
+["algo","Hiperpersonalización","Hyper-personalization","Adaptar contenidos, recomendaciones o servicios a cada usuario y a su contexto, aprendiendo de cada interacción."],
+["algo","Segmentación","Segmentation","Personalización tradicional que agrupa a las personas en segmentos relativamente amplios y estáticos."],
+["algo","Sistema de recomendación","Recommender system","Componente que sugiere opciones relevantes; su valor está en reducir el esfuerzo de elegir."],
+["algo","Recomendación repetitiva","Over-exploitation","Falla de la personalización que solo explota el historial y sugiere lo que el cliente ya compró."],
+["algo","Personalización invasiva","Intrusive personalization","Falla en que el sistema usa o infiere señales que el cliente no esperaba, y la experiencia incomoda."],
+["algo","Plataforma digital","Digital platform","Negocio cuyo aporte es reunir a participantes que necesitan relacionarse y facilitar ese intercambio."],
+["algo","Plataforma inteligente","Intelligent platform","Plataforma donde datos y algoritmos forman parte de la operación central, no un complemento decorativo."],
+["algo","Ecosistema digital","Digital ecosystem","Conjunto de participantes interdependientes que crean valor alrededor de una plataforma."],
+["algo","Negocio multilado","Multi-sided business","Aquel cuyo producto es la interacción entre dos o más grupos distintos, no un bien propio."],
+["algo","Emparejamiento","Matching","Problema de asignar quién con quién dentro de una plataforma, resuelto por algoritmos en tiempo real."],
+["algo","Efecto de red","Network effect","Cada participante adicional aumenta el valor de la plataforma para los demás."],
+["algo","Efectos de red de datos","Data network effects","Más uso genera más datos, que mejoran el modelo y hacen más útil el servicio; solo son foso bajo condiciones estrictas."],
+["algo","IA como servicio","AI as a Service (AIaaS)","Contratar desde la nube capacidades de lenguaje, visión, predicción o generación sin construir infraestructura."],
+["algo","Nube","Cloud computing","Provisión de cómputo y capacidades como servicio bajo demanda, pagando por uso."],
+["algo","Democratización de la IA","Democratization of AI","Acceso de empresas de todos los tamaños a capacidades avanzadas antes reservadas a grandes actores."],
+["algo","Paradoja de la democratización","Commoditization paradox","Mientras más accesible es la tecnología, menos ventaja da tenerla y más ventaja da saber para qué usarla."],
+["algo","Modelo de suscripción","Subscription model","Fuente de ingresos recurrente que cambia la métrica de éxito de la venta a la retención."],
+["algo","Freemium","Freemium","Versión gratuita que convive con una suscripción de pago con funciones adicionales."],
+["deep","Ventaja competitiva","Competitive advantage","Diferencia que sigue siendo valiosa incluso después de que otros intentan imitarla (Porter, 1985)."],
+["deep","Ventaja competitiva sostenible","Sustainable competitive advantage","Aquella que resiste la imitación en el tiempo; con IA proviene de datos, procesos y propuesta, no del algoritmo."],
+["deep","Barrera de imitación","Imitability barrier","Aquello que dificulta que un competidor replique la propuesta; sin ella no hay ventaja sostenible."],
+["deep","Capacidades dinámicas","Dynamic capabilities","Habilidad de reconocer una señal a tiempo, reorganizar lo disponible y actuar antes de que la oportunidad desaparezca."],
+["deep","Detectar","Sensing","Primera fase de las capacidades dinámicas: percibir la señal de cambio antes que los competidores."],
+["deep","Aprovechar","Seizing","Segunda fase: comprometer recursos y decidir; es donde mueren más oportunidades detectadas."],
+["deep","Reconfigurar","Transforming","Tercera fase: reorganizar activos, procesos y personas para que la nueva forma de operar sea la habitual."],
+["deep","Requisito de entrada","Table stakes","Capacidad que ya no distingue a nadie pero cuya ausencia sí penaliza; hoy «usar IA» está ahí."],
+["deep","Estrategia digital","Digital strategy","Vinculación explícita entre las capacidades tecnológicas y los objetivos del negocio."],
+["eval","Escalabilidad","Scalability","Capacidad de atender a más usuarios sin que los costos aumenten al mismo ritmo."],
+["eval","Costo marginal","Marginal cost","Lo que cuesta atender al usuario adicional; determina si un negocio escala o no."],
+["eval","Aprendizaje continuo","Continuous learning","El sistema mejora a medida que recibe información nueva, y la organización aprende de la operación."],
+["eval","Cultura de experimentación","Experimentation culture","Forma habitual de trabajar: probar, medir, conversar sobre los errores y usar lo aprendido en la decisión siguiente."],
+["eval","Prueba piloto","Pilot","Ensayo acotado que compra información sobre una idea antes de comprometer la inversión completa."],
+["eval","Coordinación interfuncional","Cross-functional coordination","Áreas distintas comparten información, acuerdan prioridades y definen cómo medir los resultados."],
+["eval","Gestión del cambio","Change management","Comunicación, capacitación y participación de quienes usarán la solución, para reducir la resistencia."],
+["eval","Madurez digital","Digital maturity","Grado en que la cultura, el liderazgo y la forma de decidir de una organización están adaptados a lo digital."],
+["eval","Liderazgo digital","Digital leadership","Capacidad directiva de vincular la tecnología con los objetivos; explica más que el monto invertido."],
+["eval","Valor de vida del cliente","Customer lifetime value (LTV)","Margen total esperado de un cliente durante su permanencia; crece de forma no lineal al bajar la fuga."],
+["eval","Fuga de clientes","Churn","Proporción de clientes que abandona en un período; la personalización útil busca reducirla."],
+["err","Aprendizaje automático","Machine learning","Técnica que aprende patrones desde datos estructurados para predecir demanda, riesgo o comportamiento."],
+["err","Procesamiento del lenguaje natural","Natural language processing (NLP)","Técnica que permite analizar texto y voz, liberando fuentes que antes nadie leía."],
+["err","Visión computacional","Computer vision","Técnica que interpreta imagen y video para inspección, conteo, seguridad o lectura de documentos."],
+["err","Datos no estructurados","Unstructured data","Texto, audio e imagen sin formato tabular; suelen ser la mayoría del acervo de una empresa y estar sin usar."],
+["err","Gobernanza de datos","Data governance","Reglas sobre quién usa qué datos, quién aprueba un modelo, quién responde y cada cuánto se revisa."],
+["err","Sesgo algorítmico","Algorithmic bias","Resultados sistemáticamente desfavorables para un grupo, normalmente heredados de los datos históricos."],
+["err","Deriva del modelo","Model drift","Pérdida de precisión de un modelo en operación porque cambiaron los datos o la relación que aprendió."],
+["err","Transparencia algorítmica","Algorithmic transparency","Que el cliente sepa qué información se usa sobre él y pueda modificar sus preferencias."],
+["err","Privacidad de datos","Data privacy","Manejo responsable de la información personal; en Chile con marco legal exigible desde el 1 de diciembre de 2026."],
+["err","Complementariedad humano-máquina","Human-AI complementarity","El modelo ordena, sugiere y predice; la organización define criterios, revisa errores y pone el límite."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos del modelo", col:"var(--azul)"},
+  flujo:{n:"Valor, oportunidad e innovación", col:"var(--verde)"},
+  algo:{n:"Los cuatro patrones", col:"var(--ambar)"},
+  deep:{n:"Estrategia y ventaja", col:"var(--violeta)"},
+  eval:{n:"Organización, escala y cambio", col:"var(--coral)"},
+  err:{n:"Datos, IA y riesgos", col:"var(--cian)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
