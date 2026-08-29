@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Por qué nadie usa la herramienta nueva (y qué hacer para que sí)</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial</p>
+    <h1>Por qué nadie usa la herramienta nueva (y qué hacer para que sí)</h1>
+    <p class="lead">Ya lo viviste. La empresa compró un CRM carísimo, hubo una capacitación de dos horas un viernes en la tarde, y tres meses después la mitad del equipo sigue con su planilla propia. O llegó el guion nuevo por correo, sin explicación, y todos siguieron diciendo lo mismo de siempre. La herramienta estaba. El cambio no ocurrió.</p>
+    <p class="lead">Esta unidad se trata exactamente de eso, pero con IA. Y es <strong>la más fácil de traducir a tu trabajo de todo el curso</strong>, porque no va de algoritmos: va de personas que tienen que cambiar cómo trabajan y no quieren. Eso tú lo has visto de cerca, muchas veces, y desde los dos lados del mostrador.</p>
+    <span class="nota">No necesitas saber nada de tecnología para leer esto. Aquí no hay una sola fórmula: hay gente, hábitos y una herramienta nueva en el medio.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>Instalar no es cambiar</a></li>
+      <li><a href="#p2"><span class="n">2</span>Lo que hace que funcione de verdad</a></li>
+      <li><a href="#p3"><span class="n">3</span>Por qué la gente se resiste (y por qué eso es información)</a></li>
+      <li><a href="#p4"><span class="n">4</span>Tres formas de ordenar un cambio</a></li>
+      <li><a href="#p5"><span class="n">5</span>Qué se hace en la práctica</a></li>
+      <li><a href="#p6"><span class="n">6</span>Todo junto: la misma herramienta, dos finales distintos</a></li>
+      <li><a href="#p7"><span class="n">7</span>El caso que lo muestra todo: Seguros del Pacífico</a></li>
+      <li><a href="#p8"><span class="n">&#9733;</span>Las palabras clave, en una línea</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">El punto de partida</span></div>
+    <h2 class="titulo">Instalar no es cambiar</h2>
+
+    <p>Esta es la última unidad del curso y cambia la pregunta. Las anteriores respondían <em>qué construir</em>: qué es la IA dentro de una empresa, dónde hay oportunidades de valor, cómo se arma una propuesta nueva. Esta responde algo menos glamoroso y mucho más cotidiano: <strong>por qué lo que se construye no se usa</strong>. El objeto de estudio ya no es el modelo ni la plataforma. Son las personas que tienen que cambiar su forma de trabajar para que la herramienta produzca algo.</p>
+
+    <p>El curso promete que al terminar vas a poder hacer tres cosas: revisar si una organización está realmente preparada para adoptar IA, identificar los obstáculos que se le van a atravesar, y proponer medidas concretas mirando <em>al mismo tiempo</em> la tecnología, la dinámica de la organización y las necesidades de las personas. Ese "al mismo tiempo" es la palabra clave de toda la unidad.</p>
+
+    <h3>Tener la herramienta no es adoptarla</h3>
+    <p>El primer concepto es el que ordena todo lo demás. La <span class="term">adopción de la inteligencia artificial</span> ocurre cuando una organización incorpora estas herramientas a sus actividades <em>y</em> logra que las personas las utilicen de forma efectiva <em>y</em> eso aporta valor real al negocio. Son tres cosas encadenadas, y las tres tienen que cumplirse. La mayoría de las empresas cumple la primera, informa la segunda contando licencias activas, y nunca verifica la tercera.</p>
+
+    <p>Un ejemplo del curso lo deja clarísimo. Una empresa compra 800 licencias de un asistente de IA. A los tres meses el panel muestra 610 usuarios que iniciaron sesión al menos una vez: en el reporte al directorio eso se presenta como "76% de adopción". Pero en el detalle: 430 la usaron una semana y no volvieron; 180 la usan todas las semanas; y de esos, solo 60 la usan dentro de un proceso formal cuyo resultado se mide. La adopción real son 60 personas, no 610.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el reporte del CRM que dice "94% del equipo con sesión activa". Tú sabes perfectamente que de esos, la mitad entra a marcar la gestión el último día del mes para que no quede en rojo, y solo un puñado lo usa de verdad para decidir a quién llama primero. El 94% es un dato cierto que no significa nada.
+    </div>
+
+    <h3>Implementar no es transformar</h3>
+    <p>El curso separa dos verbos que en la conversación diaria se confunden. La <span class="term">implementación tecnológica</span> significa dejar la herramienta instalada y funcionando: eso es el comienzo del recorrido, no la meta. La <span class="term">transformación organizacional</span> es otra cosa: una decisión deliberada que alcanza la estrategia, la estructura, los procesos y las competencias de la gente. Fíjate en que ninguna de esas cuatro capas es la tecnología. La tecnología acelera, no es el contenido. Cuando esa transformación viene empujada específicamente por tecnologías digitales, se le llama <span class="term">transformación digital</span>: es la especie dentro del género.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Implementar</div>
+        <p>Comprar la licencia, conectar el sistema, hacer la capacitación, mandar el correo de lanzamiento y cerrar el proyecto. Al final hay una herramienta encendida y un acta firmada. Nadie cambió lo que hace en el día.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Transformar</div>
+        <p>Incorporarla al negocio, revisar quién hace qué, desarrollar capacidades y crear condiciones para aprender de forma permanente. Al final hay un proceso distinto, gente que sabe algo nuevo y un indicador que se movió.</p>
+      </div>
+    </div>
+
+    <p>El nombre técnico del trabajo de acompañar todo eso es <span class="term">gestión del cambio</span>: las acciones con las que una organización <strong>prepara</strong>, <strong>lleva a la práctica</strong> y <strong>mantiene</strong> modificaciones en su estructura, sus procesos, su tecnología y la forma de actuar de las personas. Mira los tres verbos, sobre todo el tercero. Casi ningún presupuesto financia la etapa de mantener: la plata cubre la preparación y el lanzamiento, y se acaba justo el día en que la gente empieza a volver a sus hábitos de antes.</p>
+
+    <p>Ese regreso tiene nombre: <span class="term">decaimiento de la adopción</span>. Es el fracaso más frecuente y menos reportado de los proyectos de IA. El uso sube durante el piloto —por la novedad y porque hay alguien mirando— y cae en cuanto la novedad y la supervisión se retiran. No es un fracaso técnico. No aparece en ningún reporte de errores. Simplemente el número baja y nadie sabe explicar por qué.</p>
+
+    <h3>Las tres puertas por las que entra la IA</h3>
+    <p>El curso describe las tres formas en que la IA llega a una empresa por primera vez, y conviene distinguirlas porque cada una exige un tipo de acompañamiento distinto.</p>
+
+    <ol class="pasos">
+      <li><b>Comprar una plataforma ya construida.</b> Un CRM con módulo predictivo, una suite de analítica, una licencia empresarial de un asistente. El esfuerzo se concentra en integrarla y migrar los datos.</li>
+      <li><b>Desarrollar un <span class="term">modelo predictivo</span> propio.</b> Construir internamente, con datos de la casa, algo que estime una variable de interés: probabilidad de que un afiliado se traspase, demanda de la próxima semana, riesgo crediticio. Acá aparece un problema nuevo: alguien tiene que <em>actuar</em> sobre esa predicción, y ese alguien es una persona con un proceso que hoy no contempla ese dato.</li>
+      <li><b>Habilitar una herramienta de <span class="term">IA generativa</span>.</b> Poner a disposición del equipo un sistema que produce texto, resúmenes, código o imágenes a partir de instrucciones escritas. Es la más barata técnicamente —basta repartir accesos— y la más difícil organizacionalmente, porque no define ningún proceso: entrega una capacidad general y le pide a cada uno que descubra solo dónde aplicarla.</li>
+    </ol>
+
+    <h3>Si no cambias el proceso, solo agregas trabajo</h3>
+    <p>Acá está el error más caro de todos, y es puro sentido común una vez que lo ves. El <span class="term">rediseño de procesos</span> es revisar quién hace qué, en qué orden y quién decide, para que la herramienta nueva tenga dónde producir efecto. Sin ese rediseño, la herramienta queda <em>encima</em> del proceso anterior en vez de <em>dentro</em> de él, y el resultado es el peor posible: más trabajo, no menos.</p>
+
+    <p>El ejemplo del curso: un equipo de soporte recibe un asistente que redacta borradores de respuesta a los tickets. Nadie cambia nada más. El agente conserva la misma meta de tickets por hora y la misma métrica de calidad, y ahora <em>además</em> debe leer y corregir un borrador. Su tiempo por ticket sube. Racionalmente, deja de usarlo. Con rediseño, en cambio: la meta se recalibra, revisar reemplaza a redactar, se define qué tickets nunca llevan borrador automático, y se registra si el borrador se aceptó o se corrigió. El mismo software, dos resultados opuestos.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que te dan un asistente que redacta el correo de seguimiento post-reunión, pero nadie toca tu meta de contactos diarios ni el formato obligatorio del informe. Ahora tienes que hacer las mismas llamadas, más leer y arreglar un borrador que a veces se equivoca de producto. Vas a dejar de usarlo en dos semanas, y vas a tener toda la razón.
+    </div>
+
+    <h3>Personas, procesos y tecnología: los tres tienen que moverse</h3>
+    <p>El curso introduce acá la <span class="term">tríada personas–procesos–tecnología</span>: la IA afecta al mismo tiempo esos tres ámbitos, y si uno avanza mientras los otros dos se quedan quietos, el resultado no se sostiene.</p>
+
+    <p>En los <strong>procesos</strong>, la IA puede asumir tareas repetitivas, ordenar flujos de trabajo y analizar volúmenes grandes de información: eso reduce tiempos, mejora la asignación de recursos y permite decisiones operativas más oportunas. En las <strong>personas</strong>, modifica el contenido del trabajo: algunas labores se automatizan y otras exigen más análisis, supervisión y criterio; por eso ganan importancia cuatro habilidades muy concretas —revisar resultados, validar datos, formular buenas instrucciones y reconocer los efectos éticos de una decisión apoyada por IA— que veremos una por una en la parte 2. Y la <strong>tecnología</strong> es el soporte de la transformación, pero no actúa sola: necesita una estrategia que se entienda, procesos coherentes y personas capaces de incorporarla. Una solución muy sofisticada tendrá poco impacto si la organización no sabe usarla.</p>
+
+    <p>La analogía del curso es un restaurante que compra una cocina industrial de alto rendimiento. La tecnología está. Pero si el menú —el proceso— sigue diseñado para una cocina doméstica, y el equipo no sabe usar el horno de convección, salen los mismos platos en el mismo tiempo, más una cuota de leasing todos los meses.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es tu sucursal con un sistema nuevo de scoring de traspaso, pero con el mismo guion de llamada de siempre, la misma meta de contactos y sin que nadie le explique al equipo qué significa que un afiliado salga con "riesgo alto". Tecnología nueva, proceso viejo, personas sin preparar: el resultado del mes va a ser exactamente igual al del mes pasado.
+    </div>
+
+    <h3>La prueba de que comprar tecnología no basta</h3>
+    <p>Hay un estudio que el curso usa como evidencia y que vale la pena conocer. Westerman, Bonnet y McAfee (2014) trabajaron tres años con cerca de 400 ejecutivos de grandes empresas tradicionales y encontraron que el desempeño digital no depende de una variable, sino de dos, independientes entre sí.</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">El qué</div>
+        <div class="sub">Capacidad digital</div>
+        <ul>
+          <li>Cuánto invierte la empresa en tecnología.</li>
+          <li>Qué tan bien la usa para transformar la experiencia del cliente, sus operaciones y su modelo de negocio.</li>
+        </ul>
+        <p class="nm">Se llama <span class="term">capacidad digital</span>. Se compra.</p>
+      </div>
+      <div class="card a">
+        <div class="q">El cómo</div>
+        <div class="sub">Capacidad de conducir el cambio</div>
+        <ul>
+          <li>Visión, gobierno del proyecto, compromiso real de la dirección.</li>
+          <li>Calidad de la relación entre el área de tecnología y el negocio.</li>
+        </ul>
+        <p class="nm">Se llama <span class="term">capacidad de gestión de la transformación</span>. No se compra.</p>
+      </div>
+    </div>
+
+    <p>Cruzar las dos da cuatro tipos de empresa. Las <em>Beginners</em> tienen poco de ambas y usan la tecnología al mínimo. Las <span class="term">Fashionistas</span> tienen mucha tecnología y poca conducción: compran cada novedad de moda sin visión que las articule y terminan con islas caras y desconectadas. Las <em>Conservatives</em> tienen visión y gobierno sólidos pero son demasiado prudentes para invertir. Y las <span class="term">Digital Masters</span> tienen las dos altas: invierten <em>y</em> saben conducir el cambio.</p>
+
+    <p>Las Fashionistas son la prueba experimental de toda esta unidad: gastaron en tecnología y aun así no rinden, porque les falta la otra mitad. Si comprar bastara, rendirían igual que los líderes. Las cifras de los Digital Masters frente a sus pares de la misma industria son tres: <strong>26% más rentables</strong>, <strong>9% más ingresos generados a partir de sus activos físicos</strong> y <strong>12% mayor valoración de mercado</strong>.</p>
+
+    <div class="mundo">
+      <div class="lab">Ojo con este dato</div>
+      Por todas partes se repite que los Digital Masters tienen "9% más ingresos". No es eso: el 9% es más ingresos <em>generados a partir de los activos físicos que ya tienen</em>, es decir, le sacan más partido a lo mismo. Si en una prueba te aparece el 9%, la respuesta correcta lo asocia a los activos físicos, no a la facturación a secas. Y una precisión más: el estudio es observacional, así que muestra asociación, no causa demostrada.
+    </div>
+
+    <h3>Empieza chico, no por la luna</h3>
+    <p>El segundo estudio que cita el curso es de Davenport y Ronanki (2018), sobre 152 proyectos reales y una encuesta a 250 ejecutivos. Su hallazgo: las experiencias exitosas casi siempre empezaron por problemas <strong>concretos y de alcance reducido</strong>. Eso permitió mostrar resultados temprano, ganar confianza y aprender antes de extender la solución.</p>
+
+    <p>Los autores clasifican los proyectos en tres tipos. La <span class="term">automatización robótica de procesos</span> (RPA en inglés) es software que imita los clics y tecleos de una persona sobre los sistemas que ya existen, para tareas administrativas repetitivas: fue casi la mitad de los casos, alrededor de un 47%. El <span class="term">insight cognitivo</span> son algoritmos que detectan patrones en grandes volúmenes de datos e interpretan qué significan —predicción de compra, detección de fraude, segmentación—: alrededor de un 38%. Y el <span class="term">compromiso cognitivo</span> son los sistemas que conversan en lenguaje natural con clientes o empleados, como los chatbots: solo un 16%. O sea, la mayor parte del valor venía del tipo menos espectacular.</p>
+
+    <p>De ahí el consejo que da nombre a una sección del artículo: <em>no empieces por proyectos lunares</em>. El caso emblemático es el MD Anderson Cancer Center, que destinó cerca de 62 millones de dólares a un proyecto de diagnóstico oncológico con IA que terminó cancelado sin usarse nunca con pacientes. En el mismo hospital y el mismo período, proyectos chicos —recomendaciones de hotel para pacientes, identificar quiénes necesitaban ayuda financiera, soporte informático— sí funcionaron. Misma tecnología, misma época. La diferencia fue el tamaño del problema.</p>
+
+    <h3>El número que justifica toda esta unidad</h3>
+    <p>Si te quedas con un solo dato de la parte 1, que sea este. BCG encuestó en octubre de 2024 a mil ejecutivos de primera línea en 59 países y encontró que solo el <strong>26%</strong> de las empresas logró y escaló valor real con IA: el <strong>74%</strong> restante todavía no muestra valor tangible. De ahí sale la <span class="term">regla 10-20-70</span>: las empresas líderes destinan cerca del 10% de sus recursos a los algoritmos, el 20% a tecnología y datos, y el <strong>70% a personas y procesos</strong>. Leído al revés: alrededor del 70% de las dificultades de implementación viene de las personas y los procesos, un 20% de la tecnología y solo un 10% de los algoritmos.</p>
+
+    <p>Dos datos más apuntan al mismo lugar. McKinsey (marzo de 2025, casi 1.500 participantes en 101 países) reporta que el 78% de las organizaciones ya usa IA en al menos una función, pero más del 80% no ve impacto tangible en sus resultados, y solo el 21% ha rediseñado en serio algún flujo de trabajo. Y en junio de 2025 estima que menos del 10% de los casos de uso desplegados logra pasar de la etapa de prueba.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Si el 70% del problema está en las personas y los procesos, un equipo que dedica el 90% de su esfuerzo a la herramienta está trabajando sobre el 10% del problema.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">Los habilitadores</span></div>
+    <h2 class="titulo">Lo que hace que funcione de verdad</h2>
+
+    <p>Si la transformación con IA no es un proyecto tecnológico sino un cambio cultural, la pregunta obvia es: ¿qué condiciones tienen las empresas donde sí funciona? El curso identifica cuatro, más dos temas que las atraviesan. Las cuatro condiciones son liderazgo comprometido, una cultura que deja probar y equivocarse, confianza, y desarrollo de capacidades. Los dos temas transversales son entender la resistencia —que merece su propia parte— y saber trabajar junto a la máquina en vez de contra ella.</p>
+
+    <h3>1. Liderazgo comprometido</h3>
+    <p>El primer concepto acá es el <span class="term">patrocinio ejecutivo</span>: el respaldo <strong>visible</strong> y <strong>sostenido</strong> de la alta dirección a una iniciativa, expresado en asignar recursos, eliminar obstáculos y apoyar el cambio. Las dos palabras en negrita hacen todo el trabajo. Visible: un respaldo que nadie fuera del comité percibe, en la práctica no existe. Sostenido: no se agota en el anuncio del lanzamiento.</p>
+
+    <p>Y las tres manifestaciones van en dificultad creciente. Asignar recursos es una firma. Eliminar obstáculos implica que un ejecutivo se pelee con otro para destrabar algo. Apoyar el cambio organizacional implica cambiar su propia conducta, que es lo que casi nunca pasa.</p>
+
+    <p>Dentro de un proyecto de IA, ese patrocinio toma la forma de <span class="term">liderazgo comprometido</span>. El curso nombra acá el error más extendido de todos: <strong>dejar el proyecto únicamente en manos del área tecnológica</strong>. Cuando eso ocurre, el resto de la organización lo lee como una iniciativa informática y no como un cambio estratégico, y aplica una regla implícita brutal: <em>si es tu proyecto, mi cooperación es un favor</em>. Cada área negocia su participación como una concesión, el equipo técnico termina persiguiendo usuarios, y el costo de aprender se siente como una imposición de afuera. Cuando el proyecto pertenece al negocio, la regla se invierte: es nuestro objetivo, y tecnología provee la capacidad. Misma gente, misma herramienta, mismo presupuesto, dirección opuesta.</p>
+
+    <p>Kotter agrega que los cambios sostenibles suelen empezar con una <span class="term">coalición conductora</span>: un grupo de líderes de distintas áreas que impulsa el proceso y mantiene el compromiso en el tiempo. La idea de fondo es que ninguna persona sola, por alto que esté en el organigrama, reúne a la vez la información, la credibilidad y el alcance para conducir un cambio que cruza toda la empresa. Se necesita un grupo que combine poder formal, conocimiento del terreno, credibilidad ante los equipos y capacidad de mover gente. Un comité con poder pero sin credibilidad emite instrucciones que nadie obedece de verdad.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Liderazgo de correo</div>
+        <small>El gerente de tecnología anuncia la herramienta por correo, con un instructivo adjunto y un plazo. Nunca la usa él. Nunca vuelve a mencionarla. A las tres semanas nadie recuerda que existe.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Liderazgo comprometido</div>
+        <small>El gerente comercial abre la reunión mensual mostrando cómo él mismo la usó para preparar una propuesta, cuenta qué le salió mal la primera vez, y anuncia que desde el mes siguiente la cartera se revisa con los reportes que ella genera.</small>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre el gerente que manda el guion nuevo por correo y el que se sienta media hora en la sala, hace tres llamadas con el guion delante de todos, se equivoca en una, lo comenta, y después cambia la pauta de la reunión semanal para que ese guion sea el que se revisa. El segundo consigue que se use. El primero consigue un correo leído.
+    </div>
+
+    <h3>2. Una cultura que deja probar y equivocarse</h3>
+    <p>El argumento parte de una característica del objeto: la IA cambia muy rápido. Herramientas que hoy parecen nuevas quedan superadas en meses y los usos cambian casi a diario. Por eso una organización que quiere sostener su transformación necesita aprender y adaptarse todo el tiempo. Eso es una <span class="term">cultura orientada al aprendizaje</span>: un ambiente que da espacio a la curiosidad, la prueba y la mejora, donde los equipos pueden explorar herramientas, compartir lo que descubren y aprender también de los errores.</p>
+
+    <p>El contraste es lo que vuelve útil el concepto. Cuando equivocarse se castiga, o los procesos son demasiado rígidos, las personas conservan sus métodos de siempre aunque exista algo mejor. Y no es cobardía: es aritmética. Supón que la herramienta nueva mejora tu resultado en 7 de cada 10 casos y lo empeora en 3. Si los aciertos se atribuyen al equipo y los errores a <em>tu</em> decisión personal de usar algo que no era el procedimiento estándar, tu retorno individual es negativo aunque el de la empresa sea positivo. Lo racional es no usarla. Ningún curso arregla eso, porque el problema no es de conocimiento: es de a quién se le anota el gol y a quién el autogol.</p>
+
+    <p>El curso apoya el punto en un estudio de Kane y otros (2019), sobre más de 4.800 gerentes y ejecutivos de 125 países, que mide la <span class="term">madurez digital</span> en una escala de 1 a 10: empresas tempranas (1 a 3), 24% de la muestra; en desarrollo (4 a 6), 44%; maduras (7 a 10), 32%. Las brechas entre maduras y tempranas son enormes, y lo revelador es <em>dónde</em> están: 81% contra 10% considera la innovación una fortaleza; 74% contra 15% dice tener recursos suficientes para innovar; 86% de las maduras dedica 10% o más del tiempo laboral a experimentar; 69% contra 38% tiene equipos multifuncionales con autonomía; y 73% contra 29% tiene un liderazgo que apoya activamente a esos equipos.</p>
+
+    <p>Fíjate en el patrón: las diferencias más grandes no están en tecnología, sino en <strong>tiempo protegido para experimentar, autonomía y apoyo del jefe</strong>. Por eso, para diagnosticar si una empresa tiene cultura de aprendizaje no sirve preguntar si la valora —todas van a decir que sí—. La pregunta que sirve es: ¿cuántas horas a la semana puede una persona dedicar a probar algo sin justificarlo ante nadie?</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piénsalo así: ¿cuándo fue la última vez que en una reunión de equipo alguien contó abiertamente una campaña que le salió mal, y en vez de quedar marcado, la conversación sirvió para que los demás no repitieran el error? Si no te acuerdas de ninguna, ahí tienes tu diagnóstico. No es que la gente no quiera aprender: es que contar lo que falló cuesta caro.
+    </div>
+
+    <p>El curso agrega un dato que conecta con la parte 1: invertir más dinero en tecnología no garantiza mejores resultados. Suelen avanzar más las empresas que aprenden, experimentan y comparten lo que funciona. Es la misma lección de las Fashionistas, dicha de otra manera. Y cierra citando a Microsoft (2025): las organizaciones más maduras integran las herramientas inteligentes <em>en su rutina</em> y desarrollan prácticas de <strong>aprendizaje colaborativo</strong>. Las dos mitades importan: lo primero es uso incorporado al flujo diario, no uso ocasional; lo segundo es el mecanismo por el cual lo que aprende una persona se convierte en capacidad de toda la empresa. Sin lo segundo, cada uno repite el mismo descubrimiento por su cuenta y la empresa no aprende nada.</p>
+
+    <h3>3. Confianza</h3>
+    <p>El curso lo dice sin rodeos: sin confianza, la adopción se vuelve difícil. Una aplicación puede funcionar técnicamente bien y quedar subutilizada porque la gente duda de sus resultados o siente que amenaza su trabajo.</p>
+
+    <p>La <span class="term">confianza en la IA</span> tiene una propiedad temporal que se pasa por alto: <strong>empieza a formarse mucho antes de que la herramienta entre en operación</strong>. Quienes van a usarla necesitan saber por qué se eligió esa solución, qué resultados se esperan y dónde termina la responsabilidad del sistema y empieza la de las personas. Hablarlo con franqueza no despeja todas las inquietudes, pero evita que el silencio lo llenen los rumores. Porque el mecanismo es predecible: frente a un cambio con consecuencias personales inciertas, nadie espera la información sentado. La gente construye una explicación con lo que tenga a mano. Si la empresa no la da, la da el pasillo, y la versión del pasillo casi siempre es la más amenazante posible. <strong>No comunicar no es neutro: es entregar el control del relato.</strong></p>
+
+    <p>Y hay un componente que las comunicaciones corporativas siempre omiten: también hay que hablar de los <strong>límites</strong>. El curso nombra tres. Primero, los modelos <em>pueden equivocarse</em>, y lo hacen con la misma fluidez y seguridad aparente con que aciertan: no avisan cuando dudan, así que hay que verificar. Segundo, pueden <em>entregar respuestas incompletas</em>: omiten condiciones o excepciones que un experto del área habría incluido, y ahí el usuario tiene que aportar el contexto que el modelo no tiene. Tercero, <em>dependen de la calidad de los datos con que fueron entrenados</em>: reproducen los patrones, los sesgos y las desactualizaciones de esos datos, así que conviene preguntarse a quién representan.</p>
+
+    <p>Saber esto permite usar la IA con criterio, sin caer en ninguno de los dos extremos. Y los dos extremos tienen nombre.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Confianza ciega</div>
+        <small>Aceptar lo que dice el sistema aunque tengas evidencia delante de que está equivocado. Su nombre técnico es <span class="term">sesgo de automatización</span>, y produce dos tipos de error: no detectar lo que el sistema no señaló, y actuar según una recomendación mala. Es lo que va a hundir a Seguros del Pacífico en la parte 7.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Aversión al algoritmo</div>
+        <small>El extremo opuesto: descartar el sistema para siempre porque lo viste fallar una vez, aunque en promedio acierte más que tú. Se llama <span class="term">aversión al algoritmo</span> y su rasgo es la asimetría: al algoritmo se le perdona el error mucho menos que a una persona.</small>
+      </div>
+    </div>
+
+    <p>La analogía del curso es el navegador del auto. Confianza ciega es doblar hacia una calle cortada porque "el mapa lo dijo", ignorando el cono naranja que tienes al frente. Aversión al algoritmo es que una vez te mandó por un camino más lento y no lo volviste a abrir nunca, y ahora te pierdes media hora en una ciudad que no conoces. El uso correcto es el tercero: seguir la ruta, mirar por la ventana, y saber en qué situaciones el mapa suele estar desactualizado.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Supón que el sistema te entrega la lista de los treinta afiliados con más riesgo de traspaso. Confianza ciega es llamar a los treinta en orden sin mirar quién es cada uno. Aversión es que el primero de la lista resultó ser un cliente feliz, decidir que "esa lista no sirve" y volver a tu criterio de siempre. Lo correcto es usar la lista como punto de partida y saber que tú tienes información que el sistema no: que ese afiliado justo tuvo una guagua, o que su empresa cambió de convenio.
+    </div>
+
+    <p>El curso cierra el punto con una definición muy práctica: la confianza se vuelve sólida cuando las personas pueden participar, pedir ayuda y comprobar por sí mismas que la herramienta les resuelve problemas concretos. No es una creencia que se declara. Es el residuo de experiencias verificadas.</p>
+
+    <h3>4. Desarrollo de capacidades</h3>
+    <p>El <span class="term">desarrollo de capacidades</span> empieza con una calibración importante: no es razonable esperar que todos programen ni analicen datos en profundidad. Lo que sí es necesario es que todos comprendan para qué sirve la herramienta, cómo interactuar con ella y qué decisiones siguen requiriendo criterio profesional. Son cuatro competencias, y son el mínimo que aplica a todo el mundo.</p>
+
+    <ol class="pasos">
+      <li><b>Formular instrucciones comprensibles.</b> Es lo que en el campo se llama <span class="term">formulación de instrucciones</span> (en inglés, <em>prompting</em>): dar indicaciones claras definiendo tres cosas —<strong>contexto</strong>, <strong>objetivo</strong> y <strong>formato</strong>—. Cada una cierra una fuente distinta de ambigüedad, y si no las decides tú, las decide el modelo por su cuenta y probablemente mal.</li>
+      <li><b>Revisar los resultados antes de usarlos.</b> No confiar ciegamente. Validar con criterio profesional antes de usar algo en una decisión o en una comunicación. A nivel de proceso esto se llama <span class="term">supervisión humana</span> (en inglés, <em>human-in-the-loop</em>): que haya un punto definido donde una persona valida antes de que la salida produzca efectos. Ojo: poner un humano en el circuito no sirve si no tiene criterio ni tiempo para revisar de verdad; ahí vuelve el sesgo de automatización, con un revisor que aprueba todo.</li>
+      <li><b>Contrastar la información y reconocer sesgos.</b> El riesgo se llama <span class="term">sesgo algorítmico</span>: resultados que perjudican o favorecen sistemáticamente a ciertos grupos, heredados de los datos de entrenamiento o del diseño. La palabra clave es <em>sistemáticamente</em>: no es un error al azar que se compensa en promedio, es una desviación que apunta siempre al mismo lado. Por eso no se detecta revisando un caso: se detecta comparando resultados entre grupos.</li>
+      <li><b>Advertir las consecuencias éticas.</b> Tres preguntas que funcionan como protocolo mínimo de lo que se llama <span class="term">IA responsable</span>: ¿es justa esta decisión?, ¿puede discriminar a alguien?, ¿quién asume la responsabilidad? La tercera es la bisagra que conecta con la gobernanza de la parte 6.</li>
+    </ol>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Instrucción pobre</div>
+        <p>"Resume este contrato." El modelo no sabe para qué lo quieres, qué te importa ni cómo entregártelo, así que inventa las tres cosas.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Instrucción con contexto, objetivo y formato</div>
+        <p>"Soy el jefe de operaciones y voy a decidir si renovamos con este proveedor. Identifica todo lo que nos ate o nos exponga si no renovamos. Entrégamelo en una tabla con cláusula, riesgo y plazo, máximo 10 filas, ordenada por riesgo."</p>
+      </div>
+    </div>
+
+    <p>El paraguas que reúne todo esto tiene nombre propio: la <span class="term">alfabetización en inteligencia artificial</span> (en inglés, <em>AI literacy</em>). Son los conocimientos, habilidades y criterios necesarios para entender qué pueden hacer los sistemas de IA, cuáles son sus límites y qué consecuencias tiene usarlos. Los autores que la definieron —Long y Magerko, en 2020— identifican <strong>17 competencias agrupadas en 5 temas</strong> (qué es la IA, qué puede hacer, cómo funciona, cómo debería usarse y cómo la percibe la gente). Es un error frecuente decir que son "cinco competencias": cinco son los temas.</p>
+
+    <p>Y no es alfabetización técnica: no exige programar. Un abogado alfabetizado en IA no sabe entrenar un modelo, pero sí sabe que un asistente puede inventarse una cita legal con formato impecable, y por eso la verifica antes de presentarla. Su prerrequisito silencioso es la <span class="term">alfabetización de datos</span>: saber leer, interpretar y cuestionar datos —qué es una muestra, qué es una correlación, por qué un promedio puede esconder dos poblaciones distintas—. Y dos palabras más que vas a escuchar: el <span class="term">upskilling</span> es profundizar las capacidades de una persona dentro de su rol actual, y el <span class="term">reskilling</span> es formarla para un rol distinto cuando el suyo se reduce o desaparece.</p>
+
+    <p>El curso insiste en que esto no se logra en una jornada de capacitación. Por eso las organizaciones que lo hacen bien usan tres mecanismos: <strong>programas permanentes</strong> en vez de eventos puntuales, <strong>actividades prácticas</strong> sobre el trabajo real y no sobre ejercicios de demostración, y <strong>espacios entre pares</strong> donde se comparten dudas, errores y soluciones. Y hay un efecto de segundo orden que casi nadie anticipa: quien conoce a fondo su proceso y además entiende la herramienta descubre aplicaciones que ningún comité central habría imaginado.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Las cuatro competencias, traducidas: <strong>pedir bien</strong> (decirle al asistente que eres ejecutiva de una AFP, que vas a llamar a un afiliado de 52 años que consultó por traspaso, y que necesitas tres argumentos en dos líneas cada uno), <strong>revisar</strong> antes de mandar nada, <strong>contrastar</strong> las cifras contra la fuente oficial, y <strong>pensar en las consecuencias</strong> de lo que estás por decirle a una persona sobre su pensión. Ninguna de las cuatro requiere saber programar. Las cuatro requieren criterio, que es lo que tú ya tienes.
+    </div>
+
+    <p>El curso cierra este apartado con el informe <em>Future of Jobs</em> del Foro Económico Mundial (World Economic Forum, enero de 2025, más de mil empleadores en 55 economías), que ubica entre las habilidades de mayor crecimiento la alfabetización en IA, el pensamiento analítico, el aprendizaje continuo y la capacidad de trabajar con estos sistemas. Vale la pena una precisión que puede aparecer en una prueba: la habilidad de <em>mayor crecimiento</em> es "IA y big data" (subió 17 puntos porcentuales respecto de 2023); el <em>pensamiento analítico</em> es la habilidad más demandada <em>hoy</em> —7 de cada 10 empresas la consideran esencial— pero está en el puesto 9 en crecimiento, justamente porque ya está en el techo. No es lo mismo "la más demandada hoy" que "la que más crece". Otras cifras del mismo informe dan la escala: el 63% de los empleadores señala la brecha de habilidades como su principal barrera; cerca del 39% de las habilidades requeridas cambiará hacia 2030; de cada 100 trabajadores, 59 van a necesitar formarse de nuevo o profundizar; y el balance proyectado es de 170 millones de empleos creados contra 92 millones desplazados, con un saldo neto de 78 millones. El 77% de los empleadores planea capacitar a su gente para trabajar junto a la IA.</p>
+
+    <h3>5. Trabajar con la máquina, no contra ella</h3>
+    <p>El último habilitador integra a todos los anteriores. La <span class="term">colaboración persona–IA</span> parte de una premisa: la IA no vuelve innecesario el conocimiento humano; lo que hace es ampliar la cantidad de información que se puede revisar, proponer alternativas y entregar antecedentes para decidir. El sistema procesa volúmenes enormes, reconoce patrones y se encarga de lo repetitivo. Las personas aportan cinco cosas que el sistema no tiene:</p>
+
+    <ol class="pasos">
+      <li><b>Juicio.</b> Decidir bajo criterios que no están completamente escritos, y hacerse cargo de la decisión.</li>
+      <li><b>Experiencia.</b> El conocimiento acumulado sobre casos particulares que nunca quedó registrado en ningún dato.</li>
+      <li><b>Creatividad.</b> Proponer opciones que no estaban en lo ya visto.</li>
+      <li><b>Lectura del contexto.</b> Saber qué está en juego aquí, con este cliente, en este momento de la empresa.</li>
+      <li><b>Habilidades para relacionarse.</b> Negociar, persuadir, sostener una conversación difícil, generar acuerdo entre partes.</li>
+    </ol>
+
+    <p>Cuando ambos aportes se coordinan bien se alcanzan resultados que ninguno lograría por separado. Eso es lo que se llama <span class="term">aumento de capacidades</span> (en inglés, <em>augmentation</em>): el sistema amplía lo que la persona puede hacer, en oposición a la automatización pura, donde reemplaza la tarea completa. Son dos decisiones de diseño distintas, y elegir entre ellas no es una decisión técnica sino organizacional.</p>
+
+    <p>El curso pone tres condiciones para que esa colaboración funcione: <strong>definir responsabilidades</strong>, <strong>establecer mecanismos de revisión</strong> y <strong>presentar la IA como herramienta que amplía el trabajo</strong>, no como sustituto automático de las personas. Difícilmente alguien colabore de buena fe con el sistema que cree que lo va a reemplazar.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Ese reparto, escrito, se vería así en tu área: el sistema puntúa a los 4.000 afiliados de la cartera y arma la lista de prioridad; tú decides el orden final porque sabes cosas que el sistema no; los casos de traspaso ya iniciado van directo al ejecutivo senior; y una vez al mes se revisa una muestra para ver dónde el sistema se equivocó. Eso es colaboración diseñada, no "úsalo si quieres". La lista te da alcance; tú aportas el juicio, el contexto y la conversación. Ninguna de las dos partes sirve sola.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Liderazgo que se moja, cultura donde equivocarse no cuesta la cabeza, confianza construida con honestidad sobre los límites, y gente capacitada de verdad. Sin esas cuatro, la mejor herramienta del mercado se queda en la caja.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">La resistencia</span></div>
+    <h2 class="titulo">Por qué la gente se resiste (y por qué eso es información)</h2>
+
+    <p>Esta es la parte donde vas a reconocer a media oficina. La <span class="term">resistencia al cambio</span> son las ideas, actitudes y conductas que dificultan aceptar tecnologías, procesos o formas de trabajo distintas. Fíjate en la estructura de tres niveles, porque explica por qué es tan difícil de detectar: <strong>ideas</strong> (lo que la persona cree), <strong>actitudes</strong> (cómo se posiciona) y <strong>conductas</strong> (qué hace efectivamente). Y no siempre coinciden. Alguien puede creer que la IA es útil, sentirse amenazado por ella, y comportarse como si la estuviera usando.</p>
+
+    <h3>No es rechazo a la tecnología</h3>
+    <p>La instrucción más importante de toda la unidad es esta: <strong>no interpretes toda resistencia como rechazo a la tecnología</strong>. Detrás casi siempre hay falta de información, poca capacitación o dudas legítimas sobre el propósito del proyecto. Cuando las personas no entienden por qué se introduce la IA ni cómo va a afectar su trabajo, es natural que recurran a las prácticas que ya conocen.</p>
+
+    <p>Esa frase —"es natural que recurran a las prácticas que ya conocen"— reencuadra todo. Bajo información incompleta y con consecuencias personales en juego, seguir haciendo lo que sabes que funciona es la jugada más racional que existe. No es un defecto de carácter. Si quieres cambiar la conducta, cambia la información y las consecuencias; no exijas más voluntad.</p>
+
+    <p>El curso identifica tres preguntas concretas que la gente se hace y que rara vez se responden completas:</p>
+
+    <ol class="pasos">
+      <li><b>¿Qué va a pasar con mi trabajo?</b> Es la pregunta sobre el empleo, y se responde con compromisos verificables, no con frases tranquilizadoras.</li>
+      <li><b>¿Cuánto margen de decisión me queda?</b> Es la pregunta sobre la autonomía: qué decisiones siguen siendo humanas y quién puede pasar por encima del sistema.</li>
+      <li><b>¿Voy a seguir siendo valorada acá?</b> Es la pregunta sobre el estatus, y es la más difícil, porque toca la identidad profesional. Si mi valor era saber hacer algo que ahora hace una máquina, ¿qué soy ahora?</li>
+    </ol>
+
+    <p>Responder la primera y callar las otras dos deja intacto el grueso del problema. Y es exactamente lo que hace la mayoría de las empresas.</p>
+
+    <h3>Las cuatro formas silenciosas</h3>
+    <p>Acá viene el material más útil de la parte. La resistencia casi nunca se declara de frente. El curso cataloga cuatro maneras en que aparece sin que nadie diga jamás "estoy en contra".</p>
+
+    <ol class="pasos">
+      <li><b>Cuestionar la utilidad de la herramienta.</b> La objeción se presenta como argumento técnico o de calidad —"para nuestro tipo de casos no sirve", "los resultados no son confiables"— y por eso es dificilísima de refutar sin parecer que estás ignorando el criterio de alguien con veinte años de experiencia.</li>
+      <li><b>Postergar su uso.</b> Nadie se opone; simplemente el momento nunca llega. Estamos en cierre de mes. Falta capacitación. Después de la campaña grande. Es la forma más eficiente de resistencia, porque no requiere justificarse nunca.</li>
+      <li><b>Mantener el proceso viejo en paralelo.</b> Son los <span class="term">procesos paralelos</span>: la planilla propia que se sigue llenando junto al sistema nuevo. Suele nacer de una precaución razonable durante la transición y se queda para siempre. Su costo es doble: duplica el trabajo y produce dos versiones de la verdad.</li>
+      <li><b>Aceptar de boca para afuera.</b> Es el <span class="term">cumplimiento aparente</span>: la persona hace exactamente lo que se le pidió, en la letra, sin el criterio que hacía útil la práctica. Usa la herramienta el mínimo necesario para que el indicador registre uso, y sigue decidiendo como antes.</li>
+    </ol>
+
+    <p>Las cuatro son formas de <span class="term">resistencia pasiva</span>: oposición que se expresa por omisión, demora o cumplimiento formal en lugar de por confrontación. Su rasgo estructural es que <strong>no ofrece blanco</strong>. No hay a quién convencer, porque nadie declaró estar en contra. Por eso los tableros de adopción suelen dar señales tranquilizadoras justo antes de que quede claro que el proyecto no cambió absolutamente nada.</p>
+
+    <p>El ejemplo del curso es demoledor. Un área de compras adopta un sistema que sugiere proveedores según historial y precio. A los cuatro meses el tablero muestra que el 92% de las órdenes pasa por el sistema. En el detalle: en el 78% de los casos el comprador ya había elegido el proveedor por su cuenta y solo ingresa la orden para dejarla registrada. Uso formal: 92%. Influencia real sobre la decisión: 22%. Solo se detectó comparando lo que sugería el sistema con lo que finalmente se eligió.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Las cuatro, traducidas: el colega que dice "ese scoring no sirve para mi zona"; el que promete llenar el CRM "cuando pase el cierre" y ya van seis cierres; la ejecutiva que mantiene su cuaderno con los datos de sus mejores afiliados porque "en el sistema se pierden"; y el que registra las gestiones el jueves en la tarde, todas juntas, para que el reporte del viernes salga verde. Ninguno de los cuatro va a decirte nunca que está en contra.
+    </div>
+
+    <p>La analogía del curso es perfecta: es la diferencia entre el vecino que va a la reunión de copropietarios y vota en contra del reglamento nuevo, y el que vota a favor, sonríe, y sigue estacionando donde siempre. Con el primero puedes negociar. Con el segundo no hay conversación posible, porque formalmente está de acuerdo.</p>
+
+    <h3>El giro: la resistencia es información</h3>
+    <p>Y acá está el cambio de mirada más valioso de la unidad. Estas conductas no deben leerse como falta de voluntad, sino como <strong>señales</strong>. La resistencia entrega información valiosa: escuchar las inquietudes permite identificar riesgos que nadie consideró, detectar necesidades de formación y ajustar la estrategia <em>antes</em> de extender la IA a toda la organización.</p>
+
+    <p>Eso cambia por completo el objetivo. Si la resistencia es un obstáculo, la métrica de éxito es que nadie objete. Si es una señal, el objetivo es captarla temprano y barata. Y una organización donde nadie objeta nada no es una organización sin problemas: es una donde las objeciones no llegan. Quien mejor sabe en qué casos el modelo va a fallar es la persona que lleva quince años haciendo esa tarea a mano.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Esto tú ya lo dominas, solo que con otro nombre. Cuando un afiliado te dice "lo voy a pensar", no cierras la carpeta: escuchas qué hay detrás, porque esa objeción te está diciendo exactamente qué le falta para decidir. La resistencia de un compañero al sistema nuevo es exactamente lo mismo: una objeción. Y las objeciones no se aplastan, se trabajan. El que reclama te está regalando el diagnóstico gratis; el que calla y sigue con su planilla no te regala nada.
+    </div>
+
+    <p>El curso agrega la receta: la resistencia disminuye cuando las personas <strong>entienden para qué</strong> se hace la transformación, <strong>pueden intervenir</strong> en su diseño y <strong>reciben la formación</strong> necesaria. Son los mismos tres elementos que Kotter pide para cualquier transformación —visión compartida, objetivos comprensibles y oportunidades reales de participación—, ahora usados como antídoto. Y hay un detalle sobre el tercero: la participación tiene que poder modificar algo. Si el diseño ya está cerrado, pedir opinión es teatro, y produce más cinismo que no haber preguntado nunca.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La resistencia rara vez es contra la tecnología: es contra no saber qué va a pasar contigo. Y como toda objeción, no se aplasta: se escucha, porque ahí está el dato que nadie más te va a dar.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">Los marcos</span></div>
+    <h2 class="titulo">Tres formas de ordenar un cambio</h2>
+
+    <p>Hasta acá el curso dijo <em>qué</em> hay que cuidar. Esta parte cambia de pregunta y pasa al <em>cómo</em>: con qué estructura se ordena el recorrido. La respuesta son tres marcos clásicos —Lewin, Kotter y ADKAR— y una discusión final sobre cómo adaptarlos a la velocidad que tiene hoy la IA.</p>
+
+    <p>Un <span class="term">marco de gestión del cambio</span> es un modelo que ordena, en etapas o componentes, las acciones que una organización debe ejecutar para que una modificación en su forma de trabajar sea adoptada y se sostenga. No es un manual de procedimientos ni un software. Y conviene ser preciso con lo que <em>no</em> hace: no elimina las dificultades ni reemplaza el criterio de quien dirige. Lo que hace es evitar que se salten pasos que la evidencia muestra que importan, y dar un lenguaje común para que áreas que miran el problema desde ángulos distintos puedan hablar del mismo punto del mapa.</p>
+
+    <p>La analogía del curso: un marco es como el plan de vuelo de una aerolínea. No hace volar el avión, no impide la turbulencia y no reemplaza el criterio del comandante para desviarse ante una tormenta. Lo que garantiza es que nadie despegue sin combustible calculado, sin ruta alterna y sin haber avisado a la torre.</p>
+
+    <h3>Lewin: preparar, cambiar, consolidar</h3>
+    <p>El <span class="term">modelo de Lewin</span>, de 1947, dice que todo cambio organizacional pasa por tres momentos: <span class="term">descongelar</span>, <span class="term">mover</span> (el curso lo llama "cambiar") y <span class="term">recongelar</span>.</p>
+
+    <p>La intuición de fondo es física, y por eso el modelo sobrevivió ochenta años. Un comportamiento estable no está quieto porque nadie lo empuje: está quieto porque hay <strong>fuerzas opuestas que se cancelan</strong>. Unas empujan al cambio —competencia, costos, expectativas de los clientes— y otras lo frenan —rutinas, temores, incentivos vigentes, contratos—. Eso es lo que Lewin llamó <span class="term">teoría de campo</span>: la conducta es función de la persona y de su ambiente, y el ambiente es un campo de fuerzas en tensión. Para mover el sistema hay que primero debilitar las fuerzas que frenan, después desplazar el equilibrio, y finalmente estabilizarlo para que no vuelva atrás.</p>
+
+    <ol class="pasos">
+      <li><b>Descongelar: preparar a la organización.</b> Explicar por qué se necesita el cambio, conversar los beneficios esperados, reconocer las inquietudes y abrir espacios para escuchar a los equipos <em>antes</em> de empezar. Es la etapa que más se salta, porque no produce entregables visibles: su producto es disposición.</li>
+      <li><b>Mover: la etapa de cambio.</b> Se incorporan las herramientas, se modifican los procesos y se desarrollan habilidades. Acá la capacitación, el acompañamiento y la retroalimentación son esenciales, porque la gente está probando otra forma de trabajar. Dato clave: en esta fase <strong>el desempeño baja antes de subir</strong>. Si la empresa mide justo en ese valle y concluye que "la IA no funciona", mata el proyecto en el peor momento posible.</li>
+      <li><b>Recongelar: consolidar.</b> Que las prácticas nuevas dejen de ser la excepción y pasen a ser la operación. Cuatro acciones verificables: actualizar procedimientos, redefinir responsabilidades, medir resultados e incorporar la IA a la cultura. Si a los seis meses el manual sigue describiendo el flujo antiguo, el cambio no se recongeló.</li>
+    </ol>
+
+    <p>La analogía es un cubo de hielo al que le quieres dar forma de cono. No lo puedes tallar a martillazos: se astilla. Tienes que derretirlo, verterlo en un molde cónico y volver a congelarlo. Si te saltas el último paso, tienes un cono de agua durante diez minutos y un charco después.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      El "recongelar" es lo que casi nunca pasa en una sucursal. Capacitan al equipo, cambian el flujo de trabajo, todos se entusiasman dos semanas… y nadie actualiza el procedimiento oficial, nadie redefine quién es responsable de qué, y sobre todo nadie toca los indicadores con los que se evalúa a la gente. A los tres meses todos volvieron a la planilla de siempre. No fue falta de ganas: fue que el cambio nunca se congeló en ninguna parte.
+    </div>
+
+    <div class="mundo">
+      <div class="lab">Ojo con este dato</div>
+      Lewin nunca escribió la palabra "recongelar". Lo que escribió fue <em>unfreezing / moving / freezing</em> —congelar, sin el "re"—, en una sola frase dentro de un artículo de 1947; murió meses antes de que se publicara. El prefijo lo agrega Festinger en 1950, Schein lo convierte en herramienta en los años sesenta, y la canonización como "modelo de tres pasos" ocurre recién en los ochenta. <strong>La regla práctica:</strong> en pregunta cerrada o de completar la secuencia, responde <em>descongelar – cambiar – recongelar</em> atribuido a Lewin (1947), que es lo que se evalúa. En pregunta abierta, responde el modelo y agrega el matiz. Lo que nunca hay que afirmar es que Lewin no escribió nada sobre descongelar: sí lo escribió.
+    </div>
+
+    <h3>Kotter: los ocho pasos</h3>
+    <p>Donde Lewin describe la física del cambio, el <span class="term">modelo de Kotter</span> describe su política: cómo se construye apoyo, cómo se vence la inercia y cómo se evita que la transformación se apague a mitad de camino. Son ocho pasos.</p>
+
+    <ol class="pasos">
+      <li><b>Crear un sentido de urgencia.</b> El <span class="term">sentido de urgencia</span> es la percepción compartida de que quedarse quieto es más riesgoso que moverse. No es miedo ni apuro: es evidencia de que no cambiar cuesta. Kotter sostiene que la mayoría de las transformaciones fracasa acá, porque los directivos confunden haber <em>anunciado</em> la urgencia con haberla instalado.</li>
+      <li><b>Formar la coalición conductora.</b> El grupo que impulsa, con los cuatro atributos que ya vimos: poder formal, experiencia, credibilidad y capacidad de mover gente.</li>
+      <li><b>Desarrollar una visión y una estrategia.</b> La <span class="term">visión de cambio</span> es una descripción breve del futuro deseado que responde "¿en qué vamos a ser distintos y por qué eso es mejor?". Su prueba práctica: poder explicarla en menos de cinco minutos y que el otro entienda y se interese.</li>
+      <li><b>Comunicar la visión.</b> Repetición por múltiples canales, y sobre todo el ejemplo de los líderes.</li>
+      <li><b>Empoderar para la acción amplia.</b> El <span class="term">empoderamiento para la acción amplia</span> es lo que el curso llama "remover obstáculos": eliminar las barreras estructurales que impiden actuar a quienes ya quieren hacerlo —sistemas incompatibles, jefaturas que bloquean, políticas que prohíben justo lo que se acaba de pedir—.</li>
+      <li><b>Generar triunfos de corto plazo.</b> Son los <span class="term">quick wins</span>: resultados obtenidos en las primeras etapas, cuyo valor está en hacer visibles beneficios concretos, aumentar la confianza de los equipos y mantener el impulso.</li>
+      <li><b>Consolidar los logros y producir más cambio.</b> Usar la credibilidad ganada para atacar lo difícil.</li>
+      <li><b>Anclar los nuevos enfoques en la cultura.</b> El <span class="term">anclaje en la cultura</span> es lo que decide si la transformación sobrevive al jefe que la impulsó.</li>
+    </ol>
+
+    <p>Vale la pena detenerse en el paso 6, porque el curso lo usa mucho. Un triunfo de corto plazo, según Kotter, tiene que cumplir tres condiciones: ser <strong>visible</strong> (mucha gente puede comprobarlo), <strong>inequívoco</strong> (no admite discusión sobre si ocurrió) y <strong>claramente atribuible</strong> al esfuerzo de cambio. Y algo que casi todos se saltan: deben ser <em>planificados y creados deliberadamente</em>, no esperados como suerte. No es "el primer resultado bueno que aparezca", sino uno diseñado para ocurrir pronto, medible e imposible de discutir. Su función es política: una transformación larga sin evidencia intermedia agota a los convencidos, y los escépticos necesitan un hecho, no un argumento, para revisar su postura.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Esto no es un quick win</div>
+        <p>"Bajamos 6% los costos operacionales del semestre." Nadie sabe qué parte vino de la herramienta nueva y qué parte del mercado. Discutible, invisible y no atribuible.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Esto sí</div>
+        <p>"El equipo que respondía 40 tickets diarios ahora responde 65 con la misma gente, y el tiempo de primera respuesta bajó de 4 horas a 20 minutos, medido durante ocho semanas." Visible, inequívoco y atribuible.</p>
+      </div>
+    </div>
+
+    <p>Y el paso 8 responde la pregunta por la sostenibilidad. Anclar en la cultura son dos cosas concretas: hacer explícita y repetidamente la conexión entre las conductas nuevas y los resultados obtenidos —si la gente no ve el vínculo, atribuye la mejora a la suerte o al mercado— y asegurar que la próxima generación de líderes encarne esas prácticas, lo que obliga a tocar los criterios con que se promueve y se contrata. Kotter es tajante en algo que suena al revés: <strong>la cultura cambia al final, no al principio</strong>. Primero cambian las conductas, después se muestran los resultados, y solo entonces se acomodan las creencias. Quien anuncia "primero vamos a cambiar la cultura y después implementamos IA" invirtió el orden.</p>
+
+    <div class="mundo">
+      <div class="lab">Ojo con estos dos datos</div>
+      Primero: el material del curso dice "ocho pasos" y después enumera solo seis. Faltan justamente el 6 (triunfos de corto plazo) y el 8 (anclar en la cultura), que son los dos más importantes para esta unidad. <strong>Responde siempre los ocho.</strong> Si preguntan cómo se sostiene el cambio en el tiempo, la respuesta es el paso 8, no el 7. Si preguntan cómo se mantiene la motivación durante una transformación larga, es el paso 6. Segundo: "quick wins" es jerga de consultoría; el término que usa Kotter es <em>short-term wins</em>, triunfos de corto plazo. Si te piden el término del curso, quick wins; si te piden el de Kotter, short-term wins. Nombran lo mismo.
+    </div>
+
+    <p>Un detalle más para las preguntas abiertas: Kotter actualizó su modelo en 2014. Los ocho pasos pasaron a llamarse ocho <em>aceleradores</em> y operan dentro de un <span class="term">sistema operativo dual</span>: la jerarquía tradicional sigue haciendo el trabajo diario con eficiencia y control, mientras en paralelo funciona una red estratégica flexible que hace el trabajo de transformación. Tres cambios importan para IA: los aceleradores corren de manera concurrente y continua en vez de secuencial; la coalición pequeña se reemplaza por un "ejército de voluntarios" reclutado en toda la organización; y se agrega sostener la aceleración. Cuando la capacidad de una herramienta cambia cada tres meses, no se puede esperar a terminar el paso 4 para empezar el 5.</p>
+
+    <h3>ADKAR: el cambio, persona por persona</h3>
+    <p>El <span class="term">modelo ADKAR</span>, de Jeff Hiatt (2006), es el que más te va a servir, y por una razón muy simple: <strong>es el único que mira a las personas de a una</strong>. Su premisa es que una organización cambia solo cuando cambian, una por una, las personas que la componen. Por eso no describe etapas de un proyecto: describe cinco resultados que <em>cada persona</em> tiene que alcanzar, en ese orden.</p>
+
+    <ol class="pasos">
+      <li><b><span class="term">Awareness</span> — conciencia de la necesidad.</b> La persona entiende por qué se hace esto y qué pasa si no se hace. No basta con que se lo hayan dicho: tiene que haberlo comprendido. No es "nos avisaron que llega una herramienta nueva"; es "entiendo que estamos perdiendo afiliados porque nos demoramos tres semanas en responder y la competencia se demora tres días".</li>
+      <li><b><span class="term">Desire</span> — deseo de participar.</b> La persona decide sumarse. Es el único elemento que la organización <em>no puede producir directamente</em>: solo puede crear condiciones que lo favorezcan —reconocimiento, seguridad de empleo, participación en el diseño, un jefe directo creíble—. Y acá vive casi toda la resistencia: casi nunca es un déficit de conocimiento, es un déficit de ganas.</li>
+      <li><b><span class="term">Knowledge</span> — conocimiento de cómo cambiar.</b> Qué hacer distinto, con qué herramienta, siguiendo qué procedimiento. Es lo que entrega una capacitación tradicional.</li>
+      <li><b><span class="term">Ability</span> — capacidad demostrada.</b> Hacerlo efectivamente en el trabajo real. Acá está la frase del curso que hay que memorizar: <strong>"saber cómo funciona una herramienta no significa dominarla"</strong>. Es la diferencia entre haber leído el manual y saber conducir. Por eso ADKAR insiste en la práctica y el acompañamiento.</li>
+      <li><b><span class="term">Reinforcement</span> — refuerzo.</b> Reconocimiento, indicadores, celebración de logros, corrección de incentivos contradictorios, seguimiento. El cambio se mantiene cuando existen refuerzos, seguimiento y espacios de mejora. Es el equivalente individual del recongelar de Lewin y del anclaje cultural de Kotter.</li>
+    </ol>
+
+    <p>De ahí sale el aporte más práctico del modelo: el <span class="term">punto de barrera</span>. Se evalúa a cada persona o grupo en los cinco elementos con una nota de 1 a 5, y el punto de barrera es <strong>el primer elemento con nota 3 o menos</strong>. Ese, y no otro, es el que hay que trabajar. Invertir en los siguientes es plata botada.</p>
+
+    <p>El ejemplo del curso: un banco evalúa a su equipo de riesgo frente a una herramienta nueva y obtiene Awareness 4, Desire 2, Knowledge 4, Ability 3, Reinforcement 2. El punto de barrera es Desire. Toda capacitación adicional es dinero perdido: el equipo ya sabe usar la herramienta, pero teme quedarse sin atribuciones. La intervención correcta no es un curso, es definir explícitamente qué decisiones siguen siendo humanas y sumar a dos analistas experimentados al comité que fija los criterios.</p>
+
+    <p>La analogía es dejar de fumar. Awareness: entiendo que me está dañando. Desire: quiero dejarlo —el paso donde casi todos se atascan, y que ningún folleto resuelve—. Knowledge: sé que existen parches, terapia, aplicaciones. Ability: efectivamente paso una reunión estresante sin fumar. Reinforcement: llevo seis meses y mi entorno lo refuerza. Mandar a alguien a un taller para dejar de fumar cuando todavía no quiere dejarlo es exactamente el error que ADKAR previene.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      ADKAR es mirar el equipo como miras tu cartera: <strong>persona por persona</strong>, no como un promedio. Tú jamás dirías "mi cartera está en 60% de conversión" y actuarías igual con todos; sabes quién necesita información, quién necesita confianza, quién ya quiere y solo no sabe cómo. Esto es lo mismo aplicado a tus compañeros. El ejecutivo nuevo que no engancha con el sistema probablemente esté trabado en <em>Knowledge</em>: no sabe. El ejecutivo con veinte años que no lo usa está trabado en <em>Desire</em>: sabe perfectamente, pero no quiere, y mandarlo a otra capacitación es perder la mañana de los dos.
+    </div>
+
+    <div class="mundo">
+      <div class="lab">Ojo con este dato</div>
+      ¿ADKAR es secuencial? Sí, en su orden lógico: los cinco bloques son bloqueantes, y por eso capacitar a alguien que no tiene conciencia ni deseo no produce ninguna adopción. Pero en proyectos ágiles de IA el recorrido se vuelve cíclico: <em>Awareness</em> y <em>Desire</em> hay que sostenerlos en cada entrega —cada capacidad nueva reabre la pregunta "¿y esto para qué?"— y <em>Knowledge</em> y <em>Ability</em> se vuelven a recorrer con cada versión, porque la herramienta de este trimestre no es la del anterior. La formulación exacta: <strong>el orden lógico es bloqueante, el recorrido temporal es cíclico.</strong>
+    </div>
+
+    <h3>Cuál usar: no hay que elegir uno</h3>
+    <p>Los tres persiguen lo mismo —que un cambio se adopte y se sostenga— desde ángulos distintos.</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Los tres marcos, comparados</caption>
+        <thead>
+          <tr><th>Dimensión</th><th>Lewin (1947)</th><th>Kotter (1996, ed. 2012)</th><th>ADKAR (Hiatt, 2006)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lab-col">A quién mira</td><td>Al grupo, al sistema social</td><td>A la organización y su liderazgo</td><td>A cada individuo</td></tr>
+          <tr><td class="lab-col">Estructura</td><td>3 momentos</td><td>8 pasos</td><td>5 resultados en orden</td></tr>
+          <tr><td class="lab-col">Pregunta que responde</td><td>¿En qué fase del cambio estamos?</td><td>¿Cómo construyo y sostengo el impulso?</td><td>¿Qué le falta a esta persona?</td></tr>
+          <tr><td class="lab-col">Su fortaleza</td><td>Simple; recuerda consolidar</td><td>Detalle operativo, liderazgo y logros tempranos</td><td>Localiza dónde intervenir y evita gastar mal</td></tr>
+          <tr><td class="lab-col">Su límite</td><td>Supone un estado final estable</td><td>Pesado si se aplica literal en ciclos cortos</td><td>Dice poco de estrategia y procesos</td></tr>
+          <tr><td class="lab-col">Mejor uso en IA</td><td>Encuadre inicial y chequeo de consolidación</td><td>Gobierno del programa</td><td>Diagnóstico por área y acompañamiento</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>El curso es explícito: no es necesario elegir un único modelo. Muchas organizaciones combinan elementos de los tres. Y la combinación natural es casi obvia: <strong>Lewin</strong> da el encuadre temporal (¿estamos preparando, moviendo o consolidando?), <strong>Kotter</strong> da el plan de gobierno del programa (quién impulsa, qué se comunica, qué victoria se muestra primero, cómo se ancla) y <strong>ADKAR</strong> da el diagnóstico y la intervención persona por persona.</p>
+
+    <h3>El problema de la velocidad</h3>
+    <p>Hay un desafío específico de la IA. Los marcos clásicos fueron diseñados para cambios con un estado final conocido: se sabe cómo se va a ver la empresa cuando el sistema nuevo esté instalado. Con la IA generativa el estado final no se conoce al inicio, porque las capacidades del mes nueve no existían en el mes uno, y porque los mejores usos suelen descubrirlos los usuarios en el camino, no los diseñadores antes de empezar. Eso rompe el supuesto de "recongelar en un estado definitivo".</p>
+
+    <p>La analogía del curso, que vale la pena guardar porque reaparece más adelante: instalar un sistema tradicional se parece a construir un edificio —hay plano, fecha de entrega y un día en que está terminado—. Adoptar IA generativa se parece a mantener un jardín: se planta, se observa qué prende, se poda lo que no funciona, y nunca hay un día en que el jardín esté listo.</p>
+
+    <p>Por eso los marcos tradicionales funcionan mejor cuando se complementan con <span class="term">prácticas ágiles</span>: ciclos cortos con entregas parciales, retroalimentación continua del usuario, equipos con autonomía y disposición a modificar el plan con la evidencia que aparece, en vez de ejecutar un plan cerrado de doce meses. Y el curso ofrece cuatro principios que mejoran las probabilidades de éxito: mantener el proyecto conectado a una <strong>necesidad concreta del negocio</strong> (no "queremos usar IA", sino "queremos bajar de tres semanas a tres días el tiempo de respuesta"); <strong>involucrar temprano</strong> a quienes van a usar la herramienta y darles espacio para opinar, porque nadie resiste lo que ayudó a diseñar; <strong>comenzar con pilotos</strong> antes de extender; y hacer <strong>seguimiento</strong>, revisando el uso, escuchando la experiencia y ajustando los procedimientos.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Lewin te dice en qué fase estás, Kotter cómo conducir el programa, y ADKAR qué le falta exactamente a cada persona. No elijas uno: úsalos como tres lentes distintos sobre el mismo equipo.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">El instrumental</span></div>
+    <h2 class="titulo">Qué se hace en la práctica</h2>
+
+    <p>Si la parte anterior dio los marcos, esta da las herramientas. El curso identifica cinco elementos que convierten la tecnología en resultados concretos: <strong>comunicar, capacitar, partir con un piloto, tener referentes cercanos y medir</strong>. Leídos juntos son el kit mínimo de una adopción que se sostiene.</p>
+
+    <h3>Comunicar, y a cada público lo suyo</h3>
+    <p>La <span class="term">comunicación del cambio</span> son las acciones deliberadas y sostenidas con que una organización explica el propósito, el alcance, los beneficios y los límites de una transformación a quienes la van a vivir. Su rasgo definitorio es temporal: se necesita <strong>desde el comienzo y durante todo el proceso</strong>, no como un anuncio de arranque.</p>
+
+    <p>El problema que resuelve tiene una mecánica exacta. Cuando la gente recibe información incompleta o no entiende el propósito, cada equipo termina completando los vacíos con sus propias suposiciones. Es la ley fundamental de la comunicación organizacional: <strong>el vacío informativo nunca queda vacío</strong>. Si la dirección no explica por qué llega la IA, alguien en la sala de café va a explicar que es para reducir dotación, y esa versión se va a instalar como verdad porque llegó primero.</p>
+
+    <p>El curso define cuatro cosas que la gente necesita entender: qué problema motivó la decisión, qué se busca mejorar, cuáles son los beneficios esperados y qué aspectos de su trabajo podrían cambiar. Las cuatro se pueden responder con honestidad aunque la noticia sea incómoda; ninguna exige prometer que nada va a cambiar.</p>
+
+    <p>El segundo principio es la <span class="term">segmentación de públicos</span>: identificar los distintos grupos afectados, entender qué le preocupa a cada uno y adaptar contenido, canal y vocero. La dirección necesita comprender el impacto estratégico; los equipos operativos necesitan información concreta sobre su trabajo diario. Hablar igual con todos deja preguntas importantes sin respuesta. El ejemplo del curso, con un asistente de IA en atención al cliente: al directorio se le habla de costo por contacto, riesgos regulatorios e inversión; a las jefaturas, de cómo cambia el tablero del equipo y qué se espera de ellas en el acompañamiento; a los ejecutivos de atención, de qué consultas resolverá el asistente, quién responde si se equivoca, y si esto afecta o no su bono. Mismo proyecto, tres conversaciones distintas.</p>
+
+    <p>El tercer principio es la <span class="term">transparencia</span>: informar avances, reconocer lo que todavía no funciona y explicar los ajustes. Y acá está el punto no trivial: <strong>la transparencia se pone a prueba cuando aparecen los retrasos</strong>. Comunicar lo que va bien no cuesta nada y no construye credibilidad. Comunicar el piloto que no dio resultado es lo que hace creíble el mensaje siguiente.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la campaña que se anunció por correo un lunes, con un asunto genérico, y que nadie entendió. A la gerencia le habían explicado el objetivo comercial; al equipo comercial solo le llegó "a partir del lunes usamos el nuevo material". Resultado: dos semanas de rumores sobre si venía un cambio de metas. La misma campaña, contada por separado a la jefatura y al equipo, con la pregunta incómoda respondida de frente, no habría costado un peso más.
+    </div>
+
+    <h3>Capacitar de verdad, no hacer una demostración</h3>
+    <p>La <span class="term">capacitación</span> es el proceso estructurado por el cual las personas adquieren lo que necesitan para operar en el escenario nuevo. El curso hace dos exigencias sobre su diseño: que <strong>no quede relegada a una demostración técnica al final del proyecto</strong>, y que forme parte del diseño de la iniciativa, respondiendo a las dudas reales de cada grupo. En clave ADKAR: la capacitación produce <em>Knowledge</em>. Si se entrega antes de que exista <em>Desire</em>, se desperdicia; y sin práctica acompañada nunca llega a producir <em>Ability</em>.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Capacitación como trámite</div>
+        <p>Dos horas, un viernes en la tarde, al final del proyecto, con una demostración de pantallas y una lista de asistencia que hay que firmar. Produce un acta. No produce ninguna habilidad.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Capacitación como parte del diseño</div>
+        <p>Sesiones cortas desde el principio, con los casos reales del área, práctica acompañada durante semanas, y espacios donde la gente trae sus propias dudas. Produce gente que efectivamente lo hace.</p>
+      </div>
+    </div>
+
+    <p>Lo más importante del apartado es la delimitación de la finalidad, y es una frase para subrayar: <strong>el objetivo no es transformar a todos en especialistas</strong>. Se busca que puedan relacionarse con los sistemas de forma competente, y eso son cuatro capacidades: <em>interpretar</em> sus respuestas, <em>hacer preguntas críticas</em>, <em>verificar</em> información y <em>reconocer las situaciones en las que la supervisión humana no puede delegarse</em>. La cuarta es la más exigente y la más subestimada, porque no es una habilidad técnica: es un juicio sobre el riesgo y sobre si la decisión se puede deshacer. Un error en el resumen de una reunión se corrige. Una respuesta equivocada sobre la pensión de una persona, no tanto.</p>
+
+    <p>El curso agrega que las organizaciones más avanzadas no se quedan en la capacitación inicial: mantienen <strong>programas permanentes</strong>, <strong>laboratorios prácticos</strong> donde se ensaya con casos reales, y <strong>espacios de intercambio</strong> donde los equipos comparten casos, errores y soluciones. Los tres formatos son distintos a propósito: uno entrega conocimiento, otro construye habilidad y el tercero reparte lo aprendido.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Nadie aprendió a vender en una capacitación. Aprendiste haciendo llamadas con alguien al lado corrigiéndote, escuchando cómo cerraba la mejor de la sucursal, y equivocándote con clientes reales. Con la IA es igual: la sesión de dos horas te da el <em>saber que existe</em>; lo que te da el <em>saber hacerlo</em> es probarla con tus propios casos durante varias semanas, con alguien a quien preguntarle.
+    </div>
+
+    <h3>Partir con un piloto</h3>
+    <p>Un <span class="term">proyecto piloto</span> es una implementación real pero de alcance deliberadamente acotado —un área, un proceso, un grupo de usuarios, un período definido— cuyo propósito es generar evidencia sobre cómo se comporta la solución en condiciones de operación, antes de comprometer a toda la organización.</p>
+
+    <p>Conviene distinguirlo de un concepto vecino. Una <span class="term">prueba de concepto</span> verifica si algo es <em>técnicamente posible</em>, normalmente en ambiente controlado, con datos preparados y sin usuarios finales. Un piloto verifica si algo es <em>organizacionalmente viable</em>: usuarios reales, datos reales, fricciones reales. Muchísimas iniciativas mueren porque la empresa celebra una prueba de concepto exitosa y la confunde con evidencia de adopción. Son preguntas distintas.</p>
+
+    <p>¿Qué permite el piloto? Probar en condiciones controladas, recoger comentarios de los usuarios, detectar mejoras antes de una inversión mayor, y entregar evidencia concreta que aumenta la confianza de los equipos y de la dirección. Y una función igual de importante: <strong>limita el impacto de los errores</strong>. Si aparecen fallas, dudas de uso o problemas de proceso, se corrigen antes de comprometer la operación completa, con un costo y una exposición mucho menores.</p>
+
+    <p>La analogía del curso es la degustación antes del banquete: permite descubrir que el plato está salado cuando hay veinte porciones en juego y no trescientas. Y hay un detalle más fino: la degustación se hace con comensales, no con el chef probando su propia cuchara. <strong>Un piloto sin usuarios finales no es un piloto.</strong></p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Esto ya lo haces y ni lo piensas. Jamás lanzarías un guion nuevo a toda la cartera un lunes en la mañana: lo pruebas con diez clientes, miras cómo cae, ajustas lo que no funcionó, y recién ahí decides si vale la pena usarlo con todos. Eso es un piloto, con todas sus letras. Y fíjate que lo pruebas con clientes de verdad, no repitiéndotelo frente al espejo: eso es la diferencia entre un piloto y una prueba de concepto.
+    </div>
+
+    <p>Cuando los resultados son consistentes, viene el <span class="term">escalamiento por etapas</span>: ampliar por fases, y en cada avance incorporar lo aprendido y adaptar la solución a la realidad de cada área. Esas dos condiciones son las que distinguen escalar de copiar: si el despliegue en la segunda área es idéntico al de la primera, no hubo aprendizaje, hubo replicación.</p>
+
+    <div class="mundo">
+      <div class="lab">Ojo con estos datos</div>
+      El paso del piloto a la operación es donde muere la mayoría de las iniciativas de IA, y conviene manejar las cifras trazables. Gartner (julio de 2024) proyectó que al menos el <strong>30%</strong> de los proyectos de IA generativa serían abandonados después de la prueba de concepto. McKinsey (junio de 2025) reporta que <strong>menos del 10%</strong> de los casos desplegados supera la etapa de piloto, y en marzo de 2025 que más del <strong>80%</strong> de las organizaciones no ve impacto tangible en sus resultados, con solo el 1% describiendo su despliegue como maduro. El MIT reportó en julio de 2025 que el <strong>95%</strong> de las organizaciones obtiene retorno cero, aunque conviene citarlo advirtiendo que su muestra es chica. Y una advertencia: la frase famosa de que "el 70% de las transformaciones fracasa" no tiene ningún estudio detrás. Es una cita huérfana repetida durante décadas. No la uses en un trabajo evaluado.
+    </div>
+
+    <h3>Referentes cercanos: champions y comunidades</h3>
+    <p>El curso parte de una constatación estructural: la alta dirección no puede impulsar el cambio sola. Se necesitan personas que lo apoyen desde dentro de los equipos y conozcan la realidad diaria. La razón es de distancia y de credibilidad: un gerente general puede convencer al directorio, pero no puede sentarse al lado de una ejecutiva a resolverle una duda a las once de la mañana, ni tiene la credibilidad que da haber hecho ese trabajo.</p>
+
+    <p>Un <span class="term">agente de cambio</span> es una persona que, sin tener necesariamente autoridad jerárquica, facilita la adopción dentro de su propio entorno de trabajo. Cuando ese rol se especializa en IA, el curso lo llama <span class="term">AI Champion</span>. Reciben una preparación más profunda y se convierten en referentes cercanos mediante tres prácticas: <strong>responden preguntas</strong>, <strong>comparten buenas prácticas</strong> y <strong>conectan a los usuarios con el equipo responsable del proyecto</strong>. Esa tercera función es la menos visible y la más valiosa: el champion es el canal por el que la fricción del terreno llega arriba sin pasar por tres niveles que la filtran.</p>
+
+    <p>La analogía: es la diferencia entre el manual de instrucciones y el vecino que ya instaló el mismo equipo. El manual es más completo y más correcto. El vecino es al que uno efectivamente le pregunta, porque está cerca, habla tu idioma y no te va a juzgar por no saber.</p>
+
+    <p>Las <span class="term">comunidades de práctica</span> complementan ese apoyo: reúnen a personas con inquietudes similares y les dan un espacio para contrastar experiencias, revisar casos y construir respuestas a partir de lo que ocurre en su propia organización, y no solo de instrucciones generales. Para que exista una comunidad de práctica y no una simple reunión recurrente tienen que estar tres elementos: el <strong>dominio</strong> (el tema compartido que da identidad), la <strong>comunidad</strong> (interacción regular y relaciones de confianza) y la <strong>práctica</strong> (un repertorio compartido de experiencias, historias y formas de resolver los problemas de siempre). El concepto viene de Lave y Wenger (1991), quienes describen además la <span class="term">participación periférica legítima</span>: el mecanismo por el cual alguien entra a la comunidad por el borde, haciendo tareas simples pero reales —no ejercicios—, y se va desplazando al centro a medida que gana competencia.</p>
+
+    <p>El beneficio que más importa no es el soporte, sino el descubrimiento. Estas conversaciones revelan oportunidades que el proyecto original no había considerado. El ejemplo del curso: en una comunidad de práctica de un retail, alguien de marketing muestra cómo genera variantes de descripción de producto; una analista de prevención de pérdidas se da cuenta de que la misma técnica ordena las descripciones libres que escriben los guardias en las actas de incidente, un problema que llevaba dos años sin resolverse y que nadie había puesto en la lista. Ese hallazgo no vino de la planificación: vino de que dos áreas que nunca se hablan estuvieron cuarenta minutos en la misma sala.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      El AI Champion es esa colega a la que todos le preguntan cómo se hace algo en el sistema, aunque no sea su rol y no le paguen por eso. Formalizar esa figura —darle preparación, tiempo protegido y un canal directo con el equipo del proyecto— vale más que tres capacitaciones masivas. Y la comunidad de práctica es la conversación de pasillo, pero con hora, sala y alguien que anota lo que sirvió.
+    </div>
+
+    <h3>Medir, y medir lo correcto</h3>
+    <p>La <span class="term">medición y mejora continua</span> es observar de manera sistemática y periódica el uso real, los resultados y los efectos organizacionales de la solución, para poder ajustarla. El apartado abre con la frase que resume toda la unidad: <strong>"una herramienta instalada no necesariamente es una herramienta adoptada"</strong>.</p>
+
+    <p>La exigencia central del curso es la combinación: hay que juntar datos técnicos con señales del funcionamiento organizacional. Los cuatro ejemplos que da son cuánto se utiliza la herramienta, qué tiempos se reducen, cómo cambia la calidad del proceso y qué opinan colaboradores y clientes. Y advierte que <strong>una cifra aislada casi nunca explica por sí sola si la adopción está funcionando</strong>. Las organizaciones con mejores resultados miran más allá de los indicadores del sistema: también siguen el desarrollo de competencias, la colaboración entre áreas y los cambios en los procesos.</p>
+
+    <p>Los <span class="term">indicadores de adopción</span> son las métricas que capturan si la herramienta se incorporó al trabajo real, y se distinguen de los indicadores de desempeño del sistema. El más elemental es la <span class="term">tasa de uso activo</span>: la proporción de usuarios habilitados que efectivamente la usa en un período. Es imprescindible e insuficiente, porque una tasa alta puede convivir con un uso superficial o incluso perjudicial —cosa que el caso de la parte 7 ilustra de manera brutal—.</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Las cuatro familias de indicadores, y el punto ciego de cada una</caption>
+        <thead>
+          <tr><th>Familia</th><th>Ejemplos</th><th>Qué responde</th><th>Punto ciego</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lab-col">Del sistema</td><td>Exactitud, velocidad de respuesta, disponibilidad, costo por consulta</td><td>¿La solución funciona?</td><td>Puede estar perfecta y no usarse</td></tr>
+          <tr><td class="lab-col">De adopción</td><td>Tasa de uso activo, frecuencia por usuario, cobertura por área</td><td>¿La usan?</td><td>Usar no es usar bien</td></tr>
+          <tr><td class="lab-col">De proceso</td><td>Tiempo de ciclo, retrabajo, tasa de error, calidad de la salida</td><td>¿Mejoró el trabajo?</td><td>Puede mejorar un eslabón y empeorar el conjunto</td></tr>
+          <tr><td class="lab-col">Organizacionales</td><td>Competencias desarrolladas, colaboración entre áreas, opinión de la gente y de los clientes, reclamos</td><td>¿Está sana la adopción?</td><td>Más lentos de mover y de interpretar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>El cierre es lo conceptualmente más importante: la medición deja de ser un control para comprobar cumplimiento y se convierte en una <strong>fuente de aprendizaje</strong> que ayuda a decidir qué mantener, qué corregir y dónde avanzar después. La distinción tiene una consecuencia inmediata y muy concreta: si el equipo percibe que las métricas de uso alimentan su evaluación de desempeño, va a aparecer el uso cosmético —abrir la herramienta para figurar en el reporte— y la empresa va a perder exactamente la señal que estaba tratando de medir.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre "cuántas gestiones registraste" y "cuántos traspasos evitaste". El primer número lo puedes inflar el jueves en la tarde. El segundo no. Y si el equipo sabe que del primero depende su evaluación, el primero va a subir siempre, independientemente de lo que esté pasando de verdad en la cartera.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Comunica a cada público lo suyo, capacita con casos reales, prueba en chico antes de ir en grande, apóyate en referentes cercanos, y mide más de un número. Una herramienta instalada no es una herramienta adoptada.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">La visión completa</span></div>
+    <h2 class="titulo">Todo junto: la misma herramienta, dos finales distintos</h2>
+
+    <p>Esta parte no agrega herramientas nuevas: junta todo lo anterior en una sola mirada. La tesis es simple de enunciar y difícil de ejecutar: <strong>no basta con incorporar IA para transformar una organización; su impacto depende de cómo se integra con la estrategia, las personas, los procesos y la cultura</strong>.</p>
+
+    <h3>La visión integrada</h3>
+    <p>Lo que el curso llama <span class="term">visión integrada</span> —o <span class="term">enfoque sistémico</span>— es mirar la transformación como un sistema de elementos que se influyen mutuamente, en lugar de como una suma de proyectos paralelos. Y "sistema" acá tiene un sentido preciso: un conjunto donde el desempeño del todo no es la suma del desempeño de las partes. Mejorar una parte por separado puede empeorar el conjunto.</p>
+
+    <p>El curso asigna un rol a cada componente, y conviene retener la asignación literal porque es la estructura del argumento: la <strong>estrategia</strong> define el rumbo y el valor esperado; el <strong>liderazgo</strong> traduce esa orientación en decisiones, comunica el propósito y compromete a la gente; la <strong>gestión del cambio</strong> acompaña la adaptación de los equipos; la <strong>cultura</strong> crea espacio para colaborar, aprender y probar otras formas de trabajo; y la <strong>tecnología</strong> deja de ser el centro absoluto y pasa a cumplir una función de apoyo.</p>
+
+    <p>Que sea "de apoyo" no significa que sea menor. El curso aclara que la tecnología no solo automatiza tareas o procesa información: también puede ampliar la capacidad humana para analizar, resolver problemas y decidir con mejores antecedentes. Lo que significa es que abordar la transformación de manera fragmentada —implementar IA sin revisar procesos, sin desarrollar capacidades y sin construir confianza— reduce muchísimo la posibilidad de sostener los beneficios. La frase que resume la clase: <em>liderazgo, cultura, procesos, capacidades y tecnología se complementan; tratarlos como proyectos independientes debilita el resultado.</em></p>
+
+    <p>La analogía es futbolera y funciona: un equipo con el mejor delantero del mundo y sin mediocampo pierde partidos. El delantero no es malo: está desconectado del sistema que debería alimentarlo.</p>
+
+    <h3>Por qué dos empresas con la misma herramienta terminan distinto</h3>
+    <p>Este es material de examen y también la pregunta más práctica de la unidad. La respuesta del curso: <strong>"la ventaja no depende solamente de acceder a un modelo avanzado, sino de integrarlo en una estrategia coherente que las personas comprendan y respalden"</strong>.</p>
+
+    <p>Piénsalo así. Los modelos comerciales están al alcance de cualquiera que pague la licencia. Eso significa que <em>la tecnología dejó de ser diferenciadora</em>. Lo que no se compra con una licencia —procesos rediseñados, competencias desarrolladas, confianza construida, gobernanza funcionando— es lo único que separa a las dos organizaciones.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Dos sucursales de la misma AFP reciben el mismo sistema de alertas de traspaso el mismo lunes. En una, el jefe lo revisa en la reunión de los martes, la lista está en la pauta del día y hay una persona a quien preguntarle. En la otra, se anunció por correo y nadie volvió a mencionarlo. Seis meses después, la primera bajó su fuga de afiliados y la segunda no. Misma herramienta, mismo proveedor, misma licencia. La diferencia nunca estuvo en el sistema.
+    </div>
+
+    <h3>Esto no termina nunca</h3>
+    <p>La <span class="term">capacidad continua de adaptación</span> es la habilidad de aprender, probar, evaluar resultados y corregir el rumbo de manera permanente, en lugar de ejecutar proyectos de cambio con inicio y fin. El curso lo dice sin rodeos: la transformación no termina cuando una solución entra en funcionamiento, porque la IA sigue evolucionando, aparecen usos nuevos, cambian las expectativas de los clientes y surgen oportunidades de mejora.</p>
+
+    <p>Microsoft, Deloitte y Accenture, en sus informes de 2025, coinciden en que la transformación con IA "se parece cada vez menos a un proyecto con fecha clara de inicio y término". Experimentar, aprender y colaborar con estos sistemas pasa a ser parte de la operación corriente, y la ventaja no está en poseer una herramienta sino en tener una organización capaz de aprender y reajustarse.</p>
+
+    <p>Y hay una dificultad concreta para quien dirige: las tres capacidades avanzan a velocidades distintas. La tecnológica se compra en semanas. La humana toma trimestres. La organizacional toma años. El trabajo del líder es sostener el proyecto durante ese desfase, que es justo cuando parece que no está pasando nada.</p>
+
+    <div class="mundo">
+      <div class="lab">Ojo con este dato</div>
+      La bibliografía del curso etiqueta un informe de Deloitte como "Q1 2025", y ese informe con esa etiqueta no existe: el publicado en enero de 2025 es la cuarta oleada de la serie, con 2.773 líderes en 14 países. Sus datos sostienen la tesis: más de dos tercios reportan que el 30% o menos de sus experimentos se va a escalar en los siguientes meses, y sus cinco barreras al escalamiento son cumplimiento regulatorio (38%), gestión de riesgo (32%), falta de estrategia de adopción (27%), brechas de gobernanza (26%) y escasez de talento técnico (22%). <strong>Cuatro de las cinco son organizacionales, no técnicas.</strong> Y su frase resume toda la unidad: "la mayoría de las organizaciones se mueve a la velocidad de las organizaciones, no a la velocidad de la tecnología".
+    </div>
+
+    <h3>La confianza es coherencia, no un discurso</h3>
+    <p>La visión integrada muestra algo importante: la confianza no se deposita únicamente en la herramienta. Las personas también evalúan la conducta de quienes conducen el proceso, la coherencia de sus decisiones y cómo se reparten las responsabilidades. Si el propósito se comunica de forma confusa o la IA se presenta como amenaza, aparecen incertidumbre y rechazo.</p>
+
+    <p>Lo que cambia la disposición es que exista una explicación comprensible, que se escuche a los equipos y que se ofrezcan oportunidades para aprender y experimentar sin miedo a equivocarse. Esa última condición tiene nombre técnico: <span class="term">seguridad psicológica</span>, la creencia compartida de que el equipo es un lugar seguro para asumir riesgos interpersonales —preguntar sin quedar como ignorante, reportar un error sin ser castigado, discrepar sin costo—. Sin ella no hay reporte honesto de las fallas del sistema, y sin ese reporte la empresa se entera de los problemas cuando llegan de afuera: un reclamo de un cliente, una consulta del regulador.</p>
+
+    <p>El párrafo decisivo del curso es sobre coherencia: <em>"la confianza no se obtiene solo con mensajes institucionales. La organización debe actuar de manera coherente con lo que declara. Si habla de participación, pero decide sin escuchar, o promete una transformación centrada en las personas y no ofrece capacitación, el proceso pierde credibilidad."</em> Los dos ejemplos son verificables, y ese es justamente el punto: la coherencia se audita comparando lo que se declara con lo que se presupuesta y se agenda. Un discurso de "las personas al centro" sin horas de capacitación asignadas es una declaración sin cobertura.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Tú detectas esto en dos segundos con un cliente: cuando alguien promete algo que su empresa no va a cumplir, se nota. Con los equipos internos es idéntico. Si en la reunión dicen "queremos escuchar al equipo" y la decisión ya venía tomada de la semana pasada, la gente lo sabe, y la próxima vez que pidan opinión nadie va a decir nada real. Preguntar sin poder cambiar nada produce más cinismo que no preguntar.
+    </div>
+
+    <h3>Gobernanza: quién responde cuando el sistema se equivoca</h3>
+    <p>Acá el curso conecta la gestión del cambio con la <span class="term">gobernanza de la IA</span>: las normas, responsabilidades, procedimientos y mecanismos con los que una organización busca que el desarrollo y el uso de la IA sean transparentes, responsables y coherentes con su estrategia. Su función es responder cuatro preguntas <em>antes</em> del primer incidente: quién aprueba un caso de uso, quién responde cuando el sistema se equivoca, qué datos pueden entrar al modelo, y bajo qué criterios se retira una herramienta. Sin gobernanza, cada equipo improvisa sus reglas y la empresa descubre sus políticas el día del problema.</p>
+
+    <p>Las preocupaciones que la gobernanza atiende dejan de ser secundarias cuando la IA empieza a intervenir en decisiones que afectan a más personas o producen consecuencias difíciles de revertir. Los dos criterios que encienden la alarma son <strong>el alcance</strong> y <strong>la irreversibilidad</strong>. Son cuatro conceptos, y conviene tenerlos claros:</p>
+
+    <ol class="pasos">
+      <li><b>Transparencia.</b> Que sea posible saber cómo y con qué criterios se produjo una decisión asistida por IA.</li>
+      <li><b><span class="term">Privacidad</span>.</b> La protección de los datos personales de clientes y colaboradores: qué datos entran al sistema, con qué respaldo legal, por cuánto tiempo se guardan y quién puede consultarlos.</li>
+      <li><b><span class="term">Seguridad de la información</span>.</b> La protección de esos datos y de los sistemas frente a accesos no autorizados, filtraciones y manipulación. Incluye un riesgo nuevo y muy real: que alguien pegue información confidencial de un cliente en una herramienta pública.</li>
+      <li><b><span class="term">Rendición de cuentas</span>.</b> La asignación explícita de responsabilidad por los resultados del sistema: quién responde cuando el modelo se equivoca. Su regla de oro es que <strong>la responsabilidad no se delega en el sistema</strong>: un modelo no puede ser responsable, porque no puede responder ante nadie.</li>
+    </ol>
+
+    <p>Conectado con la transparencia hay un concepto más: la <span class="term">explicabilidad</span>, que es la capacidad de expresar en términos comprensibles para una persona <em>por qué</em> el sistema produjo un resultado determinado. Su opuesto es la <span class="term">caja negra</span>: un sistema del que se ven las entradas y las salidas, pero cuyo mecanismo interno no se puede inspeccionar ni explicar. Guarda esa expresión, porque en la parte 7 la vas a escuchar en boca de clientes reclamando.</p>
+
+    <p>El curso exige que esto se traduzca en operaciones concretas —"hacen falta criterios conocidos y aplicables, no solo declaraciones generales"— y define tres cosas que toda organización debe tener escritas: <strong>cómo se usará la tecnología</strong>, <strong>quién revisará sus resultados</strong> y <strong>qué resguardos permitirán aprovecharla sin trasladar riesgos innecesarios a clientes o colaboradores</strong>. "Conocidos" significa que la gente los conoce sin tener que buscarlos; "aplicables", que se pueden ejecutar en el flujo de trabajo real y no en un anexo que nadie abre.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Traducido a tu día: si un sistema le calcula a un afiliado una proyección de pensión y el afiliado pregunta "¿por qué me sale esto?", alguien tiene que poder explicárselo en cristiano. Si la respuesta honesta es "no sé, lo calcula el sistema", eso es una caja negra, y es exactamente el tipo de cosa por la que la Superintendencia hace preguntas. La explicabilidad no es un lujo técnico: es poder mirar a un cliente a la cara.
+    </div>
+
+    <h3>La lectura obligatoria: la organización que aprende</h3>
+    <p>La lectura obligatoria de la unidad es un artículo de McKinsey de julio de 2025 sobre cómo acelerar la adopción de la IA, y arranca con un dato que lo explica todo: el <strong>90%</strong> de los empleados ya ha usado IA generativa para el trabajo, y el 21% son usuarios intensivos, pero solo el <strong>13%</strong> considera que su organización es pionera en el tema. Esa brecha —90% contra 13%— es el problema. Y la conclusión es directa: <strong>la barrera principal es psicológica, no técnica</strong>. La gente ya sabe usar la herramienta; lo que falta es que la organización aprenda a aprender de lo que su gente ya está haciendo.</p>
+
+    <p>De ahí el concepto que da nombre al artículo. Una <span class="term">organización que aprende</span> es aquella cuya ventaja no está en las herramientas que posee, sino en la velocidad con que convierte la experimentación de su gente en capacidad institucional. Y proponen cuatro cosas:</p>
+
+    <ol class="pasos">
+      <li><b>Cultivar lo que ya está creciendo.</b> Acá aparece la imagen más citada del artículo: la <span class="term">mentalidad de jardinero</span>, por oposición a la de carpintero. El carpintero decide de antemano la forma exacta de la pieza y corta la madera para que se ajuste al plano. El jardinero observa qué está prendiendo, riega eso y poda lo demás. Aplicado a la IA: en vez de planificar desde arriba cómo debe implementarse, identifica dónde la experimentación ya está funcionando y escálala. La frase de los autores es contundente: "los líderes que intentan especificar con precisión cómo debe implementarse la IA con frecuencia terminan construyendo las soluciones de ayer".</li>
+      <li><b>Premiar el aprendizaje y el compartir, no el mero uso.</b> Medir y recompensar el uso produce uso, que no es lo mismo que producir valor. Lo que hay que premiar es que la gente aprenda y enseñe lo que aprendió. Y un hallazgo importante: el <strong>reconocimiento social pesa más que el incentivo financiero</strong>. Cuando un líder respetado cuenta su propio proceso de aprendizaje y reconoce que sigue aprendiendo, bajan las barreras psicológicas de todos los demás. Es una intervención barata y desaprovechada: un jefe que muestra un intento que le salió mal autoriza a doscientas personas a intentarlo.</li>
+      <li><b>Aprender rápido, pero con rigor.</b> Hipótesis claras y testeables, experimentos diseñados para fallar rápido, y el dato más operativo del artículo: muestras chicas, de <strong>5 a 10 personas, durante 2 a 4 semanas</strong>, documentando siempre por qué funcionó o por qué no. El punto no es hacer muchos experimentos: es que cada uno deje una conclusión escrita y reutilizable. Un experimento sin hipótesis previa no produce aprendizaje, produce anécdota.</li>
+      <li><b>Mantener un estándar alto para el elogio.</b> No celebrar todo por igual. Hay que distinguir un experimento interesante de una innovación que cambia el juego, porque el elogio selectivo define en los hechos cómo se ve la excelencia dentro de la empresa. Si se aplaude cualquier prueba, "haber probado" se convierte en la meta y nadie persigue el resultado.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      La mentalidad de jardinero, en una sucursal: en vez de que el comité corporativo defina durante seis meses los diez usos oficiales de la IA, mira qué están haciendo ya tus compañeros con las herramientas que tienen. Seguro alguien ya se armó una forma de preparar sus llamados, y alguien más ordena las objeciones que le llegan. Eso ya está prendiendo. Riégalo, muéstralo en la reunión, y conviértelo en la forma estándar de trabajar. Cuesta menos y funciona mejor que cualquier plan bajado desde arriba.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La herramienta la compra cualquiera. Lo que no se compra —procesos rediseñados, gente capaz, confianza y reglas claras sobre quién responde— es lo único que explica por qué dos empresas con el mismo sistema terminan en lugares distintos.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">El caso</span></div>
+    <h2 class="titulo">El caso que lo muestra todo: Seguros del Pacífico</h2>
+
+    <p>La unidad trae dos casos. Uno es <strong>SaludConecta S.A.</strong>, sobre un proyecto de IA que fracasa porque la organización no prepara a sus equipos ni comunica el propósito; sus preguntas apuntan a los errores de la primera etapa, la resistencia de médicos, enfermeras y administrativos, y qué se hizo distinto la segunda vez. Ese caso se ve en el aula virtual, así que lo que sigue es el otro: el ejercicio evaluado, y el mejor material de toda la unidad. Léelo como una historia, porque lo es.</p>
+
+    <h3>La historia</h3>
+    <p>Seguros del Pacífico es una compañía de seguros generales chilena, quince años en el mercado, creciendo bien. Hace seis meses invirtió en IA para agilizar la evaluación de siniestros de automóviles. Y el proyecto fue, en palabras del propio curso, <strong>"un éxito técnico y operativo"</strong>.</p>
+
+    <p>Los números lo respaldan. El <strong>92% de los siniestros simples se resuelve en menos de cinco minutos</strong>, cuando antes tomaban dos días hábiles. La herramienta es ampliamente utilizada por los ajustadores, que agradecen no tener que revisar casos sencillos. Y los tiempos de respuesta a los clientes mejoraron de manera significativa. Cualquiera firmaría ese resultado.</p>
+
+    <p>Y entonces empezaron a aparecer problemas que nadie había previsto. Tres, y cada uno peor que el anterior.</p>
+
+    <ol class="pasos">
+      <li><b>Finanzas detecta que el costo promedio por siniestro subió un 18%.</b> La herramienta estaría aprobando montos de indemnización más altos que los que se pagaban históricamente. Seis meses de sobrecosto que nadie vio venir.</li>
+      <li><b>La Superintendencia de Seguros pide explicaciones.</b> Recibió reclamos de clientes que sienten que el proceso es "una caja negra" y que no entienden cómo se calcula su indemnización.</li>
+      <li><b>Los ajustadores más experimentados admiten en privado que ya no ejercen su criterio profesional.</b> La frase textual, y hay que grabársela: <em>"La IA nunca se equivoca, para qué revisar."</em> Delegaron completamente el juicio en el sistema.</li>
+    </ol>
+
+    <p>El área de tecnología defiende la herramienta con un argumento que es literalmente cierto: <em>"El algoritmo funciona según los parámetros que le dimos. Los datos son correctos. El problema no es técnico."</em> Y el gerente general convoca a un consultor externo con un encargo preciso: no propongas eliminar la IA; diseña un plan para recuperar el control y la transparencia del proceso, asegurando que la tecnología sea un apoyo y no un reemplazo del criterio humano.</p>
+
+    <div class="alarma">
+      <div class="a fn">
+        <div class="tt">Lo que el tablero mostraba</div>
+        <small>92% de los siniestros simples resueltos en menos de 5 minutos. Antes, dos días. Herramienta ampliamente utilizada. Tiempos de respuesta al cliente en su mejor nivel histórico. Todo verde.</small>
+      </div>
+      <div class="a fa">
+        <div class="tt">Lo que el tablero no mostraba</div>
+        <small>18% más de costo por siniestro. El regulador preguntando. Clientes que no entienden su propia indemnización. Y los mejores profesionales de la casa dejando de pensar. Nada de esto estaba medido.</small>
+      </div>
+    </div>
+
+    <h3>Qué falló: no fue la tecnología</h3>
+    <p>Acá está la tesis, y hay que decirla exacta: <strong>la afirmación de tecnología es literalmente cierta y estratégicamente irrelevante</strong>. Que el algoritmo funcione según los parámetros que le dieron y que los datos sean correctos puede ser verdad al mismo tiempo que la compañía pierde plata, se expone ante el regulador y degrada la competencia profesional de su equipo. Eso es exactamente lo que significa que el problema sea organizacional: <em>el sistema hace lo que se le pidió, y lo que se le pidió está mal encajado dentro del proceso de trabajo</em>.</p>
+
+    <p>Es la ilustración perfecta de la frase de la parte 5 —una herramienta instalada no es una herramienta adoptada— con un giro incómodo: acá la herramienta sí se usa masivamente, y <strong>el uso masivo es parte del problema</strong>.</p>
+
+    <p>Tres conceptos de la unidad explican el desastre.</p>
+
+    <p><strong>Uno: confianza ciega y ruptura de la colaboración persona–IA.</strong> La unidad estableció que el aporte de la IA es ampliar la información disponible y proponer alternativas, mientras las personas aportan juicio, experiencia, criterio y lectura del contexto. Acá esa colaboración se rompió, y la evidencia es textual: los ajustadores <em>más experimentados</em> —los que más criterio tenían que aportar— dicen "la IA nunca se equivoca, para qué revisar". Eso es confianza ciega, con nombre y apellido. Y hay un detalle que agrava el diagnóstico: los ajustadores <em>agradecen</em> no revisar los casos sencillos, o sea que el incentivo percibido premiaba no revisar. El sistema no eliminó la supervisión humana por diseño: la organización la dejó evaporarse sin definir nunca dónde era obligatoria. En términos de alfabetización en IA, falló justamente la competencia más exigente: reconocer las situaciones en que la supervisión humana no puede delegarse. Y el resultado es medible: 18% de sobrecosto durante seis meses, porque nadie miraba el criterio, solo el reloj.</p>
+
+    <p><strong>Dos: ausencia de gobernanza.</strong> Las tres definiciones mínimas que exige el curso están ausentes: no hay regla sobre qué casos requieren revisión humana obligatoria (cómo se usará la tecnología), nadie audita decisiones ni montos (quién revisará los resultados), y no existe ningún resguardo que evite trasladar riesgos a los clientes. Las consecuencias son las dos que reporta el caso. La primera es de explicabilidad, y aparece literal en los reclamos: los clientes dicen que el proceso es "una caja negra". La segunda es de rendición de cuentas: cuando la Superintendencia pregunta cómo se toman las decisiones, la compañía no tiene a quién poner a responder, porque tecnología responde por el algoritmo, los ajustadores no ejercieron criterio, y ninguna instancia se definió dueña de la decisión. Acá hay que ser explícito con el principio: <strong>la responsabilidad no se delega en el sistema</strong>. Frente al regulador y frente al cliente responde la compañía.</p>
+
+    <p><strong>Tres: medición incompleta.</strong> El tablero estaba cojo. Se midió velocidad (92% en menos de cinco minutos) y uso (herramienta ampliamente utilizada). No se midió la calidad de la decisión, ni el costo por siniestro en tiempo real, ni la experiencia del cliente, ni si el criterio profesional seguía ejerciéndose. Es exactamente lo que advierte el curso: una cifra aislada casi nunca explica por sí sola si la adopción está funcionando. El 18% de sobrecosto y la consulta del regulador llegaron <em>desde fuera</em> del tablero, que es la peor manera posible de enterarse.</p>
+
+    <p>La síntesis del diagnóstico cabe en una frase: Seguros del Pacífico no tiene un problema de algoritmo, tiene un <strong>proceso rediseñado a medias</strong>. Se automatizó una etapa sin redefinir responsabilidades, sin establecer puntos de control humano, sin explicabilidad hacia el cliente y sin un sistema de medición capaz de detectar el deterioro. En el lenguaje de Lewin: la organización <em>movió</em> pero nunca <em>recongeló</em>, porque jamás actualizó los procedimientos ni redefinió las responsabilidades. Y en el lenguaje de la parte 1: confundió implementar con transformar.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Cámbialo por algo tuyo y verás lo cerca que está. Imagina un sistema que aprueba automáticamente los cambios de fondo o las simulaciones de un afiliado en dos minutos, cuando antes tomaban dos días. Todo el mundo feliz. Hasta que en seis meses te das cuenta de que hay recomendaciones que no calzan con el perfil de riesgo del cliente, que el regulador está preguntando, que los afiliados dicen no entender por qué les recomendaron eso, y que los ejecutivos con más experiencia dejaron de mirar porque "el sistema sabe". El sistema funcionó perfecto todo ese tiempo. El problema fue que nadie definió quién revisa qué, cuándo y con qué criterio.
+    </div>
+
+    <h3>Las tres medidas que lo arreglan</h3>
+    <p>El encargo del gerente general era claro: no eliminar la IA, sino recuperar el control. Estas son las tres medidas, con el concepto que fundamenta cada una y el resultado que se espera.</p>
+
+    <ol class="pasos">
+      <li><b>Rediseñar el proceso con supervisión humana por umbrales, y escribirlo en el procedimiento.</b> Se segmentan los siniestros con reglas escritas y aplicadas en el sistema. Bajo cierto monto —definido con finanzas a partir del histórico—, los casos simples siguen resolviéndose automáticamente, que es la ganancia genuina del proyecto y no hay que perderla. Sobre ese monto, y en toda la casuística que se defina como sensible (reincidencia, diferencia grande respecto del histórico comparable, siniestro con lesionados, cliente con reclamo previo), el sistema pasa a <em>modo recomendación</em>: propone un monto con su fundamentación, y un ajustador debe aceptar, modificar o rechazar dejando registro escrito del motivo. En paralelo, una muestra aleatoria del 5% de los casos automáticos se audita todos los meses. Todo esto se escribe en el procedimiento, entra en la inducción y se refleja en las metas del área. <em>Fundamento:</em> es el recongelar de Lewin —actualizar procedimientos, redefinir responsabilidades, medir resultados— y la aplicación operativa de la colaboración persona–IA. <em>Resultado esperado:</em> reducir el sobrecosto del 18% en tres a seis meses, recuperando el criterio profesional donde hay dinero en juego, sin sacrificar la velocidad en los casos simples.</li>
+      <li><b>Instalar una gobernanza con comité responsable, trazabilidad y explicación al cliente.</b> Se crea un comité de gobernanza del sistema de siniestros con representación de operaciones, finanzas, legal, tecnología y ajustadores, con reunión mensual y <strong>un dueño nominado de la decisión</strong> —por ejemplo, el gerente de siniestros como responsable formal de los resultados del sistema—. Tres entregables inmediatos: un registro que documente, para cada liquidación, los factores que determinaron el monto, la versión del modelo usada y si hubo intervención humana; una carta de liquidación reescrita en lenguaje comprensible, que explique al cliente qué factores se consideraron y cómo apelar; y un expediente de respuesta a la Superintendencia con metodología, controles y plan de remediación. <em>Fundamento:</em> gobernanza de la IA, explicabilidad y rendición de cuentas, con criterios conocidos y aplicables y no declaraciones generales. <em>Resultado esperado:</em> disolver la percepción de caja negra, responder al regulador con evidencia documentada en vez de con una defensa técnica, y —esto es lo que sostiene el efecto en el tiempo— dejar instalado un mecanismo que detecte desvíos futuros sin depender de que finanzas los descubra por casualidad.</li>
+      <li><b>Volver a alfabetizar a los ajustadores, con AI Champions y comunidad de práctica.</b> Un programa breve y concreto —cuatro sesiones de dos horas más práctica acompañada— centrado en tres cosas: qué factores usa el modelo y cuáles son sus límites conocidos (incluido por qué puede estar aprobando montos sistemáticamente altos), cómo revisar críticamente una recomendación, y en qué situaciones la supervisión humana no se delega. Se eligen tres o cuatro AI Champions entre los ajustadores con más credibilidad técnica —de preferencia entre los senior que hoy admiten haber dejado de revisar, porque su reconversión tiene el máximo efecto simbólico—, se les da preparación más profunda y se les asigna responder dudas, compartir buenas prácticas y canalizar la fricción del terreno hacia el comité. Y se abre una comunidad de práctica quincenal donde se revisan casos reales en que la revisión humana cambió el resultado. <em>Fundamento:</em> alfabetización en IA, agentes de cambio y comunidades de práctica; y en clave ADKAR, una intervención dirigida a un punto de barrera que acá <strong>no es Knowledge sino Desire y Ability</strong>: los ajustadores saben usar la herramienta, pero perdieron la disposición a revisar y la práctica de hacerlo. Por eso no puede ser solo un curso: necesita práctica acompañada y refuerzo, lo que obliga a revisar las metas del área. Si el único indicador sigue siendo la velocidad de resolución, ninguna capacitación va a poder competir contra ese incentivo. <em>Resultado esperado:</em> que ejercer el criterio profesional vuelva a ser la conducta normal y esperada, con un indicador verificable —porcentaje de casos sobre umbral efectivamente revisados y proporción de recomendaciones modificadas— y, a mediano plazo, convertir a los ajustadores en la principal fuente de detección de errores del modelo, que es justamente el activo que la compañía perdió en estos seis meses.</li>
+    </ol>
+
+    <p>Un consejo de método que aplica a cualquier análisis de este tipo: cuando te pidan identificar conceptos, <strong>nombra el tecnicismo exacto y ánclalo de inmediato a un hecho del caso</strong>. "Hay confianza ciega" vale poco. "Hay confianza ciega, y la evidencia es que los ajustadores más experimentados admiten en privado que ya no revisan porque la IA nunca se equivoca" vale todo. El concepto sin el anclaje se lee como vocabulario memorizado; el anclaje sin el concepto, como sentido común. Juntos son análisis.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un sistema técnicamente perfecto produjo un desastre organizacional porque nadie definió quién revisa qué, cuándo y con qué criterio. La tecnología era la parte fácil.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">&#9733;</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+
+    <p>Todos los términos de la unidad, dichos como se los explicarías a alguien en la sucursal. Están en el orden en que aparecen en el curso, así que también te sirven de repaso rápido.</p>
+
+    <div class="glos">
+      <dl>
+        <dt>Adopción de la IA</dt><dd>Que la herramienta esté conectada al trabajo, que la gente la use de verdad y que eso mueva un número que importa. Las tres cosas, no una.</dd>
+        <dt>Alfabetización en IA</dt><dd>Saber qué puede hacer la IA, dónde falla y qué pasa si la usas mal. No es saber programar: es saber usarla con criterio.</dd>
+        <dt>Gestión del cambio</dt><dd>Todo lo que se hace para preparar, ejecutar y <em>mantener</em> un cambio en la forma de trabajar. La tercera parte es la que nadie financia.</dd>
+        <dt>Gobernanza de la IA</dt><dd>Las reglas escritas de quién aprueba, quién revisa, quién responde y qué datos entran. Se define antes del primer problema, no después.</dd>
+        <dt>Patrocinio ejecutivo</dt><dd>Respaldo de la jefatura que se ve y que dura: recursos, obstáculos removidos y apoyo explícito. Si nadie lo nota, no existe.</dd>
+        <dt>Quick wins</dt><dd>Resultados tempranos, visibles e imposibles de discutir, que prueban que el cambio sirve. Se planifican, no se esperan de suerte.</dd>
+        <dt>Resistencia al cambio</dt><dd>Todo lo que la gente cree, siente y hace que frena la forma nueva de trabajar. Rara vez es contra la tecnología.</dd>
+        <dt>Transformación organizacional</dt><dd>Decisión deliberada de cambiar estrategia, estructura, procesos y capacidades. La tecnología acelera; no es el contenido.</dd>
+        <dt>Transformación digital</dt><dd>Lo mismo, pero empujado por tecnología: cambiar la experiencia del cliente, la operación y el modelo de negocio.</dd>
+        <dt>Implementación tecnológica</dt><dd>Dejar la herramienta instalada y andando. Es el kilómetro cero del recorrido, no la meta.</dd>
+        <dt>Decaimiento de la adopción</dt><dd>El uso sube durante el piloto y cae cuando se van la novedad y el que supervisaba. El fracaso más común y menos reportado.</dd>
+        <dt>Capacidad digital</dt><dd>Cuánta tecnología tiene la empresa y qué tan bien la usa. Es "el qué". Se compra.</dd>
+        <dt>Capacidad de gestión de la transformación</dt><dd>Qué tan bien sabe conducir el cambio: visión, gobierno, compromiso de la dirección. Es "el cómo". No se compra.</dd>
+        <dt>Digital Masters</dt><dd>Las que tienen las dos capacidades altas: 26% más rentables, 9% más ingresos desde sus activos físicos y 12% más valoración que sus pares.</dd>
+        <dt>Fashionistas</dt><dd>Mucha tecnología, poca conducción. Compran cada novedad y terminan con islas caras y desconectadas. La advertencia de todo el curso.</dd>
+        <dt>Modelo predictivo</dt><dd>Un sistema que estima algo a futuro con datos del pasado: quién se va a traspasar, cuánto se va a vender, quién no va a pagar.</dd>
+        <dt>IA generativa</dt><dd>La que produce texto, resúmenes, imágenes o código a partir de instrucciones escritas. La más barata de repartir y la más difícil de adoptar.</dd>
+        <dt>Automatización robótica de procesos (RPA)</dt><dd>Software que imita los clics y tecleos de una persona en tareas administrativas repetitivas. Fue casi la mitad de los proyectos estudiados.</dd>
+        <dt>Insight cognitivo</dt><dd>Algoritmos que encuentran patrones en montañas de datos y dicen qué significan: predecir compra, detectar fraude, segmentar clientes.</dd>
+        <dt>Compromiso cognitivo</dt><dd>Sistemas que conversan en lenguaje normal con clientes o empleados: chatbots y asistentes. El grupo más chico de los tres.</dd>
+        <dt>Rediseño de procesos</dt><dd>Cambiar quién hace qué y en qué orden, para que la herramienta quede dentro del trabajo y no encima. Sin esto, solo agregas trabajo.</dd>
+        <dt>Tríada personas–procesos–tecnología</dt><dd>Los tres frentes que la IA toca a la vez. Si avanza uno solo, el resultado no dura.</dd>
+        <dt>Regla 10-20-70</dt><dd>Las empresas líderes ponen 10% del esfuerzo en algoritmos, 20% en tecnología y datos, y 70% en personas y procesos. Ahí está el problema real.</dd>
+        <dt>Liderazgo comprometido</dt><dd>Jefatura que explica el para qué, usa la herramienta a la vista de todos, destraba problemas y no suelta el tema a la semana.</dd>
+        <dt>Coalición conductora</dt><dd>El grupo de líderes de distintas áreas que empuja el cambio. Necesita poder, conocimiento del terreno y credibilidad, no solo cargos.</dd>
+        <dt>Cultura orientada al aprendizaje</dt><dd>Ambiente donde probar y equivocarse no te cuesta caro, y donde contar lo que aprendiste es parte del trabajo.</dd>
+        <dt>Madurez digital</dt><dd>Qué tan lejos llegó una empresa en su transformación, medido de 1 a 10. Las maduras se distinguen por tiempo para experimentar, no por tecnología.</dd>
+        <dt>Confianza en la IA</dt><dd>Disposición a apoyarte en el sistema. Se empieza a construir antes de que la herramienta exista, y se sostiene hablando también de sus límites.</dd>
+        <dt>Confianza ciega</dt><dd>Aceptar lo que dice el sistema sin revisarlo. Es lo que apagó el criterio de los ajustadores en Seguros del Pacífico.</dd>
+        <dt>Sesgo de automatización</dt><dd>El nombre técnico de esa confianza ciega: preferir la recomendación automática por sobre tu propio juicio, incluso con evidencia en contra.</dd>
+        <dt>Aversión al algoritmo</dt><dd>El extremo opuesto: descartar el sistema para siempre porque falló una vez, aunque en promedio acierte más que tú.</dd>
+        <dt>Resistencia pasiva</dt><dd>Oposición que nunca se declara: postergar, cuestionar la utilidad, dejar la herramienta de lado. No hay a quién convencer.</dd>
+        <dt>Cumplimiento aparente</dt><dd>Aceptar de boca para afuera: usar la herramienta lo mínimo para que el reporte registre uso, y seguir decidiendo como siempre.</dd>
+        <dt>Procesos paralelos</dt><dd>La planilla propia que se sigue llenando junto al sistema nuevo. Duplica el trabajo y produce dos versiones de la verdad.</dd>
+        <dt>Desarrollo de capacidades</dt><dd>Construir lo que cada persona necesita saber según su rol. Nadie tiene que programar; todos tienen que saber usar y evaluar.</dd>
+        <dt>Formulación de instrucciones (prompting)</dt><dd>Pedirle bien a la IA: decirle el contexto, qué quieres lograr y en qué formato. Si no lo decides tú, lo decide ella.</dd>
+        <dt>Supervisión humana</dt><dd>El punto del proceso donde una persona revisa y valida antes de que la respuesta del sistema tenga consecuencias.</dd>
+        <dt>Sesgo algorítmico</dt><dd>Cuando el sistema perjudica o favorece siempre al mismo tipo de gente, porque lo aprendió de datos que ya venían torcidos.</dd>
+        <dt>IA responsable</dt><dd>Preguntarse antes de usar el resultado: ¿es justo?, ¿puede discriminar a alguien?, ¿quién se hace cargo si sale mal?</dd>
+        <dt>Upskilling</dt><dd>Aprender más para hacer mejor el trabajo que ya tienes.</dd>
+        <dt>Reskilling</dt><dd>Aprender otra cosa porque tu trabajo cambió mucho o se acabó.</dd>
+        <dt>Alfabetización de datos</dt><dd>Saber leer y cuestionar un número: qué es una muestra, qué es una correlación, por qué un promedio puede esconder dos realidades distintas.</dd>
+        <dt>Colaboración persona–IA</dt><dd>Repartir el trabajo: el sistema procesa volumen y encuentra patrones; tú pones el juicio, la experiencia y la conversación.</dd>
+        <dt>Aumento de capacidades</dt><dd>Usar la IA para que la persona pueda más, en vez de para reemplazarla. Es una decisión de diseño, no algo que pase solo.</dd>
+        <dt>Marco de gestión del cambio</dt><dd>Un esquema que ordena qué preparar, qué hacer y cómo sostenerlo. No resuelve los problemas: evita que te saltes pasos que importan.</dd>
+        <dt>Modelo de Lewin</dt><dd>El más simple de los tres: todo cambio pasa por preparar, mover y consolidar.</dd>
+        <dt>Descongelar</dt><dd>Preparar: explicar por qué, conversar los beneficios y escuchar las inquietudes antes de empezar. La etapa que más se salta.</dd>
+        <dt>Mover</dt><dd>Cambiar de verdad: entregar la herramienta, modificar el proceso y acompañar. Acá el rendimiento baja antes de subir.</dd>
+        <dt>Recongelar</dt><dd>Dejarlo firme: actualizar procedimientos, redefinir responsabilidades y cambiar los indicadores. Si no, todos vuelven a la planilla vieja.</dd>
+        <dt>Teoría de campo</dt><dd>La idea de Lewin de que nada está quieto porque sí: hay fuerzas que empujan y fuerzas que frenan, y están empatadas.</dd>
+        <dt>Modelo de Kotter</dt><dd>Ocho pasos para conducir un cambio grande, con foco en el liderazgo, la comunicación y los logros tempranos.</dd>
+        <dt>Sentido de urgencia</dt><dd>Paso 1: que todos sientan que quedarse quietos es más peligroso que moverse. Anunciarlo no es lo mismo que instalarlo.</dd>
+        <dt>Visión de cambio</dt><dd>Pasos 3 y 4: una imagen breve de en qué vamos a ser distintos, explicable en cinco minutos y repetida por todos lados.</dd>
+        <dt>Empoderamiento para la acción amplia</dt><dd>Paso 5: sacar del camino lo que impide actuar a quien ya quiere hacerlo. Sistemas, permisos, jefaturas que bloquean.</dd>
+        <dt>Anclaje en la cultura</dt><dd>Paso 8: que el cambio sobreviva a quien lo impulsó. Se logra al final, no al principio, y obliga a tocar cómo se promueve a la gente.</dd>
+        <dt>Sistema operativo dual</dt><dd>La versión moderna de Kotter: la estructura de siempre hace el día a día mientras una red flexible en paralelo empuja el cambio.</dd>
+        <dt>Modelo ADKAR</dt><dd>El marco que mira el cambio persona por persona, en cinco pasos que hay que cumplir en orden. El más parecido a mirar tu cartera.</dd>
+        <dt>Awareness (conciencia)</dt><dd>Entender por qué se hace este cambio y qué pasa si no se hace. Que te lo hayan dicho no basta.</dd>
+        <dt>Desire (deseo)</dt><dd>Querer sumarse. Es el único paso que la empresa no puede producir por decreto, y donde se atasca casi toda la resistencia.</dd>
+        <dt>Knowledge (conocimiento)</dt><dd>Saber qué hacer distinto y cómo. Es lo que entrega una capacitación normal.</dd>
+        <dt>Ability (capacidad)</dt><dd>Hacerlo de verdad en el trabajo real. Saber cómo funciona algo no es lo mismo que dominarlo.</dd>
+        <dt>Reinforcement (refuerzo)</dt><dd>Lo que hace que la conducta nueva se quede: reconocimiento, seguimiento, indicadores e incentivos que no se contradigan.</dd>
+        <dt>Punto de barrera</dt><dd>El primer paso de ADKAR donde la persona está floja. Ahí hay que intervenir; gastar en los siguientes es botar la plata.</dd>
+        <dt>Prácticas ágiles</dt><dd>Trabajar en ciclos cortos, aprender mientras implementas y ajustar seguido, en vez de ejecutar un plan cerrado de un año.</dd>
+        <dt>Comunicación del cambio</dt><dd>Explicar el para qué, el alcance, los beneficios y los límites, desde el principio y durante todo el proceso. El vacío nunca queda vacío.</dd>
+        <dt>Segmentación de públicos</dt><dd>Contarle a cada grupo lo que a ese grupo le importa: a la dirección el impacto estratégico, al equipo cómo cambia su día.</dd>
+        <dt>Transparencia</dt><dd>Contar también lo que no funcionó y qué se está ajustando. Comunicar solo lo bueno no construye credibilidad.</dd>
+        <dt>Capacitación</dt><dd>Formación que forma parte del diseño del proyecto y responde a las dudas reales, no una demostración de pantallas al final.</dd>
+        <dt>Proyecto piloto</dt><dd>Probar en chico y en condiciones reales, con usuarios de verdad, antes de lanzarlo a todos. Es tu guion probado con diez clientes.</dd>
+        <dt>Prueba de concepto</dt><dd>Verificar que algo <em>se puede</em> hacer técnicamente, en ambiente controlado. No prueba que la gente lo vaya a usar.</dd>
+        <dt>Escalamiento por etapas</dt><dd>Ampliar de a poco, incorporando en cada avance lo que se aprendió. Si copias igual en la segunda área, no aprendiste nada.</dd>
+        <dt>Agente de cambio</dt><dd>Alguien del propio equipo, sin mando, que ayuda a los demás a adoptar la herramienta porque está cerca y le creen.</dd>
+        <dt>AI Champion</dt><dd>El agente de cambio especializado en IA: responde dudas, comparte lo que funciona y lleva los problemas del terreno a quienes deciden.</dd>
+        <dt>Comunidad de práctica</dt><dd>Un grupo que se junta con regularidad a compartir casos reales. Necesita tres cosas: un tema común, confianza entre ellos y práctica compartida.</dd>
+        <dt>Participación periférica legítima</dt><dd>La forma en que alguien entra a un grupo así: por el borde, con tareas simples pero reales, y va avanzando al centro.</dd>
+        <dt>Medición y mejora continua</dt><dd>Revisar seguido qué está pasando de verdad —uso, tiempos, calidad y opiniones— para decidir qué mantener y qué corregir.</dd>
+        <dt>Indicadores de adopción</dt><dd>Los números que dicen si la herramienta se metió de verdad en el trabajo, no si el sistema anda bien.</dd>
+        <dt>Tasa de uso activo</dt><dd>Qué porcentaje de la gente habilitada la usa efectivamente. Necesario, pero insuficiente: se puede usar mucho y mal.</dd>
+        <dt>Visión integrada</dt><dd>Mirar liderazgo, cultura, procesos, capacidades y tecnología como un solo conjunto, no como cinco proyectos separados.</dd>
+        <dt>Enfoque sistémico</dt><dd>La idea de fondo: en un sistema, mejorar una parte por separado puede empeorar el resultado total.</dd>
+        <dt>Capacidad continua de adaptación</dt><dd>Entender que esto no termina nunca: se aprende, se prueba, se evalúa y se corrige de forma permanente.</dd>
+        <dt>Organización que aprende</dt><dd>Aquella cuya ventaja no está en las herramientas que tiene, sino en la rapidez con que convierte lo que su gente descubre en forma de trabajar.</dd>
+        <dt>Mentalidad de jardinero</dt><dd>En vez de definir desde arriba cómo debe usarse la IA, mirar qué ya está prendiendo entre la gente, regarlo y podar el resto.</dd>
+        <dt>Seguridad psicológica</dt><dd>Poder preguntar, equivocarse y reconocer que estás aprendiendo sin que te cueste la reputación. Sin esto nadie reporta lo que falla.</dd>
+        <dt>Privacidad</dt><dd>El cuidado de los datos personales de clientes y de la gente de la casa: qué entra al sistema, por cuánto tiempo y quién puede verlo.</dd>
+        <dt>Seguridad de la información</dt><dd>Proteger esos datos y los sistemas de accesos no autorizados y filtraciones. Incluye el riesgo de pegar datos de un cliente en una herramienta pública.</dd>
+        <dt>Rendición de cuentas</dt><dd>Tener claro quién responde cuando el sistema se equivoca. La responsabilidad nunca se delega en la máquina: un modelo no puede responderle a nadie.</dd>
+        <dt>Explicabilidad</dt><dd>Poder decirle a una persona, en palabras que entienda, por qué el sistema llegó a ese resultado.</dd>
+        <dt>Caja negra</dt><dd>Un sistema del que se ven las entradas y las salidas pero no el criterio. Es la queja textual de los clientes en el caso del final.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con tres cosas, que sean estas</h2>
+    <ol>
+      <li><strong>Instalar no es cambiar.</strong> Tener la herramienta, repartir las licencias y hacer la capacitación no mueve ningún número. La adopción real es que la gente la use en su trabajo diario y que eso se note en un indicador. El 70% del desafío está en las personas y los procesos, no en la tecnología.</li>
+      <li><strong>La resistencia es información, no un enemigo.</strong> Casi nunca es contra la tecnología: es no saber qué va a pasar contigo, cuánto vas a poder decidir y si te van a seguir valorando. Se trabaja como una objeción de venta: escuchando. El que reclama te está regalando el diagnóstico; el que calla y sigue con su planilla no.</li>
+      <li><strong>Alguien tiene que responder.</strong> Un sistema que funciona perfecto puede producir un desastre si nadie definió quién revisa qué, cuándo y con qué criterio. Seguros del Pacífico resolvía el 92% de los siniestros en cinco minutos y terminó con 18% de sobrecosto y el regulador tocando la puerta. La máquina hizo su pega. La organización, no.</li>
+    </ol>
+    <p class="remate">Y esto es lo mejor: acá no hay una sola fórmula que aprenderse. Todo lo de esta unidad lo has vivido —el sistema que nadie llenó, el guion que bajaron sin explicar, la campaña que se anunció por correo—. Solo le pusieron nombre técnico a algo que tú reconoces a los dos minutos de entrar a una sala.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para entender por qué las herramientas nuevas no se usan, y qué hace la diferencia entre una empresa que cambia y una que solo compra tecnología.
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
