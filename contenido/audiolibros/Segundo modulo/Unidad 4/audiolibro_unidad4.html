@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Gestión del cambio y resistencia organizacional</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 4 &middot; voz del dispositivo</p>
+    <h1>Gestión del cambio y resistencia organizacional</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [
+ {
+  "t": "En este rato vas a entender por qué tantas empresas compran una herramienta buenísima, la instalan, hacen la capacitación, y seis meses después nadie la usa. Y la respuesta no tiene nada que ver con tecnología. Tú ya la conoces, desde tu propio trabajo.",
+  "c": false
+ },
+ {
+  "t": "Esta es la última unidad del curso y cambia la pregunta. Las anteriores respondían qué construir con inteligencia artificial. Esta responde por qué lo que se construye no se usa. Son seis capítulos, y te adelanto la conclusión: el problema casi nunca es la máquina.",
+  "c": false
+ },
+ {
+  "t": "Capítulo uno. Instalar no es cambiar",
+  "c": true
+ },
+ {
+  "t": "Piénsalo desde algo que viviste. La empresa compró un sistema de clientes nuevo, un ce erre eme. Hubo lanzamiento y capacitación, y a los tres meses medio equipo seguía con su planilla. El problema nunca fue el sistema.",
+  "c": false
+ },
+ {
+  "t": "Acá está el concepto que ordena todo. La adopción de la inteligencia artificial no es tener la herramienta. Son tres cosas encadenadas: que la organización la incorpore, que las personas la usen de forma efectiva, y que eso aporte valor al negocio.",
+  "c": false
+ },
+ {
+  "t": "Una empresa compra ochocientas licencias y seiscientos diez usuarios entran alguna vez: se reporta como setenta y seis por ciento de adopción. Pero solo sesenta la usan dentro de un proceso que se mide. Es tu reporte de noventa y cuatro por ciento con sesión activa.",
+  "c": false
+ },
+ {
+  "t": "El curso separa dos verbos que se confunden. La implementación tecnológica es dejar la herramienta instalada y andando: kilómetro cero, no la meta. La transformación organizacional toca la estrategia, la estructura, los procesos y las competencias. Y cuando la empuja la tecnología digital, se llama transformación digital.",
+  "c": false
+ },
+ {
+  "t": "Acompañar eso se llama gestión del cambio: preparar, llevar a la práctica y mantener. Casi ningún presupuesto financia el tercer verbo, y el regreso a lo de antes tiene nombre: decaimiento de la adopción. El uso sube durante el piloto y cae cuando se van la novedad y el que supervisaba.",
+  "c": false
+ },
+ {
+  "t": "La I.A. entra por tres puertas. Comprar una plataforma ya construida. Desarrollar un modelo predictivo propio, que estima algo a futuro con datos del pasado, como quien se va a traspasar. O repartir una herramienta de I.A. generativa, que produce textos a partir de instrucciones: la más barata de repartir y la más difícil de adoptar.",
+  "c": false
+ },
+ {
+  "t": "Y acá viene el error más caro. El rediseño de procesos es revisar quién hace qué, en qué orden y quién decide, para que la herramienta tenga donde producir efecto. Sin eso el resultado es más trabajo, no menos: te dan un asistente que redacta correos, pero nadie te baja la meta de llamadas. Por eso se habla de la tríada personas, procesos y tecnología: si avanza una sola, nada se sostiene.",
+  "c": false
+ },
+ {
+  "t": "Westerman encontró dos capacidades independientes: la capacidad digital, cuánta tecnología tienes y qué tan bien la usas, que se compra; y la capacidad de gestión de la transformación, visión y compromiso de la dirección, que no se compra. De ahí salen las que el estudio llama Fashionistas: mucha tecnología y poca conducción; y las Digital Masters, que se dice díyital másters, altas en las dos.",
+  "c": false
+ },
+ {
+  "t": "Ojo con un dato de prueba: las Digital Masters no tienen nueve por ciento más ingresos a secas, sino nueve por ciento más ingresos desde los activos físicos que ya tienen. Y Davenport clasificó los proyectos en tres tipos: la automatización robótica de procesos, en inglés erre pe a, que imita los clics de una persona; el insight cognitivo, que se dice ínsait, algoritmos que hallan patrones; y el compromiso cognitivo, los chatbots.",
+  "c": false
+ },
+ {
+  "t": "Su consejo fue no empezar por proyectos lunares. Y si te quedas con un solo número, que sea la regla diez, veinte, setenta: las empresas líderes ponen diez por ciento de sus recursos en algoritmos, veinte en tecnología y datos, y setenta en personas y procesos. O sea, quien dedica el noventa por ciento del esfuerzo a la herramienta trabaja sobre el diez por ciento del problema.",
+  "c": false
+ },
+ {
+  "t": "Capítulo dos. Lo que hace que el cambio funcione",
+  "c": true
+ },
+ {
+  "t": "Ya sabemos que el grueso del problema está en la gente. Entonces, qué tienen las empresas donde sí funciona. Cuatro condiciones: liderazgo comprometido, una cultura que deja equivocarse, confianza, y capacidades desarrolladas.",
+  "c": false
+ },
+ {
+  "t": "La primera empieza por el patrocinio ejecutivo: el respaldo de la alta dirección que es visible y sostenido. Visible, porque un respaldo que nadie fuera del comité percibe no existe. Sostenido, porque no se agota en el correo de lanzamiento.",
+  "c": false
+ },
+ {
+  "t": "El error más extendido es dejar el proyecto solo en manos de tecnología, porque ahí la organización aplica una regla brutal: si es tu proyecto, mi cooperación es un favor. El liderazgo comprometido es lo contrario: el gerente que hace tres llamadas con el guion nuevo delante de todos, y después cambia la pauta de la reunión semanal.",
+  "c": false
+ },
+ {
+  "t": "Y casi nunca alcanza con una sola persona. Kotter llama coalición conductora al grupo de líderes de distintas áreas que empuja el cambio, y necesita cuatro cosas juntas: poder formal, conocimiento del terreno, credibilidad y capacidad de mover gente.",
+  "c": false
+ },
+ {
+  "t": "La segunda condición es una cultura orientada al aprendizaje, donde probar y equivocarse es parte del trabajo. Y no es cobardía, es aritmética: si los aciertos se los anota el equipo y los errores tu decisión de salirte del procedimiento, lo racional es no usarla.",
+  "c": false
+ },
+ {
+  "t": "Por eso la madurez digital de una empresa no se distingue por su tecnología, sino por el tiempo protegido para experimentar. La pregunta que sirve es cuántas horas a la semana puede alguien probar algo sin justificarlo ante nadie.",
+  "c": false
+ },
+ {
+  "t": "La tercera condición es la confianza en la I.A., y empieza a formarse antes de que la herramienta exista. Frente a un cambio incierto nadie espera la información sentado: si la empresa no la da, la da el pasillo, y esa versión siempre es la más amenazante.",
+  "c": false
+ },
+ {
+  "t": "Y hay que hablar también de los límites. Son tres: los modelos pueden equivocarse con la misma seguridad con que aciertan, o sea no avisan cuando dudan; pueden dar respuestas incompletas; y reproducen los sesgos de los datos con que fueron entrenados.",
+  "c": false
+ },
+ {
+  "t": "Eso permite usarla sin caer en los dos extremos. Uno es la confianza ciega, aceptar lo que dice el sistema aunque tengas evidencia de que está equivocado, y su nombre técnico es sesgo de automatización. El otro es la aversión al algoritmo, descartarlo porque lo viste fallar una vez. Es el navegador del auto: obedecerlo a ciegas, o no volver a abrirlo nunca.",
+  "c": false
+ },
+ {
+  "t": "La cuarta condición es el desarrollo de capacidades, y nadie espera que todos programen. Son cuatro competencias mínimas. La formulación de instrucciones, en inglés prompting, que se dice prómting: pedirle bien, con contexto, objetivo y formato. Y la supervisión humana: un punto donde una persona valida antes de que la respuesta produzca efectos.",
+  "c": false
+ },
+ {
+  "t": "La tercera es reconocer el sesgo algorítmico: resultados que perjudican sistemáticamente a un mismo grupo, heredados de los datos de entrenamiento. Y la cuarta son las consecuencias éticas, con las tres preguntas de la I.A. responsable: es justa, puede discriminar a alguien, y quién se hace cargo si sale mal.",
+  "c": false
+ },
+ {
+  "t": "Todo eso junto es la alfabetización en inteligencia artificial, en inglés AI literacy, que se dice ei ái líterasi: entender qué pueden hacer estos sistemas, dónde fallan y qué consecuencias tiene usarlos. Long y Magerko identificaron diecisiete competencias en cinco temas, y ojo, no son cinco competencias.",
+  "c": false
+ },
+ {
+  "t": "Su prerrequisito es la alfabetización de datos: saber cuestionar un número. Y dos palabras más: upskilling, que se dice ápskiling, es profundizar tus capacidades dentro del rol que ya tienes, y reskilling, que se dice rískiling, es formarte para un rol distinto porque el tuyo se redujo.",
+  "c": false
+ },
+ {
+  "t": "Y el habilitador que integra a todos es la colaboración entre la persona y la I.A. El sistema procesa volumen; las personas ponen juicio, experiencia, creatividad y lectura del contexto. Eso se llama aumento de capacidades, en inglés augmentation, que se dice ogmentéishon: ampliar lo que la persona puede hacer en vez de reemplazarla.",
+  "c": false
+ },
+ {
+  "t": "Capítulo tres. Por qué la gente se resiste",
+  "c": true
+ },
+ {
+  "t": "Ya vimos qué hace que un cambio funcione. Ahora demos vuelta la pregunta: por qué la gente se resiste, incluso cuando la herramienta es buena. Y te adelanto que esto te va a sonar conocido de tus propios clientes.",
+  "c": false
+ },
+ {
+  "t": "La resistencia al cambio son las ideas, las actitudes y las conductas que dificultan aceptar una forma nueva de trabajar. Fíjate en esos tres niveles: alguien puede creer que la herramienta es útil, sentirse amenazado por ella, y comportarse como si la estuviera usando.",
+  "c": false
+ },
+ {
+  "t": "Y ojo con esto, porque no es lo que uno se imagina. Cuando alguien de tu equipo no usa la herramienta nueva, casi nunca es porque odie la tecnología. Detrás hay falta de información, poca capacitación o dudas sobre para qué se hace esto. O sea, no es rechazo. Es falta de información.",
+  "c": false
+ },
+ {
+  "t": "Y es natural que las personas recurran a las prácticas que ya conocen: con información incompleta y consecuencias personales en juego, seguir haciendo lo que sabes que funciona es lo más racional que existe. Si quieres cambiar la conducta, cambia la información y las consecuencias.",
+  "c": false
+ },
+ {
+  "t": "Son tres las preguntas que casi nunca se responden completas. Qué va a pasar con mi trabajo, la del empleo. Cuánto margen de decisión me queda, la de la autonomía. Y voy a seguir siendo valorada acá, la más difícil, porque toca la identidad profesional.",
+  "c": false
+ },
+ {
+  "t": "La resistencia casi nunca se declara de frente: aparece de cuatro maneras silenciosas. Cuestionar la utilidad con un argumento técnico difícil de refutar. Postergar, porque estamos en cierre de mes. Los procesos paralelos, la planilla propia que se sigue llenando. Y el cumplimiento aparente: usar la herramienta lo mínimo para que el indicador registre uso.",
+  "c": false
+ },
+ {
+  "t": "Las cuatro juntas son resistencia pasiva: oposición por omisión, demora o cumplimiento formal. Su rasgo es que no ofrece blanco, porque nadie declaró estar en contra. Es el vecino que vota a favor del reglamento nuevo, sonríe, y sigue estacionando donde siempre: formalmente está de acuerdo, así que no hay conversación posible.",
+  "c": false
+ },
+ {
+  "t": "Y acá está el cambio de mirada más valioso de la unidad: estas conductas no son falta de voluntad, son señales. Escucharlas permite detectar riesgos antes de extender la herramienta. Quién mejor sabe cuándo el modelo va a fallar es quien lleva quince años haciendo esa tarea a mano.",
+  "c": false
+ },
+ {
+  "t": "Esto tú ya lo dominas, con otro nombre. Cuando un afiliado te dice que lo va a pensar, no cierras la carpeta: escuchas qué hay detrás. La resistencia de un compañero es una objeción, y las objeciones no se aplastan, se trabajan. El que reclama te regala el diagnóstico gratis.",
+  "c": false
+ },
+ {
+  "t": "Capítulo cuatro. Tres formas de ordenar un cambio",
+  "c": true
+ },
+ {
+  "t": "Hasta acá vimos que hay que cuidar. Ahora, con qué estructura se ordena esto. Son tres marcos clásicos: Lewin, Kotter y ADKAR, que se dice ádkar. No compiten: son tres lentes sobre el mismo equipo, y el tercero es el que más te va a servir.",
+  "c": false
+ },
+ {
+  "t": "Un marco de gestión del cambio ordena en etapas lo que hay que hacer para que un cambio se adopte, pero no reemplaza el criterio de quien dirige. Es el plan de vuelo de una aerolínea: no hace volar el avión, pero nadie despega sin ruta alterna.",
+  "c": false
+ },
+ {
+  "t": "El modelo de Lewin, de mil novecientos cuarenta y siete, dice que todo cambio pasa por tres momentos: descongelar, mover y recongelar. La intuición es física: algo está quieto porque hay fuerzas que empujan, como los costos, y otras que frenan, como las rutinas. Eso es la teoría de campo.",
+  "c": false
+ },
+ {
+  "t": "Descongelar es preparar: explicar por qué se necesita el cambio y escuchar las inquietudes. Es la etapa que más se salta, porque su producto es disposición. Mover es el cambio propiamente tal, y ahí el desempeño baja antes de subir: quien mide justo en ese valle mata el proyecto.",
+  "c": false
+ },
+ {
+  "t": "Y recongelar es dejarlo firme: actualizar procedimientos, redefinir responsabilidades, medir resultados e incorporar la herramienta a la cultura. Es un cubo de hielo al que le quieres dar forma de cono: hay que derretirlo, verterlo en un molde y volver a congelarlo. En una sucursal nadie toca los indicadores, y todos vuelven a la planilla.",
+  "c": false
+ },
+ {
+  "t": "Donde Lewin describe la física del cambio, el modelo de Kotter describe su política, en ocho pasos. El uno es crear un sentido de urgencia: la percepción compartida de que quedarse quieto es más riesgoso que moverse. La mayoría fracasa ahí, por confundir anunciar la urgencia con instalarla.",
+  "c": false
+ },
+ {
+  "t": "El dos es formar la coalición conductora. El tres y el cuatro son desarrollar y comunicar la visión de cambio: una descripción breve del futuro deseado, explicable en cinco minutos. Y el cinco es el empoderamiento para la acción amplia: sacar del camino lo que impide actuar a quienes ya quieren.",
+  "c": false
+ },
+ {
+  "t": "El paso seis son los quick wins, que se dice cuik uins, los triunfos de corto plazo: visibles, inequívocos y atribuibles al esfuerzo de cambio. Y se planifican a propósito, no se esperan de suerte.",
+  "c": false
+ },
+ {
+  "t": "Y el paso ocho es el anclaje en la cultura, lo que decide si el cambio sobrevive al jefe que lo impulsó: mostrar la conexión entre las conductas nuevas y los resultados, y que los próximos líderes las encarnen. Kotter es tajante: la cultura cambia al final, no al principio.",
+  "c": false
+ },
+ {
+  "t": "Dos precisiones para una prueba. El curso dice ocho pasos y después enumera solo seis: responde siempre los ocho. Y el término de Kotter no es quick wins sino short term wins, que se dice short term uins. Kotter además actualizó el modelo con un sistema operativo dual: la jerarquía hace el día a día mientras una red flexible empuja el cambio.",
+  "c": false
+ },
+ {
+  "t": "Y ahora el tercero, por una razón simple: es el único que mira a las personas de a una. Se llama ADKAR, y son cinco letras: A, D, K, A, R. Su premisa, de Jeff Hiatt, es que una organización cambia solo cuando cambian sus personas, una por una.",
+  "c": false
+ },
+ {
+  "t": "La A es Awareness, que se dice euárnes: conciencia de la necesidad, y que te lo hayan dicho no basta. La D es Desire, que se dice disáier: el deseo de participar, lo único que no se produce por decreto. Ahí vive casi toda la resistencia: no es déficit de conocimiento, es déficit de ganas.",
+  "c": false
+ },
+ {
+  "t": "La K es Knowledge, que se dice nólech: saber qué hacer distinto y cómo. La segunda A es Ability, que se dice abíliti: hacerlo en el trabajo real. Y acá está la frase que hay que memorizar: saber cómo funciona una herramienta no significa dominarla. Y la R es Reinforcement, que se dice rinfórsment: reconocimiento, seguimiento e incentivos coherentes.",
+  "c": false
+ },
+ {
+  "t": "De ahí el aporte más práctico: el punto de barrera, el primer elemento con nota tres o menos cuando evalúas a alguien de uno a cinco. A un equipo de riesgo le sale deseo dos: toda capacitación es plata perdida, porque ya saben usar la herramienta pero temen quedarse sin atribuciones.",
+  "c": false
+ },
+ {
+  "t": "Y por eso este marco es tuyo: ádkar es mirar al equipo como miras tu cartera. El ejecutivo nuevo está trabado en conocimiento; el que lleva veinte años, en deseo.",
+  "c": false
+ },
+ {
+  "t": "Un último matiz. Estos marcos suponen un estado final conocido, y con I.A. generativa ese final no se conoce al inicio. Por eso se complementan con prácticas ágiles: ciclos cortos, entregas parciales y retroalimentación continua. Instalar un sistema tradicional se parece a construir un edificio; adoptar I.A. generativa, a mantener un jardín.",
+  "c": false
+ },
+ {
+  "t": "Capítulo cinco. Qué se hace en la práctica",
+  "c": true
+ },
+ {
+  "t": "Ya tienes los marcos. Ahora bajemos a la mesa: qué se hace un lunes en la mañana. Cinco cosas. Comunicar, capacitar, partir con un piloto, tener referentes cercanos y medir.",
+  "c": false
+ },
+ {
+  "t": "La comunicación del cambio explica el propósito, el alcance, los beneficios y los límites, desde el comienzo y durante todo el proceso. Porque el vacío informativo nunca queda vacío: si la dirección no explica, alguien en la sala de café explicará que es para reducir dotación.",
+  "c": false
+ },
+ {
+  "t": "El segundo principio es la segmentación de públicos: adaptar contenido, canal y vocero a lo que le preocupa a cada grupo. Al directorio se le habla de costo y riesgo regulatorio; a los ejecutivos, de quién responde si el sistema se equivoca y si esto afecta su bono.",
+  "c": false
+ },
+ {
+  "t": "El tercero es la transparencia: informar avances, reconocer lo que no funciona y explicar los ajustes. Comunicar lo que va bien no construye credibilidad; comunicar el piloto que falló es lo que hace creíble el mensaje siguiente.",
+  "c": false
+ },
+ {
+  "t": "Lo segundo del kit es la capacitación, que no puede ser una demostración técnica al final: forma parte del diseño desde el principio. En clave ádkar produce conocimiento; si se entrega antes de que exista deseo se desperdicia, y sin práctica acompañada nunca produce capacidad. Nadie aprendió a vender en una capacitación: eso lo enseñan tus propios casos.",
+  "c": false
+ },
+ {
+  "t": "Y el objetivo no es transformar a todos en especialistas, sino que puedan interpretar respuestas, hacer preguntas críticas, verificar información y reconocer cuando la supervisión humana no se puede delegar. Un error en el resumen de una reunión se corrige; una respuesta equivocada sobre la pensión de alguien, no tanto.",
+  "c": false
+ },
+ {
+  "t": "Lo tercero es partir con un proyecto piloto: una implementación real pero de alcance acotado, para generar evidencia antes de comprometer a toda la organización. Distínguelo de una prueba de concepto, en inglés pi o ci, que verifica si algo es técnicamente posible sin usuarios finales. Es la degustación antes del banquete: se hace con comensales, no con el chef probando su cuchara.",
+  "c": false
+ },
+ {
+  "t": "Después viene el escalamiento por etapas: ampliar por fases incorporando lo aprendido. Gartner proyectó que al menos el treinta por ciento de los proyectos generativos serían abandonados después de la prueba de concepto. Y la frase de que el setenta por ciento de las transformaciones fracasa no tiene estudio detrás.",
+  "c": false
+ },
+ {
+  "t": "Lo cuarto son los referentes cercanos, porque la alta dirección no puede sola. Un agente de cambio es alguien que, sin autoridad jerárquica, facilita la adopción en su equipo. Cuando ese rol se especializa se llama AI Champion, que se dice ei ái chámpion: responde preguntas, comparte buenas prácticas y lleva la fricción del terreno a quienes deciden.",
+  "c": false
+ },
+ {
+  "t": "Junto a ellos están las comunidades de práctica: grupos que se juntan a revisar casos reales. Necesitan tres elementos: el dominio, el tema compartido; la comunidad, la interacción regular; y la práctica, un repertorio de formas de resolver. Lave y Wenger describen además la participación periférica legítima: se entra por el borde, con tareas simples pero reales.",
+  "c": false
+ },
+ {
+  "t": "Y lo quinto es medir, pero medir lo correcto. La medición y mejora continua es observar de manera sistemática el uso real, los resultados y los efectos organizacionales. Ese apartado abre con la frase que resume la unidad: una herramienta instalada no necesariamente es una herramienta adoptada.",
+  "c": false
+ },
+ {
+  "t": "Los indicadores de adopción dicen si la herramienta se metió de verdad en el trabajo. El más elemental es la tasa de uso activo, qué proporción de la gente habilitada la usa en un periodo: imprescindible e insuficiente. Por eso se miran cuatro familias: los del sistema, los de adopción, los de proceso y los organizacionales.",
+  "c": false
+ },
+ {
+  "t": "Y ojo, la medición deja de ser un control de cumplimiento y pasa a ser fuente de aprendizaje. Si el equipo percibe que las métricas de uso alimentan su evaluación, aparece el uso cosmético. Es la diferencia entre cuántas gestiones registraste y cuántos traspasos evitaste.",
+  "c": false
+ },
+ {
+  "t": "Capítulo seis. Quién responde cuando el sistema se equivoca",
+  "c": true
+ },
+ {
+  "t": "Nos queda el capítulo más importante, y lo vamos a cerrar con una historia real. Pero antes, tres ideas que esa historia va a poner a prueba: la visión integrada, la organización que aprende y la gobernanza.",
+  "c": false
+ },
+ {
+  "t": "La visión integrada, que también se llama enfoque sistémico, es mirar la transformación como un sistema de elementos que se influyen entre sí. Mejorar una parte por separado puede empeorar el conjunto, y la tecnología pasa a ser apoyo.",
+  "c": false
+ },
+ {
+  "t": "Eso responde por qué dos empresas con la misma herramienta terminan distinto. Dos sucursales de la misma A F P reciben el mismo sistema de alertas: en una, el jefe lo revisa en la reunión de los martes y hay a quien preguntarle; en la otra se anunció por correo. Seis meses después, la primera bajó su fuga de afiliados.",
+  "c": false
+ },
+ {
+  "t": "Y esto no termina nunca. La capacidad continua de adaptación es aprender, probar, evaluar y corregir siempre, en vez de ejecutar proyectos con inicio y fin. La tecnología se compra en semanas, la capacidad humana toma trimestres y la organizacional toma años.",
+  "c": false
+ },
+ {
+  "t": "Y la confianza es coherencia, no discurso: si la organización habla de participación pero decide sin escuchar, pierde credibilidad. Lo que sí cambia la disposición es poder equivocarse sin miedo, y eso tiene nombre: seguridad psicológica, sentir que el equipo es un lugar seguro para preguntar y reportar un error sin castigo.",
+  "c": false
+ },
+ {
+  "t": "La lectura obligatoria de la unidad arranca con un dato que lo explica todo: el noventa por ciento de los empleados ya usó inteligencia artificial generativa para el trabajo, pero solo el trece por ciento cree que su organización es pionera. La barrera es psicológica, no técnica. De ahí la organización que aprende: su ventaja está en la velocidad con que convierte lo que su gente descubre en capacidad institucional.",
+  "c": false
+ },
+ {
+  "t": "Y de ahí la mentalidad de jardinero, por oposición a la de carpintero. El carpintero corta la madera según el plano; el jardinero mira qué está prendiendo, riega eso y poda lo demás. En vez de que un comité defina los diez usos oficiales, mira qué están haciendo ya tus compañeros. Y premia el aprendizaje, no el mero uso.",
+  "c": false
+ },
+ {
+  "t": "Y la tercera idea es la gobernanza de la I.A.: las normas y responsabilidades para que el uso de estas herramientas sea transparente y coherente con la estrategia. Responde cuatro preguntas antes del primer incidente: quién aprueba un caso de uso, quién responde cuando el sistema se equivoca, qué datos entran al modelo, y cuándo se retira una herramienta.",
+  "c": false
+ },
+ {
+  "t": "Cuatro conceptos la componen. Transparencia: saber con qué criterios se produjo una decisión asistida. Privacidad: qué datos personales entran y quién puede verlos. Seguridad de la información: protegerlos de accesos no autorizados. Y rendición de cuentas: la responsabilidad no se delega en el sistema, porque un modelo no puede responderle a nadie.",
+  "c": false
+ },
+ {
+  "t": "Y uno más: la explicabilidad, poder decirle a una persona, en palabras que entienda, por qué el sistema llegó a ese resultado. Su opuesto es la caja negra: se ven las entradas y las salidas, pero el criterio interno no se puede inspeccionar.",
+  "c": false
+ },
+ {
+  "t": "Ahora sí, la historia. Seguros del Pacífico invirtió hace seis meses en I.A. para agilizar la evaluación de siniestros de automóviles, y fue un éxito técnico: el noventa y dos por ciento de los siniestros simples se resuelve en menos de cinco minutos, cuando antes tomaban dos días.",
+  "c": false
+ },
+ {
+  "t": "Y entonces aparecieron tres problemas. Finanzas detecta que el costo promedio por siniestro subió un dieciocho por ciento, porque la herramienta estaría aprobando indemnizaciones más altas que las históricas. Y la Superintendencia pide explicaciones, por reclamos de clientes que sienten que el proceso es una caja negra. Ahí está la expresión, tal cual te la anticipé.",
+  "c": false
+ },
+ {
+  "t": "Y el tercero, que es el peor: los ajustadores más experimentados admiten en privado que ya no ejercen su criterio profesional. La frase textual hay que grabársela: la I.A. nunca se equivoca, para qué revisar.",
+  "c": false
+ },
+ {
+  "t": "Tecnología se defiende con un argumento literalmente cierto: el algoritmo funciona según los parámetros que le dieron. Y acá está la tesis de la unidad: esa afirmación es literalmente cierta y estratégicamente irrelevante. Puede ser verdad mientras la compañía pierde plata y se expone ante el regulador.",
+  "c": false
+ },
+ {
+  "t": "Tres conceptos explican el desastre. Confianza ciega y ruptura de la colaboración entre persona y máquina, porque el incentivo premiaba no revisar. Ausencia de gobernanza, porque nadie definió qué casos exigen revisión humana. Y medición incompleta: se midió velocidad y uso, pero no la calidad de la decisión. En el lenguaje de Lewin, movió pero nunca recongeló.",
+  "c": false
+ },
+ {
+  "t": "El gerente general pidió recuperar el control sin eliminar la herramienta, con tres medidas. Supervisión humana por umbrales escrita en el procedimiento: sobre cierto monto el sistema pasa a modo recomendación y un ajustador acepta, modifica o rechaza dejando registro escrito. Una gobernanza real, con comité y dueño de la decisión. Y realfabetizar a los ajustadores con champions y comunidad de práctica.",
+  "c": false
+ },
+ {
+  "t": "Y fíjate en el diagnóstico fino de esa tercera medida: en clave ádkar, el punto de barrera acá no es el conocimiento, son el deseo y la capacidad. Por eso hay que tocar las metas: si el único indicador es la velocidad, ninguna capacitación compite con ese incentivo.",
+  "c": false
+ },
+ {
+  "t": "Y llegamos al final. Si te llevas tres cosas, que sean estas. Primera: instalar no es cambiar, porque repartir licencias y hacer la capacitación no mueve ningún número. Segunda: la resistencia es información, no un enemigo, y se trabaja como una objeción de venta, escuchando. Y tercera: alguien tiene que responder cuando el sistema se equivoca.",
+  "c": false
+ },
+ {
+  "t": "Todo esto ya lo viviste: el sistema que nadie llenó, el guion que bajaron sin explicar, la campaña que se anunció por correo. Solo le pusieron nombre técnico. Así que quédate con esta frase y repítela mañana: una herramienta instalada no es una herramienta adoptada. La máquina hace su pega. La organización decide si eso sirve para algo.",
+  "c": false
+ }
+];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
