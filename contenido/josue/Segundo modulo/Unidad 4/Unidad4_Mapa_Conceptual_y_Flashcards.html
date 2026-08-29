@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 4 · Gestión del cambio — Mapa conceptual y Flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Innovación empresarial con IA · Máster en IA</div>
+  <h1>Unidad 4 · <b>Gestión del cambio y resistencia organizacional</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 89 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Ocho puntos donde el material del curso choca con la fuente original o con la literatura. El criterio es siempre el mismo: el curso es lo que se evalúa, así que la respuesta de una pregunta cerrada es la del curso; el matiz separa una respuesta correcta de una excelente en las preguntas abiertas.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> Lewin nunca escribió «recongelar»</h3>
+      <p>El curso atribuye a Kurt Lewin (1947) el modelo descongelar–cambiar–recongelar. Lo que Lewin escribió fue una sola frase con tres términos: <b>unfreezing / moving / freezing</b> — <i>freezing</i>, no <i>refreezing</i>. El prefijo lo agrega Festinger (1950), Lippitt lo amplía, Schein lo convierte en herramienta en los sesenta y la canonización como «modelo» ocurre en los ochenta. Cummings, Bridgman y Brown (2016, <i>Human Relations</i> 69(1), 33-60) documentan que toda la formulación ocupa 131 palabras dentro de una obra de 338 páginas, sin evidencia, sin diagrama y sin desarrollo posterior; Lewin murió en febrero de 1947. Burnes (2020, <i>JABS</i> 56(1), 32-59) matiza que la diferencia es «de nomenclatura más que de sustancia».</p>
+      <div class="regla"><b>Regla:</b> en pregunta cerrada o de completar la secuencia, responde <b>descongelar – cambiar – recongelar</b> atribuido a Lewin (1947). En pregunta abierta o de análisis crítico, responde el modelo y agrega el matiz historiográfico. Nunca afirmes que Lewin no escribió nada sobre <i>unfreezing</i>: sí lo escribió.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> El curso lista 6 de los 8 pasos de Kotter</h3>
+      <p>El propio PDF dice «ocho pasos» y a continuación enumera seis. Faltan el <b>paso 6</b> (<i>Generating Short-Term Wins</i>, generar triunfos de corto plazo) y el <b>paso 8</b> (<i>Anchoring New Approaches in the Culture</i>, anclar los nuevos enfoques en la cultura), que son además los dos de mayor carga conceptual de esta unidad: el 6 es el origen del concepto de <i>quick wins</i> que el propio curso usa, y el 8 es la respuesta canónica a la pregunta por la sostenibilidad del cambio. El resumen final del curso vuelve a decir «ocho», confirmando que fue una omisión de edición.</p>
+      <div class="regla"><b>Regla:</b> responde siempre los <b>ocho</b> y nómbralos en el orden de 1996. Si preguntan <i>cómo se sostiene el cambio en el tiempo</i>, la respuesta es el paso 8 (anclar en la cultura), no el 7. Si preguntan <i>cómo se mantiene la motivación durante una transformación larga</i>, es el paso 6.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> «Kotter 2012» es la edición, no el modelo</h3>
+      <p><i>Leading Change</i> se publicó en <b>1996</b> (Harvard Business Review Press reeditó en 2012 con nuevo prefacio) y su antecedente es el artículo de <i>HBR</i> de 1995, donde los ocho pasos aparecen formulados como ocho <b>errores</b>. Existe además una versión actualizada: en <i>Accelerate</i> (2014) Kotter reformula los pasos como ocho <b>aceleradores</b> concurrentes y continuos dentro de un <b>sistema operativo dual</b> —jerarquía más red estratégica—, movilizados por un «ejército de voluntarios» en vez de una coalición pequeña.</p>
+      <div class="regla"><b>Regla:</b> citar «Kotter, 2012» es legítimo. Si la pregunta apunta a la velocidad de la IA generativa y a por qué un modelo secuencial se queda corto, la respuesta de alto nivel es <i>Accelerate</i>: pasos concurrentes, no episódicos.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> El término es short-term wins, no quick wins</h3>
+      <p>El PDF habla de «logros tempranos o <i>quick wins</i>». <i>Quick wins</i> es jerga de consultoría y sinónimo coloquial; el término técnico de Kotter es <b>short-term wins</b> (triunfos de corto plazo). La diferencia no es solo de etiqueta: «quick win» sugiere algo que ocurre rápido y por suerte, mientras Kotter insiste en que deben ser <b>planificados y creados deliberadamente</b> —se decide qué victoria se quiere, para cuándo y cómo se hará visible—. No planificarlos es uno de sus ocho errores de 1995. Además deben ser visibles, inequívocos y atribuibles al esfuerzo de cambio.</p>
+      <div class="regla"><b>Regla:</b> si el examen pide el término del curso, <i>quick wins</i>; si pide el término de Kotter, <i>short-term wins</i>. Ambos nombran lo mismo.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> ADKAR: bloqueante en lógica, cíclico en el tiempo</h3>
+      <p>La posición oficial de Prosci es que los cinco bloques <b>son secuenciales</b> y que hacen falta los cinco; el <b>punto de barrera</b> es el primer elemento con puntaje 3 o menos en la escala 1-5, y hay que resolverlo antes de avanzar (capacitar —<i>Knowledge</i>— a quien no tiene <i>Awareness</i> ni <i>Desire</i> no produce adopción). Pero Prosci también publica que en entornos iterativos el recorrido se vuelve cíclico: <i>Awareness</i> y <i>Desire</i> deben sostenerse a través de todos los <i>sprints</i>, mientras <i>Knowledge</i> y <i>Ability</i> se re-recorren en cada entrega.</p>
+      <div class="regla"><b>Regla:</b> «¿ADKAR es secuencial?» → sí, en su orden lógico. «¿Cómo se aplica ADKAR a un proyecto ágil de IA?» → el orden se respeta, pero se recorre una vez por entrega. Fórmula: el orden lógico es bloqueante, el recorrido temporal es cíclico.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> Westerman: el 9% es de activos físicos</h3>
+      <p>Los <b>Digital Masters</b> son, frente a sus pares de la misma industria, <b>26% más rentables</b>, generan <b>9% más ingresos a partir de sus activos físicos</b> y tienen <b>12% mayor valoración de mercado</b>. Citar el 9% como «9% más ingresos» a secas es uno de los errores más extendidos en la literatura de transformación digital. Las dos dimensiones del modelo son <b>capacidad digital</b> (el qué) y <b>capacidad de gestión de la transformación</b> (el cómo); los <b>Fashionistas</b> —mucha tecnología, poca gobernanza— son la prueba de que la tecnología sola no rinde. Ojo: el estudio es observacional sobre ~400 ejecutivos, establece asociación y no causa.</p>
+      <div class="regla"><b>Regla:</b> da las tres cifras juntas y precisa que el 9% corresponde a ingresos generados desde los activos físicos, no a facturación total.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> WEF: crecimiento no es lo mismo que demanda</h3>
+      <p>El curso mezcla dos rankings distintos del <i>Future of Jobs Report 2025</i> (enero de 2025; más de 1.000 empleadores, 22 industrias, 55 economías). La habilidad de <b>mayor crecimiento</b> 2025-2030 es <i>AI and big data</i>, con +17 puntos porcentuales respecto de 2023. El <b>pensamiento analítico</b> es la habilidad <b>núcleo</b> más demandada del presente —7 de cada 10 empresas la considera esencial— pero ocupa el puesto 9 en crecimiento, precisamente porque ya está en el techo de demanda. El aprendizaje continuo sí está en el top 10 de crecimiento, en el puesto 6.</p>
+      <div class="regla"><b>Regla:</b> «¿habilidad de mayor crecimiento?» → <i>AI and big data</i>. «¿habilidad núcleo más demandada?» → pensamiento analítico. Cifras de respaldo: 63% señala la brecha de habilidades como principal barrera; ~39% de las habilidades cambiará para 2030; 59 de cada 100 necesitará re o <i>upskilling</i>; 170 millones de empleos creados, 92 millones desplazados, 78 millones neto.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">08</span> Cifras de fracaso: cuáles citar y cuál evitar</h3>
+      <p>La cita popular «el 70% de las transformaciones fracasa» <b>no tiene estudio primario identificable</b> y ha sido cuestionada repetidamente: es una cita huérfana, no la uses en un trabajo evaluado. Usa en cambio las trazables: BCG (octubre 2024) — 74% de las empresas aún no muestra valor tangible, y la <b>regla 10-20-70</b> (10% algoritmos, 20% tecnología y datos, 70% personas y procesos); McKinsey (marzo 2025) — más del 80% no ve impacto tangible en el EBIT y solo el 1% describe su despliegue como maduro; McKinsey (junio 2025) — menos del 10% de los casos de uso desplegados supera el piloto; Gartner (julio 2024) — al menos 30% de los proyectos de IA generativa abandonados tras la prueba de concepto; MIT NANDA (julio 2025) — 95% con retorno cero, citándolo siempre como «según el informe del MIT» y advirtiendo su muestra pequeña (52 entrevistas y 153 encuestas).</p>
+      <div class="regla"><b>Regla:</b> si la pregunta pide justificar por qué un curso de IA dedica una unidad completa a gestión del cambio, la respuesta que cierra el argumento es la regla 10-20-70 de BCG. Acompaña siempre la cifra con su fuente y su fecha.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 4 — Gestión del cambio y resistencia organizacional» · Curso: Innovación empresarial con IA · Archivo autocontenido, funciona sin internet</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Fundamento"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Habilitadores"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Marcos"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"Estrategias"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Resistencia"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Visión integrada"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Aplicación y casos"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Fundamento"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Habilitadores"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Marcos"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"Estrategias"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Resistencia"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Visión integrada"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Aplicación y casos"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+id:"root", t:"TRANSFORMACIÓN  \nCON IA  ", c:"root",
+d:"Tesis matriz de la unidad: la IA genera valor solo cuando la organización cambia con ella. BCG (24 de octubre de 2024; 1.000 ejecutivos C-level de más de 20 sectores en 59 países) encontró que apenas el 26% de las empresas logró escalar valor con IA y el 74% aún no muestra valor tangible; de ahí la regla 10-20-70: 10% del esfuerzo a los algoritmos, 20% a tecnología y datos y 70% a personas y procesos. Leída al revés, esa regla es el argumento completo de la unidad: un equipo que dedica el 90% de su energía al modelo está trabajando sobre el 10% del problema. Si hay una sola frase que llevarse: la tecnología es la parte fácil.",
+k:[
+ {id:"fundamento", e:"distingue", t:"1 · FUNDAMENTO", c:"azul",
+  d:"Primer bloque de la unidad: implementar no es transformar. Implementar una herramienta significa dejarla instalada y funcionando; transformar implica incorporarla al negocio, revisar quién hace qué, desarrollar capacidades y generar condiciones para aprender de forma permanente. Es perfectamente posible contar con soluciones avanzadas y seguir trabajando igual que antes, especialmente cuando nadie revisa los procesos ni las prácticas habituales. Toda la Clase 1 consiste en mostrar por qué la IA rompe la lógica del proyecto tecnológico clásico.",
+  k:[
+   {e:"define primero", t:"Siete conceptos clave", c:"azul",
+    d:"El material define siete términos antes de empezar y forman una cadena causal: el patrocinio ejecutivo hace posible la gestión del cambio, que produce quick wins que reducen la resistencia al cambio; la alfabetización en IA permite un uso con criterio, la gobernanza de la IA pone los límites institucionales y todo junto produce adopción de la IA. Adopción son tres cláusulas encadenadas y todas necesarias: incorporar la herramienta, que las personas la usen de forma efectiva y que aporte valor real al negocio (Davenport y Ronanki, 2018). Ejemplo numérico: 800 licencias, 610 inicios de sesión (76% en el reporte), 180 usuarios semanales y solo 60 dentro de un proceso formal medido — la adopción real es 60, no 610.",
+    k:[
+     {e:"exige", t:"Alfabetización en IA y gobernanza", c:"azul",
+      d:"La alfabetización en IA (AI literacy) de Long y Magerko (2020, CHI) es el conjunto de competencias para evaluar críticamente los sistemas de IA, comunicarse y colaborar con ellos y usarlos como herramienta: son 17 competencias agrupadas en cinco temas, y confundir los cinco temas con «cinco competencias» es error frecuente. No exige programar: un abogado alfabetizado en IA no entrena modelos, pero sabe que un modelo de lenguaje puede fabricar una cita jurisprudencial con formato impecable y por eso la verifica. La gobernanza de la IA es su contracara institucional: responde quién aprueba un caso de uso, quién responde cuando el sistema se equivoca, qué datos entran al modelo y bajo qué criterio se retira una herramienta. Es el único de los siete conceptos que el PDF define sin atribuir autor."},
+     {e:"y el par", t:"Patrocinio ejecutivo · quick wins", c:"azul",
+      d:"Patrocinio ejecutivo es el respaldo visible y sostenido de la alta dirección: asignar recursos (una firma), eliminar obstáculos (enemistarse con un par para destrabar algo) y apoyar el cambio organizacional (cambiar la propia conducta) — tres manifestaciones en dificultad creciente. Los quick wins o triunfos de corto plazo son resultados tempranos que hacen visibles beneficios concretos, aumentan la confianza y mantienen el impulso (Kotter, 2012). No es «el primer resultado bueno que aparezca»: se diseñan para ocurrir pronto, ser medibles y ser indiscutibles. Ejemplo: no «implementar IA en cobranzas», sino «en seis semanas las 40 cartas estándar pasan de 22 a 6 minutos promedio, con revisión humana obligatoria»."}
+    ]},
+   {e:"rompe con", t:"Implementación tecnológica", c:"azul",
+    d:"El modelo antiguo gestionaba la tecnología como un proyecto con inicio, presupuesto y fecha de entrega: si el sistema quedaba operativo a tiempo y en costo se hablaba de éxito, la responsabilidad recaía en TI y el beneficio esperado era eficiencia. La IA rompe parcialmente los cinco rasgos: el uso evoluciona después de la entrega, el costo es variable por uso, operativo no implica usado y usado no implica valioso, si es solo de TI el negocio lo lee como iniciativa informática, y el beneficio incluye cambios en decisiones y relaciones externas. Analogía del curso: instalar un ERP es cambiar cañerías —nadie aprende nada—; introducir IA se parece a pasar del conserje al control de acceso digital, que cambia quién decide, el rol de las personas y qué se hace cuando falla.",
+    k:[
+     {e:"entra por", t:"Tres primeros acercamientos", c:"azul",
+      d:"La IA entra a la organización de tres formas: comprar una plataforma ya construida (CRM con módulo predictivo, suite de analítica, licencia de asistente), desarrollar internamente un modelo predictivo con datos propios (fuga de clientes, demanda, riesgo crediticio, falla de equipos) o habilitar una herramienta de IA generativa que produce texto, código, imágenes o resúmenes desde instrucciones en lenguaje natural. Los tres son «pasos útiles, aunque todavía insuficientes para asegurar una mejora real en el desempeño». Cada uno exige gestión del cambio distinta: la plataforma concentra el esfuerzo en integración; el modelo predictivo agrega el problema de que alguien tiene que actuar sobre la predicción; y el generativo es el más engañoso, técnicamente el más barato y organizacionalmente el más difícil, porque no define ningún proceso."},
+     {e:"y omite el", t:"Rediseño de procesos", c:"azul",
+      d:"«Revisar quién hace qué» es el rediseño de procesos: modificar la secuencia de pasos, los puntos de decisión y la asignación de responsabilidades para que la nueva capacidad tenga dónde producir efecto. Sin ese rediseño la herramienta queda encima del proceso anterior en lugar de dentro de él, y produce el peor resultado posible: más trabajo, no menos. Ejemplo: un agente de soporte con un asistente que redacta borradores, pero con la misma meta de tickets por hora, ahora además debe leer y corregir el borrador; su tiempo por ticket sube y, racionalmente, deja de usarlo. El mismo software con rediseño —meta recalibrada, revisión en vez de redacción, campo corregido/aceptado— da el resultado opuesto."}
+    ]},
+   {e:"para llegar a", t:"Transformación organizacional", c:"azul",
+    d:"Decisión deliberada que alcanza la estrategia, la estructura, los procesos y las competencias; la IA puede acelerarla porque abre nuevas posibilidades de colaboración, aprendizaje e innovación. Cada palabra pesa: «decisión deliberada» significa que no le ocurre a una empresa, la decide; y ninguna de las cuatro capas es la tecnología, que es acelerador y no contenido. La transformación digital —el caso particular impulsado por tecnologías digitales, que combina cambios en experiencia del cliente, operaciones y modelo de negocio con cambios de liderazgo y cultura— es la especie; la organizacional es el género.",
+    k:[
+     {e:"si nadie la sostiene →", t:"Decaimiento de la adopción", c:"azul",
+      d:"Pérdida del uso y de los beneficios después de la etapa inicial: el uso sube durante el piloto por la novedad y la supervisión, y cae cuando ambas se retiran. Es el fracaso más frecuente y menos reportado de los proyectos de IA, y no es técnico. Por eso el curso ordena la secuencia así: conversar con las personas, revisar cómo se hace el trabajo y recién entonces desarrollar capacidades — capacitar a quien no entiende para qué existe el proyecto es gastar presupuesto en un contenedor vacío."}
+    ]},
+   {e:"opera sobre", t:"Tríada personas · procesos · tecnología", c:"azul",
+    d:"La IA afecta al mismo tiempo tres ámbitos estrechamente conectados, y si uno avanza mientras los otros permanecen igual, los resultados difícilmente serán sostenibles. Analogía: un restaurante compra una cocina industrial, pero si el menú sigue diseñado para una cocina doméstica y el equipo no sabe usar el abatidor, salen los mismos platos en el mismo tiempo más una cuota de leasing. La transformación se consolida cuando las tres dimensiones avanzan juntas y mantienen relación clara con las prioridades estratégicas.",
+    k:[
+     {e:"en los procesos", t:"Tareas, flujos y análisis", c:"azul",
+      d:"La IA puede asumir tareas repetitivas, ordenar flujos de trabajo y analizar grandes volúmenes de información: eso reduce tiempos, mejora la asignación de recursos y facilita decisiones operativas más oportunas. El encadenamiento importa para el examen: cada capacidad produce su efecto correspondiente, en ese orden."},
+     {e:"en las personas", t:"Análisis, supervisión y criterio", c:"azul",
+      d:"La IA modifica el contenido del trabajo y la forma de organizarlo: algunas labores se automatizan mientras otras exigen más análisis, supervisión y criterio. Por eso cobran importancia cuatro habilidades: revisar resultados, validar datos, formular buenas instrucciones y reconocer los efectos éticos de una decisión apoyada por IA. Esas cuatro son exactamente las competencias que la Clase 2 desarrolla una por una."},
+     {e:"y la tecnología", t:"Soporte, no protagonista", c:"azul",
+      d:"El tercer vértice se define por su rol: es el soporte de la transformación pero no actúa sola. Necesita una estrategia que se entienda, procesos coherentes y personas capaces de incorporarla. Una solución muy sofisticada tendrá poco impacto si la organización no sabe cómo usarla. Ejemplo: un scoring que aprueba el 60% de los créditos con menos error que el comité no baja un minuto el tiempo de aprobación si las solicitudes siguen pasando por el comité «para revisar»."}
+    ]},
+   {e:"tiene evidencia en", t:"Westerman, Bonnet y McAfee (2014)", c:"azul",
+    d:"Leading Digital: Turning Technology into Business Transformation, resultado de tres años del MIT Center for Digital Business con Capgemini Consulting sobre cerca de 400 ejecutivos senior. Su hallazgo: el desempeño digital no depende de una variable sino de dos independientes entre sí, y cruzarlas produce cuatro tipos de empresa. Ojo con la causalidad: el estudio es observacional, establece asociación y no causa demostrada.",
+    k:[
+     {e:"cruza dos ejes", t:"Capacidad digital × de transformación", c:"azul",
+      d:"La capacidad digital es el «qué»: cuánto invierte y qué tan bien usa la tecnología para transformar la experiencia del cliente, las operaciones y el modelo de negocio. La capacidad de gestión de la transformación es el «cómo»: visión, gobernanza, compromiso de la dirección y calidad de la relación entre TI y el negocio. Los cuatro cuadrantes son Beginners (baja-baja), Fashionistas (alta-baja), Conservatives (baja-alta) y Digital Masters o Digirati (alta-alta)."},
+     {e:"alto × alto →", t:"Digital Masters", c:"azul",
+      d:"Frente a sus pares de la misma industria son 26% más rentables, generan 9% más ingresos a partir de sus activos físicos —no «9% más ingresos» a secas, que es el error de citación más extendido— y tienen 12% mayor valoración de mercado. Invierten y además saben conducir el cambio. Da siempre las tres cifras juntas y precisa el 9%."},
+     {id:"fashionistas", e:"alto × bajo →", t:"Fashionistas", c:"azul",
+      d:"Alta capacidad digital y baja capacidad de liderazgo: compran cada tecnología de moda sin gobernanza ni visión que las articule, y quedan con islas costosas y desconectadas. Son la prueba experimental de la tesis del curso: si comprar tecnología bastara, rendirían como los Digital Masters. Es el puente directo con esta unidad y con el dato de que invertir más dinero en tecnología no garantiza mejores resultados."}
+    ]},
+   {e:"y en", t:"Davenport y Ronanki (2018)", c:"azul",
+    d:"«Artificial Intelligence for the Real World», Harvard Business Review (enero-febrero 2018): encuesta a 250 ejecutivos y estudio de 152 proyectos de tecnología cognitiva. Hallazgo que cita el curso: muchas experiencias exitosas comenzaron con problemas concretos y de alcance reducido, lo que permitió mostrar resultados tempranos, ganar la confianza de los equipos y aprender antes de extender la solución. Su secuencia es de tres tiempos: entender qué tecnología sirve para qué tarea, armar un portafolio priorizado por necesidad de negocio y solo entonces planificar el escalamiento. Escalar es el tercer paso, no el primero.",
+    k:[
+     {e:"clasifica en", t:"Tres tipos de proyecto", c:"azul",
+      d:"Automatización de procesos, que incluye la automatización robótica de procesos (RPA: software que imita clics y tecleos sobre sistemas existentes), fue el ~47% de los 152 proyectos, casi la mitad. Insight cognitivo —algoritmos que detectan patrones en grandes volúmenes de datos e interpretan su significado, como predicción de compra o detección de fraude— fue ~38%. Compromiso cognitivo —chatbots, agentes inteligentes y asistentes internos que interactúan en lenguaje natural— fue el 16%. La distribución muestra que en 2018 la mayor parte del valor venía del tipo menos espectacular."},
+     {e:"y advierte", t:"Don't start with moonshots", c:"azul",
+      d:"El caso emblemático es MD Anderson Cancer Center: cerca de USD 62 millones en un proyecto con Watson para diagnóstico oncológico que terminó cancelado sin usarse nunca con pacientes. En el mismo hospital y período, proyectos de «fruta al alcance de la mano» sí funcionaron: recomendación de hoteles para pacientes, identificación de quienes necesitaban asistencia financiera y soporte de TI. Misma tecnología, misma época; la diferencia fue el tamaño y la concreción del problema. Conecta con los quick wins de Kotter: un problema acotado resuelto rápido y visible es un triunfo de corto plazo."}
+    ]},
+   {e:"se cuantifica con", t:"Regla 10-20-70 (BCG)", c:"azul",
+    d:"Los líderes destinan cerca del 10% de sus recursos a los algoritmos, el 20% a tecnología y datos y el 70% a personas y procesos; simétricamente, ~70% de los desafíos de implementación viene de personas y procesos, 20% de tecnología y 10% de algoritmos. Convergen otros datos: McKinsey (State of AI, 12 de marzo de 2025; 1.491 participantes, 101 países) reporta que el 78% de las organizaciones usa IA en al menos una función pero más del 80% no ve impacto tangible en el EBIT, y solo el 21% rediseñó fundamentalmente algún flujo de trabajo. Si la pregunta pide justificar por qué un curso de IA dedica una unidad completa a gestión del cambio, esta regla es la respuesta que cierra el argumento."}
+  ]},
+
+ {e:"se apoya en", t:"2 · HABILITADORES", c:"verde",
+  d:"Segundo bloque: la transformación con IA no es un proyecto tecnológico sino un cambio cultural que exige liderazgo comprometido, aprendizaje continuo, confianza y nuevas capacidades humanas. Los factores analizados en la Clase 2 son seis: liderazgo comprometido, cultura orientada al aprendizaje, construcción de confianza, comprensión de la resistencia, desarrollo de capacidades y colaboración persona-IA. No basta con invertir en herramientas avanzadas.",
+  k:[
+   {e:"empieza por", t:"Liderazgo comprometido", c:"verde",
+    d:"Forma que toma el patrocinio ejecutivo dentro de un proyecto de IA: explicar para qué se usará, comunicar con regularidad los beneficios esperados, resolver obstáculos y respaldar a los equipos durante la adopción. El error más extendido es dejar el proyecto únicamente en manos del área tecnológica: ahí el resto de la organización lo ve como iniciativa informática y no como cambio estratégico. El mecanismo no es obvio: cuando un proyecto «pertenece» a TI rige la regla implícita «si es tu proyecto, mi cooperación es un favor»; cuando pertenece al negocio se invierte a «es nuestro objetivo y TI provee la capacidad». Misma gente, mismo presupuesto, dirección opuesta de la deuda social.",
+    k:[
+     {e:"se expresa en", t:"Patrocinio ejecutivo", c:"verde",
+      d:"Respaldo visible y sostenido de la alta dirección, expresado en asignación de recursos, eliminación de obstáculos y apoyo al cambio organizacional. Las dos palabras que hacen el trabajo son «visible» —un patrocinio que nadie fuera del comité percibe funcionalmente no existe— y «sostenido» —no se agota en el anuncio inicial—. Ejemplo del curso: el gerente de TI que manda un correo con instructivo adjunto versus el gerente comercial que abre la reunión mensual mostrando cómo él mismo usó la herramienta, cuenta qué le salió mal y anuncia que el pipeline se revisará con sus reportes."},
+     {id:"coalicion", e:"y se sostiene en", t:"Coalición conductora", c:"verde",
+      d:"Grupo de líderes de distintas áreas que impulsa el cambio y mantiene el compromiso en el tiempo. Ningún individuo, por alto que esté en el organigrama, reúne a la vez la información, la credibilidad y el alcance para conducir una transformación transversal: se necesita un grupo que combine poder posicional, experticia en los dominios afectados, credibilidad ante los equipos y capacidad de liderazgo. Un comité con poder formal pero sin credibilidad emite instrucciones que nadie obedece de verdad. Es el segundo de los ocho pasos de Kotter."}
+    ]},
+   {id:"cultura", e:"se sostiene en", t:"Cultura orientada al aprendizaje", c:"verde",
+    d:"Ambiente que da espacio a la curiosidad, la prueba y la mejora, donde los equipos exploran herramientas, comparten lo que descubren y aprenden también de los errores. El escenario cambia cuando equivocarse se castiga o los procesos son demasiado rígidos: ahí las personas conservan sus métodos de siempre aunque existan soluciones mejores. El cálculo lo explica: si la herramienta mejora tu resultado en el 70% de los casos y lo empeora en el 30%, pero los aciertos se atribuyen al equipo y los errores a tu decisión personal de usar algo no estándar, tu retorno individual esperado es negativo aunque el de la organización sea positivo. El problema no es de conocimiento, es de asimetría en la asignación de crédito y culpa.",
+    k:[
+     {e:"se mide como", t:"Madurez digital (Kane, 2019)", c:"verde",
+      d:"Grado en que una organización se acerca al ideal de estar digitalmente transformada, en escala de 1 a 10 y tres tramos: tempranas (1-3) 24% de la muestra, en desarrollo (4-6) 44% y maduras (7-10) 32%. Las brechas más grandes entre maduras y tempranas no están en tecnología: innovación como fortaleza 81% vs. 10%, recursos suficientes para innovar 74% vs. 15%, 10% o más del tiempo laboral dedicado a experimentar 86%, equipos multifuncionales con autonomía 69% vs. 38% y liderazgo que los apoya 73% vs. 29%. Para diagnosticar cultura de aprendizaje no preguntes si se valora: pregunta cuántas horas a la semana alguien puede probar algo sin justificarlo ante nadie."},
+     {id:"invertirmas", e:"y muestra que", t:"Invertir más no basta", c:"verde",
+      d:"Los estudios recientes sugieren que invertir más dinero en tecnología no garantiza mejores resultados: a menudo avanzan más las empresas que aprenden, experimentan y comparten lo que funciona. Es la versión Clase 2 de los Fashionistas de Westerman y es coherente con la regla 10-20-70 de BCG. El curso cierra con Microsoft (2025, Work Trend Index: The Year the Frontier Firm Is Born): «las organizaciones más maduras integran herramientas inteligentes en su rutina y desarrollan prácticas de aprendizaje colaborativo». Sin lo segundo cada empleado repite el mismo descubrimiento por su cuenta y la curva de aprendizaje de la empresa es plana."}
+    ]},
+   {e:"requiere", t:"Construcción de confianza", c:"verde",
+    d:"Sin confianza la adopción se vuelve difícil: una aplicación puede funcionar técnicamente bien y quedar subutilizada si las personas dudan de sus resultados o sienten que amenaza su trabajo. La confianza en la IA empieza a formarse mucho antes de que la herramienta entre en operación: hay que saber por qué se eligió esa solución, qué resultados se esperan y dónde termina la responsabilidad del sistema y comienza la de las personas. No comunicar no es neutro: si la organización no provee el relato, lo provee el pasillo, y el relato del pasillo casi siempre es la versión más amenazante posible.",
+    k:[
+     {e:"exige hablar de", t:"Los tres límites del modelo", c:"verde",
+      d:"El curso pide comunicar explícitamente tres límites. Puede equivocarse: produce salidas incorrectas con la misma fluidez y seguridad aparente que las correctas y no señala su propia duda, lo que exige verificar antes de usar. Puede entregar respuestas incompletas: omite condiciones y excepciones que un experto del dominio habría incluido, lo que exige aportar el contexto que el modelo no tiene. Y depende de la calidad de sus datos de entrenamiento: reproduce patrones, sesgos y desactualizaciones, lo que exige preguntarse a quién representan esos datos. Prometer una herramienta infalible garantiza que el primer error destruya la credibilidad del proyecto completo."},
+     {id:"confianzaciega", e:"si falta →", t:"Confianza ciega · sesgo de automatización", c:"verde",
+      d:"Confianza ciega es aceptar la salida del sistema sin revisarla; su nombre técnico es sesgo de automatización: aceptar la recomendación de un sistema automatizado incluso cuando hay evidencia disponible que la contradice, con errores por omisión (no detectar lo que el sistema no señaló) y por comisión (actuar según una recomendación equivocada). Analogía: doblar hacia una calle cortada porque «el mapa lo dijo», ignorando el cono naranja que tienes delante. Es exactamente lo que ocurre en el caso Seguros del Pacífico cuando los ajustadores más experimentados dicen «la IA nunca se equivoca, para qué revisar»."},
+     {e:"o al revés →", t:"Aversión al algoritmo", c:"verde",
+      d:"El extremo opuesto e igual de costoso: descartar un sistema estadístico tras verlo fallar una vez, aun cuando en promedio supere al juicio humano. Su rasgo es la asimetría: al algoritmo se le perdona el error mucho menos que a una persona. Ejemplo: el asistente legal confunde una vez «vigencia» con «renovación», el equipo declara que «no sirve» y vuelve a leer 60 contratos a mano. El uso correcto es el tercero: fijar una regla explícita —las cláusulas económicas y de terminación se verifican siempre contra el original, el resto se acepta— convirtiendo el límite en procedimiento."}
+    ]},
+   {e:"y construye", t:"Desarrollo de capacidades", c:"verde",
+    d:"La adopción demanda capacidades diferentes según el nivel y la función: no es razonable esperar que todos programen, sí que comprendan para qué sirve la herramienta, cómo interactuar con ella y qué decisiones siguen requiriendo criterio profesional. Es un problema de diseño estratificado, no de cobertura universal, y las cuatro competencias del material son el núcleo común. Se desarrollan con tres mecanismos: programas permanentes en vez de eventos puntuales, actividades prácticas sobre trabajo real y espacios entre pares donde se comparten dudas, errores y soluciones.",
+    k:[
+     {e:"1 ·", t:"Formular instrucciones (prompting)", c:"verde",
+      d:"Dar indicaciones claras y precisas a la IA definiendo contexto, objetivo y formato; una buena instrucción reduce la ambigüedad y evita iteraciones innecesarias. Los tres elementos no son consejo estilístico: cada uno cierra una fuente distinta de ambigüedad. Ejemplo: «resume este contrato» versus «Contexto: soy el jefe de operaciones y decidiré si renovamos. Objetivo: identificar todo lo que nos ate o exponga si no renovamos. Formato: tabla con cláusula, riesgo y plazo, máximo 10 filas, ordenada por riesgo». La segunda contiene tres decisiones que, si no las tomas tú, las toma el modelo y probablemente mal."},
+     {e:"2 ·", t:"Revisar antes de usar", c:"verde",
+      d:"No confiar ciegamente: validar los resultados con criterio profesional y sentido común antes de usarlos en decisiones o comunicaciones. Es la traducción individual de lo que a nivel de sistema se llama supervisión humana (human-in-the-loop): la arquitectura donde una persona valida, corrige o aprueba la salida antes de que produzca efectos. Competencia y arquitectura se necesitan mutuamente: poner un humano en el circuito no sirve si no tiene criterio ni tiempo para revisar de verdad, y el criterio no sirve si el proceso no contempla un punto de revisión antes de la acción."},
+     {e:"3 ·", t:"Contrastar y ver sesgos", c:"verde",
+      d:"Verificar que la información sea objetiva y representativa, contrastando con otras fuentes. Lo que está en juego es el sesgo algorítmico: producción sistemática de resultados que perjudican o favorecen a ciertos grupos, derivada de los datos de entrenamiento, del diseño del modelo o de su uso. La palabra clave es «sistemática»: no es un error aleatorio que se compensa en promedio, y por eso no se detecta revisando un caso sino comparando resultados entre grupos. Ejemplo: un modelo de preselección de currículums entrenado con diez años de contrataciones aprende que egresar de una universidad regional predice «no contratado» y lo perpetúa."},
+     {id:"etica", e:"4 ·", t:"Advertir consecuencias éticas", c:"verde",
+      d:"Considerar el impacto humano de las decisiones respaldadas por IA con tres preguntas: ¿es justa?, ¿puede discriminar?, ¿quién asume la responsabilidad? Son el protocolo mínimo de la IA responsable, el conjunto de principios y prácticas que buscan sistemas justos, transparentes, explicables y con responsabilidad asignada. La tercera pregunta es la bisagra: la ética individual identifica el problema, la gobernanza de la IA define quién responde por él."},
+     {e:"se amplía con", t:"Upskilling, reskilling y data literacy", c:"verde",
+      d:"Upskilling es profundizar las capacidades de una persona dentro de su rol actual —el analista que aprende a trabajar con asistentes sigue siendo analista—; reskilling es formarla para un rol distinto cuando el suyo se reduce o desaparece. La alfabetización de datos es la capacidad de leer, interpretar, cuestionar y comunicar datos: qué es una muestra, qué es una correlación, por qué un promedio puede esconder dos poblaciones. Es el prerrequisito silencioso de las competencias de revisión y contraste."},
+     {e:"con contexto de", t:"WEF · Future of Jobs 2025", c:"verde",
+      d:"Informe de enero de 2025 sobre más de 1.000 empleadores, 22 industrias y 55 economías. Distingue dos rankings que el examen suele mezclar: la habilidad de mayor crecimiento 2025-2030 es «AI and big data», con +17 puntos porcentuales respecto de 2023; el pensamiento analítico es la habilidad núcleo más demandada hoy —7 de cada 10 empresas la consideran esencial— pero ocupa el puesto 9 en crecimiento. Cifras de respaldo: 63% de los empleadores señala la brecha de habilidades como principal barrera, ~39% de las habilidades cambiará hacia 2030, 59 de cada 100 trabajadores necesitará re o upskilling, y el balance es de 170 millones de empleos creados y 92 millones desplazados, saldo neto de 78 millones."}
+    ]},
+   {e:"y culmina en", t:"Colaboración persona-IA", c:"verde",
+    d:"La IA no vuelve innecesario el conocimiento humano: amplía la información que puede revisarse, propone alternativas y entrega antecedentes para decidir. El sistema aporta procesamiento masivo, reconocimiento de patrones y tareas repetitivas; las personas aportan cinco cosas distintas: juicio, experiencia (conocimiento tácito que nunca quedó escrito), creatividad, lectura del contexto y habilidades para relacionarse. Eso es el aumento de capacidades (augmentation): el sistema amplía lo que la persona puede hacer, en oposición a la automatización pura que reemplaza la tarea completa; elegir entre ambas no es una decisión técnica sino organizacional. Analogía: el ecógrafo no reemplazó al médico, le permitió ver dentro del cuerpo sin abrirlo.",
+    k:[
+     {e:"exige tres cosas", t:"Responsabilidades, revisión y encuadre", c:"verde",
+      d:"El curso nombra tres condiciones para esa colaboración: definir responsabilidades, establecer mecanismos de revisión y presentar la IA como herramienta que amplía el trabajo y no como sustituto automático de las personas. Las tres vienen de apartados anteriores: responsabilidades es gobernanza, mecanismos de revisión es supervisión humana y el encuadre es condición de confianza — difícilmente alguien colabore de buena fe con el sistema que cree que lo reemplazará. Ejemplo de reparto diseñado: el modelo puntúa el 100% de las operaciones y aprueba las de riesgo bajo bajo cierto monto, el analista revisa las de riesgo medio y puede revertir con registro del motivo, las de riesgo alto van a comité y un 2% de las aprobaciones automáticas se audita cada mes."}
+    ]}
+  ]},
+
+ {e:"tropieza con", t:"3 · RESISTENCIA", c:"coral",
+  d:"Tercer bloque: la resistencia al cambio son las ideas, actitudes y conductas que dificultan aceptar tecnologías, procesos o formas de trabajo distintas (Hiatt, 2006). Retén la estructura de tres niveles que no siempre coinciden: alguien puede creer que la IA es útil, sentirse amenazado por ella y comportarse como si la estuviera usando — esa disociación es lo que la hace difícil de detectar. En proyectos de IA la reacción tiene menos relación con la tecnología que con la falta de respuestas a tres preguntas: qué ocurrirá con el trabajo (empleo), cuánto margen de decisión se conserva (autonomía) y si se seguirá siendo valorado (estatus).",
+  k:[
+   {e:"no es", t:"Rechazo a la tecnología", c:"coral",
+    d:"La instrucción de interpretación más importante de la Clase 1: no interpretar toda resistencia como rechazo a la tecnología. A menudo detrás hay falta de información, poca capacitación o dudas legítimas sobre el propósito. «Es natural que recurran a las prácticas que ya conocen» reencuadra la resistencia como respuesta racional a la incertidumbre, no como defecto de carácter: bajo información incompleta y con consecuencias personales en juego, seguir haciendo lo que sabes que funciona es la estrategia dominante. Si quieres cambiar la conducta, cambia la información y las consecuencias; no exijas más voluntad."},
+   {e:"se manifiesta en", t:"Cuatro formas de resistencia", c:"coral",
+    d:"El catálogo del curso, material de examen probable. Cuestionar la utilidad de la herramienta: la objeción se presenta como argumento técnico o de calidad y por eso es difícil de refutar sin parecer que se ignora el criterio experto. Postergar su uso: nadie se opone, simplemente el momento nunca llega (cierre de mes, falta capacitación, después del proyecto grande); es la forma más eficiente porque no requiere justificarse nunca. Las otras dos —procesos paralelos y cumplimiento aparente— tienen entidad propia y se detallan aparte.",
+    k:[
+     {e:"duplicando →", t:"Procesos paralelos", c:"coral",
+      d:"Mantener en marcha el procedimiento anterior junto al nuevo: la planilla propia que se sigue llenando junto al sistema. Suele nacer de una precaución sensata durante la transición y se vuelve permanente. Su costo es doble: duplica el trabajo y produce dos versiones de la verdad, anulando el beneficio que justificaba el proyecto."},
+     {e:"o fingiendo →", t:"Cumplimiento aparente", c:"coral",
+      d:"Aceptación formal de la herramienta sin incorporación real a las tareas: la persona hace exactamente lo que se le pidió, en la letra, sin el criterio que hacía útil la práctica; usa la herramienta el mínimo necesario para que el indicador registre uso y decide como antes. Ejemplo numérico: en compras el tablero muestra 92% de órdenes pasando por el sistema, pero en el 78% de los casos el comprador ya había elegido proveedor por su cuenta — uso formal 92%, influencia real 22%. Solo se detectó comparando la sugerencia del sistema con la elección final."}
+    ]},
+   {e:"agrupadas como", t:"Resistencia pasiva", c:"coral",
+    d:"Oposición que se expresa por omisión, demora o cumplimiento formal en lugar de por confrontación. Su rasgo estructural es que no ofrece blanco: no hay a quién convencer, porque nadie declaró estar en contra. Por eso los tableros de adopción suelen dar señales tranquilizadoras justo antes de que quede claro que el proyecto no cambió nada. Analogía: el vecino que vota en contra del reglamento nuevo versus el que vota a favor, sonríe y sigue estacionando donde siempre — con el primero puedes negociar."},
+   {e:"pero sobre todo", t:"La resistencia informa", c:"coral",
+    d:"El giro conceptual más valioso del apartado: la resistencia entrega información valiosa. Escuchar las inquietudes permite identificar riesgos no considerados, detectar necesidades de formación y ajustar la estrategia antes de extender la IA a toda la organización. Eso cambia la métrica de éxito: si la resistencia es un obstáculo, el objetivo es que nadie objete; si es una señal, el objetivo es captarla temprano y barata. Una organización donde nadie objeta nada no es una sin problemas: es una donde las objeciones no llegan. Quien mejor conoce los casos en que el modelo va a fallar es quien lleva quince años haciendo esa tarea a mano."}
+  ]},
+
+ {e:"ordena", t:"4 · MARCOS DEL CAMBIO", c:"ambar",
+  d:"Cuarto bloque: con qué estructura se ordena el recorrido. Un marco de gestión del cambio es un modelo conceptual que ordena en etapas o componentes las acciones para que una modificación sea adoptada y se sostenga; no es un manual de procedimientos ni un software. El curso presenta tres —Lewin, Kotter y ADKAR— y cierra con su adaptación a la velocidad de la IA. No es necesario elegir uno solo: muchas organizaciones combinan elementos de los tres según su cultura, el tipo de proyecto y su madurez.",
+  k:[
+   {e:"porque un marco", t:"Ordena sin eliminar dificultades", c:"ambar",
+    d:"Lo que un marco hace es evitar que se salten pasos que la evidencia muestra que importan, y aportar un lenguaje común para coordinar áreas que miran la transformación desde perspectivas distintas: cuando TI, operaciones y personas acuerdan que están «en la etapa de descongelamiento» dejan de discutir percepciones vagas. Lo que no hace, y el curso lo dice: no elimina las dificultades ni reemplaza el criterio de quienes dirigen el proyecto. Analogía: un marco es el plan de vuelo de una aerolínea — no impide la turbulencia ni reemplaza al comandante, pero garantiza que nadie despegue sin combustible calculado ni ruta alterna."},
+   {e:"el más simple:", t:"Modelo de Lewin (1947)", c:"ambar",
+    d:"Kurt Lewin, psicólogo social alemán radicado en Estados Unidos, lo formuló en «Frontiers in Group Dynamics», Human Relations 1(1). En la versión del curso todo cambio atraviesa tres momentos: descongelar, cambiar y recongelar. Su valor es diagnóstico: ante un proyecto que va mal, preguntar «¿descongelamos?» y «¿estamos recongelando?» localiza el problema en la mayoría de los casos. Analogía: un cubo de hielo al que quiere darle forma de cono no se talla a martillazos — hay que derretirlo, verterlo en el molde y volver a congelarlo; si se salta el último paso tiene un cono de agua durante diez minutos y un charco después.",
+    k:[
+     {e:"1 ·", t:"Descongelar", c:"ambar",
+      d:"Preparar a la organización: explicar por qué se necesita el cambio, conversar sobre los beneficios esperados, reconocer las inquietudes y abrir espacios para escuchar a los equipos antes de comenzar. Es la etapa que más se salta, porque no produce entregables visibles: su producto es disposición. Ejemplo: la gerencia muestra que el equipo dedica 40% del tiempo a redactar y 60% a analizar, pregunta qué parte del informe resulta más tediosa y aclara que no habrá reducción de dotación."},
+     {e:"2 ·", t:"Mover (cambiar)", c:"ambar",
+      d:"Se incorporan las herramientas, se modifican los procesos y se desarrollan nuevas habilidades; la capacitación, el acompañamiento y la retroalimentación son esenciales porque las personas están probando otras formas de trabajar. Dato clave: en esta fase el desempeño típicamente baja antes de subir, y si la organización mide justo en ese valle y concluye que «la IA no funciona», mata el proyecto en el peor momento."},
+     {e:"3 ·", t:"Recongelar", c:"ambar",
+      d:"Que las nuevas prácticas dejen de ser excepcionales y pasen a formar parte de la operación. Cuatro acciones verificables: actualizar procedimientos, redefinir responsabilidades, medir resultados e incorporar la IA a la cultura organizacional. Si a los seis meses el manual sigue describiendo el flujo antiguo, el cambio no se recongeló. Es exactamente lo que Seguros del Pacífico no hizo: movió sin recongelar."},
+     {e:"se apoya en", t:"Teoría de campo", c:"ambar",
+      d:"Marco de Lewin donde un comportamiento organizacional estable no está quieto porque nadie lo empuje, sino porque está sometido a fuerzas opuestas que se cancelan: unas impulsan al cambio (competencia, costos, expectativas de clientes) y otras lo frenan (rutinas, temores, incentivos vigentes, contratos). La conducta es función de la persona y su ambiente, y el ambiente se modela como un campo de fuerzas en tensión. Para llevar el sistema del nivel L1 al L2 hay que debilitar las fuerzas restrictivas, desplazar el equilibrio y estabilizarlo."},
+     {e:"⚠️ pero", t:"Lewin escribió freezing", c:"ambar",
+      d:"Lo que Lewin escribió en la sección D.6 fue una sola frase: «unfreezing (if necessary) the present level L1, moving to the new level L2, and freezing group life on the new level» — freezing, no refreezing. El prefijo «re-» aparece en Festinger (1950); Lippitt lo amplía, Schein lo refina en los sesenta y la canonización como «modelo de tres pasos» ocurre en los ochenta. Cummings, Bridgman y Brown (2016, Human Relations 69(1), 33-60) documentan que toda la formulación ocupa 131 palabras dentro de una obra de 338 páginas, sin evidencia, sin diagrama y sin desarrollo posterior; Lewin murió en febrero de 1947. Burnes (2020, JABS 56(1), 32-59) responde que la diferencia es «de nomenclatura más que de sustancia»."}
+    ]},
+   {id:"kotter", e:"el más político:", t:"Modelo de Kotter (1996)", c:"ambar",
+    d:"Donde Lewin describe la física del cambio, Kotter describe su política: cómo se construye apoyo, cómo se vence la inercia y cómo se evita que la transformación se apague a mitad de camino. Son ocho pasos, aunque el curso solo lista seis. Leading Change se publicó en 1996 y Harvard Business Review Press reeditó en 2012 con nuevo prefacio; su antecedente es el artículo de HBR de 1995 «Leading Change: Why Transformation Efforts Fail», donde los ocho pasos aparecen formulados como ocho errores. Cita «Kotter, 2012» si quieres: es legítimo, pero es la edición, no el modelo.",
+    k:[
+     {e:"1 ·", t:"Sentido de urgencia", c:"ambar",
+      d:"Percepción compartida de que el statu quo es más riesgoso que el cambio; no es miedo ni prisa, es evidencia de que no moverse cuesta. Kotter sostiene que la mayoría de las transformaciones fracasa aquí, porque los directivos confunden haber anunciado la urgencia con haberla instalado."},
+     {id:"kotter2", e:"2 ·", t:"Coalición conductora", c:"ambar",
+      d:"El grupo que impulsa el cambio, y debe combinar cuatro atributos: poder posicional, experiencia, credibilidad y capacidad de liderazgo. Un comité de puros expertos sin poder no destraba nada, y uno de puros jefes sin conocimiento del terreno propone cosas inaplicables. En Accelerate (2014) Kotter reemplaza esta coalición pequeña por un «ejército de voluntarios» reclutado en toda la organización."},
+     {e:"3 y 4 ·", t:"Visión de cambio y su comunicación", c:"ambar",
+      d:"La visión de cambio es una descripción breve del futuro deseado que responde «¿en qué seremos distintos y por qué eso es mejor?»; su prueba práctica es poder explicarla en menos de cinco minutos y obtener comprensión e interés. El paso 4 es comunicarla por múltiples canales y con el ejemplo de los líderes. Aplicado a la IA: antes de automatizar informes conviene explicar qué problema se busca resolver, qué tareas cambiarán y qué beneficios se esperan tanto para la empresa como para los equipos — esta última cláusula suele omitirse y es decisiva, porque una transformación que solo promete ahorro al accionista no moviliza a nadie más."},
+     {e:"5 ·", t:"Empoderar la acción amplia", c:"ambar",
+      d:"Eliminar las barreras estructurales que impiden actuar a quienes ya quieren hacerlo: sistemas incompatibles, jefaturas que bloquean, cargos obsoletos, políticas que prohíben lo que se acaba de pedir. El PDF lo llama «remover obstáculos». No es motivar: es sacar del camino lo que hace imposible ejecutar la visión."},
+     {id:"quickwins", e:"6 ·", t:"Triunfos de corto plazo", c:"ambar",
+      d:"Short-term wins, el término técnico; «quick wins» es jerga de consultoría. Deben ser visibles (mucha gente puede comprobarlo), inequívocos (no admiten discusión sobre si ocurrió) y claramente atribuibles al esfuerzo de cambio, y sobre todo planificados y creados deliberadamente, no esperados como suerte. Ejemplo: «bajamos 6% los costos operacionales del semestre» no sirve; «el equipo de soporte pasó de 40 a 65 tickets diarios con el mismo personal y el tiempo de primera respuesta bajó de 4 horas a 20 minutos, medido durante ocho semanas» sí sirve. Falta en la lista del curso."},
+     {e:"7 ·", t:"Consolidar y producir más cambio", c:"ambar",
+      d:"Usar la credibilidad ganada con los primeros triunfos para atacar lo difícil, en lugar de declarar victoria antes de tiempo. Es el paso que el curso sí menciona («consolidar los resultados») y conviene no confundirlo con el 8: consolidar produce más cambio, anclar lo hace permanente."},
+     {e:"8 ·", t:"Anclaje en la cultura", c:"ambar",
+      d:"Hacer que el cambio sobreviva a la salida de quienes lo impulsaron: es la respuesta canónica a la pregunta por la sostenibilidad. Anclar son dos cosas concretas: hacer explícita y repetidamente la conexión entre las nuevas conductas y los resultados obtenidos —si la gente no ve el vínculo, atribuye la mejora a la suerte o al mercado— y asegurar que la próxima generación de líderes encarne las nuevas prácticas, lo que obliga a tocar criterios de promoción y selección. Kotter es tajante en algo contraintuitivo: la cultura cambia al final, no al principio. Falta en la lista del curso."},
+     {e:"y en 2014 →", t:"Accelerate · sistema operativo dual", c:"ambar",
+      d:"En Accelerate (artículo HBR de noviembre de 2012 y libro de 2014) los ocho pasos pasan a llamarse ocho aceleradores y operan dentro de un sistema operativo dual: la jerarquía tradicional sigue haciendo el trabajo diario con eficiencia y control, en paralelo con una red estratégica flexible que hace el trabajo de transformación. Los tres cambios respecto de 1996 importan para IA: los aceleradores corren concurrente y continuamente en vez de secuencialmente, la coalición pequeña se reemplaza por un ejército de voluntarios y se agregan sostener la aceleración e instituir el cambio. Cuando el ciclo de vida de una capacidad se mide en meses, no se puede esperar a «terminar el paso 4» para empezar el 5."}
+    ]},
+   {e:"el más individual:", t:"Modelo ADKAR (Hiatt, 2006)", c:"ambar",
+    d:"Desarrollado por Jeff Hiatt y difundido por Prosci, observa el cambio desde la experiencia individual: una organización cambia solo cuando cambian, una a una, las personas que la componen. No describe etapas de un proyecto sino cinco resultados que cada persona debe alcanzar, en ese orden. Analogía: ADKAR aplicado a dejar de fumar —entiendo que me daña, quiero dejarlo, sé que existen parches, paso el día sin fumar en una reunión estresante, llevo seis meses y mi entorno lo refuerza—. Mandar a alguien a un taller de cesación cuando todavía no quiere dejar de fumar es exactamente el error que ADKAR previene. Hiatt declara haberlo construido estudiando más de 700 organizaciones, cifra autorreportada por Prosci.",
+    k:[
+     {e:"A ·", t:"Awareness (conciencia)", c:"ambar",
+      d:"La persona entiende por qué se hace esto y qué pasa si no se hace; no basta con que se lo hayan dicho, tiene que haberlo comprendido. En IA, awareness no es «nos avisaron que llega un copiloto», es «entiendo que perdemos licitaciones porque tardamos tres semanas en cotizar y la competencia tarda tres días»."},
+     {e:"D ·", t:"Desire (deseo)", c:"ambar",
+      d:"Deseo de apoyar y participar. Es el único elemento que la organización no puede producir directamente: solo puede crear condiciones que lo favorezcan —reconocimiento, seguridad de empleo, participación en el diseño, un jefe directo creíble—. Ahí vive la resistencia al cambio: casi nunca es un déficit de conocimiento, es un déficit de deseo. Ninguna capacitación lo reemplaza."},
+     {e:"K ·", t:"Knowledge (conocimiento)", c:"ambar",
+      d:"Conocimiento sobre cómo cambiar: qué hacer distinto, con qué herramienta, siguiendo qué procedimiento. Es lo que entrega una capacitación tradicional, y si se entrega antes de que exista Desire se desperdicia."},
+     {e:"A ·", t:"Ability (capacidad)", c:"ambar",
+      d:"Capacidad demostrada de implementar el cambio en el desempeño real. Aquí está la frase del PDF con olor a examen: «saber cómo funciona una herramienta no significa dominarla», y por eso ADKAR insiste en la práctica, el acompañamiento y la experiencia. La brecha entre Knowledge y Ability es la brecha entre haber leído el manual y saber conducir."},
+     {e:"R ·", t:"Reinforcement (refuerzo)", c:"ambar",
+      d:"Refuerzo para sostener el cambio: reconocimiento, indicadores, celebración de logros, corrección de incentivos contradictorios y seguimiento. El curso lo dice así: «el cambio se mantiene cuando existen refuerzos, seguimiento y espacios de mejora». Es el equivalente individual del recongelar de Lewin y del anclaje cultural de Kotter."},
+     {e:"su herramienta:", t:"Punto de barrera", c:"ambar",
+      d:"Se evalúa a cada persona o grupo en los cinco elementos en escala de 1 a 5, y el punto de barrera es el primer elemento con puntaje 3 o menos. Ese, y no otro, hay que trabajar; invertir en los siguientes es desperdicio. Ejemplo: equipo de riesgo crediticio con Awareness 4, Desire 2, Knowledge 4, Ability 3, Reinforcement 2 — el punto de barrera es Desire, toda capacitación adicional será dinero perdido; la intervención correcta es definir qué decisiones siguen siendo humanas y sumar dos analistas senior al comité que fija los umbrales. Matiz de examen: el orden lógico es bloqueante, pero en entornos ágiles el recorrido temporal es cíclico."}
+    ]},
+   {e:"se eligen según", t:"Comparación de los tres", c:"ambar",
+    d:"Lewin ofrece una explicación sencilla de las etapas, útil sobre todo cuando una organización necesita ordenar un proceso que recién comienza; su unidad de análisis es el sistema social y su límite es que supone un estado final estable. Kotter entrega una ruta más detallada para cambios complejos con foco en liderazgo, comunicación y resultados tempranos; su unidad es la organización y su límite es que resulta pesado si se aplica literalmente en ciclos cortos. ADKAR se concentra en el individuo y localiza el punto de barrera, evitando gastar en el lugar equivocado; su límite es que dice poco sobre estrategia, estructura y procesos. La combinación natural: Lewin da el encuadre temporal, Kotter el gobierno del programa y ADKAR el diagnóstico por persona."},
+   {e:"y se adaptan con", t:"Prácticas ágiles en IA", c:"ambar",
+    d:"La velocidad de la IA generativa obliga a ciclos más breves, aprender durante la implementación y ajustar procesos y competencias con frecuencia: iteraciones cortas con entregas parciales, retroalimentación continua del usuario, equipos multifuncionales con autonomía y disposición a modificar el plan con la evidencia recogida. La razón es estructural: los marcos clásicos fueron diseñados para cambios con estado final conocido, y en IA generativa ese estado no se conoce al inicio porque las capacidades del mes nueve no existían en el mes uno. Analogía: implantar un ERP es construir un edificio; adoptar IA generativa es mantener un jardín. Los cuatro principios del curso: necesidad concreta de negocio, involucrar temprano a los usuarios, comenzar con pilotos y hacer seguimiento."}
+  ]},
+
+ {e:"ejecuta", t:"5 · ESTRATEGIAS", c:"violeta",
+  d:"Quinto bloque, el instrumental. El curso identifica cinco elementos determinantes para convertir la tecnología en resultados concretos: la comunicación, la formación, la experimentación gradual, el acompañamiento de los equipos y la medición continua. Leídos juntos forman el kit mínimo de una adopción sostenible, y responden a los tres verbos del encabezado del PDF: que las personas comprendan, utilicen y aprovechen estas capacidades, en ese orden.",
+  k:[
+   {e:"parte por", t:"Comunicación del cambio", c:"violeta",
+    d:"Acciones deliberadas y sostenidas con las que la organización explica el propósito, el alcance, los beneficios y los límites de la transformación. Su rasgo definitorio es temporal: se necesita desde el comienzo y durante todo el proceso, no como anuncio de arranque. Ley fundamental: el vacío informativo nunca queda vacío — cada equipo termina completando los vacíos con sus propias suposiciones. Cuatro cosas hay que responder: qué problema motivó la decisión, qué se busca mejorar, cuáles son los beneficios esperados y qué aspectos del trabajo podrían cambiar; las cuatro son respondibles con honestidad aunque la noticia sea incómoda.",
+    k:[
+     {e:"ajustada por", t:"Segmentación de públicos", c:"violeta",
+      d:"Identificar los distintos grupos afectados, entender qué le preocupa a cada uno y adaptar contenido, canal y vocero. La alta dirección necesita comprender el impacto estratégico; los equipos operativos requieren información concreta sobre su trabajo diario. Ejemplo de una misma implantación: al directorio, costo por contacto, NPS, riesgos regulatorios e inversión; a las jefaturas, cómo cambia el tablero y qué se espera de ellas; a los ejecutivos de atención, qué consultas resolverá el asistente, quién responde si se equivoca y si afecta su bono. Mismo proyecto, tres conversaciones distintas."},
+     {e:"y probada por", t:"Transparencia", c:"violeta",
+      d:"Informar avances, reconocer lo que todavía no funciona y explicar los ajustes. El curso subraya que «la transparencia se pone a prueba cuando aparecen retrasos o dificultades»: comunicar lo que va bien no cuesta nada y no construye credibilidad; comunicar el piloto que no dio resultado es lo que hace creíble el mensaje siguiente. Su efecto es que el cambio se percibe como un proceso en el que es posible participar y no como una decisión cerrada tomada lejos de quienes deberán aplicarla."}
+    ]},
+   {e:"sigue con", t:"Capacitación y AI literacy", c:"violeta",
+    d:"La capacitación no debe quedar relegada a una demostración técnica al final del proyecto: forma parte del diseño de la iniciativa y responde a las dudas reales de cada grupo. En clave ADKAR produce Knowledge; si se entrega antes de que exista Desire se desperdicia, y sin práctica acompañada no llega a producir Ability. La delimitación de la finalidad es frase de examen: no se busca transformar a todos en especialistas, sino que puedan interpretar respuestas, hacer preguntas críticas, verificar información y reconocer aquellas situaciones en las que la supervisión humana no puede delegarse. La cuarta es la más exigente: no es habilidad técnica sino juicio sobre el riesgo y la reversibilidad de una decisión."},
+   {id:"piloto", e:"experimenta con", t:"Proyecto piloto", c:"violeta",
+    d:"Implementación real pero de alcance deliberadamente acotado —un área, un proceso, un grupo de usuarios, un período definido— para generar evidencia sobre el desempeño en condiciones de operación antes de comprometer a toda la organización. Permite probar en condiciones controladas, recoger comentarios, detectar mejoras antes de una inversión mayor y entregar evidencia concreta que aumenta la confianza; y limita el impacto de los errores, porque se aprende «con un costo y una exposición mucho menores». Analogía: el piloto es la degustación antes del banquete, y se hace con comensales, no con el chef probando su propia cuchara — un piloto sin usuarios finales no es un piloto.",
+    k:[
+     {e:"no confundir con", t:"Prueba de concepto (PoC)", c:"violeta",
+      d:"Una PoC verifica si algo es técnicamente posible, normalmente en ambiente controlado, con datos preparados y sin usuarios finales; un piloto verifica si algo es organizacionalmente viable: usuarios reales, datos reales, fricciones reales. Muchas iniciativas mueren porque la organización celebra una PoC exitosa y la confunde con evidencia de adopción. Cifras: Gartner (julio de 2024) proyectó que al menos el 30% de los proyectos de IA generativa se abandonarían tras la prueba de concepto, y McKinsey (junio de 2025) reporta que menos del 10% de los casos de uso desplegados supera la etapa de piloto."},
+     {e:"y luego", t:"Escalamiento por etapas", c:"violeta",
+      d:"Cuando los resultados son consistentes, la organización amplía por fases y en cada avance incorpora lo aprendido, adapta la solución a la realidad de cada área y evita repetir en toda la empresa los problemas detectados en la prueba. Las dos primeras condiciones distinguen escalar de copiar: si el despliegue en la segunda área es idéntico al de la primera, no hubo aprendizaje, hubo replicación."}
+    ]},
+   {e:"se acompaña con", t:"Agentes de cambio y AI Champions", c:"violeta",
+    d:"La alta dirección no puede impulsar el cambio por sí sola: un gerente general puede convencer al directorio, pero no puede sentarse junto a un ajustador a resolverle una duda a las once de la mañana ni tiene la credibilidad que da haber hecho ese trabajo. Un agente de cambio facilita la adopción dentro de su propio entorno sin necesariamente tener autoridad jerárquica; cuando el rol se especializa en IA el curso lo llama AI Champion. Hace tres cosas: responde preguntas, comparte buenas prácticas y conecta a los usuarios con el equipo del proyecto — esa tercera es la menos visible y la más valiosa. Analogía: el manual de instrucciones es más completo, pero uno le pregunta al vecino que ya instaló el mismo equipo.",
+    k:[
+     {id:"comunidades", e:"que forman", t:"Comunidades de práctica", c:"violeta",
+      d:"Reúnen a personas con inquietudes similares para contrastar experiencias, revisar casos y construir respuestas a partir de lo que ocurre en su propia organización, no solo de instrucciones generales. Su beneficio estratégico: revelan oportunidades que el proyecto original no había considerado, convirtiendo el aprendizaje cotidiano en fuente de innovación. Origen correcto: Lave y Wenger (1991), Situated Learning, no Wenger solo ni 1998. Los tres elementos constitutivos, que deben estar los tres: el dominio (área de interés compartida), la comunidad (interacción regular y relaciones de confianza) y la práctica (repertorio compartido de experiencias y herramientas).",
+      k:[
+       {e:"se entra por", t:"Participación periférica legítima", c:"violeta",
+        d:"Mecanismo por el que el aprendiz entra a la comunidad por el borde haciendo tareas simples pero reales —no ejercicios de demostración— y se desplaza al centro a medida que gana competencia. Es el corazón del aprendizaje situado de Lave y Wenger (1991) y explica por qué las comunidades funcionan como mecanismo de incorporación y no solo de soporte."}
+      ]}
+    ]},
+   {e:"y se cierra con", t:"Medición y mejora continua", c:"violeta",
+    d:"Observar de manera sistemática y periódica el uso real, los resultados y los efectos organizacionales, para ajustar. El apartado abre con la frase que resume la unidad y es candidata segura a pregunta de examen: «una herramienta instalada no necesariamente es una herramienta adoptada». La exigencia central es la combinación: datos técnicos con señales del funcionamiento organizacional —cuánto se usa, qué tiempos se reducen, cómo cambia la calidad del proceso y qué opinan colaboradores y clientes—, porque una cifra aislada rara vez explica por sí sola si la adopción funciona. Lo conceptualmente decisivo: la medición deja de ser control y se vuelve fuente de aprendizaje; si el equipo percibe que las métricas de uso alimentan su evaluación, aparecerá el uso cosmético.",
+    k:[
+     {e:"con", t:"Indicadores de adopción", c:"violeta",
+      d:"Métricas que capturan si la herramienta se incorporó al trabajo real, distintas de los indicadores de desempeño del sistema (exactitud, latencia, disponibilidad, costo por consulta). Cuatro familias con sus puntos ciegos: técnicos (puede estar perfecta y no usarse), de adopción (uso no equivale a uso bueno), de proceso —tiempo de ciclo, retrabajo, tasa de error, costo unitario— (puede mejorar un eslabón y empeorar el conjunto) y organizacionales —competencias, colaboración entre áreas, opinión de clientes— (más lentos de mover e interpretar)."},
+     {e:"y sobre todo", t:"Tasa de uso activo", c:"violeta",
+      d:"Proporción de usuarios habilitados que efectivamente usa la herramienta en un período. Es el indicador de adopción más elemental, imprescindible e insuficiente: una tasa alta puede convivir con un uso superficial o incluso perjudicial, cosa que el caso evaluado de la unidad ilustra de manera brutal — en Seguros del Pacífico la herramienta es «ampliamente utilizada» y el uso masivo es parte del problema."}
+    ]}
+  ]},
+
+ {e:"culmina en", t:"6 · VISIÓN INTEGRADA", c:"cian",
+  d:"Sexto bloque: no agrega herramientas, reúne todo lo anterior en una mirada. La visión integrada o enfoque sistémico consiste en mirar la transformación como un sistema de elementos que se influyen mutuamente, en lugar de como una suma de proyectos paralelos; en un sistema, el desempeño del todo no es la suma del desempeño de las partes, y mejorar una parte aisladamente puede degradar el conjunto. Frase de examen: «liderazgo, cultura, procesos, capacidades y tecnología se complementan; tratarlos como proyectos independientes debilita el resultado».",
+  k:[
+   {e:"ordena una cadena", t:"Estrategia → liderazgo → cambio → cultura → tecnología", c:"cian",
+    d:"Retén la asignación literal de roles, porque es la estructura del argumento: la estrategia define el rumbo y el valor esperado; el liderazgo traduce esa orientación en decisiones, comunica el propósito y compromete a las personas; la gestión del cambio acompaña la adaptación de los equipos; la cultura crea espacio para colaborar, aprender y probar; y la tecnología deja de ser el centro absoluto y pasa a cumplir función de apoyo. Que sea «de apoyo» no la vuelve menor: también amplía la capacidad humana para analizar, resolver problemas y decidir con mejores antecedentes. Analogía: un equipo con el mejor delantero del mundo y sin mediocampo pierde partidos."},
+   {id:"articulacion", e:"explica por qué", t:"Dos empresas, mismo software, distinto resultado", c:"cian",
+    d:"Material de examen: la ventaja «no depende solamente de acceder a un modelo avanzado, sino de integrarlo en una estrategia coherente que las personas comprendan y respalden». Como los modelos comerciales están al alcance de cualquiera que pague la licencia, la tecnología dejó de ser diferenciadora; lo que no se compra con una licencia —procesos rediseñados, competencias desarrolladas, confianza construida, gobernanza funcionando— es lo que separa a las dos organizaciones. Los factores de éxito muestran qué condiciones facilitan, los marcos ordenan el recorrido y las estrategias llevan la tecnología al trabajo cotidiano: ninguno funciona aislado."},
+   {e:"y se vuelve", t:"Capacidad continua de adaptación", c:"cian",
+    d:"Habilidad organizacional de aprender, probar, evaluar resultados y corregir el rumbo de manera permanente, en lugar de ejecutar proyectos de cambio con inicio y fin: «la transformación no termina cuando una solución entra en funcionamiento». Microsoft (2025), Deloitte (2025) y Accenture (2025) coinciden en que la transformación con IA se parece cada vez menos a un proyecto con fecha de inicio y término. La dificultad concreta para los líderes es que los tres tipos de capacidad tienen tiempos distintos —la tecnológica se compra en semanas, la humana toma trimestres, la organizacional toma años— y su trabajo es sostener el proyecto durante el desfase."},
+   {e:"sostenida por", t:"Confianza y seguridad psicológica", c:"cian",
+    d:"La confianza no se deposita únicamente en la herramienta: las personas también evalúan la conducta de quienes conducen el proceso y la coherencia de sus decisiones. Párrafo decisivo: «si habla de participación pero decide sin escuchar, o promete una transformación centrada en las personas y no ofrece capacitación, el proceso pierde credibilidad» — la coherencia se audita comparando lo declarado con lo presupuestado y lo agendado. La condición de «experimentar sin temor a equivocarse» tiene nombre técnico: seguridad psicológica, la creencia compartida de que el equipo es un espacio seguro para asumir riesgos interpersonales. Sin ella no hay reporte honesto de fallas del modelo, y la organización se entera de los problemas por un reclamo de cliente o una consulta del regulador."},
+   {id:"gobernanza", e:"y desemboca en", t:"Gobernanza de la IA", c:"cian",
+    d:"Observar la transformación en conjunto ayuda a anticipar problemas de transparencia, privacidad, seguridad y responsabilidad, que dejan de ser asuntos secundarios cuando la IA interviene en decisiones que afectan a más personas o producen consecuencias difíciles de revertir: los dos criterios que activan la alarma son el alcance y la irreversibilidad. El PDF exige tres definiciones mínimas escritas: cómo se usará la tecnología, quién revisará sus resultados y qué resguardos evitan trasladar riesgos a clientes o colaboradores, con «criterios conocidos y aplicables, no solo declaraciones generales». La gestión del cambio crea las condiciones para una gobernanza que equilibre innovación, creación de valor y responsabilidad.",
+    k:[
+     {e:"protege", t:"Privacidad y seguridad de la información", c:"cian",
+      d:"La privacidad es la protección de los datos personales de clientes y colaboradores: qué datos entran al sistema, con qué base legal, por cuánto tiempo se conservan y quién puede consultarlos. La seguridad de la información es la protección de esos datos y de los propios sistemas frente a accesos no autorizados, filtraciones y manipulación, e incluye el riesgo nuevo y muy real de que un colaborador pegue información confidencial en una herramienta pública."},
+     {e:"y asigna", t:"Rendición de cuentas", c:"cian",
+      d:"Asignación explícita de responsabilidad por los resultados del sistema: quién responde cuando el modelo se equivoca. Su regla de oro, con olor a examen: la responsabilidad no se delega en el sistema — un modelo no puede ser responsable, porque no puede responder ante nadie. Sin ella la responsabilidad se diluye entre el sistema y las personas, que es exactamente lo que ocurre cuando el regulador pregunta y nadie se declara dueño de la decisión."},
+     {id:"explicabilidad", e:"exige", t:"Explicabilidad vs. caja negra", c:"cian",
+      d:"La explicabilidad es la capacidad de expresar en términos comprensibles para un ser humano por qué un sistema produjo un resultado determinado; la transparencia, en este contexto, es que sea posible saber cómo y con qué criterios se produjo una decisión asistida por IA. Su opuesto es la caja negra: un sistema del que se observan entradas y salidas pero cuyo mecanismo interno no es inspeccionable ni comunicable. Es literalmente la queja de los clientes en el caso Seguros del Pacífico."}
+    ]},
+   {e:"lectura obligatoria:", t:"Sternfels y Atsmon (2025)", c:"cian",
+    d:"«La organización que aprende: cómo acelerar la adopción de la inteligencia artificial», McKinsey & Company, 9 de julio de 2025; entra en la evaluación final. Una organización que aprende es aquella cuya ventaja no reside en las herramientas que posee sino en la velocidad con que convierte la experimentación de sus miembros en capacidad institucional. Su tesis: la barrera principal es psicológica, no técnica. Ausencia notable: casi no habla de programas formales de reskilling ni de talento técnico; si preguntan qué propone McKinsey para acelerar la adopción, la respuesta gira en torno a incentivos, experimentación rigurosa y reconocimiento, no a planes de capacitación masiva.",
+    k:[
+     {e:"parte de", t:"La brecha 90% / 13%", c:"cian",
+      d:"Según la encuesta global de McKinsey sobre IA generativa (2024), el 90% de los empleados ha usado IA generativa para el trabajo y el 21% son usuarios intensivos, pero solo el 13% considera que su organización es una adoptante temprana. Esa brecha entre adopción individual masiva y adopción institucional marginal es el problema que el artículo explica: la gente ya sabe usar la herramienta; lo que falta es que la organización aprenda a aprender de lo que su gente ya está haciendo."},
+     {e:"recomienda 1 ·", t:"Mentalidad de jardinero", c:"cian",
+      d:"Cultivar lo que ya está creciendo, por oposición a la mentalidad de carpintero: el carpintero decide de antemano la forma exacta de la pieza y corta la madera para que se ajuste al plano; el jardinero observa qué está prendiendo, riega eso y poda lo demás. Formulación textual de los autores: «los líderes que intentan especificar con precisión cómo debe implementarse la IA con frecuencia terminan construyendo las soluciones de ayer». La razón es de velocidad: entre que se define el plan y se ejecuta, la capacidad tecnológica ya cambió."},
+     {e:"recomienda 2 ·", t:"Incentivos que premian aprender", c:"cian",
+      d:"Crear incentivos de adopción que premien el aprendizaje y el compartir, no el mero uso: medir y recompensar el uso produce uso, que no es lo mismo que producir valor. Hallazgo importante: el reconocimiento social pesa más que el incentivo financiero, y cuando líderes respetados comparten su propio proceso de aprendizaje y reconocen públicamente que siguen aprendiendo, bajan las barreras psicológicas del resto. Es una intervención barata y desaprovechada: un gerente que muestra un intento fallido autoriza a doscientas personas a intentarlo."},
+     {e:"recomienda 3 y 4 ·", t:"Aprendizaje rápido y elogio selectivo", c:"cian",
+      d:"Fomentar el aprendizaje rápido con rigor, aplicando a la adopción la disciplina del A/B testing: hipótesis claras y testeables, experimentos diseñados para fallar rápido y —el dato operativo más útil del artículo— muestras pequeñas de 5 a 10 personas durante 2 a 4 semanas, documentando siempre por qué funcionó o no. Un experimento sin hipótesis previa no produce aprendizaje, produce anécdota. Y mantener un estándar alto para el elogio: si se aplaude cualquier prueba, «haber probado» se convierte en la meta y nadie persigue el resultado."}
+    ]}
+  ]},
+
+ {e:"prueba en", t:"7 · APLICACIÓN Y CASOS", c:"gris",
+  d:"Séptimo bloque: los dos casos de la unidad. SaludConecta es un recurso del aula virtual del que el PDF solo trae las cinco preguntas; Seguros del Pacífico es el ejercicio evaluado y viene completo, y es el bloque de mayor valor de examen porque exige aplicar los conceptos, no describirlos. Consejo de método: cuando el enunciado pida «identificar conceptos de la unidad», nombra el tecnicismo exacto y ánclalo de inmediato a un hecho del caso — el concepto sin anclaje se lee como vocabulario memorizado, el anclaje sin concepto como sentido común.",
+  k:[
+   {e:"caso 1 ·", t:"SaludConecta S.A.", c:"gris",
+    d:"El contenido del caso no está en el PDF: el material descargable incluye solo el enunciado del recurso, el aviso de que se ve en la versión online o por código QR, y las cinco preguntas de comentario. Los hechos —qué implementó, qué salió mal en la primera etapa, en qué consistió la segunda estrategia— hay que verlos en el aula virtual antes de responder.",
+    k:[
+     {e:"pide analizar", t:"Los cinco ejes de respuesta", c:"gris",
+      d:"P1, errores de la primera etapa: tratar el proyecto como iniciativa exclusiva de TI, ausencia de patrocinio ejecutivo visible, falta de descongelamiento, capacitación tardía, ausencia de piloto, comunicación de una vía sin segmentación y ausencia de medición de adopción. P2, resistencia de médicos, enfermeras y administrativos: aplicar el principio de que rara vez es rechazo a la tecnología y usar ADKAR para localizar el punto de barrera de cada estamento (puede ser Knowledge en administrativos y Desire en el cuerpo médico). P3, primera versus segunda estrategia: tabla por dimensión —liderazgo, comunicación, capacitación, alcance inicial, participación, soporte y medición—. P4, qué marco elegir: admite los tres si está bien fundamentado, y la combinación razonada suele ser más sólida. P5, primeros seis meses: ordenar por tramos, cada acción con el nombre del concepto que la fundamenta."}
+    ]},
+   {id:"seguros", e:"caso 2 ·", t:"Seguros del Pacífico", c:"gris",
+    d:"Compañía de seguros generales con 15 años en el mercado chileno que invirtió en IA para agilizar la evaluación de siniestros de automóviles; el sistema lleva seis meses operando. Usted es consultor externo y el Gerente General le encarga no eliminar la IA, sino diseñar un plan para recuperar el control y la transparencia del proceso, asegurando que la tecnología sea apoyo y no reemplazo del criterio humano. La tesis para abrir la respuesta: la afirmación de TI —«el algoritmo funciona según los parámetros que le dimos, los datos son correctos, el problema no es técnico»— es literalmente cierta y estratégicamente irrelevante.",
+    k:[
+     {e:"éxito técnico", t:"92% en menos de 5 minutos", c:"gris",
+      d:"El PDF lo califica de éxito técnico y operativo: el 92% de los siniestros simples se resuelve en menos de 5 minutos cuando antes tomaban 2 días hábiles, la herramienta es ampliamente utilizada por los ajustadores —que aprecian no revisar casos sencillos— y los tiempos de respuesta al cliente mejoraron significativamente. Esa ganancia de velocidad en el segmento simple es genuina y el encargo explícito del Gerente General es no sacrificarla."},
+     {id:"superintendencia", e:"fracaso organizacional", t:"+18%, regulador y criterio apagado", c:"gris",
+      d:"Tres problemas inesperados. Finanzas detectó que el costo promedio por siniestro subió 18% desde la implementación, porque la herramienta aprueba montos más altos de lo que históricamente se pagaba. La Superintendencia de Seguros pidió información sobre cómo se toman las decisiones, tras reclamos de clientes que sienten que el proceso es «una caja negra». Y los ajustadores más experimentados admiten en privado que ya no ejercen su criterio profesional: «la IA nunca se equivoca, para qué revisar». El 18% y la consulta del regulador llegaron desde fuera del tablero, que es la peor forma de enterarse."},
+     {e:"se explica por", t:"Los conceptos que lo diagnostican", c:"gris",
+      d:"Concepto 1: confianza ciega y ruptura de la colaboración persona-IA — los ajustadores con más criterio que aportar son justamente los que dejaron de aportarlo, y el incentivo percibido premiaba no revisar. En términos de Long y Magerko (2020), falló la competencia más exigente de la alfabetización en IA: reconocer las situaciones en que la supervisión humana no puede delegarse. Concepto 2: ausencia de gobernanza, con déficit de explicabilidad y de rendición de cuentas — las tres definiciones mínimas de la Clase 5 están ausentes. Concepto 3 (opcional): medición incompleta, porque se midieron velocidad y uso pero no la calidad de la decisión, el costo por siniestro en tiempo real ni si el criterio seguía ejerciéndose. Síntesis: en lenguaje de Lewin, la organización movió sin recongelar; en lenguaje de la Clase 1, confundió implementar con transformar."},
+     {e:"se corrige con", t:"Tres medidas correctivas", c:"gris",
+      d:"Medida 1: rediseñar el proceso con supervisión humana por umbrales, formalizada en el procedimiento — bajo un umbral de monto los casos simples siguen automáticos, sobre ese umbral y en la casuística sensible el sistema pasa a modo recomendación y un ajustador acepta, modifica o rechaza dejando registro, más auditoría mensual de una muestra aleatoria del 5%. Es el recongelar de Lewin. Medida 2: instalar gobernanza con comité multiárea, dueño nominado de la decisión, registro de decisiones, carta de liquidación en lenguaje comprensible con vía de apelación y expediente de respuesta a la Superintendencia. Medida 3: programa de realfabetización en IA —cuatro sesiones de dos horas más práctica acompañada— con tres o cuatro AI Champions elegidos entre los ajustadores senior y una comunidad de práctica quincenal; en clave ADKAR el punto de barrera aquí no es Knowledge sino Desire y Ability."}
+    ]}
+  ]}
+ ]
+};
+
+const CROSS = [
+ {from:"coalicion", to:"kotter2", label:"es literalmente el paso 2 de", bend:70},
+ {from:"confianzaciega", to:"seguros", label:"es el diagnóstico central de", bend:-90},
+ {from:"quickwins", to:"piloto", label:"se materializa en un", bend:60},
+ {from:"comunidades", to:"cultura", label:"alimentan y sostienen la", bend:-110},
+ {from:"explicabilidad", to:"superintendencia", label:"es lo que exige la", bend:70},
+ {from:"etica", to:"gobernanza", label:"se institucionaliza en la", bend:90},
+ {from:"fashionistas", to:"articulacion", label:"son la prueba de que", bend:-70}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["fund","Adopción de la inteligencia artificial","AI adoption","Que la organización incorpore la IA a sus actividades y las personas la usen de forma efectiva, aportando valor real al negocio."],
+["flujo","Alfabetización en inteligencia artificial","AI literacy","Conjunto de competencias para evaluar críticamente sistemas de IA, comunicarse y colaborar con ellos, y usarlos como herramienta."],
+["fund","Gestión del cambio","Change management","Acciones con las que una organización prepara, ejecuta y sostiene modificaciones en estructura, procesos, tecnología y conductas."],
+["err","Gobernanza de la IA","AI governance","Normas, responsabilidades y mecanismos para que el desarrollo y uso de la IA sean transparentes, responsables y alineados con la estrategia."],
+["flujo","Patrocinio ejecutivo","Executive sponsorship","Respaldo visible y sostenido de la alta dirección: recursos asignados, obstáculos removidos y apoyo explícito al cambio."],
+["algo","Quick wins","Short-term wins","Resultados tempranos y visibles que prueban el valor del cambio, aumentan la confianza y mantienen el impulso."],
+["eval","Resistencia al cambio","Resistance to change","Ideas, actitudes y conductas que dificultan aceptar tecnologías, procesos o formas de trabajo distintas."],
+["fund","Transformación organizacional","Organizational transformation","Decisión deliberada que alcanza estrategia, estructura, procesos y competencias, no solo la tecnología."],
+["fund","Transformación digital","Digital transformation","Uso de tecnología para cambiar experiencia del cliente, operaciones y modelo de negocio, combinado con cambios de liderazgo y cultura."],
+["fund","Implementación tecnológica","Technology implementation","Dejar una herramienta instalada y funcionando; es el inicio del recorrido, no la meta de la transformación."],
+["eval","Decaimiento de la adopción","Adoption decay","Pérdida del uso y de los beneficios después de la etapa inicial, cuando no se sostiene el acompañamiento."],
+["fund","Capacidad digital","Digital capability","El \"qué\" de Westerman: inversión y uso de tecnología para transformar cliente, operaciones y modelo de negocio."],
+["fund","Capacidad de gestión de la transformación","Transformation management capability","El \"cómo\" de Westerman: visión, gobernanza, compromiso y relación entre el área de TI y el negocio."],
+["fund","Digital Masters","Digital masters / digirati","Empresas altas en ambas capacidades: 26% más rentables, 9% más ingresos desde activos físicos y 12% más valoración que sus pares."],
+["fund","Fashionistas","Fashionistas","Alta capacidad digital y bajo liderazgo: compran tecnología de moda sin gobernanza; junto a Beginners y Conservatives completan los cuatro cuadrantes."],
+["fund","Modelo predictivo","Predictive model","Modelo que estima un valor o una categoría futura a partir de datos históricos; uno de los tres primeros acercamientos a la IA."],
+["fund","IA generativa","Generative AI","Sistemas que producen texto, imagen o código nuevo a partir de instrucciones; el acercamiento que más rápido cambia el trabajo cotidiano."],
+["fund","Automatización robótica de procesos","Robotic process automation (RPA)","Automatización de tareas digitales y administrativas repetitivas; el tipo más frecuente en el estudio de Davenport y Ronanki (~47%)."],
+["fund","Insight cognitivo","Cognitive insight","Algoritmos que detectan patrones en grandes volúmenes de datos e interpretan su significado (~38% de los proyectos estudiados)."],
+["fund","Compromiso cognitivo","Cognitive engagement","Chatbots, agentes inteligentes y PLN que interactúan con empleados y clientes (16% de los proyectos estudiados)."],
+["fund","Rediseño de procesos","Process redesign","Revisar quién hace qué y cómo, para que la herramienta produzca valor en vez de superponerse al trabajo de siempre."],
+["fund","Tríada personas–procesos–tecnología","People, process and technology","Los tres ámbitos que la IA afecta simultáneamente; si uno avanza y los otros no, el resultado no es sostenible."],
+["fund","Regla 10-20-70","10-20-70 rule","Hallazgo de BCG: 10% del esfuerzo va a algoritmos, 20% a tecnología y datos y 70% a personas y procesos."],
+["flujo","Liderazgo comprometido","Committed leadership","Dirección que explica el para qué, comunica beneficios, resuelve obstáculos y respalda a los equipos durante la adopción."],
+["flujo","Coalición conductora","Guiding coalition","Grupo de líderes de distintas áreas que impulsa el cambio y sostiene el compromiso en el tiempo (paso 2 de Kotter)."],
+["flujo","Cultura orientada al aprendizaje","Learning culture","Ambiente que da espacio a la curiosidad, la prueba y el error, y donde compartir lo aprendido es parte del trabajo."],
+["flujo","Madurez digital","Digital maturity","Grado en que una organización se acerca al ideal de estar digitalmente transformada; se mide en escala 1 a 10."],
+["flujo","Confianza en la IA","Trust in AI","Disposición a apoyarse en el sistema, construida antes de que entre en operación con claridad sobre su propósito y sus límites."],
+["eval","Confianza ciega","Blind trust","Aceptar la salida del sistema sin revisarla; en el caso Seguros del Pacífico es lo que apaga el criterio profesional."],
+["eval","Sesgo de automatización","Automation bias","Tendencia documentada a favorecer la recomendación automática por encima del propio juicio, incluso ante evidencia contraria."],
+["eval","Aversión al algoritmo","Algorithm aversion","El extremo opuesto: descartar el sistema tras verlo fallar una vez, aunque en promedio acierte más que la persona."],
+["eval","Resistencia pasiva","Passive resistance","Oposición que no se declara: postergar el uso, cuestionar la utilidad o dejar la herramienta de lado sin decirlo."],
+["eval","Cumplimiento aparente","Compliance without commitment","Aceptación formal de la herramienta sin incorporación real a las tareas; el indicador de uso miente."],
+["eval","Procesos paralelos","Shadow processes","Mantener en marcha el procedimiento anterior junto al nuevo, duplicando el trabajo y anulando el beneficio."],
+["flujo","Desarrollo de capacidades","Capability building","Construir las competencias que cada nivel y función necesita; no todos programan, pero todos deben saber usar y evaluar."],
+["flujo","Formulación de instrucciones","Prompting","Dar indicaciones claras a la IA definiendo contexto, objetivo y formato, para reducir ambigüedad e iteraciones."],
+["err","Supervisión humana","Human-in-the-loop","Punto del proceso donde una persona valida antes de que la salida del sistema produzca efectos."],
+["err","Sesgo algorítmico","Algorithmic bias","Distorsión sistemática que el modelo hereda de los datos con los que fue entrenado y puede perpetuar a escala."],
+["err","IA responsable","Responsible AI","Uso que considera el impacto humano de las decisiones apoyadas por IA: justicia, no discriminación y responsabilidad asignada."],
+["flujo","Upskilling","Upskilling","Ampliar las competencias de una persona dentro de su rol actual para trabajar con las nuevas herramientas."],
+["flujo","Reskilling","Reskilling","Formar a una persona para un rol distinto cuando el suyo cambia sustancialmente o desaparece."],
+["flujo","Alfabetización de datos","Data literacy","Capacidad de leer, cuestionar y contrastar datos; prerrequisito práctico de la alfabetización en IA."],
+["flujo","Colaboración persona–IA","Human-AI collaboration","Coordinar el procesamiento masivo del sistema con el juicio, la experiencia, la creatividad y la lectura de contexto humanas."],
+["flujo","Aumento de capacidades","Augmentation","Usar la IA para ampliar lo que la persona puede hacer, en oposición a la sustitución automática de la persona."],
+["algo","Marco de gestión del cambio","Change management framework","Estructura que ordena qué preparar, cómo ejecutar y cómo sostener; no elimina las dificultades ni reemplaza el criterio."],
+["algo","Modelo de Lewin","Lewin's change model","Tres momentos del cambio: preparar, transitar y consolidar; el más antiguo y el más simple de los tres del curso."],
+["algo","Descongelar","Unfreezing","Preparar a la organización: explicar por qué se necesita el cambio, conversar los beneficios y escuchar las inquietudes."],
+["algo","Mover","Moving","Incorporar las herramientas, modificar procesos y desarrollar habilidades, con capacitación, acompañamiento y retroalimentación."],
+["algo","Recongelar","Refreezing","Que las nuevas prácticas dejen de ser excepcionales: procedimientos actualizados, responsabilidades redefinidas y resultados medidos."],
+["algo","Teoría de campo","Field theory","Marco de Lewin donde la conducta resulta del equilibrio entre fuerzas impulsoras y restrictivas del entorno."],
+["algo","Modelo de Kotter","Kotter's 8-step model","Ocho pasos para conducir el cambio involucrando activamente a las personas, con foco en liderazgo y comunicación."],
+["algo","Sentido de urgencia","Sense of urgency","Paso 1: instalar la convicción de que el cambio es necesario ahora, no cuando haya tiempo."],
+["algo","Visión de cambio","Change vision","Pasos 3 y 4: una imagen comprensible del destino y su comunicación repetida a toda la organización."],
+["algo","Empoderamiento para la acción amplia","Empowering broad-based action","Paso 5: remover los obstáculos —procesos, estructuras, incentivos— que impiden actuar según la visión."],
+["algo","Anclaje en la cultura","Anchoring in the culture","Paso 8: hacer que el cambio sobreviva a la salida de quienes lo impulsaron; la respuesta a la sostenibilidad."],
+["algo","Sistema operativo dual","Dual operating system","Propuesta de Accelerate (2014): la jerarquía opera el día a día mientras una red estratégica ágil impulsa el cambio."],
+["algo","Modelo ADKAR","ADKAR model","Marco de Hiatt que mira el cambio desde la experiencia individual, en cinco bloques secuenciales."],
+["algo","Awareness","Awareness","Conciencia de la necesidad del cambio: entender por qué se impulsa antes que cualquier otra cosa."],
+["algo","Desire","Desire","Deseo de apoyar y participar; es el bloque que ninguna capacitación puede reemplazar."],
+["algo","Knowledge","Knowledge","Conocimiento sobre cómo cambiar: qué hace la herramienta y cómo se opera."],
+["algo","Ability","Ability","Capacidad demostrada de hacerlo en el trabajo real; saber cómo funciona no significa dominarla."],
+["algo","Reinforcement","Reinforcement","Refuerzo, seguimiento y espacios de mejora que sostienen la nueva conducta en el tiempo."],
+["algo","Punto de barrera","Barrier point","El primer bloque ADKAR con puntaje bajo; es donde hay que intervenir antes de avanzar al siguiente."],
+["deep","Prácticas ágiles","Agile practices","Ciclos breves, aprendizaje durante la implementación y ajuste frecuente; complemento necesario de los marcos clásicos en IA."],
+["deep","Comunicación del cambio","Change communication","Explicar desde el comienzo y durante todo el proceso qué problema motivó la decisión y qué cambiará en el trabajo."],
+["deep","Segmentación de públicos","Stakeholder segmentation","Ajustar el mensaje a cada audiencia: impacto estratégico para la dirección, efectos concretos para los equipos operativos."],
+["deep","Transparencia","Transparency","Informar avances, reconocer lo que aún no funciona y explicar los ajustes; es lo que sostiene la credibilidad."],
+["deep","Capacitación","Training","Formación que forma parte del diseño de la iniciativa y responde a las dudas reales de cada grupo de usuarios."],
+["deep","Proyecto piloto","Pilot project","Prueba de alcance acotado que valida en condiciones controladas y limita el costo y la exposición del error."],
+["deep","Prueba de concepto","Proof of concept (PoC)","Ensayo mínimo que responde si la solución es viable; la etapa que la mayoría de los casos de uso nunca supera."],
+["deep","Escalamiento por etapas","Phased scaling","Ampliar el alcance incorporando lo aprendido en cada avance, en vez de desplegar a toda la organización de una vez."],
+["deep","Agente de cambio","Change agent","Persona del propio equipo, con preparación adicional, que sirve de referente cercano durante la adopción."],
+["deep","AI Champion","AI champion","Agente de cambio especializado en IA: responde preguntas, comparte buenas prácticas y conecta a los usuarios con el proyecto."],
+["deep","Comunidad de práctica","Community of practice","Grupo que comparte un dominio y aprende a hacerlo mejor interactuando con regularidad; requiere dominio, comunidad y práctica."],
+["deep","Participación periférica legítima","Legitimate peripheral participation","Mecanismo por el que alguien entra a la comunidad por el borde, con tareas simples pero reales, y avanza al centro."],
+["deep","Medición y mejora continua","Measurement and continuous improvement","Revisar con regularidad qué resultados se obtienen y si la IA se usa realmente, para decidir qué mantener y qué corregir."],
+["deep","Indicadores de adopción","Adoption metrics","Señales que combinan datos técnicos y organizacionales: uso, tiempos, calidad del proceso y opinión de personas y clientes."],
+["deep","Tasa de uso activo","Active usage rate","Proporción de usuarios habilitados que efectivamente usa la herramienta en su trabajo; una herramienta instalada no es una adoptada."],
+["fund","Visión integrada","Integrated view","Mirar liderazgo, cultura, procesos, capacidades y tecnología como un conjunto, no como proyectos independientes."],
+["fund","Enfoque sistémico","Systemic approach","Tratar la transformación como un sistema de elementos que se influyen mutuamente, donde tocar uno mueve a los demás."],
+["fund","Capacidad continua de adaptación","Continuous adaptation capability","Entender la transformación como algo permanente y no como un proyecto con fecha de inicio y término."],
+["flujo","Organización que aprende","Learning organization","Organización cuya ventaja está en aprender, experimentar y reajustarse más rápido que su entorno."],
+["flujo","Mentalidad de jardinero","Gardener mindset","Identificar y escalar dónde la experimentación ya funciona, en vez de especificar de antemano cómo debe implementarse la IA."],
+["flujo","Seguridad psicológica","Psychological safety","Clima donde se puede preguntar, equivocarse y admitir que se está aprendiendo sin costo reputacional."],
+["err","Privacidad","Privacy","Resguardo de los datos personales que la IA procesa; deja de ser un asunto secundario cuando el sistema decide sobre personas."],
+["err","Seguridad de la información","Information security","Protección de los datos y de los sistemas frente a accesos, filtraciones y usos no autorizados."],
+["err","Rendición de cuentas","Accountability","Definir quién responde por una decisión apoyada en IA; sin ella la responsabilidad se diluye entre el sistema y las personas."],
+["err","Explicabilidad","Explainability","Capacidad de reconstruir y comunicar por qué el sistema llegó a un resultado determinado."],
+["err","Caja negra","Black box","Sistema cuyo criterio no se puede reconstruir desde fuera; la queja de los clientes en el caso Seguros del Pacífico."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos", col:"var(--azul)"},
+  flujo:{n:"Habilitadores", col:"var(--verde)"},
+  algo:{n:"Marcos de cambio", col:"var(--ambar)"},
+  deep:{n:"Estrategias", col:"var(--violeta)"},
+  eval:{n:"Resistencia y riesgos", col:"var(--coral)"},
+  err:{n:"Gobernanza y ética", col:"var(--cian)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
