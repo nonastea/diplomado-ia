@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Responsabilidad social y ética profunda</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 5 &middot; voz del dispositivo</p>
+    <h1>Responsabilidad social y ética profunda</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "Imagina que vas manejando de vuelta a la sucursal y te llama un afiliado enojado. Quiere saber por qué el sistema dejó de contactarlo, y tú no tienes ninguna respuesta salvo que así lo decidió la máquina. Ese momento exacto es el tema completo de esta unidad.", "c": false}, {"t": "Esta es la unidad cinco del diplomado en innovación empresarial con inteligencia artificial, y el tema de hoy es probablemente el más humano de todos, la responsabilidad social y lo que el curso llama ética profunda.", "c": false}, {"t": "Vas a entender por qué un afiliado se va aunque el sistema haya decidido bien en el papel, de dónde salen los errores que nadie programó a propósito, y vas a terminar con una frase que te va a servir en cualquier conversación difícil con un cliente.", "c": false}, {"t": "No necesitas saber nada de tecnología para esto. Si alguna vez confiaste, o desconfiaste, de un ejecutivo nuevo en tu sucursal, ya tienes todo el criterio que hace falta. Dale play y sigue manejando, que esto se entiende de corrido, sin mirar nada.", "c": false}, {"t": "Capítulo uno. Por qué la confianza decide si una herramienta se usa o se muere", "c": true}, {"t": "Arranquemos por la base. Todo lo que viene en esta clase es, en el fondo, una sola idea con nombre técnico, la inteligencia artificial responsable, o I.A. responsable para abreviar, crear y usar sistemas seguros, justos y transparentes, alineados con los valores de tu empresa.", "c": false}, {"t": "Y el punto de partida es este, un sistema que predice de maravilla no garantiza nada si nadie confía en él lo suficiente como para usarlo. A eso se le llama confianza organizacional, la evaluación concreta que hacen tus afiliados, tus colegas y hasta el regulador sobre cómo tu empresa usa la I.A. y respalda sus decisiones.", "c": false}, {"t": "Durante años, un proyecto de tecnología se medía con qué tan rápido responde, qué tan preciso es. Hoy eso ya no basta, también hay que mirar algo más resbaladizo, si la gente lo entiende, si lo acepta, si confía en lo que le está diciendo.", "c": false}, {"t": "Fíjate en esto, puedes tener el sistema más preciso del mercado y aun así verlo fracasar, porque nadie lo usa, o porque todos vuelven al método de siempre en cuanto nadie está mirando.", "c": false}, {"t": "Piénsalo como el ejecutivo nuevo que llega con el mejor discurso de ventas que hayas escuchado, domina cada objeción, y aun así, durante las primeras semanas nadie le pasa un cliente importante. No porque sea malo, sino porque la confianza no viene incluida con la habilidad técnica, se gana mostrando resultados consistentes en el tiempo.", "c": false}, {"t": "Con la inteligencia artificial pasa lo mismo. Piensa en el sistema que te arma la lista de a quién llamar cada mañana, si el equipo no confía en ella porque una vez le hizo perder tiempo con un contacto muerto, la va a ignorar y va a seguir llamando por instinto, aunque la lista sea objetivamente mejor.", "c": false}, {"t": "La herramienta más precisa del mundo vale cero si el equipo decide, en silencio, no usarla. Cuando falta confianza, la I.A. queda reducida a algo que existe en un sistema pero que nadie incorpora de verdad al trabajo diario. Y cuando sí existe, la gente se relaciona con más seguridad y participa más en las siguientes iniciativas.", "c": false}, {"t": "Y aquí va la frase que te llevas de este primer tramo, una herramienta puede predecir perfecto y aun así morir de olvido, si nadie confía lo suficiente en ella como para usarla. Guárdatela, porque el resto de la clase explica cómo se gana esa confianza y cómo se pierde.", "c": false}, {"t": "Capítulo dos. Cuando la máquina empieza a decidir sobre personas", "c": true}, {"t": "Vamos con la segunda parte. Hasta hace poco, la inteligencia artificial en tu día a día ordenaba información, resumía, priorizaba. Cada vez más, sin embargo, empieza a hacer algo distinto, sugiere a quién llamar, filtra postulantes, respalda si se aprueba un crédito, anticipa quién se va a traspasar.", "c": false}, {"t": "Ese salto, de ordenar información a influir en lo que le pasa a una persona concreta, cambia todo. Antes un error se corregía revisando el resumen y ya. Cuando participa de la decisión, aunque sea solo sugiriendo, ese error ya tuvo un efecto real sobre alguien, y es razonable que quiera saber por qué.", "c": false}, {"t": "Hay tres escenarios que te van a sonar conocidos aunque cambien de industria. Uno, el cliente al que se le rechaza un crédito tiene derecho a conocer, en palabras simples, los factores que pesaron, y a pedir que una persona humana revise su caso. En tu A F P es la misma lógica que cuando el sistema le baja la prioridad a un afiliado, si él pregunta por qué, alguien tiene que poder responderle.", "c": false}, {"t": "Dos, el postulante evaluado para un cargo tiene derecho a conocer los criterios generales que se usaron, y a confirmar que una persona humana revisó su caso. Es como si a ti te hubiera filtrado un sistema antes de tu primera entrevista en la A F P, sin que nadie te dijera qué se estaba midiendo.", "c": false}, {"t": "Y tres, el paciente ante una recomendación de tratamiento tiene derecho a que el médico contraste la sugerencia con su propio criterio. En tu industria, el paralelo es la comisión médica que evalúa una pensión de invalidez, el afiliado tiene el mismo derecho a que una persona, no solo el sistema, revise su caso.", "c": false}, {"t": "Y en los tres casos hay algo en común, lo que el sistema entrega depende de qué información tenía disponible, qué decisiones tomaron quienes construyeron el modelo, y en qué contexto se usa. Las tres son responsabilidad humana, no un hecho objetivo que la máquina descubrió sola.", "c": false}, {"t": "Cuando el sistema no llama a un afiliado, la razón real puede ser que nunca tuvo su teléfono actualizado, que alguien decidió que llevar meses sin cotizar pesa mucho en el cálculo, o que vive en una zona con mala cobertura. Ninguna es la máquina se equivocó sola, son decisiones humanas escondidas detrás de la máquina.", "c": false}, {"t": "Así que quédate con esto, cuando la inteligencia artificial deja de informar y empieza a decidir, alguien afectado tiene derecho a preguntar por qué, y tu empresa tiene que poder responder. Ahora bien, ¿de dónde salen esos errores que rompen la confianza? Y te adelanto algo, casi nunca salen de donde uno cree.", "c": false}, {"t": "Capítulo tres. Los datos no son neutrales, el sesgo algorítmico y el caso Amazon", "c": true}, {"t": "Este es, de toda la unidad, el concepto que más te va a servir. Existe una intuición muy equivocada, que una decisión basada en datos es objetiva porque los números no opinan. El error es simple de nombrar, el sistema no aprende de la realidad, aprende de registros del pasado, y si ese pasado fue desparejo, lo que predice va a ser desparejo también.", "c": false}, {"t": "A esto se le llama sesgo algorítmico, resultados que favorecen o perjudican injustificadamente a un grupo de personas, con origen en los datos con los que se entrenó el sistema, o en decisiones tomadas al construirlo. Casi nunca hay mala intención, el sistema no decide discriminar, solo busca el patrón que mejor explica lo que pasó antes y lo proyecta hacia adelante, con total convicción estadística.", "c": false}, {"t": "Imagina que entrenas a un ejecutivo nuevo mostrándole solo tus cierres con clientes de un mismo perfil, profesionales mayores de cuarenta y cinco años. Al poco tiempo va a creer que ese es el único perfil que cierra, y va a dejar de esforzarse con los demás. No porque sea mal vendedor, sino porque tú solo le mostraste una parte de la película. Un sistema de I.A. hace lo mismo con los datos con los que se entrenó.", "c": false}, {"t": "Conviene distinguir una variante puntual, el sesgo histórico, cuando los datos reflejan con precisión una desigualdad que sí existió en el mundo real. El dato no miente, describe lo que efectivamente pasó, el problema es que seguir usándolo tal cual perpetúa hacia adelante una desigualdad que ya debería haber quedado atrás.", "c": false}, {"t": "Y acá está el ejemplo que todo el mundo cita, vale la pena sabérselo completo porque es el más claro que existe. Desde dos mil catorce, Amazon construyó una herramienta de I.A. para revisar currículums, que le asignaba a cada candidatura un puntaje de una a cinco estrellas, igual que Amazon puntúa sus productos. La entrenaron con los currículums de los diez años anteriores, un período con mayoría de postulantes hombres, un desequilibrio de toda la industria tecnológica, no un invento de Amazon.", "c": false}, {"t": "El sistema buscó qué tenían en común los candidatos considerados buenos en el pasado, y como el patrón dominante eran hombres, aprendió que ser hombre correlacionaba con ser buen candidato. Hacia dos mil quince, notaron que penalizaba currículums con la palabra femenino, por ejemplo capitana del club de ajedrez femenino, y degradaba a las egresadas de universidades exclusivamente femeninas. Nadie le había dicho al sistema que el género fuera una variable.", "c": false}, {"t": "Amazon intentó parchar el problema editando esos términos puntuales, pero nunca tuvo garantías de que el sistema no encontrara otras formas más sutiles de hacer lo mismo, y terminó disolviendo el equipo a inicios de dos mil diecisiete. Y acá está el detalle que hace del caso algo más que una anécdota, a nadie se le ocurrió jamás incluir género como un campo del sistema, el sesgo apareció igual, porque el sistema encontró variables sustitutas, el nombre de un club, de una universidad, ciertas palabras más frecuentes en un currículum, que funcionaban como reemplazo estadístico del género.", "c": false}, {"t": "Por eso sacar el campo sexo de la base de datos, la solución más intuitiva, no arregla nada, el sesgo vivía en la correlación entre decenas de otras variables y un patrón histórico desparejo.", "c": false}, {"t": "Y seguro te ha pasado algo parecido, si tu modelo de riesgo de traspaso se entrenó solo con los casos que el equipo logró retener, va a subestimar el riesgo real de los clientes con un perfil distinto, y esos afiliados se te van a ir sin que ninguna alerta salte a tiempo. Sacar de la ficha el campo comuna no lo arregla solo, el sistema reconstruye un patrón parecido con otras variables que sí quedaron.", "c": false}, {"t": "Así que la frase de este capítulo es esta, el sistema no discrimina a propósito, aprende del pasado, y si el pasado fue desparejo, repite esa desigualdad con total convicción, sin darse cuenta y sin que nadie se lo haya pedido.", "c": false}, {"t": "Capítulo cuatro. Explicar lo que la máquina hizo, y la persona que responde", "c": true}, {"t": "Ahora que ya sabes de dónde puede salir un error sin que nadie lo haya buscado, la pregunta que sigue es obvia, ¿y qué haces cuando un afiliado te pregunta por qué? Acá entran dos palabras que se confunden todo el tiempo y que resuelven problemas distintos.", "c": false}, {"t": "La transparencia es avisar, comunicar con claridad que se está usando inteligencia artificial, para qué se usa y cómo influye en lo decidido. La explicabilidad es un paso más allá, poder decir, caso por caso, por qué el sistema dijo lo que dijo.", "c": false}, {"t": "Y acá está el punto fino que más vale la pena que te lleves de esta clase, ninguna de las dos exige mostrar el algoritmo, ni publicar el código ni los números internos del modelo. Lo que de verdad construye confianza es más simple, que la persona afectada pueda entender, en sus propios términos, por qué la empresa tomó esa decisión. Eso es el derecho a explicación, cuando algo te afecta directamente, tienes derecho a que alguien te lo explique en palabras simples.", "c": false}, {"t": "Compara estas dos formas de decir lo mismo. La mala suena así, el modelo asignó a tu caso un puntaje de propensión por debajo del umbral configurado para esta campaña, según la ponderación vigente de las variables del segmento. El cliente escucha palabras, no una razón, y siente que lo espantan con jerga.", "c": false}, {"t": "La buena suena así, no te contactamos esta semana porque tu situación de cotizaciones cambió hace poco y preferimos esperar a que se estabilice, si quieres, te paso con un ejecutivo ahora mismo. El cliente entiende el porqué y sabe qué hacer a continuación, esa es la diferencia completa.", "c": false}, {"t": "Hay otro lado de esta misma moneda, y tiene que ver con los datos. La privacidad de los datos se resume en una idea, necesitar información no autoriza a usarla sin límites. Se ordena en tres verbos, obtener, con qué autorización llegó ese dato, guardar, cuánto tiempo se queda dando vueltas y quién la ve, y tratar, para qué se usa de verdad una vez recolectada.", "c": false}, {"t": "Y aquí viene algo que quiero que te quede clarísimo, aunque un sistema pueda revisar millones de registros en segundos, la responsabilidad final sigue siendo humana. A eso se le llama supervisión humana, y no es desconfiar de la herramienta, es el mismo instinto que ya usas cuando revisas a mano un caso que no te cuadra.", "c": false}, {"t": "La supervisión humana te permite reconocer errores que el sistema no puede detectar en sí mismo, e interpretar circunstancias que nunca formaron parte de los datos. El nombre técnico para tener siempre a una persona en el circuito de decisión, no solo al final sino durante todo el proceso, es human in the loop, que suena más o menos como jiuman in de lup, una persona dentro del circuito.", "c": false}, {"t": "La I.A. aporta más cuando complementa el trabajo de las personas, no cuando pretende reemplazarlo. Cuando el sistema te marca a un afiliado como propenso a traspasarse, y tú sabes que tuvo un problema puntual ya resuelto, tu criterio pesa más, la máquina no reemplaza tu ojo entrenado, te da una pista para usarlo mejor y a tiempo.", "c": false}, {"t": "Y esa es la frase que te llevas de este capítulo, la máquina puede revisar millones de casos en segundos, quien responde por lo que se decidió con esos casos sigue siendo, siempre, una persona.", "c": false}, {"t": "Capítulo cinco. Los principios y la gobernanza, quién aprueba, quién revisa, quién responde", "c": true}, {"t": "Vamos a dar un paso atrás. Todo lo visto hasta acá se sostiene sobre una idea de fondo, la ética profunda, pensar los problemas éticos desde el diseño del sistema, no cuando ya estallaron en un reclamo o en la prensa. No es cumplir la ley, que siempre llega tarde, es adelantarse, la misma lógica de la responsabilidad social, el compromiso de tu empresa con los efectos reales de sus decisiones sobre las personas.", "c": false}, {"t": "Piénsalo como revisar el guion de una campaña antes de lanzarla a toda la cartera, no después de que lleguen los reclamos. Seis principios funcionan como esa brújula, y te los paso rápido, con lo que pasa cuando cada uno falta.", "c": false}, {"t": "Uno, equidad y justicia, que el sistema no discrimine por género u otra condición, cuando falta, pasa lo que le ocurrió a Amazon. Dos, transparencia y explicabilidad, que ya conoces, cuando faltan, el afiliado se va sin que nadie le explique por qué. Tres, privacidad y seguridad, cuando falta, se usa información del afiliado para algo que nunca autorizó.", "c": false}, {"t": "Cuatro, confiabilidad y robustez, que el sistema rinda bien frente a datos raros, cuando falta, falla justo en los casos atípicos, los que más necesitan buen criterio. Cinco, inclusión y no discriminación, que el equipo que lo construye sea diverso, cuando falta, nadie notó que el sistema ignoraba a cierto tipo de afiliado. Y seis, rendición de cuentas, que siempre exista un responsable del sistema y sus consecuencias, cuando falta, nadie sabe a quién preguntarle.", "c": false}, {"t": "Estos seis puntos son, en el fondo, la misma lista que ya usas para confiar en un ejecutivo nuevo, justo con todos, que explique sus decisiones, que cuide la información, y que dé la cara cuando algo sale mal.", "c": false}, {"t": "Esa es la ética, el qué y el por qué. Ahora falta la gobernanza de la inteligencia artificial, que responde el cómo y el quién, las normas, responsables, procedimientos y controles para conducir y vigilar cómo se usa la I.A. dentro de la empresa, no para burocratizar todo, sino para ordenar la complejidad.", "c": false}, {"t": "Una buena gobernanza responde cinco preguntas, las que le harías a cualquier jefatura antes de lanzar algo a toda la cartera, quién aprueba un modelo antes de lanzarlo, quién verifica la calidad de los datos, cómo se monitorea el sistema ya en marcha, quién interviene cuando algo sale raro, y cada cuánto se revisa y se actualiza. Quien responde suele ser un comité de gobernanza de I.A., directivos, área legal, tecnología, que revisa y autoriza los proyectos de mayor riesgo antes de producción, el mismo tipo de instancia que un comité de crédito.", "c": false}, {"t": "Y ojo con esto, reducir la gobernanza al momento del lanzamiento es el error más común, porque el rendimiento de un sistema cambia cuando cambian los datos, el entorno o el negocio. Piensa en el ciclo de vida de la I.A. como el de cualquier campaña bien llevada, se diseña, definiendo el problema y los riesgos, se prueba, y el comité revisa su finalidad y los sesgos, se lanza con supervisión humana activa, y se mide y se corrige, revisando que siga siendo confiable.", "c": false}, {"t": "Esa cuarta fase es la que explica por qué lanzar y olvidarse es siempre un error. A eso se le llama deriva del modelo, aunque un sistema esté perfectamente calibrado el día que se lanza, el mundo sigue moviéndose, y lo que funcionaba hace un año puede dejar de funcionar sin que nadie lo note, si nadie se toma el trabajo de revisarlo. Es lo que le pasa a un guion de ventas que nunca se actualiza, funcionó espectacular el primer semestre, y seis meses después ya no convence a nadie, porque el mercado cambió y nadie se dio cuenta a tiempo.", "c": false}, {"t": "Así que la frase de este capítulo es, la ética dice qué y por qué, la gobernanza dice cómo y quién, y lanzar sin volver a mirar es, tarde o temprano, cómo se termina perdiendo una cartera entera.", "c": false}, {"t": "Capítulo seis. Las reglas del mundo y el caso Banco Futuro", "c": true}, {"t": "Para cerrar, dos cosas, primero las reglas que ya existen afuera, y después una historia real que junta todo lo visto hasta acá. Ninguna empresa parte de cero, ya existen organismos internacionales y gobiernos que se hicieron la pregunta de cómo gobernar bien la I.A. y publicaron su respuesta, herramientas para anticipar problemas antes de que exploten en público, como casi le pasó al banco de esta historia.", "c": false}, {"t": "Son cinco marcos, rápido. La O C D E, del dos mil diecinueve, actualizada en dos mil veinticuatro, de los países más desarrollados, es recomendación, no ley, promueve transparencia y rendición de cuentas. Unesco, del dos mil veintiuno, adoptada por casi todos los países, tampoco es ley, pone el foco en la dignidad humana y la supervisión humana.", "c": false}, {"t": "El marco Nist de Estados Unidos, del dos mil veintitrés, ordena el riesgo en cuatro pasos, gobernar, mapear, medir y gestionar. La norma Iso cuarenta y dos mil uno, a diferencia de las anteriores, sí es certificable, una empresa puede auditarse y obtener el sello. Y el AI Act de la Unión Europea, que suena ei ái act, del dos mil veinticuatro, este sí es ley, la única que obliga de verdad, y alcanza a cualquier empresa que ofrezca I.A. a personas dentro de la Unión Europea.", "c": false}, {"t": "Ojo con un dato importante, a septiembre de dos mil veintiséis, sus obligaciones más duras, las de los sistemas de alto riesgo, se postergaron a diciembre de dos mil veintisiete y agosto de dos mil veintiocho. Si te preguntan por esto, sabe que el AI Act existe y es ley real, pero sus plazos más exigentes todavía no llegaron.", "c": false}, {"t": "Cuando una empresa hace bien todo esto, es una ventaja comercial real, con cuatro beneficios, credibilidad y reputación, que se gana cuando explica el uso que hace de la I.A. en vez de esconderlo, relaciones más sólidas con clientes e inversionistas, menos problemas legales, porque anticipar la discriminación reduce el riesgo reputacional, el daño a la imagen cuando una falla se hace pública, casi nunca proporcional al error sino a qué tan mal se gestionó la respuesta, y poder seguir innovando, la innovación sostenible, la I.A. genera valor real solo cuando no se construye a costa de un daño que después hay que pagar caro.", "c": false}, {"t": "Y ahora sí, la historia que junta todo. La narra Carlos Rojas, director de transformación digital de Banco Futuro, un banco chileno con más de treinta años de historia, presionado por bancos digitales y fintech mucho más ágiles. El directorio apostó por la tecnología e incorporó I.A. en cuatro procesos clave, evaluación de créditos, detección de fraudes, personalización de ofertas y atención al cliente con asistentes virtuales.", "c": false}, {"t": "Al principio todo se veía espectacular, procesos más rápidos, modelos que encontraban patrones que antes nadie veía, y el banco llegó a ser un referente de innovación en Chile. Pero la historia no termina ahí, y esa es la lección, el éxito medido con indicadores técnicos puede convivir, en silencio, con un fracaso que esos mismos indicadores nunca alcanzan a mostrar.", "c": false}, {"t": "Empezaron a aparecer señales, clientes frustrados que no entendían por qué se les había rechazado un crédito, ejecutivos dando respuestas demasiado técnicas, y analistas viendo recomendaciones que no calzaban con su propio criterio. El sistema tenía una precisión altísima, pero en los casos particulares algo no cuadraba, y eso generó incertidumbre.", "c": false}, {"t": "Con el tiempo, el equipo se dividió en dos bandos, cada uno con nombre técnico. El sesgo de automatización, los que le creían ciegamente a la máquina incluso cuando su propio criterio decía otra cosa, el ejecutivo que sigue el guion al pie de la letra sin escuchar de verdad al cliente. Y la aversión al algoritmo, los que no le creían nada al sistema, ni cuando tenía toda la razón, el ejecutivo que tira el guion a la basura y pierde también lo bueno que ese guion sí tenía.", "c": false}, {"t": "El resultado fue previsible, prácticas distintas entre sucursales y pérdida de coherencia. El objetivo nunca fue elegir un extremo, es el punto medio, la confianza calibrada, confiar en el sistema donde tiene buen historial, y poner más atención humana justo en los casos raros que el sistema nunca vio bien en su entrenamiento.", "c": false}, {"t": "El momento crítico llegó desde afuera, un informe de consumidores cuestionó la transparencia de varias financieras que usaban I.A. Banco Futuro ni siquiera fue mencionado, pero encendió las alarmas igual, porque ese riesgo era el mismo que ya anunciaban las señales de alerta puertas adentro. El desafío era de confianza, no técnico.", "c": false}, {"t": "El directorio formó un comité con seis áreas, riesgos, tecnología, cumplimiento, auditoría, recursos humanos y atención al cliente, liderado por Carlos Rojas. El diagnóstico tuvo tres partes, los modelos eran técnicamente impecables pero faltaba gobernanza, no había criterios compartidos entre sucursales, y los colaboradores estaban divididos entre quienes creían que la I.A. reemplazaba su juicio y quienes la veían solo como referencia opcional. El banco invirtió en modelos, pero descuidó la ética y la supervisión humana.", "c": false}, {"t": "Como dijo el propio Carlos Rojas, la confianza se construye con personas que entiendan y supervisen la inteligencia artificial. Y con eso en mente, tomó cuatro medidas, una política clara con reglas de transparencia, equidad y responsabilidad, un comité de gobernanza de I.A. con perfiles diversos, formación reforzada en ética y sesgos, y mejor comunicación con los clientes, explicaciones sencillas y la posibilidad real de pedir revisión humana.", "c": false}, {"t": "Al cabo de un año, creció la confianza de los colaboradores, bajaron las diferencias de criterio entre sucursales y los reclamos, y la I.A. pasó de sentirse como un sustituto amenazante a un respaldo confiable. Si mañana tu A F P lanza un sistema que decide a qué afiliados priorizar, este caso es el manual, escribe las reglas antes de lanzar, arma un comité que revise antes de aprobar, entrena a tu equipo para explicar el porqué en palabras simples, y deja siempre una puerta abierta para que una persona revise el caso raro que no cuadra.", "c": false}, {"t": "El banco no falló porque su tecnología fuera mala. Falló porque, durante un tiempo, nadie explicaba, nadie supervisaba y nadie sabía quién respondía. Eso, y no el modelo, fue lo que casi le costó la confianza de sus clientes.", "c": false}, {"t": "Bueno, repasemos rápido antes de que llegues a destino. Seis cosas para quedarte, la confianza no aparece sola después de un buen resultado técnico, hay que construirla con explicaciones claras y alguien que responda. Los datos no son neutrales, si el pasado fue desparejo, el sistema lo repite, sin mala intención pero igual de dañino, Amazon lo aprendió por las malas.", "c": false}, {"t": "No hace falta mostrar el código para ser transparente, hace falta poder dar una razón que la persona entienda de verdad. La responsabilidad final siempre es de una persona, aunque el sistema haya revisado millones de casos en segundos. Ni creerle todo a la máquina ni no creerle nada, el punto medio, la confianza calibrada, es lo que de verdad funciona. Y escribir las reglas antes de lanzar cuesta menos que arreglar la confianza después de perderla, pregúntale a Banco Futuro.", "c": false}, {"t": "Y si de todo esto te queda una sola frase para el auto, que sea esta, no perdemos afiliados porque el sistema se equivoque, los perdemos cuando nadie puede explicarles, en palabras simples, por qué decidió lo que decidió. Llévatela, repítela, y la próxima vez que un afiliado te pregunte por qué, ya vas a saber exactamente qué responder.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
