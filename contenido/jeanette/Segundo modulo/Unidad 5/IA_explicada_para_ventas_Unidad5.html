@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo probar una idea de IA antes de invertir en ella</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La ética de la IA, explicada para quien la vende todos los días</p>
+    <h1>Por qué un afiliado se va aunque el sistema haya decidido bien</h1>
+    <p class="lead">Seguro te ha pasado: un afiliado se traspasa a la competencia, revisas el caso y el sistema había hecho todo "bien" &mdash; el ranking de riesgo lo tenía marcado, la alerta había saltado &mdash; pero nadie en la sucursal supo explicarle por qué se le dejó de llamar, o por qué la oferta que le llegó no era la que él esperaba. Se fue no porque la herramienta estuviera mal. Se fue porque nadie le pudo dar una razón.</p>
+    <p class="lead">Esta guía es sobre eso: qué hace que un afiliado, un colega o hasta el regulador confíen &mdash;o no&mdash; en cómo tu empresa usa la inteligencia artificial. Y por qué esa confianza, y no lo sofisticado que sea el sistema, es lo que al final decide si una herramienta se queda pegada al trabajo diario o termina abandonada en un cajón.</p>
+    <span class="nota">No necesitas saber nada de tecnología para leer esto. Es puro criterio comercial, aplicado a algo que ya intuyes.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>Por qué la confianza decide si una herramienta se usa o se muere</a></li>
+      <li><a href="#p2"><span class="n">2</span>Cuando la máquina empieza a decidir sobre personas</a></li>
+      <li><a href="#p3"><span class="n">3</span>Los datos no son neutrales: el sesgo algorítmico</a></li>
+      <li><a href="#p4"><span class="n">4</span>Transparencia, explicabilidad y el derecho a que te expliquen</a></li>
+      <li><a href="#p5"><span class="n">5</span>Privacidad y supervisión humana: la responsabilidad es de una persona</a></li>
+      <li><a href="#p6"><span class="n">6</span>Los seis principios y la ética que se piensa antes, no después</a></li>
+      <li><a href="#p7"><span class="n">7</span>Gobernanza: quién aprueba, quién revisa, quién responde</a></li>
+      <li><a href="#p8"><span class="n">8</span>Las reglas del mundo y las organizaciones en las que sí se confía</a></li>
+      <li><a href="#p9"><span class="n">9</span>El caso que resume todo: Banco Futuro</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">La base</span></div>
+    <h2 class="titulo">Por qué la confianza decide si una herramienta se usa o se muere</h2>
+
+    <p>Todo lo que viene en esta guía es, en el fondo, una sola idea con nombre técnico: <span class="term">IA responsable</span> (crear y usar sistemas de inteligencia artificial que sean seguros, justos y transparentes, alineados con los valores de tu empresa). Y el punto de partida es este: un sistema que predice de maravilla no garantiza absolutamente nada si nadie confía en él lo suficiente como para usarlo.</p>
+
+    <p>A eso se le llama <span class="term">confianza organizacional</span>. No es un sentimiento vago ni un eslogan de recursos humanos: es la evaluación concreta que hacen tus afiliados, tus colegas, tu gerencia y hasta el regulador sobre cómo tu empresa usa la inteligencia artificial, cómo protege la información y si respalda sus decisiones con criterios claros. Se construye con hechos, no con discursos.</p>
+
+    <h3>La evaluación técnica ya no alcanza</h3>
+    <p>Durante años, un proyecto de tecnología se medía con dos o tres números: qué tan rápido responde, qué tan preciso es. Esos siguen importando, pero dejaron de ser suficientes. Hoy también hay que mirar algo mucho más resbaladizo: si la gente lo entiende, si lo acepta, si confía en lo que le está diciendo. Puedes tener el sistema más preciso del mercado y aun así verlo fracasar, porque nadie lo usa, porque el equipo lo cuestiona resultado por resultado, o porque todos vuelven calladamente al método de siempre en cuanto nadie está mirando.</p>
+
+    <p>Piénsalo como el ejecutivo nuevo que llega a tu sucursal con el mejor discurso de ventas que hayas escuchado. Sabe todo el catálogo, domina cada objeción, tiene cifras para cada argumento. Y sin embargo, durante las primeras semanas nadie le pasa un cliente importante todavía. No porque sea malo: porque la confianza no viene incluida con la habilidad técnica, se gana mostrando resultados consistentes en el tiempo. Con un sistema de IA pasa exactamente lo mismo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en el sistema que te arma la lista de "a quién llamar primero" cada mañana. Si el equipo no confía en esa lista &mdash;porque una vez les hizo perder tiempo con un contacto muerto, o porque nadie les explicó de dónde sale el orden&mdash;, la van a ignorar y van a seguir llamando por instinto, aunque la lista sea objetivamente mejor. La herramienta más precisa del mundo vale cero si el call center decide, en silencio, no usarla.
+    </div>
+
+    <p>Por eso, cuando falta confianza, la IA no desaparece de golpe: queda reducida a una herramienta aislada, algo que existe en un sistema pero que nadie incorpora de verdad al trabajo diario. Y cuando sí existe, pasa lo contrario: la gente se relaciona con más seguridad, comparte más información y se anima a participar en las siguientes iniciativas. La confianza no es la consecuencia automática de un buen resultado técnico. Es un requisito, aparte, que hay que ganarse.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Una herramienta puede predecir perfecto y, aun así, morir de olvido si nadie confía lo suficiente en ella como para usarla.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">El salto</span></div>
+    <h2 class="titulo">Cuando la máquina empieza a decidir sobre personas</h2>
+
+    <p>Hasta hace poco, la IA en tu día a día ordenaba información: resumía, priorizaba, te mostraba un panorama. Cada vez más, sin embargo, empieza a hacer algo distinto: sugiere a quién llamar, filtra postulantes para un cargo, respalda si se aprueba o no un crédito, anticipa quién se va a traspasar. Ese salto &mdash;de <em>ordenar</em> información a <em>influir</em> en lo que le pasa a una persona concreta&mdash; cambia por completo las exigencias sobre el sistema.</p>
+
+    <p>Mientras la IA solo resumía, un error se corregía revisando el resumen y ya. En el momento en que participa de la decisión &mdash;aunque sea "solo sugiriendo", no resolviendo sola&mdash;, el error ya tuvo un efecto real sobre alguien: un crédito que no se otorgó, un postulante que no avanzó, un beneficio que no llegó. Y cuando eso pasa, es completamente razonable que la persona afectada quiera saber por qué.</p>
+
+    <p>El curso plantea tres escenarios donde esta exigencia se vuelve explícita, y los tres te van a sonar conocidos aunque cambien de industria:</p>
+
+    <ol class="pasos">
+      <li><b>El cliente al que se le rechaza un crédito.</b> Tiene derecho a conocer, en palabras simples, los factores principales que pesaron &mdash;nivel de endeudamiento, historial de pago&mdash; y a pedir que un humano revise su caso. En tu AFP es la misma lógica que cuando el sistema le baja la prioridad a un afiliado en la lista de contacto o lo marca como "bajo potencial" para una campaña: si él pregunta por qué, alguien tiene que poder responderle.</li>
+      <li><b>El postulante evaluado para un cargo.</b> Tiene derecho a conocer los criterios generales que se usaron para evaluarlo y a confirmar que, en algún punto, un humano revisó su caso. Piénsalo así: es lo mismo que si a ti te hubiera filtrado un sistema antes de tu primera entrevista para vender en la AFP, sin que nadie te dijera nunca qué se estaba midiendo.</li>
+      <li><b>El paciente ante una recomendación de tratamiento.</b> Tiene derecho a que el médico pueda contrastar la sugerencia con su propio criterio. En tu industria, el paralelo más cercano es la comisión médica que evalúa una solicitud de pensión de invalidez: si empieza a apoyarse en un sistema de IA para priorizar u ordenar casos, el afiliado sigue teniendo el mismo derecho a que un profesional, no solo el sistema, revise su situación.</li>
+    </ol>
+
+    <p>Y en los tres casos hay algo en común que conviene no perder de vista: lo que el sistema entrega nunca depende solo de "qué tan buena es la tecnología". Depende de tres cosas a la vez &mdash;qué información tenía disponible, qué decisiones tomaron las personas que construyeron el modelo, y en qué contexto se está usando&mdash;, y las tres son responsabilidad humana, no un hecho objetivo que la máquina "descubrió" sola.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Cuando el sistema no llama a un afiliado, la razón real puede ser que nunca tuvo su teléfono actualizado (le faltaba información), que alguien decidió que llevar muchos meses sin cotizar pesa mucho en el cálculo (una elección de quien construyó el modelo), o que ese afiliado vive en una zona con mala cobertura para las campañas de contacto (el contexto en que se usa). Ninguna de las tres es "la máquina se equivocó sola": son decisiones humanas escondidas detrás de la máquina.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Cuando la IA deja de informar y empieza a decidir, alguien afectado tiene derecho a preguntar por qué. Y tu empresa tiene que poder responder.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">El concepto clave</span></div>
+    <h2 class="titulo">Los datos no son neutrales: el sesgo algorítmico</h2>
+
+    <p>Este es, de toda la unidad, el concepto que más te va a servir. Existe una intuición muy extendida y muy equivocada: que una decisión basada en datos es, por definición, objetiva, porque "los números no opinan". El error de esa intuición es simple de nombrar: el sistema no aprende de la realidad directamente, aprende de <em>registros</em> del pasado. Y si ese pasado fue desparejo, el futuro que el sistema predice va a ser desparejo también, aunque nadie se lo haya pedido.</p>
+
+    <p>A este fenómeno se le llama <span class="term">sesgo algorítmico</span>: resultados que favorecen o perjudican injustificadamente a determinados grupos de personas, con origen en los datos con los que se entrenó el sistema o en decisiones tomadas al construirlo. Y lo más importante de entender es esto: casi nunca hay mala intención de por medio. El sistema no "decide" discriminar. Solo hace lo que cualquier sistema predictivo hace: busca el patrón que mejor explica lo que pasó antes, y lo proyecta hacia adelante. Si ese patrón venía cargado de una desigualdad, el sistema la repite con total convicción estadística, sin ninguna forma interna de notar que algo estaba mal.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que entrenas a un ejecutivo nuevo mostrándole solo tus cierres con clientes de un mismo perfil &mdash;digamos, profesionales mayores de cuarenta y cinco años&mdash;. Al poco tiempo, ese ejecutivo va a terminar creyendo, sin que nadie se lo diga en voz alta, que ese es el único perfil que cierra, y va a dejar de esforzarse en serio con los demás. No porque sea mal vendedor: porque tú solo le mostraste una parte de la película. Un sistema de IA hace exactamente lo mismo con los datos con los que se entrenó.
+    </div>
+
+    <p>Conviene distinguir además una variante puntual: el <span class="term">sesgo histórico</span>, que aparece cuando los datos reflejan con precisión una desigualdad que sí existió en el mundo real. El dato, en ese sentido, "no miente": describe lo que efectivamente pasó. El problema es que seguir usándolo tal cual perpetúa hacia adelante una desigualdad que ya debería haber quedado atrás.</p>
+
+    <h3>El caso que todo el mundo cita: Amazon</h3>
+    <p>El ejemplo más conocido de sesgo algorítmico no viene de las finanzas, sino de recursos humanos, y vale la pena conocerlo completo porque es el más claro que existe. Desde 2014, Amazon construyó internamente una herramienta de inteligencia artificial para revisar currículums de postulantes a cargos técnicos: el sistema le asignaba a cada candidatura un puntaje de una a cinco estrellas, igual que Amazon puntúa sus propios productos. Lo entrenaron con los currículums que la empresa había recibido durante los diez años anteriores, un período en el que la gran mayoría de los postulantes &mdash;y de los contratados&mdash; en esos cargos eran hombres, un desequilibrio que existía en toda la industria tecnológica, no un invento de Amazon.</p>
+
+    <p>El sistema hizo exactamente lo que un sistema predictivo hace: buscó qué tenían en común los candidatos que en el pasado habían sido considerados "buenos", y como en esa muestra el patrón dominante eran hombres, aprendió por su cuenta que ser hombre correlacionaba con ser un buen candidato. Hacia 2015, los equipos de reclutamiento notaron que el sistema penalizaba currículums que contenían literalmente la palabra "women's" &mdash;por ejemplo, "capitana del club de ajedrez femenino"&mdash; y degradaba sistemáticamente a las egresadas de dos universidades exclusivamente femeninas. Nadie le había dicho al sistema que el género fuera una variable a considerar. Amazon intentó parchar el problema editando esos términos puntuales, pero nunca tuvo garantías de que el sistema no encontrara otras formas más sutiles de hacer lo mismo, y terminó disolviendo el equipo a inicios de 2017. La herramienta nunca fue el único criterio de contratación de la empresa, pero el episodio quedó como la lección de referencia sobre el tema.</p>
+
+    <p>Y aquí está el detalle que hace del caso algo más que una anécdota: a nadie se le ocurrió jamás incluir "género" como un campo del sistema. El sesgo apareció igual, porque el sistema encontró variables sustitutas &mdash;el nombre de un club, el nombre de una universidad, ciertas palabras más frecuentes en un tipo de currículum que en otro&mdash; que funcionaban como reemplazo estadístico del género, sin que la palabra "género" apareciera en ningún lugar de los datos. Por eso "sacar el campo sexo" de una base de datos, que es la solución más intuitiva y la primera que se le ocurre a casi cualquiera, no arregla nada: el sesgo no vivía en un campo, vivía en la correlación entre decenas de otras variables &mdash;el colegio, el club, la comuna, el nombre de pila&mdash; y un patrón histórico desparejo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si tu modelo de riesgo de traspaso se entrenó solo con los casos que el call center históricamente logró retener &mdash;clientes con un perfil parecido entre sí&mdash;, va a subestimar sistemáticamente el riesgo real de los clientes con un perfil distinto, y esos afiliados se te van a ir sin que ninguna alerta salte a tiempo. Y sacar de la ficha el campo "comuna" o "profesión" no lo va a arreglar solo, porque el sistema puede reconstruir un patrón parecido a partir de otras variables que sí quedaron.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">El sistema no discrimina a propósito. Aprende del pasado, y si el pasado fue desparejo, repite esa desigualdad con total convicción, sin darse cuenta y sin que nadie se lo haya pedido.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">El derecho a preguntar</span></div>
+    <h2 class="titulo">Transparencia, explicabilidad y el derecho a que te expliquen</h2>
+
+    <p>Son dos palabras que se confunden todo el tiempo y que conviene separar bien, porque cada una resuelve un problema distinto. La <span class="term">transparencia</span> es avisar: comunicar con claridad que se está usando IA, para qué se usa, y de qué manera influye en lo que se decide. La <span class="term">explicabilidad</span> es otra cosa, un paso más allá: poder decir, caso por caso, por qué el sistema dijo lo que dijo.</p>
+
+    <p>Y aquí está el punto fino que más vale la pena que te lleves de esta guía: ninguna de las dos exige mostrar el algoritmo. No hay que publicar el código, ni los números internos del modelo, ni la arquitectura técnica. Eso, además de innecesario, casi nunca sería secreto comercial revelable. Lo que de verdad construye confianza es mucho más simple y mucho más exigente al mismo tiempo: que la persona afectada pueda entender, en sus propios términos, por qué la empresa tomó esa decisión y qué criterios la respaldan. Eso es lo que el curso llama <span class="term">derecho a explicación</span>: cuando una decisión te afecta directamente &mdash;te rechazan, te bajan de prioridad, te niegan algo&mdash;, tienes derecho a que alguien te lo explique en palabras simples.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Explicación mala (aunque suene "técnica")</div>
+        <p>"El modelo asignó a tu caso un puntaje de propensión por debajo del umbral configurado para esta campaña, según la ponderación vigente de las variables del segmento." El cliente escucha palabras, no una razón. No sabe qué hacer con eso, y probablemente sienta que se lo están espantando con jerga.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Explicación buena (concreta y accionable)</div>
+        <p>"No te contactamos esta semana porque tu situación de cotizaciones cambió hace poco y preferimos esperar a que se estabilice antes de ofrecerte algo. Si quieres, te paso con un ejecutivo ahora mismo para revisar tu caso." El cliente entiende el porqué y sabe exactamente qué puede hacer a continuación.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      La próxima vez que un afiliado te pregunte por qué dejó de recibir llamadas, o por qué le llegó una oferta y no otra, tener una explicación clara a la mano &mdash;y no un "así lo dijo el sistema"&mdash; es exactamente lo que evita que se sienta tratado como un número y decida escuchar a la competencia.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Transparencia es avisar que usas la máquina. Explicabilidad es poder decir por qué dijo lo que dijo. Ninguna de las dos exige mostrar el código: exige poder dar la razón.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Los límites</span></div>
+    <h2 class="titulo">Privacidad y supervisión humana: la responsabilidad siempre es de una persona</h2>
+
+    <p>La <span class="term">privacidad de los datos</span> se resume en una idea que conviene tener siempre presente: necesitar información no autoriza a usar cualquier información sin límites. El curso lo ordena en tres verbos, y cada uno tiene su propia forma de fallar. <strong>Obtener</strong>: con qué autorización llegó ese dato a tu sistema &mdash;la falla típica es juntar información "por si sirve después", sin un propósito claro&mdash;. <strong>Guardar</strong>: cuánto tiempo se queda esa información dando vueltas y quién puede verla &mdash;la falla típica es no borrar nunca nada&mdash;. <strong>Tratar</strong>: para qué se usa de verdad ese dato una vez recolectado &mdash;la falla típica es usarlo para una campaña distinta de aquella para la que el afiliado dio su autorización&mdash;.</p>
+
+    <h3>Aunque la máquina revise millones de casos, alguien responde</h3>
+    <p>Aunque un sistema pueda revisar millones de registros en segundos, la responsabilidad final de lo que se decide con ellos sigue siendo humana. A eso se le llama <span class="term">supervisión humana</span>, y no es desconfiar de la herramienta: es exactamente el mismo instinto que tú ya usas cuando revisas a mano un caso que no te cuadra con lo que dice el sistema. La supervisión humana te permite reconocer errores que el sistema no tiene forma de detectar en sí mismo, interpretar circunstancias particulares que nunca formaron parte de los datos, y decidir cuándo el contexto exige algo que la ficha del afiliado simplemente no capturó.</p>
+
+    <p>El nombre técnico para tener siempre a un humano metido en el circuito de decisión &mdash;no solo revisando al final, sino participando durante todo el proceso&mdash; es <span class="term">human-in-the-loop</span>. Y la razón de fondo por la que esto importa tanto es que la IA aporta más cuando complementa el trabajo de las personas, no cuando pretende reemplazarlo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Cuando el sistema te marca a un afiliado como muy propenso a traspasarse, y tú sabes, porque hablaste con él la semana pasada, que tuvo un problema puntual que ya se resolvió, tu criterio pesa más que el número. La máquina no reemplaza tu ojo entrenado: te da una pista para usarlo mejor y a tiempo.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La máquina puede revisar millones de casos en segundos. Quien responde por lo que se decidió con esos casos sigue siendo, siempre, una persona.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">La brújula</span></div>
+    <h2 class="titulo">Los seis principios y la ética que se piensa antes, no después</h2>
+
+    <p>Todo lo anterior se sostiene sobre una idea de fondo que el curso llama <span class="term">ética profunda</span>: pensar los problemas éticos desde el diseño del sistema, no cuando ya estallaron en un reclamo o en la prensa. No se trata de cumplir la ley &mdash;la ley, por naturaleza, siempre llega tarde, después de que el problema ya se documentó en algún lado&mdash;, sino de adelantarse. Es la misma lógica de la <span class="term">responsabilidad social</span>: el compromiso de tu empresa con los efectos reales que sus decisiones tienen sobre las personas, incluida la obligación de usar la IA con criterio.</p>
+
+    <p>Piénsalo como revisar el guion de una campaña completa antes de lanzarla a toda la cartera, y no después de que empiecen a llegar los reclamos. Seis principios funcionan como esa brújula, y cada uno tiene una versión muy reconocible de lo que pasa cuando falta:</p>
+
+    <ol class="pasos">
+      <li><b><span class="term">Equidad y justicia</span>.</b> Que el sistema no perpetúe sesgos ni discrimine por género, origen u otra condición. Cuando falta, pasa exactamente lo que le ocurrió a Amazon: un sistema exitoso en los números que discrimina sin que nadie lo haya programado para eso.</li>
+      <li><b>Transparencia y explicabilidad.</b> Que las decisiones sean comprensibles para las personas, sobre todo cuando afectan sus derechos. Cuando falta, el afiliado se siente tratado como un número y se va sin que nadie sepa explicarle por qué.</li>
+      <li><b>Privacidad y seguridad.</b> Proteger los datos personales y la infraestructura frente a amenazas. Cuando falta, se termina usando información del afiliado para algo que él nunca autorizó, o esa información queda expuesta.</li>
+      <li><b><span class="term">Confiabilidad y robustez</span>.</b> Que el sistema siga rindiendo bien incluso frente a datos raros o inesperados. Cuando falta, el sistema falla justo en los casos atípicos, que son casi siempre los que más necesitan buen criterio.</li>
+      <li><b><span class="term">Inclusión y no discriminación</span>.</b> Que el equipo que construye el sistema sea diverso, para no dejar puntos ciegos. Cuando falta, nadie en la sala se dio cuenta de que el sistema ignoraba a cierto tipo de afiliado, porque nadie en esa sala representaba esa realidad.</li>
+      <li><b><span class="term">Rendición de cuentas</span>.</b> Que siempre exista una persona o un equipo responsable del comportamiento del sistema y de sus consecuencias. Cuando falta, el día que algo sale mal, nadie sabe a quién preguntarle.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Estos seis puntos son, en el fondo, la misma lista que ya usas para confiar &mdash;o no&mdash; en un ejecutivo nuevo: que sea justo con todos los clientes por igual, que explique sus decisiones, que cuide la información que le confían, que responda bien bajo presión, que no tenga puntos ciegos, y que dé la cara cuando algo sale mal.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La ética profunda se piensa antes de construir, no después del escándalo. Y los seis principios son, ni más ni menos, lo que ya le exiges a cualquier buen ejecutivo.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">Quién manda</span></div>
+    <h2 class="titulo">Gobernanza: quién aprueba, quién revisa, quién responde</h2>
+
+    <p>La ética responde el qué y el por qué. La <span class="term">gobernanza de la IA</span> responde el cómo y el quién: es el conjunto de normas, responsables, procedimientos y controles para conducir y vigilar cómo se desarrolla y se usa la inteligencia artificial dentro de la empresa. No se trata de burocratizar todo; se trata de ordenar la complejidad para que no aparezcan contradicciones, trabajo duplicado o riesgos que nadie vio venir.</p>
+
+    <p>Una buena gobernanza responde cinco preguntas muy concretas, y te las puedes imaginar exactamente como las preguntas que le harías a cualquier jefatura antes de lanzar algo a toda la cartera:</p>
+
+    <ol class="pasos">
+      <li><b>¿Quién aprueba un modelo antes de lanzarlo?</b> Como preguntar quién autoriza una campaña antes de que salga a toda la cartera, no después.</li>
+      <li><b>¿Quién verifica la calidad y el origen de los datos?</b> Como pedir que alguien revise la base de contactos antes de disparar una campaña masiva con ella.</li>
+      <li><b>¿Cómo se monitorea el comportamiento del sistema ya en marcha?</b> Como revisar cada cierto tiempo si un guion de ventas sigue funcionando o ya se gastó.</li>
+      <li><b>¿Quién interviene cuando algo sale raro?</b> Como saber exactamente a quién escalar cuando un cliente reclama algo que no calza con lo esperado.</li>
+      <li><b>¿Cada cuánto se revisa y se actualiza el sistema?</b> Como actualizar un guion cada cierto tiempo, en lugar de usar el mismo por años porque "funcionó una vez".</li>
+    </ol>
+
+    <p>Quien responde estas preguntas, en la práctica, suele ser un <span class="term">comité de gobernanza de IA</span>: un equipo multidisciplinario &mdash;directivos, área legal, tecnología&mdash; que revisa y autoriza los proyectos de mayor riesgo antes de que salgan a producción. Es el mismo tipo de instancia que ya conoces de cerca en otras áreas: un comité de crédito, o un comité que aprueba productos nuevos antes de sacarlos al mercado.</p>
+
+    <h3>Un ciclo, no un lanzamiento</h3>
+    <p>Reducir la gobernanza al momento del lanzamiento es el error más común, porque el rendimiento de un sistema cambia cuando cambian los datos, el entorno o el negocio. Piensa en el <span class="term">ciclo de vida de la IA</span> como el ciclo de cualquier campaña comercial bien llevada:</p>
+
+    <ol class="pasos">
+      <li><b>Se diseña.</b> Se define el problema que se quiere resolver, el beneficio esperado y los riesgos posibles, antes de escribir una sola línea.</li>
+      <li><b>Se prueba.</b> El equipo técnico construye el sistema, pero antes de autorizarlo, el comité revisa su finalidad, los sesgos detectados y sus efectos sobre clientes y colaboradores.</li>
+      <li><b>Se lanza.</b> Con supervisión humana activa desde el primer día y documentando por escrito cuáles son sus límites conocidos.</li>
+      <li><b>Se mide y se corrige.</b> Se revisa periódicamente que el sistema siga siendo confiable, se ajusta ante cambios y se aprende de cada campaña para la siguiente.</li>
+    </ol>
+
+    <p>Esa cuarta fase es la que explica por qué "lanzar y olvidarse" es siempre un error. A eso se le llama <span class="term">deriva del modelo</span>: aunque un sistema esté perfectamente calibrado el día que se lanza, el mundo sigue moviéndose &mdash;cambian los afiliados, cambia el mercado, cambia la competencia&mdash;, y lo que funcionaba hace un año puede dejar de funcionar sin que nadie lo note, si nadie se toma el trabajo de revisarlo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es exactamente lo que le pasa a un guion de ventas que nunca se actualiza: funcionó espectacular el primer semestre, y seis meses después sigue sonando igual, pero ya no convence a nadie, porque el mercado cambió y nadie se dio cuenta a tiempo de que había que corregirlo.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La ética dice qué y por qué. La gobernanza dice cómo y quién. Y lanzar sin volver a mirar es, tarde o temprano, cómo se termina perdiendo una cartera entera.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">Las reglas del juego</span></div>
+    <h2 class="titulo">Las reglas del mundo y las organizaciones en las que sí se confía</h2>
+
+    <p>Ninguna empresa parte de cero en esto: ya existen organismos internacionales, instituciones de normalización y gobiernos que se hicieron la pregunta de cómo gobernar bien la IA y publicaron su respuesta. No son solo obligaciones externas que hay que cumplir a regañadientes: son herramientas para mejorar procesos propios y anticipar problemas antes de que exploten en público, como casi le pasó a Banco Futuro, el caso que cierra esta guía.</p>
+
+    <ol class="pasos">
+      <li><b>Principios de la OCDE sobre IA (2019, actualizados en 2024).</b> Publicados por la organización que agrupa a los países más desarrollados. Es una recomendación, no una ley: promueve transparencia, robustez, seguridad y rendición de cuentas como base para integrar la IA sin ignorar sus efectos sociales.</li>
+      <li><b>Recomendación de la UNESCO sobre la Ética de la IA (2021).</b> Adoptada por prácticamente todos los países del mundo. Tampoco es una ley: pone el foco en la dignidad humana, la no discriminación y la supervisión humana como condiciones mínimas.</li>
+      <li><b>NIST AI RMF, Estados Unidos (2023).</b> Un marco del gobierno estadounidense, tampoco obligatorio fuera de ese país. Ordena la gestión del riesgo en cuatro pasos: gobernar, mapear, medir y gestionar.</li>
+      <li><b>ISO/IEC 42001 (2023).</b> Una norma internacional de gestión, de la misma familia que otras normas ISO ya conocidas. A diferencia de las anteriores, es certificable: una empresa puede auditarse y obtener el sello, igual que pasa hoy con calidad o con seguridad de la información.</li>
+      <li><b>AI Act de la Unión Europea (2024).</b> Este sí es ley, la única de las cinco que obliga de verdad, y alcanza a cualquier empresa que ofrezca sistemas de IA a personas dentro de la Unión Europea.</li>
+    </ol>
+
+    <p>&#9888; Nota (dato verificado a septiembre de 2026): las obligaciones más duras del AI Act, las que aplican a los sistemas de "alto riesgo", se postergaron. Ya no entran en vigencia en 2026 como se planeó originalmente: ahora se aplicarán en diciembre de 2027 y agosto de 2028, según el tipo de sistema. Si te preguntan por esta unidad, vale la pena saber que el AI Act existe y que es ley real, pero sus plazos más exigentes todavía no llegaron.</p>
+
+    <h3>Cómo se construye una organización en la que sí se confía</h3>
+    <ol class="pasos">
+      <li><b>Liderazgo comprometido.</b> La confianza no se delega solo al equipo técnico: son los directivos quienes marcan el ejemplo y asignan los recursos para que esto funcione de verdad, no solo en un documento.</li>
+      <li><b>Personas formadas y conscientes.</b> No basta con tener principios escritos si el equipo comercial no entiende su propio rol ni sabe reconocer un riesgo cuando lo tiene enfrente en una llamada.</li>
+      <li><b>Procesos claros y documentados.</b> Desde qué datos se usan hasta cómo se revisa el sistema después de lanzado, con responsables asignados por nombre, no por buena intención.</li>
+      <li><b>Decisiones con criterio crítico.</b> Usar la herramienta con juicio profesional, sin confiar en ella a ciegas ni descartarla por sistema, manteniendo la intervención humana donde el criterio es indispensable.</li>
+      <li><b>Supervisión y mejora continua.</b> La IA cambia rápido, aparecen regulaciones nuevas y las expectativas de los clientes evolucionan: una empresa "confiable" una vez y que nunca vuelve a revisarlo deja de serlo sin darse cuenta.</li>
+    </ol>
+
+    <p>Cuando una empresa hace esto bien, no es solo un gesto correcto: es una ventaja comercial real. Cuatro beneficios concretos:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Credibilidad y reputación</div>
+        <div class="sub">Beneficio 1</div>
+        <p>Se gana exactamente cuando la empresa explica el uso que hace de la IA, pone controles verificables y asume las consecuencias cuando algo sale mal, en vez de esconderlo.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Relaciones más sólidas</div>
+        <div class="sub">Beneficio 2</div>
+        <p>Clientes, colaboradores, inversionistas y reguladores valoran la transparencia de forma consistente, y eso se traduce en vínculos que duran más en el tiempo.</p>
+      </div>
+      <div class="card g">
+        <div class="q">Menos problemas legales</div>
+        <div class="sub">Beneficio 3</div>
+        <p>Anticipar la discriminación o el mal uso de datos reduce sanciones y reduce el <span class="term">riesgo reputacional</span>: el daño a la imagen de la empresa cuando una falla se hace pública, que casi nunca es proporcional al error técnico, sino a qué tan mal se gestionó la respuesta.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Poder seguir innovando</div>
+        <div class="sub">Beneficio 4</div>
+        <p>Es la <span class="term">innovación sostenible</span>: la IA genera valor real y duradero solo cuando ese valor no se construye a costa de un daño que después hay que pagar caro.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es lo mismo que te pasa a ti cuando un cliente elige tu AFP en vez de otra: casi nunca es solo por la rentabilidad del fondo. Es porque siente que hay reglas claras, que si algo sale mal alguien responde, y que no lo van a tratar como un número. Eso, a nivel de toda la empresa, es exactamente lo que construyen estos marcos.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Ninguno de estos marcos inventa nada nuevo: solo le pone nombre y reglas escritas a lo que cualquier cliente ya siente cuando confía &mdash;o desconfía&mdash; de una empresa.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 9 -->
+  <section class="parte reveal" id="p9">
+    <div class="kicker"><span class="num">9</span><span class="tag">El caso completo</span></div>
+    <h2 class="titulo">El caso que resume todo: Banco Futuro</h2>
+
+    <p>Cerramos con una historia real, la que narra Carlos Rojas, Director de Transformación Digital de Banco Futuro: un banco chileno con más de treinta años de historia, presionado por bancos digitales y fintech mucho más ágiles. El directorio decidió apostar fuerte por la tecnología e incorporó IA en cuatro procesos clave: evaluación de créditos, detección de fraudes, personalización de ofertas y atención al cliente con asistentes virtuales.</p>
+
+    <p>Al principio, todo se veía espectacular: procesos más rápidos, tiempos de respuesta más cortos, modelos que encontraban patrones que antes nadie veía. El banco llegó a ser reconocido como un referente de innovación en el sector financiero chileno. Si la historia terminara ahí, sería un caso de éxito sin matices. No termina ahí, y esa es justamente la lección: el éxito medido con indicadores técnicos puede convivir, en silencio, con un fracaso que esos mismos indicadores nunca alcanzan a mostrar.</p>
+
+    <p>Empezaron a aparecer señales: clientes frustrados que no entendían por qué se les había rechazado un crédito, y ejecutivos comerciales dando respuestas demasiado técnicas, incomprensibles para cualquier persona normal. Puertas adentro, analistas con años de experiencia veían recomendaciones que no calzaban con su propio criterio profesional. El sistema tenía una precisión estadística altísima, pero en los casos particulares algo no cuadraba, y eso generó un clima de incertidumbre en todo el equipo.</p>
+
+    <h3>Dos posturas, ambas equivocadas</h3>
+    <p>Con el tiempo, el equipo se dividió en dos bandos irreconciliables, y cada uno tiene nombre técnico:</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt"><span class="term">Sesgo de automatización</span></div>
+        <small>Los que le creían ciegamente a la máquina, incluso cuando su propio criterio les decía otra cosa. Es el ejecutivo que sigue el guion al pie de la letra sin escuchar de verdad al cliente, aunque el cliente le esté diciendo algo que el guion no contempló.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt"><span class="term">Aversión al algoritmo</span></div>
+        <small>Los que no le creían nada al sistema, ni siquiera en los casos donde tenía toda la razón, y revisaban todo desde cero. Es el ejecutivo que tira el guion completo a la basura y hace todo a su manera, perdiendo también lo bueno que el guion sí tenía.</small>
+      </div>
+    </div>
+
+    <p>El resultado de tener a ambos bandos operando al mismo tiempo fue previsible: prácticas distintas entre sucursales y una pérdida general de coherencia operativa. El objetivo, como vas a ver, nunca fue elegir uno de los dos extremos: es el punto medio, lo que se llama <span class="term">confianza calibrada</span>. Confiar en el sistema en los casos donde tiene buen historial comprobado, y poner más atención humana justamente en los casos raros, los que el sistema nunca vio bien en su entrenamiento. Eso fue exactamente lo que Banco Futuro tuvo que aprender a instalar.</p>
+
+    <p>El momento crítico llegó desde afuera: un informe de consumidores cuestionó la transparencia de varias financieras que usaban IA. Banco Futuro ni siquiera fue mencionado en ese informe. Pero encendió las alarmas igual, porque el equipo directivo entendió algo importante: el riesgo que ese informe exponía era exactamente el mismo tipo de riesgo que ya venían anunciando las señales de alerta puertas adentro. El desafío era de confianza, no técnico.</p>
+
+    <p>El directorio formó un comité con seis áreas &mdash;Riesgos, Tecnología, Cumplimiento, Auditoría, Recursos Humanos y Atención al Cliente&mdash;, liderado por Carlos Rojas, que conversó con ejecutivos, analistas y sucursales, y revisó reclamos y procedimientos. El diagnóstico tuvo tres partes: los modelos eran técnicamente impecables, pero faltaba gobernanza; no había criterios compartidos ni procedimientos claros entre sucursales; y los colaboradores estaban divididos entre quienes creían que la IA reemplazaba su juicio profesional y quienes la veían solo como una referencia opcional. El banco había invertido en modelos, pero había descuidado los principios éticos y la supervisión humana.</p>
+
+    <p>Como dijo el propio Carlos Rojas: <em>"La confianza se construye con personas que entiendan y supervisen la IA."</em></p>
+
+    <h3>Las cuatro medidas que tomó el banco</h3>
+    <ol class="pasos">
+      <li><b>Política clara.</b> Reglas escritas de transparencia, cuidado de los datos personales, equidad, revisión humana y responsabilidad.</li>
+      <li><b>Comité de gobernanza de IA.</b> Con perfiles diversos, revisando los modelos nuevos antes de lanzarlos y haciendo seguimiento periódico de los que ya estaban operando.</li>
+      <li><b>Formación reforzada.</b> Talleres de ética, de cómo interpretar al sistema, de sesgos y de responsabilidad, para todo el equipo, no solo para tecnología.</li>
+      <li><b>Mejor comunicación con los clientes.</b> Explicaciones sencillas y la posibilidad real, no solo declarada, de pedir revisión humana.</li>
+    </ol>
+
+    <p>Al cabo de un año, el resultado fue claro: creció la confianza de los propios colaboradores, bajaron las diferencias de criterio entre sucursales y los reclamos por decisiones automatizadas, y la IA pasó de sentirse como un sustituto amenazante a sentirse como un respaldo confiable. El banco se quedó con una cultura de innovación que además era transparente y ética, no una cosa a costa de la otra.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si mañana tu AFP lanza un sistema que decide a qué afiliados priorizar, este caso es prácticamente el manual: escribe las reglas antes de lanzar, arma un comité que revise antes de aprobar, entrena a tu equipo para que sepa explicar el porqué en palabras simples, y deja siempre una puerta abierta para que un humano revise el caso raro que no cuadra.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">El banco no falló porque su tecnología fuera mala. Falló porque, durante un tiempo, nadie explicaba, nadie supervisaba y nadie sabía quién respondía. Eso, y no el modelo, fue lo que casi le costó la confianza de todos sus clientes.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">&#9733;</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>IA responsable</dt><dd>Crear y usar sistemas de inteligencia artificial seguros, justos y transparentes, alineados con los valores de la empresa.</dd>
+        <dt>Confianza organizacional</dt><dd>Lo que clientes, colegas y reguladores piensan de cómo tu empresa usa la IA, cuida la información y respalda sus decisiones.</dd>
+        <dt>Ética profunda</dt><dd>Pensar los problemas éticos desde el diseño del sistema, no cuando ya estallaron.</dd>
+        <dt>Responsabilidad social</dt><dd>El compromiso de la empresa con los efectos reales de sus decisiones sobre las personas y su entorno.</dd>
+        <dt>Sesgo algorítmico</dt><dd>Resultados que favorecen o perjudican injustificadamente a un grupo, por el origen de los datos o por cómo se construyó el sistema.</dd>
+        <dt>Sesgo histórico</dt><dd>Cuando el dato describe fielmente una desigualdad pasada, y usarlo tal cual la perpetúa hacia adelante.</dd>
+        <dt>Transparencia</dt><dd>Avisar con claridad que se usa IA, para qué se usa y cómo influye en lo que se decide.</dd>
+        <dt>Explicabilidad</dt><dd>Poder decir, caso por caso, por qué el sistema decidió lo que decidió.</dd>
+        <dt>Derecho a explicación</dt><dd>Cuando una decisión te afecta directamente, tienes derecho a que alguien te la explique en palabras simples.</dd>
+        <dt>Privacidad de los datos</dt><dd>Necesitar información no autoriza a usarla sin límites: importa cómo se obtiene, se guarda y se trata.</dd>
+        <dt>Supervisión humana</dt><dd>Aunque el sistema revise millones de casos, la responsabilidad final de la decisión sigue siendo de una persona.</dd>
+        <dt>Human-in-the-loop</dt><dd>Tener siempre a un humano participando en el circuito de decisión, no solo revisando al final.</dd>
+        <dt>Gobernanza de la IA</dt><dd>Las normas, responsables, procedimientos y controles para conducir y vigilar cómo se usa la IA.</dd>
+        <dt>Comité de gobernanza de IA</dt><dd>Equipo con perfiles distintos que revisa y autoriza los proyectos de IA de mayor riesgo.</dd>
+        <dt>Ciclo de vida de la IA</dt><dd>Las cuatro fases de todo sistema: se diseña, se prueba, se lanza y se mide y corrige, una y otra vez.</dd>
+        <dt>Deriva del modelo</dt><dd>Cuando un sistema que funcionaba bien deja de hacerlo porque el mundo a su alrededor cambió y nadie lo revisó.</dd>
+        <dt>Equidad y justicia</dt><dd>Que el sistema no perpetúe sesgos ni discrimine por género, origen u otra condición.</dd>
+        <dt>Confiabilidad y robustez</dt><dd>Que el sistema siga rindiendo bien incluso frente a datos raros o inesperados.</dd>
+        <dt>Inclusión y no discriminación</dt><dd>Que el equipo que construye el sistema sea diverso, para no dejar puntos ciegos sin ver.</dd>
+        <dt>Rendición de cuentas</dt><dd>Que siempre exista una persona o equipo responsable del comportamiento del sistema y sus consecuencias.</dd>
+        <dt>Sesgo de automatización</dt><dd>Creerle ciegamente a la máquina, incluso cuando el propio criterio dice otra cosa.</dd>
+        <dt>Aversión al algoritmo</dt><dd>Desconfiar del sistema más de lo que la evidencia justifica, solo porque viene de una máquina.</dd>
+        <dt>Confianza calibrada</dt><dd>El punto medio: confiar en el sistema donde tiene buen historial, y reforzar la revisión humana en los casos raros.</dd>
+        <dt>AI Act de la Unión Europea</dt><dd>La única ley de verdad entre los marcos internacionales; sus plazos más exigentes se postergaron a 2027 y 2028.</dd>
+        <dt>Riesgo reputacional</dt><dd>El daño a la imagen de una empresa cuando una falla de IA se hace pública, casi siempre por cómo se gestionó, no por el error en sí.</dd>
+        <dt>Innovación sostenible</dt><dd>La IA genera valor real solo cuando ese valor no se construye a costa de un daño que después hay que pagar caro.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con seis cosas, que sean estas</h2>
+    <ol>
+      <li>La confianza no aparece sola después de un buen resultado técnico. Hay que construirla, con explicaciones claras y alguien que responda por lo que se decidió.</li>
+      <li>Los datos <strong>no son neutrales</strong>. Si el pasado fue desparejo, el sistema lo repite &mdash;sin mala intención, pero igual de dañino&mdash;. Amazon lo aprendió por las malas.</li>
+      <li>No hace falta mostrar el código para ser transparente. Hace falta poder dar una razón que la persona entienda de verdad.</li>
+      <li>La responsabilidad final <strong>siempre es de una persona</strong>, aunque el sistema haya revisado millones de casos en segundos.</li>
+      <li>Ni creerle todo a la máquina ni no creerle nada. El punto medio &mdash;la confianza calibrada&mdash; es lo que de verdad funciona.</li>
+      <li>Escribir las reglas antes de lanzar cuesta muchísimo menos que arreglar la confianza después de perderla. Pregúntale a Banco Futuro.</li>
+    </ol>
+    <p class="remate">No perdemos afiliados porque el sistema se equivoque. Los perdemos cuando nadie puede explicarles, en palabras simples, por qué decidió lo que decidió.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para entender qué hace confiable &mdash;o no&mdash; el uso de la inteligencia artificial en tu empresa, y por qué esa confianza, y no la sofisticación técnica, es lo que decide si una herramienta se queda o se pierde.
+</footer>
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
