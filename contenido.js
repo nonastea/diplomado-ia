@@ -1,6 +1,6 @@
 // Generado automaticamente por Actualizar.command - no editar a mano
 window.CONTENIDO = {
-  "generado": "2026-08-29 17:15",
+  "generado": "2026-09-04 00:08",
   "diplomado": "IA aplicada a los negocios",
   "modulos": {
     "1": {
@@ -46,27 +46,31 @@ window.CONTENIDO = {
         "1":"Transformacion digital y cultura de innovacion",
         "2":"Roles y Competencias en la Era de la IA",
         "3":"Nuevos modelos de negocio basados en IA",
-        "4":"Gestion del cambio y resistencia organizacional"
+        "4":"Gestion del cambio y resistencia organizacional",
+        "5":"Responsabilidad social y etica profunda"
       },
       "archivos": {
         "josue": {
           "1":{"explicacion":"contenido/josue/Segundo modulo/Unidad 1/Explicacion_Unidad1_Transformacion_digital_y_cultura_de_innovacion.pdf","mapa":"contenido/josue/Segundo modulo/Unidad 1/Unidad1_Mapa_Conceptual_y_Flashcards.html"},
           "2":{"explicacion":"contenido/josue/Segundo modulo/Unidad 2/Explicacion_Unidad2_Roles_y_Competencias_en_la_Era_de_la_IA.pdf","mapa":"contenido/josue/Segundo modulo/Unidad 2/Unidad2_Mapa_Conceptual_y_Flashcards.html"},
           "3":{"explicacion":"contenido/josue/Segundo modulo/Unidad 3/Explicacion_Unidad3_Nuevos_modelos_de_negocio_basados_en_IA.pdf","mapa":"contenido/josue/Segundo modulo/Unidad 3/Unidad3_Mapa_Conceptual_y_Flashcards.html"},
-          "4":{"explicacion":"contenido/josue/Segundo modulo/Unidad 4/Explicacion_Unidad4_Gestion_del_cambio_y_resistencia_organizacional.pdf","mapa":"contenido/josue/Segundo modulo/Unidad 4/Unidad4_Mapa_Conceptual_y_Flashcards.html"}
+          "4":{"explicacion":"contenido/josue/Segundo modulo/Unidad 4/Explicacion_Unidad4_Gestion_del_cambio_y_resistencia_organizacional.pdf","mapa":"contenido/josue/Segundo modulo/Unidad 4/Unidad4_Mapa_Conceptual_y_Flashcards.html"},
+          "5":{"explicacion":"contenido/josue/Segundo modulo/Unidad 5/Explicacion_Unidad5_Responsabilidad_social_y_etica_profunda.pdf","mapa":"contenido/josue/Segundo modulo/Unidad 5/Unidad5_Mapa_Conceptual_y_Flashcards.html"}
         },
         "jeanette": {
           "1":{"explicacion_simple":"contenido/jeanette/Segundo modulo/Unidad 1/IA_explicada_para_ventas_Unidad1.html"},
           "2":{"explicacion_simple":"contenido/jeanette/Segundo modulo/unidad 2/IA_explicada_para_ventas_Unidad2.html"},
           "3":{"explicacion_simple":"contenido/jeanette/Segundo modulo/Unidad 3/IA_explicada_para_ventas_Unidad3.html"},
-          "4":{"explicacion_simple":"contenido/jeanette/Segundo modulo/Unidad 4/IA_explicada_para_ventas_Unidad4.html"}
+          "4":{"explicacion_simple":"contenido/jeanette/Segundo modulo/Unidad 4/IA_explicada_para_ventas_Unidad4.html"},
+          "5":{"explicacion_simple":"contenido/jeanette/Segundo modulo/Unidad 5/IA_explicada_para_ventas_Unidad5.html"}
         }
       },
       "audiolibros": {
         "1":"contenido/audiolibros/Segundo modulo/Unidad 1/audiolibro_unidad1.html",
         "2":"contenido/audiolibros/Segundo modulo/unidad 2/audiolibro_unidad2.html",
         "3":"contenido/audiolibros/Segundo modulo/Unidad 3/audiolibro_unidad3.html",
-        "4":"contenido/audiolibros/Segundo modulo/Unidad 4/audiolibro_unidad4.html"
+        "4":"contenido/audiolibros/Segundo modulo/Unidad 4/audiolibro_unidad4.html",
+        "5":"contenido/audiolibros/Segundo modulo/Unidad 5/audiolibro_unidad5.html"
       }
     },
     "3": {
