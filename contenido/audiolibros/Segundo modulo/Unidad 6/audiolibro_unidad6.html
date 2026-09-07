@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Perspectivas futuras de la IA</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 6 &middot; voz del dispositivo</p>
+    <h1>Perspectivas futuras de la IA</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "Jeanette, vas manejando, así que no necesitas mirar nada: solo escucha. Esto es lo que te sirve saber la próxima vez que alguien te ofrezca una herramienta de inteligencia artificial y no sepas si subirte o dejarla pasar.", "c": false}, {"t": "Porque eso te pasa seguido, no. Cada mes aparece algo nuevo: un asistente que promete escribirte los correos, una herramienta que dice que va a predecir quién se traspasa, un curso que insiste en que hay que subirse ya. Algunas de esas cosas te van a servir. La mayoría es puro ruido caro.", "c": false}, {"t": "Esta unidad completa es sobre esa decisión exacta: cómo mirar una tecnología nueva y saber si te conviene subirte ahora, esperar un poco, o simplemente dejarla pasar, sin quedarte atrás por miedo y sin gastar plata en algo que todavía no está listo. Y una aclaración antes de partir: no necesitas saber de tecnología para esto. Es puro criterio comercial, el mismo que ya usas con tus clientes, aplicado a las tendencias de inteligencia artificial.", "c": false}, {"t": "Capítulo uno. La inteligencia artificial dejó de solo responder y empezó a hacer", "c": true}, {"t": "Partamos por el cambio de fondo, porque todo lo demás de esta unidad se apoya en esto. Hasta hace poco, la inteligencia artificial que tú conocías era una que contestaba. Le preguntabas algo y te devolvía un texto, un resumen, una imagen. Útil, pero pasiva: esperaba que tú movieras la primera ficha.", "c": false}, {"t": "Eso está cambiando. Hoy ya existen sistemas que, además de generar contenido, consultan información, clasifican una situación, preparan una respuesta y proponen qué hacer a continuación. A esto el curso lo llama agentes de inteligencia artificial, en inglés A I agents: sistemas que usan información y herramientas para llevar adelante acciones ligadas a un objetivo, no solo para redactar un texto suelto.", "c": false}, {"t": "Ojo con no confundir esto con la tecnología que ya conocías. La que solo produce contenido, textos, imágenes, resúmenes, se llama inteligencia artificial generativa, y sigue siendo la base de todo: la diferencia es que el agente, además de generar, actúa por su cuenta.", "c": false}, {"t": "El curso lo explica con un ejemplo que te va a sonar conocido. Una empresa empieza usando inteligencia artificial para ayudar a redactar las respuestas a sus clientes: el vendedor sigue leyendo el caso, decidiendo y escribiendo, la inteligencia artificial solo le da una mano con el borrador. Ese es el asistente.", "c": false}, {"t": "El paso siguiente es un sistema que además revisa el historial del cliente, clasifica la consulta, prepara una respuesta completa y propone una acción concreta. Ese es el agente. Llévalo a tu mundo: un asistente te redacta el correo de seguimiento a un afiliado que preguntó por su fondo. Un agente revisa su historial, detecta que lleva tres meses sin cotizar, clasifica el caso como riesgo de fuga, y te deja la llamada agendada para hoy. La inteligencia artificial ya no solo te ayuda a escribir: te ayuda a decidir a quién llamar primero.", "c": false}, {"t": "Y aquí viene la parte que de verdad importa para ti, más que la tecnología en sí misma: el cambio no es solo tener una herramienta más potente. La empresa tiene que decidir qué puede hacer el sistema por su cuenta, cuánta libertad de decisión le da, y en qué momentos tiene que intervenir una persona. Esa pregunta, cuánto dejo decidir a la máquina, es la que vas a tener que hacerte tú cada vez que te ofrezcan una herramienta agéntica, así le dicen en la industria, para tu cartera.", "c": false}, {"t": "Una aclaración que te conviene tener clara, porque en el mercado se usa para venderte humo: nada de esto es la llamada inteligencia artificial general, que se abrevia A G I, por su sigla en inglés. La A G I sería una inteligencia capaz de desenvolverse bien en cualquier contexto, como una persona. Los agentes de hoy hacen tareas concretas y acotadas, por avanzadas que parezcan, dentro de un objetivo definido.", "c": false}, {"t": "Si alguien te dice que te está vendiendo una inteligencia artificial que piensa como humano y sirve para todo, en realidad tiene un producto de tarea concreta con un discurso de marketing encima. La A G I, hasta el día de hoy, sigue sin existir. Y con esto te queda la primera idea ancla: la inteligencia artificial ya no solo redacta, consulta, clasifica y propone. La pregunta que importa no es cuánta tecnología tiene, sino cuánta decisión le vas a dejar tomar sola.", "c": false}, {"t": "Capítulo dos. Las tres tendencias que conviene mirar, y por qué que algo exista no significa que ya sirva", "c": true}, {"t": "Ya viste el primer gran cambio: de asistente a agente. Ahora toca ordenar el panorama completo, porque que exista una tecnología nueva cada semana no significa que tengas que evaluarlas todas. El curso agrupa todo en tres grandes movimientos, más una idea que los conecta.", "c": false}, {"t": "El primero es la inteligencia artificial multimodal: entiende texto, imágenes, audio y video a la vez, sin que tú tengas que traducirle todo a texto primero. En una línea: entiende la grabación completa de tu llamada, no solo la transcripción escrita.", "c": false}, {"t": "El segundo es el edch ei, que en inglés se escribe Edge AI: la inteligencia artificial que vive en el aparato mismo. Procesa los datos donde se generan, sin mandarlos afuera. Gana en rapidez, funciona sin buena señal, y cuida datos sensibles. En una línea: la cámara de una sucursal que reconoce una fila larga sin subir el video a ningún servidor.", "c": false}, {"t": "Y el tercer movimiento ya lo conoces del capítulo uno: los agentes de inteligencia artificial, que llevan la automatización más allá de una sola tarea y participan en cadenas completas de actividades. Los tres avanzan a ritmos distintos y sirven para cosas distintas, según el contexto y los objetivos de cada empresa, no según cuál suena más de moda.", "c": false}, {"t": "Pero aquí está la idea más importante de este capítulo, y es la que más se te va a olvidar si no la repites: el valor grande casi nunca aparece cuando compras una de estas tres tecnologías por separado, aparece cuando las combinas. A eso el curso le llama convergencia tecnológica: mirar qué pasa cuando la inteligencia artificial se junta con sensores, dispositivos conectados o procesos automatizados. El valor sale de esa combinación, no de cada pieza sola.", "c": false}, {"t": "Y hay un caso real, y chileno, que muestra esto perfecto. Codelco, en su división El Teniente, instaló cerca de doscientos sensores de vibración en su planta concentradora, para vigilar molinos, correas transportadoras y poleas las veinticuatro horas. Ningún sensor por sí solo vale gran cosa. Pero juntos, con un modelo que cruza sus datos, permitieron detectar fallas críticas antes de que ocurrieran, evitando pérdidas por más de once millones de dólares, y sacando a los trabajadores de la revisión manual de partes móviles, un riesgo real para ellos.", "c": false}, {"t": "Lo que Codelco hizo ahí tiene nombre técnico: mantenimiento predictivo, que es usar sensores y modelos para detectar que algo va a fallar antes de que falle de verdad, en vez de esperar a que la máquina se rompa. Y muchas veces esto se apoya en un gemelo digital: una copia virtual de esa máquina o ese proceso, que se actualiza con datos en tiempo real para anticipar el problema antes de que ocurra en el mundo físico.", "c": false}, {"t": "Es exactamente lo que tú haces cuando te suena la alarma con un afiliado. Ningún dato solo te dice nada: que dejó de cotizar dos meses, que preguntó por el certificado de traspaso, y que un familiar suyo se cambió de A F P el mes pasado. Cada dato por separado es apenas ruido. Los tres juntos son una señal clarísima de que tienes que llamarlo hoy. Eso es convergencia: el valor está en juntar los datos sueltos, no en tener cada uno por separado.", "c": false}, {"t": "Ahora viene la advertencia más práctica de toda la unidad, y probablemente la que más plata te ahorra en la vida real. Las tecnologías emergentes tienen niveles de madurez distintos, y una tecnología prometedora no necesariamente está lista para usarse igual en todas las empresas.", "c": false}, {"t": "Qué significa madura. Son dos cosas separadas, que conviene no mezclar. Una es si ya funciona de verdad, probada y confiable: eso lo mide una escala técnica de nueve niveles que usa la NASA, se llama T R L, que se dice te-erre-ele. La otra es qué tanto se habla de ella en el mercado: eso lo describe el Hype Cycle, o ciclo de expectativas, de Gartner. Una tecnología puede funcionar perfecto y, al mismo tiempo, estar en un bajón de expectativas donde el mercado ya se decepcionó de ella. Son dos preguntas distintas: funciona de verdad, y qué tanto se está exagerando ahora mismo.", "c": false}, {"t": "Ese bajón tiene nombre en la curva de Gartner: el valle de la desilusión, la etapa donde caen el interés y las promesas porque los primeros experimentos no cumplieron lo anunciado. Justo antes viene el pico de expectativas infladas, el momento donde todos hablan maravillas de algo que todavía no ha probado nada en la práctica. Y adivina dónde está justo ahora la tecnología de la que más se habla en esta unidad: según Gartner, los agentes de inteligencia artificial están hoy parados exactamente en ese pico. O sea, en el momento donde más se vende y menos garantía real hay.", "c": false}, {"t": "Y aquí está el dato que respalda todo esto: Gartner proyecta que más del cuarenta por ciento de los proyectos de agentes de inteligencia artificial se van a cancelar antes de que termine el veintisiete, por costos que se disparan y beneficios poco claros. Y de los miles de proveedores que hoy se anuncian como agénticos, Gartner estima que solo unos ciento treinta lo son de verdad. Al resto, poner una etiqueta nueva a un chatbot de siempre, se le llama agent washing, que se dice éiyent guáshing.", "c": false}, {"t": "Piensa en la diferencia entre comprarte un C R M nuevo porque el vendedor te mostró una demo impresionante, y comprarlo porque ya sabes que pierdes cierres por no hacer seguimiento a tiempo. La demo bonita no te dice en qué nivel de madurez está lo que estás comprando. Y con esto cierra el capítulo dos: que una tecnología exista y se hable mucho de ella no significa que ya sirva para tu negocio. Compra porque resuelve un problema que ya mediste, no porque todos la están comprando.", "c": false}, {"t": "Capítulo tres. El mundo vuca: por qué no todo se responde igual", "c": true}, {"t": "Este es, sin exagerar, el capítulo más útil de toda la unidad para ti, así que ponle atención completa aunque vengas manejando. El curso describe el entorno de hoy con una palabra que viene del inglés: entorno vuca, que se dice vuca, un acrónimo de cuatro condiciones distintas: volatilidad, incertidumbre, complejidad y ambigüedad.", "c": false}, {"t": "La idea central, y la que casi todo el mundo se salta, es esta: estas cuatro condiciones no son lo mismo, y por eso no se responden igual. La mayoría las mezcla todas en una sola palabra, todo está muy incierto, y responde a todo de la misma forma. Ese es justamente el error que este capítulo te enseña a no cometer. Vamos una por una, cada una con su respuesta correcta y su propia situación de venta de A F P.", "c": false}, {"t": "Uno: volatilidad. Sabes lo que pasa, pero no cuánto ni por cuánto tiempo. Entiendes por qué está pasando algo, pero el tamaño del cambio es impredecible. La respuesta correcta es tener holgura: un colchón, una reserva, margen de maniobra que amortigüe el golpe. En tu cartera: un competidor lanza una campaña agresiva de tasas y no sabes cuánto va a durar. La respuesta es tener un colchón de argumentos de retención ya listos, no reaccionar a cada rumor.", "c": false}, {"t": "Dos: incertidumbre. Entiendes el evento, pero no puedes predecir su efecto. Sabes qué pasó, pero no sabes cómo va a reaccionar el resto. La respuesta correcta es conseguir información: investigar, preguntar, juntar datos antes de moverte. En tu cartera: un afiliado pidió el certificado de traspaso, pero no sabes si de verdad se va a cambiar o solo está comparando. La respuesta es conseguir información, una llamada, una pregunta directa, antes de asumir que ya lo perdiste.", "c": false}, {"t": "Tres: complejidad. Hay demasiadas variables conectadas entre sí. La información puede existir, pero la red de causas y efectos es difícil de desenredar tú sola. La respuesta correcta es sumar gente que sepa: especialistas dedicados al problema. En tu cartera: un cliente empresa con cientos de afiliados tiene reglas de convenio y varias áreas involucradas en la decisión. La respuesta es no manejarlo sola, sumarte con el especialista de convenios.", "c": false}, {"t": "Y cuatro: ambigüedad. No hay precedente. No sabes ni qué es lo que no sabes: nunca ha pasado algo parecido, así que no hay manual que aplicar. La respuesta correcta es probar barato: hipótesis chicas, experimentos de bajo costo, aprender haciendo en pequeño. En tu cartera: te ofrecen un guion de venta con inteligencia artificial que nunca has usado, sin precedente de cómo va a caer. La respuesta es probarlo con cinco clientes antes de soltarlo a toda la cartera.", "c": false}, {"t": "Aplicado a la inteligencia artificial, esta distinción explica algo que probablemente ya sospechabas: una misma tecnología puede avanzar muy rápido, tener efectos difíciles de anticipar, y sobre todo, ser una oportunidad para una empresa mientras es un riesgo para otra. Por eso no conviene reaccionar en automático ante cada novedad, la reacción correcta depende de cuál de las cuatro condiciones estás enfrentando de verdad.", "c": false}, {"t": "Y aquí te dejo la frase que quiero que te quede grabada de este capítulo: volatilidad se responde con holgura, incertidumbre con información, complejidad con especialistas, y ambigüedad con pruebas baratas. Confundir las cuatro y responder igual a todas es el error más común, y el más caro.", "c": false}, {"t": "Capítulo cuatro. Mirar antes de moverse: la vigilancia tecnológica", "c": true}, {"t": "En el capítulo tres aprendiste a diagnosticar el tipo de incertidumbre que enfrentas. Este capítulo te da el método para detectar los cambios antes de que te agarren de sorpresa. El curso lo llama vigilancia tecnológica: el seguimiento organizado y sistemático de tecnologías, movimientos de la competencia, cambios regulatorios y nuevas necesidades de los clientes que podrían afectarte. No es estar pendiente de las noticias por curiosidad, es observar con método, para transformar información suelta en algo que te sirva para decidir.", "c": false}, {"t": "Dentro de esa observación aparecen dos ideas que conviene no confundir entre sí. La primera es señal débil: un primer indicio de que algo podría estar cambiando, todavía no consolidado, puede que no llegue a nada. En una línea: dos afiliados de la misma empresa te pidieron el certificado de traspaso la misma semana.", "c": false}, {"t": "La segunda es driver de cambio: un factor tecnológico, económico, social o regulatorio más estructural, capaz de impulsar transformaciones significativas de verdad. En una línea: la competencia subió su comisión, y ahora te conviene más de manera objetiva.", "c": false}, {"t": "La diferencia entre los dos es la diferencia entre un indicio y un empujón real. Una señal débil te dice, puede que esté pasando algo, presta atención; un driver de cambio ya está empujando, con causa clara. El trabajo de la vigilancia es distinguir uno de otro, y aquí aparece el enemigo de todo esto: el ruido, información que parece relevante pero no anticipa ningún cambio real. Confundir ruido con señal te hace perder tiempo persiguiendo fantasmas; ignorar una señal real por creer que es ruido te hace llegar tarde.", "c": false}, {"t": "El curso trae un ejemplo que resume bien la actitud correcta frente a esto: una empresa ve que sus competidores empiezan a experimentar con agentes de inteligencia artificial. En vez de copiarlos de inmediato, se detiene a mirar qué problema están resolviendo y qué riesgos están tomando. Esa pausa, mirar antes de imitar, es lo que separa a la vigilancia tecnológica de la reacción por pánico.", "c": false}, {"t": "En resumen, para tu cartera: los dos afiliados que pidieron el certificado de traspaso son un indicio que hay que vigilar; la comisión que subió la competencia ya está empujando de verdad. Y con esto te queda la idea del capítulo: una señal débil merece atención, un driver de cambio ya está empujando. Antes de copiar lo que hace tu competencia, mira qué problema está resolviendo, no reacciones al ruido.", "c": false}, {"t": "Capítulo cinco. Prepararse para varios futuros, y cómo convertir una moda en una oportunidad real", "c": true}, {"t": "Y ahora viene, probablemente, la mejor historia de toda la unidad, así que vamos directo a ella. Entre mil novecientos setenta y uno y mil novecientos setenta y tres, un par de estrategas de la petrolera Shell, Pierre Wack y Ted Newland, notaron tensiones geopolíticas crecientes en el mundo árabe.", "c": false}, {"t": "En vez de asumir que el precio del petróleo iba a seguir como siempre, se pusieron a imaginar futuros distintos, y uno de esos futuros planteaba que el precio podía subir de dos dólares el barril a cerca de diez, algo que en ese momento sonaba casi absurdo. Shell, que en esos años era considerada la hermana fea, débil, de la industria petrolera, tomó ese escenario en serio y empezó a prepararse operacionalmente.", "c": false}, {"t": "Cuando llegó la crisis del petróleo de mil novecientos setenta y tres, y el precio de verdad se disparó, Shell fue una de las dos petroleras que mejor la resistieron. No porque hubieran adivinado el futuro con precisión exacta, sino porque ya habían ensayado mentalmente qué hacer si eso pasaba.", "c": false}, {"t": "Esa es exactamente la lógica de lo que el curso llama prospectiva estratégica: explorar varios futuros plausibles, no para acertar cuál va a ocurrir, sino para llegar preparado a cualquiera de ellos. No es adivinación, es ensayo. Y un escenario futuro es una representación coherente de una situación futura posible, que sirve para pensar consecuencias y preparar decisiones, sin pretender describir exactamente lo que va a pasar. No lo confundas con dos primos suyos: el cisne negro, un evento de bajísima probabilidad y alto impacto que solo se entiende mirando para atrás, imposible de anticipar; y el wild card, también de baja probabilidad y alto impacto, pero que sí admite algo de preparación. El escenario lo construyes tú a propósito; el cisne negro te cae encima sin avisar.", "c": false}, {"t": "La unidad trabaja con tres escenarios. El acelerado: las capacidades de inteligencia artificial crecen rápido y la competencia automatiza cada vez más procesos. El más regulado: la inteligencia artificial sigue expandiéndose, pero bajo exigencias más estrictas de transparencia y supervisión. Y el colaborativo: las empresas la incorporan de manera gradual, mientras las personas mantienen un papel importante en interpretar, supervisar y decidir. Ninguno de los tres dice qué va a pasar de verdad; sirven para pensar cómo respondería tu empresa ante condiciones distintas.", "c": false}, {"t": "Y aquí viene el ejemplo que te va a servir de plantilla mental: una empresa financiera se pregunta qué capacidades fortalecer frente a cada uno de esos tres futuros. Al compararlos, descubre algo valioso: mejorar la calidad de sus datos, capacitar a su gente, y mantener buena gobernanza, le sirve en los tres a la vez. A eso se le llama decisión robusta: la que funciona pase lo que pase, sin tener que adivinar cuál futuro va a ocurrir para que valga la pena tomarla ya.", "c": false}, {"t": "Imagina tres futuros para tu negocio de retención: uno con la competencia agresiva en tasas, uno con más regulación en comisiones, y uno donde todo se atiende por canales digitales. Capacitarte en manejo de objeciones, tener tus argumentos al día y conocer a fondo a tus clientes de siempre, te sirve en los tres. Esa es tu decisión robusta. Guarda esta frase: como Shell antes de la crisis del petróleo, prepararte para varios futuros a la vez te deja lista para el que realmente llegue, y las decisiones que sirven en todos ellos son las que vale la pena tomar hoy mismo.", "c": false}, {"t": "Ahora, ya sabes distinguir qué tecnologías conviene mirar, qué tan madura está cada una, qué tipo de incertidumbre enfrentas, y cómo detectar señales reales sin caer en el ruido. Falta la última pregunta: cómo conviertes todo eso en una decisión de negocio concreta, en vez de quedarte solo observando.", "c": false}, {"t": "El curso le llama mapa de oportunidades al recurso que conecta una tecnología o tendencia con una necesidad concreta de tu negocio. La idea central, y la que más plata te ahorra, es el orden en que haces las preguntas: primero la necesidad, después la herramienta, nunca al revés. Al error contrario, empezar por la tecnología porque está de moda o está disponible, sin haber definido qué problema resuelve, el curso lo llama solucionismo tecnológico: comprar la solución antes de tener claro cuál era el problema.", "c": false}, {"t": "Las tres preguntas que hay que hacerse, en este orden, antes de acercarte a cualquier tecnología nueva. Una: qué problema resuelve, no qué tan impresionante es la demo, sino a qué dolor concreto de tu negocio le pega directo. Dos: qué beneficio concreto trae, medible, no una promesa general de modernizarte o de no quedarte atrás. Y tres: qué condiciones necesita para funcionar bien, qué datos, qué capacitación, qué apoyo requiere de tu equipo para que de verdad funcione en tu operación.", "c": false}, {"t": "Te ofrecen tres herramientas el mismo mes: una que arma correos, una que predice fuga de afiliados, y una que transcribe tus llamadas. La pregunta correcta no es cuál está más de moda, sino cuál de mis problemas reales resuelve cada una. Si tu problema es que llamas tarde a los afiliados en riesgo, la de predicción de fuga gana, no por ser la más nueva, sino porque le pega directo a tu dolor de hoy. Nunca empieces por la herramienta porque está disponible: empieza por la necesidad, y recién ahí conecta la tecnología. Al revés se llama solucionismo tecnológico, y sale caro.", "c": false}, {"t": "Capítulo seis. Decidir: adoptar no es la única salida", "c": true}, {"t": "Llegaste hasta acá con todas las herramientas: sabes qué tecnologías mirar, cómo medir su madurez, qué tipo de incertidumbre enfrentas, cómo distinguir una señal real del ruido, y cómo conectar una tecnología con una necesidad real. Ahora viene la decisión en sí.", "c": false}, {"t": "Y aquí el curso da un giro importante: mucha gente cree que frente a una tecnología nueva solo hay dos caminos, adoptarla o ignorarla. En realidad hay cuatro. Uno: probar a pequeña escala, un piloto acotado, con un grupo chico, para ver si de verdad funciona antes de comprometer recursos grandes. Dos: seguir observando, mantener vigilancia activa sobre cómo evoluciona, sin todavía moverte, esto no es no hacer nada, es una decisión deliberada, con un motivo detrás.", "c": false}, {"t": "Tres: postergar la incorporación, esperar a un momento mejor, con criterios explícitos de cuándo revisar de nuevo, tampoco es indecisión, es elegir el momento. Y cuatro: concluir que no es adecuada, determinar, con la información que ya tienes, que esa tecnología no sirve para tus actividades concretas ahora.", "c": false}, {"t": "Y esta es la frase que quiero que te quede grabada, porque va a valerte para cualquier tecnología que te ofrezcan de aquí en adelante: postergar y seguir observando son decisiones, no cobardía. Elegir esperar, con un criterio claro de qué estás esperando ver, es tan legítimo como lanzarte. Lo que no es legítimo es no decidir nada y dejar que el tiempo decida por ti.", "c": false}, {"t": "A toda esta forma de razonar el curso la llama pensamiento estratégico: entender que una decisión sobre tecnología nunca ocurre aislada, se conecta con el mercado, tus clientes, la regulación, y hasta la cultura de tu equipo. Pensar estratégicamente es mirar ese sistema completo antes de mover una ficha, no solo la novedad que tienes al frente.", "c": false}, {"t": "Un ejemplo directo para cerrar la idea: una organización ve que los agentes de inteligencia artificial crecen rápido en su industria. Antes de incorporarlos, analiza sus beneficios, sus capacidades internas y los riesgos. Con esa información, decide un piloto acotado o seguir observando antes de comprometer más recursos. No corre detrás de la novedad, decide con criterio.", "c": false}, {"t": "Llévalo a tu cartera: te ofrecen un asistente de inteligencia artificial y todos en tu equipo ya lo están probando. Tú decides esperar un mes más porque quieres ver cómo les fue a ellos primero. Eso no te hace lenta ni anticuada, es una decisión, tomada con un criterio, voy a ver resultados reales antes de invertir mi tiempo en aprender algo nuevo. Si en un mes más ves que a tu equipo le funcionó, te subes con toda la información que necesitas. Si no, te ahorraste el tiempo.", "c": false}, {"t": "Y para cerrar toda la unidad, si te quedas con tres cosas, que sean estas. Una: no todo es lo mismo, un entorno vuca tiene cuatro tipos de dificultad distintos, y cada uno se responde diferente, holgura para lo volátil, información para lo incierto, especialistas para lo complejo, pruebas baratas para lo ambiguo. Confundirlos es el error más caro que puedes cometer.", "c": false}, {"t": "Dos: que exista no significa que sirva. Antes de subirte a una tecnología nueva, mira si ya está probada de verdad o solo está en el pico de expectativas. Y tres, la que quiero que repitas en voz alta la próxima vez que dudes: postergar es una decisión, no cobardía. Adoptar, probar en chico, seguir observando o decir que no son cuatro caminos igual de válidos. La calidad de tu decisión no depende de ser la primera en subirte, sino de entender el contexto lo suficiente para actuar con criterio.", "c": false}, {"t": "Tú ya intuyes quién se va a traspasar, quién va a cerrar, y a quién llamar primero, sin haberle puesto nombre técnico a lo que haces. La inteligencia artificial solo le puso nombre a algo que tu instinto comercial ya sabía hacer: mirar antes de moverte, y moverte con criterio, no por moda. Esa es la frase que te llevas hoy: mira antes de moverte, muévete con criterio.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
