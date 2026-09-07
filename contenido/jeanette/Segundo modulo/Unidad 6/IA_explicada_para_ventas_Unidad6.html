@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuándo subirte a la ola de IA y cuándo dejarla pasar</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial</p>
+    <h1>Cuándo subirte a la ola de IA y cuándo dejarla pasar</h1>
+    <p class="lead">Cada mes te ofrecen algo nuevo: un asistente que promete escribir tus correos de seguimiento, una herramienta que "predice" quién se traspasa, un curso que dice que hay que subirse ya o quedarte atrás. Algunas de esas cosas de verdad te van a servir. La mayoría son ruido caro.</p>
+    <p class="lead">Esta guía es sobre esa decisión exacta: <strong>cómo mirar una tecnología nueva y saber si te conviene subirte ahora, esperar un poco, o simplemente dejarla pasar</strong> — sin quedarte atrás por miedo y sin gastar plata ni tiempo en algo que todavía no está listo.</p>
+    <span class="nota">No necesitas saber de tecnología para entender esto. Es puro criterio comercial, aplicado a las tendencias de IA.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>La IA dejó de solo responder y empezó a hacer</a></li>
+      <li><a href="#p2"><span class="n">2</span>Las tres tecnologías que conviene mirar</a></li>
+      <li><a href="#p3"><span class="n">3</span>Que algo exista no significa que ya sirva</a></li>
+      <li><a href="#p4"><span class="n">4</span>El mundo VUCA: por qué no todo se responde igual</a></li>
+      <li><a href="#p5"><span class="n">5</span>Mirar antes de moverse: la vigilancia tecnológica</a></li>
+      <li><a href="#p6"><span class="n">6</span>Los escenarios: no adivinar el futuro, prepararse para varios</a></li>
+      <li><a href="#p7"><span class="n">7</span>De la moda a la oportunidad: el mapa de oportunidades</a></li>
+      <li><a href="#p8"><span class="n">8</span>Decidir: adoptar no es la única salida</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">El cambio de fondo</span></div>
+    <h2 class="titulo">La IA dejó de solo responder y empezó a hacer</h2>
+
+    <p>Hasta hace poco, la IA que conocías era una que contestaba. Le preguntabas algo y te devolvía un texto, un resumen, una imagen. Útil, pero pasiva: esperaba que tú movieras la primera ficha. Eso está cambiando, y es el punto de partida de toda esta unidad.</p>
+
+    <p>Hoy ya existen sistemas que, además de generar contenido, <strong>consultan información, clasifican una situación, preparan una respuesta y proponen qué hacer a continuación</strong>. A esto el curso lo llama <span class="term">agentes de IA</span>: sistemas que usan información y herramientas para llevar adelante acciones ligadas a un objetivo, no solo para redactar un texto suelto. La tecnología que solo produce contenido —textos, imágenes, resúmenes— se llama <span class="term">IA generativa</span>, y sigue siendo la base de todo esto: la diferencia es que el agente, además de generar, actúa.</p>
+
+    <h3>De asistente a agente</h3>
+    <p>El curso lo explica con un ejemplo que te va a sonar conocido. Una empresa empieza usando IA para ayudar a redactar las respuestas a sus clientes: el vendedor sigue leyendo el caso, decidiendo y escribiendo, la IA solo le da una mano con el borrador. Ese es el asistente. El paso siguiente es un sistema que además <strong>revisa el historial del cliente, clasifica de qué se trata la consulta, prepara una respuesta completa y propone una acción concreta</strong>. Ese es el agente.</p>
+
+    <p>Y aquí viene la parte que de verdad importa para ti, más que la tecnología en sí: el cambio no es solo tener una herramienta más potente. La empresa tiene que decidir <strong>qué puede hacer el sistema por su cuenta, cuánta libertad de decisión le da, y en qué momentos tiene que intervenir una persona</strong>. Esa pregunta —cuánto dejo decidir a la máquina— es exactamente la que vas a tener que hacerte tú cada vez que alguien te ofrezca una herramienta "agéntica" para tu cartera.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un asistente te redacta el correo de seguimiento a un afiliado que preguntó por su fondo. Un agente, en cambio, revisa el historial completo de ese afiliado, detecta que lleva tres meses sin cotizar, clasifica el caso como riesgo de fuga, redacta la respuesta y te deja la llamada agendada para hoy en la tarde, lista para que tú la hagas. La IA ya no solo te ayuda a escribir: te ayuda a decidir a quién llamar primero.
+    </div>
+
+    <p>Una aclaración que te conviene tener clara, porque en el mercado se usa para venderte humo: nada de esto es la llamada <span class="term">Inteligencia Artificial General</span> (o AGI, por su sigla en inglés). La AGI sería una inteligencia capaz de desenvolverse bien en <em>cualquier</em> contexto, como una persona. Los agentes de hoy hacen tareas concretas y acotadas —por avanzadas que parezcan— dentro de un objetivo definido. Si alguien te dice que te está vendiendo una IA "que piensa como humano y sirve para todo", tiene un producto de IA de tarea concreta con un discurso de marketing encima. La AGI, a septiembre de 2026, sigue sin existir.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA ya no solo redacta: consulta, clasifica, prepara y propone. La pregunta que importa no es cuánta tecnología tiene, sino cuánta decisión le vas a dejar tomar sola.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">Las tendencias</span></div>
+    <h2 class="titulo">Las tres tecnologías que conviene mirar</h2>
+
+    <p>Que exista una tecnología nueva cada semana no significa que tengas que evaluarlas todas. El curso ordena el panorama en tres grandes movimientos, más una idea que los conecta a todos.</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">IA multimodal</div>
+        <div class="sub">Entiende de todo a la vez</div>
+        <ul>
+          <li>Trabaja junta con texto, imágenes, audio y video.</li>
+          <li>No necesita que le "traduzcas" todo a texto primero.</li>
+        </ul>
+        <p class="nm">En una línea: entiende la grabación de tu llamada completa, no solo la transcripción escrita.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Edge AI</div>
+        <div class="sub">La IA vive en el aparato mismo</div>
+        <ul>
+          <li>Procesa los datos donde se generan, sin mandarlos afuera.</li>
+          <li>Gana en rapidez, funciona sin buena señal y cuida datos sensibles.</li>
+        </ul>
+        <p class="nm">En una línea: la cámara de una sucursal que reconoce una fila larga sin subir el video a ningún servidor.</p>
+      </div>
+    </div>
+
+    <p>El tercer movimiento ya lo viste en la Parte 1: los <span class="term">agentes de IA</span>, que llevan la automatización más allá de una sola tarea y participan en cadenas completas de actividades. Los tres avanzan a ritmos distintos y sirven para cosas distintas — su utilidad depende del contexto, los objetivos y las capacidades de cada empresa, no de cuál suena más de moda.</p>
+
+    <h3>El truco está en juntarlas: la convergencia</h3>
+    <p>Aquí está la idea más importante de esta parte, y es la que más se te va a olvidar si la lees rápido: el valor grande casi nunca aparece cuando compras una de estas tecnologías por separado. Aparece cuando las <strong>combinas</strong>. A eso el curso le llama <span class="term">convergencia</span>: mirar qué pasa cuando la IA se junta con sensores, dispositivos conectados, réplicas digitales de una máquina o procesos automatizados, y el valor sale de esa combinación, no de cada pieza sola.</p>
+
+    <p>Hay un caso real —y chileno— que muestra esto perfecto: <strong>Codelco, División El Teniente</strong> instaló cerca de <strong>200 sensores</strong> de vibración en su planta concentradora para vigilar molinos, correas transportadoras y poleas las 24 horas. Ningún sensor por sí solo vale gran cosa. Pero juntos, con un modelo que cruza sus datos, permitieron detectar fallas críticas antes de que ocurrieran, evitando pérdidas por <strong>más de once millones de dólares</strong> — además de sacar a los trabajadores de la revisión manual de partes móviles, que era un riesgo real para ellos.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es exactamente lo que tú haces cuando te suena la alarma con un afiliado. Ningún dato solo te dice nada: que dejó de cotizar dos meses, que llamó a preguntar por el certificado de traspaso, y que un familiar suyo se cambió de AFP el mes pasado. Cada dato por separado es apenas un ruido. Los tres juntos son una señal clarísima de que tienes que llamarlo hoy. Eso es convergencia: el valor está en juntar los datos sueltos, no en tener cada uno por separado.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">IA multimodal, Edge AI y agentes son las tres tendencias que conviene mirar — pero el valor de verdad aparece cuando se combinan entre sí, igual que cuando tú juntas tres datos sueltos de un afiliado y te suena la alarma.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">La trampa de la moda</span></div>
+    <h2 class="titulo">Que algo exista no significa que ya sirva</h2>
+
+    <p>Aquí viene la advertencia más práctica de toda la unidad, y probablemente la que más plata te ahorra en la vida real. El curso lo repite tres veces de distintas formas: las tecnologías emergentes tienen <span class="term">niveles de madurez</span> distintos, y una tecnología prometedora no necesariamente está lista para usarse igual en todas las empresas.</p>
+
+    <p>¿Qué significa "madura"? Dos cosas separadas, que conviene no mezclar. Una es si <strong>ya funciona de verdad</strong>, probada y confiable — eso lo mide una escala técnica de nueve niveles que usa la NASA. La otra es <strong>qué tanto se habla de ella y qué tanto se espera de ella en el mercado</strong> — eso lo describe la curva de expectativas de Gartner, que va desde el entusiasmo inicial hasta un bajón antes de asentarse en uso real. Una tecnología puede funcionar perfecto técnicamente y, al mismo tiempo, estar en ese bajón de expectativas donde el mercado ya se decepcionó de ella. Son dos preguntas distintas: ¿funciona de verdad? y ¿qué tanto se está exagerando ahora mismo?</p>
+
+    <p>Ese "bajón" tiene nombre en la curva de Gartner: el <span class="term">valle de la desilusión</span>, la etapa donde caen el interés y las promesas porque los primeros experimentos no cumplieron lo que se anunció. Justo antes viene el <span class="term">pico de expectativas infladas</span>, el momento donde todos hablan maravillas de algo que todavía no ha probado nada en la práctica. Y adivina dónde está justo ahora la tecnología de la que más se habla en esta unidad: según Gartner, los agentes de IA están hoy parados exactamente en ese pico de expectativas infladas. O sea: en el momento donde más se vende y menos garantía real hay.</p>
+
+    <p>Y aquí está el dato que respalda todo esto, para que no quede como una opinión: Gartner proyecta que <strong>más del 40% de los proyectos de agentes de IA se van a cancelar antes de que termine 2027</strong>, por costos que se disparan y beneficios que no se ven claros. Y de los miles de proveedores que hoy se anuncian como "agénticos", Gartner estima que <strong>solo unos 130 lo son de verdad</strong>. Al resto — poner una etiqueta nueva a un chatbot o una automatización de siempre — se le llama <span class="term">agent washing</span>: maquillar de "agente" algo que no lo es.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Comprar por moda</div>
+        <p>"Todos mis colegas en otras AFP están usando esta herramienta, mejor me subo antes de quedar atrás." No hay problema identificado, no hay medida de éxito, solo la urgencia de no quedarse fuera.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Comprar por criterio</div>
+        <p>"Tengo medido que pierdo tantos afiliados al mes por falta de seguimiento oportuno. Esta herramienta ataca justo ese problema, y sé qué resultado tiene que darme para que valga la pena." Hay un problema medido antes de mirar la solución.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la diferencia entre comprarte un CRM nuevo porque el vendedor te mostró una demo impresionante, y comprarlo porque ya sabes que pierdes cierres por no hacer seguimiento a tiempo y esa herramienta resuelve justo eso. La demo bonita no te dice en qué nivel de madurez está lo que estás comprando.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Que una tecnología exista y se hable mucho de ella no significa que ya sirva para tu negocio. Compra porque resuelve un problema que ya mediste, no porque todos la están comprando.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">La joya de la unidad</span></div>
+    <h2 class="titulo">El mundo VUCA: por qué no todo se responde igual</h2>
+
+    <p>Esta es, sin exagerar, la parte más útil de toda la unidad para ti. El curso describe el entorno de hoy con una palabra que viene del inglés: <span class="term">entorno VUCA</span>, un acrónimo de cuatro condiciones distintas — volatilidad, incertidumbre, complejidad y ambigüedad. La idea central, y la que casi todo el mundo se salta, es esta: <strong>estas cuatro condiciones no son lo mismo, y por eso no se responden igual</strong>. La mayoría de la gente las mezcla todas en una sola palabra ("todo está muy incierto") y responde a todo de la misma forma. Ese es justamente el error que esta parte te enseña a no cometer.</p>
+
+    <p>Vamos una por una, cada una con su propia respuesta correcta:</p>
+
+    <ol class="pasos">
+      <li><b><span class="term">Volatilidad</span>: sabes lo que pasa, pero no cuánto ni por cuánto tiempo.</b> Entiendes perfecto por qué está pasando algo, pero el tamaño del cambio es impredecible. La respuesta correcta es tener <strong>holgura</strong>: un colchón, una reserva, margen de maniobra que amortigüe el golpe mientras se acomoda.</li>
+      <li><b><span class="term">Incertidumbre</span>: entiendes el evento, pero no puedes predecir su efecto.</b> Sabes qué pasó, pero no sabes cómo va a reaccionar el resto. La respuesta correcta es <strong>conseguir información</strong>: investigar, preguntar, juntar datos antes de moverte.</li>
+      <li><b><span class="term">Complejidad</span>: hay demasiadas variables conectadas entre sí.</b> La información puede existir, pero la red de causas y efectos es difícil de desenredar tú solo. La respuesta correcta es <strong>sumar gente que sepa</strong>: especialistas dedicados al problema, en vez de intentar simplificarlo tú solo.</li>
+      <li><b><span class="term">Ambigüedad</span>: no hay precedente. No sabes ni qué es lo que no sabes.</b> Nunca ha pasado algo parecido, así que no hay manual ni experiencia previa que aplicar. La respuesta correcta es <strong>probar barato</strong>: hipótesis chicas, experimentos de bajo costo, aprender haciendo en pequeño antes de comprometerte en grande.</li>
+    </ol>
+
+    <p>Aplicado a la IA, esta distinción explica algo que probablemente ya sospechabas: una misma tecnología puede avanzar muy rápido, tener efectos difíciles de anticipar y, sobre todo, <strong>ser una oportunidad para una empresa mientras es un riesgo para otra</strong>. Por eso no conviene reaccionar en automático ante cada novedad — la reacción correcta depende de cuál de las cuatro condiciones estás enfrentando de verdad.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Cuatro situaciones de tu cartera, cuatro respuestas distintas:
+      <ol class="pasos" style="margin-top:12px;">
+        <li><b>Volatilidad:</b> un competidor lanza una campaña agresiva de tasas y no sabes cuánto va a durar. Tienes claro qué está pasando; no sabes el tamaño. Respuesta: ten un colchón de argumentos de retención listos, no reacciones a cada rumor.</li>
+        <li><b>Incertidumbre:</b> un afiliado pidió el certificado de traspaso, pero no sabes si de verdad se va a cambiar o solo está comparando. Respuesta: consigue información — una llamada, una pregunta directa, antes de asumir que ya lo perdiste.</li>
+        <li><b>Complejidad:</b> un cliente empresa con cientos de afiliados tiene reglas de convenio, distintos perfiles y varias áreas involucradas en la decisión. Respuesta: no lo manejes solo, súmate con el especialista de convenios.</li>
+        <li><b>Ambigüedad:</b> te ofrecen un guion de venta armado con IA que nunca has usado en tu industria y no existe precedente de cómo va a caer. Respuesta: pruébalo con cinco clientes antes de soltarlo a toda la cartera, exactamente como ya sabes hacerlo.</li>
+      </ol>
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Volatilidad se responde con holgura, incertidumbre con información, complejidad con especialistas y ambigüedad con pruebas baratas. Confundir las cuatro y responder igual a todas es el error más común — y el más caro.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Observar antes de moverse</span></div>
+    <h2 class="titulo">Mirar antes de moverse: la vigilancia tecnológica</h2>
+
+    <p>Si en la Parte 4 aprendiste a diagnosticar el tipo de incertidumbre que enfrentas, esta parte te da el método para detectar los cambios antes de que te agarren de sorpresa. El curso lo llama <span class="term">vigilancia tecnológica</span>: el seguimiento organizado y sistemático de tecnologías, movimientos de la competencia, cambios regulatorios y nuevas necesidades de los clientes que podrían afectarte. No es estar pendiente de las noticias por curiosidad: es observar con método, para transformar información suelta en algo que te sirva para decidir.</p>
+
+    <p>Dentro de esa observación aparecen dos ideas que conviene no confundir entre sí:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Señal débil</div>
+        <div class="sub">Un indicio, todavía no una tendencia</div>
+        <ul>
+          <li>Un primer indicio de que algo podría estar cambiando.</li>
+          <li>Todavía no es consolidado — puede que no llegue a nada.</li>
+        </ul>
+        <p class="nm">En una línea: dos afiliados de la misma empresa te pidieron el certificado de traspaso la misma semana.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Driver de cambio</div>
+        <div class="sub">Un factor que ya está empujando</div>
+        <ul>
+          <li>Un factor tecnológico, económico, social o regulatorio más estructural.</li>
+          <li>Capaz de impulsar transformaciones significativas de verdad.</li>
+        </ul>
+        <p class="nm">En una línea: la competencia subió su comisión y ahora te conviene más de manera objetiva.</p>
+      </div>
+    </div>
+
+    <p>La diferencia entre los dos es la diferencia entre un indicio y un empujón real. Una señal débil te dice "puede que esté pasando algo, presta atención". Un driver de cambio ya está empujando, con fuerza y causa clara. El trabajo de la vigilancia es justamente distinguir uno de otro — y aquí aparece el enemigo de todo esto: el <span class="term">ruido</span>, información que parece relevante pero en realidad no anticipa ningún cambio real. Un dato suelto, una casualidad, un caso aislado que no significa nada. Confundir ruido con señal te hace perder tiempo persiguiendo fantasmas; ignorar una señal real por creer que es ruido te hace llegar tarde.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Una señal débil es que dos afiliados de la misma empresa te pidieron el certificado de traspaso la misma semana: puede ser coincidencia, puede ser el inicio de algo. Un driver de cambio es que subió la comisión de la competencia: eso sí es un factor concreto que va a mover gente, con causa clara y medible. Uno es un indicio que hay que vigilar; el otro ya está empujando de verdad.
+    </div>
+
+    <p>El curso trae un ejemplo que resume bien la actitud correcta frente a esto: una empresa observa que sus competidores empiezan a experimentar con agentes de IA. En lugar de asumir de inmediato que tiene que copiarlos, se detiene a mirar <strong>qué problema están resolviendo, qué resultados están consiguiendo y qué riesgos están tomando</strong>. Esa pausa —mirar antes de imitar— es lo que separa a la vigilancia tecnológica de la reacción por pánico. Sirve para decidir si eso que ves es una experiencia aislada de un competidor, o el comienzo de un cambio más amplio en toda tu industria.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Una señal débil es un indicio que merece atención; un driver de cambio ya está empujando de verdad. Antes de copiar lo que hace tu competencia, mira qué problema está resolviendo — no reacciones al ruido.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Prepararse para varios futuros</span></div>
+    <h2 class="titulo">Los escenarios: no adivinar el futuro, prepararse para varios</h2>
+
+    <p>Esta es probablemente la mejor historia de toda la unidad, así que vamos directo a ella. Entre 1971 y 1973, un par de estrategas de la petrolera <strong>Royal Dutch Shell</strong>, Pierre Wack y Ted Newland, notaron tensiones geopolíticas crecientes en el mundo árabe. En vez de asumir que el precio del petróleo iba a seguir como siempre, se pusieron a imaginar futuros distintos — y uno de esos futuros planteaba que el precio podía subir de <strong>dos dólares el barril a cerca de diez</strong>, algo que en ese momento sonaba casi absurdo. Shell, que en esos años era considerada la "hermana fea" débil de la industria petrolera, tomó ese escenario en serio y empezó a prepararse operacionalmente. Cuando llegó la crisis del petróleo de 1973 y el precio de verdad se disparó, Shell fue una de las dos petroleras que mejor la resistieron. No porque hubieran adivinado el futuro con precisión exacta, sino porque ya habían ensayado mentalmente qué hacer si eso pasaba.</p>
+
+    <p>Esa es exactamente la lógica de lo que el curso llama <span class="term">prospectiva estratégica</span>: explorar de forma ordenada varios futuros plausibles, no para acertar cuál va a ocurrir, sino para llegar preparado a cualquiera de ellos. No es adivinación. Es ensayo. Y un <span class="term">escenario futuro</span> es precisamente eso: una representación coherente de una situación futura posible, que te sirve para pensar consecuencias y preparar decisiones — sin pretender describir exactamente lo que va a pasar.</p>
+
+    <h3>Los tres escenarios de la unidad</h3>
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Acelerado</div>
+        <small>Las capacidades de IA crecen rápido, los clientes se acostumbran a nuevas formas de interacción y la competencia automatiza cada vez más procesos.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Más regulado</div>
+        <small>La IA sigue expandiéndose, pero bajo exigencias más estrictas de transparencia, responsabilidad y supervisión.</small>
+      </div>
+    </div>
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Colaborativo</div>
+        <small>Las empresas incorporan la IA de manera gradual, mientras las personas mantienen un papel importante en interpretar, supervisar y decidir.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Ninguno predice</div>
+        <small>Ninguno de los tres dice qué va a pasar de verdad. Sirven para pensar cómo respondería tu empresa ante condiciones distintas.</small>
+      </div>
+    </div>
+
+    <p>El curso trae un ejemplo que te va a servir de plantilla mental: una empresa financiera se pregunta qué capacidades necesitaría fortalecer frente a una adopción acelerada de IA, frente a más regulación, o frente a mayor colaboración entre personas y sistemas. Al comparar los tres futuros, descubre algo valioso: mejorar la calidad de sus datos, capacitar a su gente y mantener buena gobernanza le sirve <strong>en los tres escenarios a la vez</strong>. A eso se le llama <span class="term">decisión robusta</span>: la que funciona pase lo que pase, la que no tienes que apostar a adivinar cuál futuro va a ocurrir para que valga la pena tomarla ya.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina tres futuros para tu negocio de retención: uno donde la competencia se pone agresiva con tasas, uno donde la regulación exige más transparencia en las comisiones, y uno donde todo el mundo empieza a atender por canales digitales. Capacitarte mejor en manejo de objeciones, tener tus argumentos actualizados y conocer a fondo a tus clientes de siempre te sirve en los tres futuros. Esa es tu decisión robusta: no necesitas adivinar cuál de los tres va a pasar para saber que vale la pena hacerla ya.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un escenario no predice el futuro: lo ensaya. Como Shell antes de la crisis del petróleo, prepararte para varios futuros a la vez te deja listo para el que realmente llegue — y las decisiones que sirven en todos ellos son las que vale la pena tomar hoy mismo.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">De la moda al negocio</span></div>
+    <h2 class="titulo">De la moda a la oportunidad: el mapa de oportunidades</h2>
+
+    <p>Ya sabes distinguir qué tecnologías conviene mirar (Parte 2), qué tan madura está cada una (Parte 3), qué tipo de incertidumbre enfrentas (Parte 4) y cómo detectar señales reales sin caer en el ruido (Parte 5). Esta parte responde la última pregunta: ¿cómo conviertes todo eso en una decisión de negocio concreta, en vez de quedarte solo observando?</p>
+
+    <p>El curso le llama <span class="term">mapa de oportunidades</span> al recurso que conecta una tecnología o tendencia con una <strong>necesidad concreta de tu negocio</strong>. La idea central, y la que más plata te ahorra, es el orden en que haces las preguntas: primero la necesidad, después la herramienta — nunca al revés. Al error contrario —empezar por la tecnología porque está de moda o está disponible, sin haber definido qué problema resuelve— el curso lo llama <span class="term">solucionismo tecnológico</span>: comprar la solución antes de tener claro cuál era el problema.</p>
+
+    <p>Las tres preguntas que hay que hacerse, en este orden, antes de acercarte a cualquier tecnología nueva:</p>
+
+    <ol class="pasos">
+      <li><b>¿Qué problema resuelve?</b> No qué tan impresionante es la demo, sino a qué dolor concreto de tu negocio le pega directo.</li>
+      <li><b>¿Qué beneficio concreto trae?</b> Medible, no una promesa general de "modernizarte" o "no quedarte atrás".</li>
+      <li><b>¿Qué condiciones necesita para funcionar bien?</b> Qué datos, qué capacitación, qué apoyo requiere de tu equipo para que de verdad funcione en tu operación.</li>
+    </ol>
+
+    <p>El curso trae un ejemplo de una empresa de retail que identifica tres alternativas atractivas con IA: personalizar recomendaciones, anticipar cambios en la demanda, o automatizar ciertas consultas de clientes. Las tres suenan bien. Pero no valen lo mismo para ese negocio en particular: antes de avanzar, la empresa se detiene a evaluar qué necesidad es prioritaria, qué beneficio real traería cada una y qué condiciones necesita cada una para funcionar. Recién ahí una tendencia deja de ser una moda y se convierte en una oportunidad que se puede evaluar en serio.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Te ofrecen tres herramientas de IA el mismo mes: una que arma correos automáticos, una que predice fuga de afiliados, y una que transcribe tus llamadas. Las tres pueden sonar útiles. La pregunta correcta no es "¿cuál está más de moda?", sino "¿cuál de mis problemas reales resuelve cada una, con qué beneficio medible, y qué necesito yo para usarla bien?". Si tu problema real es que llamas tarde a los afiliados en riesgo, la de predicción de fuga gana — no porque sea la más nueva, sino porque le pega directo a tu dolor de hoy.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Nunca empieces por la herramienta porque está disponible. Empieza por la necesidad — qué problema resuelve, qué beneficio trae, qué condiciones exige — y recién ahí conecta la tecnología. Al revés se llama solucionismo tecnológico, y sale caro.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">La decisión final</span></div>
+    <h2 class="titulo">Decidir: adoptar no es la única salida</h2>
+
+    <p>Llegaste hasta acá con todas las herramientas: sabes qué tecnologías mirar, cómo medir su madurez, qué tipo de incertidumbre enfrentas, cómo distinguir una señal real del ruido, cómo pensar en varios futuros a la vez y cómo conectar una tecnología con una necesidad real. Ahora viene la decisión en sí. Y aquí el curso da un giro importante: mucha gente cree que frente a una tecnología nueva solo hay dos caminos, adoptarla o ignorarla. En realidad hay cuatro.</p>
+
+    <ol class="pasos">
+      <li><b>Probar a pequeña escala.</b> Un piloto acotado, con un grupo chico, para ver si de verdad funciona antes de comprometer recursos grandes.</li>
+      <li><b>Seguir observando.</b> Mantener vigilancia activa sobre cómo evoluciona, sin todavía moverte. Esto no es no hacer nada: es una decisión deliberada, con un motivo detrás.</li>
+      <li><b>Postergar la incorporación.</b> Esperar a un momento mejor, con criterios explícitos de cuándo revisar de nuevo. Tampoco es indecisión: es elegir el momento.</li>
+      <li><b>Concluir que no es adecuada.</b> Determinar, con la información que ya tienes, que esa tecnología no sirve para tus actividades concretas ahora.</li>
+    </ol>
+
+    <p>Y esta es la frase que quiero que te quede grabada, porque va a valerte para cualquier tecnología nueva que te ofrezcan de aquí en adelante, no solo para las de esta unidad: <strong>postergar y seguir observando son decisiones, no cobardía</strong>. Elegir esperar, con un criterio claro de qué estás esperando ver, es tan legítimo como lanzarte. Lo que no es legítimo es no decidir nada y dejar que el tiempo decida por ti.</p>
+
+    <p>A toda esta forma de razonar el curso la llama <span class="term">pensamiento estratégico</span>: entender que una decisión sobre tecnología nunca ocurre aislada — se conecta con cambios del mercado, expectativas de tus clientes, regulación, las capacidades que ya tienes y hasta la cultura de tu equipo. Pensar estratégicamente es mirar ese sistema completo antes de mover una ficha, no solo la novedad que tienes al frente.</p>
+
+    <p>El curso cierra esta idea con un ejemplo directo: una organización ve que los agentes de IA están creciendo rápido en su industria. Antes de incorporarlos, analiza sus beneficios posibles, sus capacidades internas, los riesgos y cómo se está moviendo el resto del sector. Con esa información, decide desarrollar una experiencia acotada o seguir observando antes de comprometer más recursos. No corre detrás de la novedad: decide con criterio.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Te ofrecen un asistente de IA para tu cartera y todos en tu equipo ya lo están probando. Tú decides esperar un mes más porque quieres ver cómo les fue a ellos primero. Eso no te hace lenta ni anticuada: es una decisión, tomada con un criterio — "voy a ver resultados reales antes de invertir mi tiempo en aprender algo nuevo". Si en un mes más ves que a tu equipo le funcionó, te subes con toda la información que necesitas. Si no, te ahorraste el tiempo.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La calidad de la decisión no depende de ser la primera en adoptar la novedad, sino de entender el contexto lo suficiente para actuar con criterio.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Agentes de IA</dt><dd>Sistemas que, además de generar contenido, consultan información, clasifican y proponen acciones ligadas a un objetivo.</dd>
+        <dt>IA generativa</dt><dd>La IA que produce contenido —textos, imágenes, respuestas— a partir de una instrucción, sin necesariamente actuar por su cuenta.</dd>
+        <dt>Inteligencia Artificial General (AGI)</dt><dd>Una inteligencia hipotética capaz de desenvolverse bien en cualquier contexto, no solo en tareas puntuales. Todavía no existe.</dd>
+        <dt>Automatización</dt><dd>Un sistema que ejecuta con fiabilidad exactamente lo que se le programó, sin margen de decisión propia.</dd>
+        <dt>IA multimodal</dt><dd>Sistemas que entienden texto, imagen, audio y video a la vez, sin necesitar que le traduzcas todo a un solo formato.</dd>
+        <dt>Edge AI</dt><dd>IA que procesa los datos en el mismo lugar donde se generan, sin mandarlos afuera: más rápida y más privada.</dd>
+        <dt>Convergencia tecnológica</dt><dd>El valor que aparece al combinar varias tecnologías entre sí, no al usar cada una por separado.</dd>
+        <dt>Gemelo digital</dt><dd>Una copia virtual de una máquina o proceso real, que se actualiza con datos en tiempo real para anticipar problemas.</dd>
+        <dt>Mantenimiento predictivo</dt><dd>Usar sensores y modelos para detectar que algo va a fallar antes de que falle de verdad.</dd>
+        <dt>Nivel de madurez (TRL)</dt><dd>Qué tan probada y confiable está una tecnología en la práctica, más allá de lo que se hable de ella.</dd>
+        <dt>Hype Cycle</dt><dd>La curva de expectativas del mercado sobre una tecnología: sube mucho, baja, y después se asienta en uso real.</dd>
+        <dt>Pico de expectativas infladas</dt><dd>El momento donde más se habla de una tecnología, antes de que haya probado resultados reales.</dd>
+        <dt>Valle de la desilusión</dt><dd>El bajón de interés que viene después del pico, cuando los primeros intentos no cumplen lo prometido.</dd>
+        <dt>Agent washing</dt><dd>Vender como "agente de IA" algo que en realidad es un chatbot o una automatización de siempre, con etiqueta nueva.</dd>
+        <dt>Entorno VUCA</dt><dd>Un entorno con cuatro tipos de dificultad distintos —volatilidad, incertidumbre, complejidad, ambigüedad— que exigen respuestas distintas cada uno.</dd>
+        <dt>Volatilidad</dt><dd>Entiendes qué pasa, pero no cuánto ni por cuánto tiempo. Se responde con holgura y margen de maniobra.</dd>
+        <dt>Incertidumbre</dt><dd>Entiendes el hecho, pero no puedes predecir su efecto. Se responde consiguiendo información antes de actuar.</dd>
+        <dt>Complejidad</dt><dd>Demasiadas variables conectadas entre sí. Se responde sumando gente especializada en el tema.</dd>
+        <dt>Ambigüedad</dt><dd>No hay precedente, ni sabes qué es lo que no sabes. Se responde probando barato y en pequeño.</dd>
+        <dt>Vigilancia tecnológica</dt><dd>Observar de forma sistemática tecnologías, competencia, regulación y clientes, para no reaccionar tarde a los cambios.</dd>
+        <dt>Señal débil</dt><dd>Un primer indicio de que algo podría estar cambiando, todavía sin confirmarse como tendencia.</dd>
+        <dt>Driver de cambio</dt><dd>Un factor más estructural —económico, social, regulatorio— que ya está empujando un cambio real.</dd>
+        <dt>Ruido</dt><dd>Información que parece importante pero en realidad no anticipa ningún cambio de verdad.</dd>
+        <dt>Cisne negro</dt><dd>Un evento de bajísima probabilidad y alto impacto que solo se entiende en retrospectiva: imposible de anticipar.</dd>
+        <dt>Wild card</dt><dd>Un evento de baja probabilidad y alto impacto, pero para el que —a diferencia del cisne negro— sí cabe algo de preparación.</dd>
+        <dt>Prospectiva estratégica</dt><dd>Explorar varios futuros posibles, no para adivinar cuál va a pasar, sino para llegar preparado a cualquiera.</dd>
+        <dt>Escenario futuro</dt><dd>Una situación futura posible y coherente, que sirve para pensar consecuencias y preparar decisiones de hoy.</dd>
+        <dt>Decisión robusta</dt><dd>Una decisión que conviene tomar sea cual sea el futuro que finalmente ocurra.</dd>
+        <dt>Mapa de oportunidades</dt><dd>Conectar una tecnología nueva con una necesidad real de tu negocio, en ese orden y nunca al revés.</dd>
+        <dt>Solucionismo tecnológico</dt><dd>El error de empezar por la herramienta porque está de moda o disponible, sin tener claro qué problema resuelve.</dd>
+        <dt>Pensamiento estratégico</dt><dd>Entender que una decisión de tecnología se conecta con el mercado, tus clientes, la regulación y tu propio equipo, no ocurre aislada.</dd>
+        <dt>Piloto acotado</dt><dd>Probar una tecnología con un grupo chico antes de comprometer recursos grandes en ella.</dd>
+        <dt>Postergar la incorporación</dt><dd>Decidir esperar a un mejor momento, con un criterio claro de cuándo revisarlo de nuevo — no indecisión.</dd>
+        <dt>Mantener vigilancia activa</dt><dd>Seguir observando cómo evoluciona algo sin adoptarlo todavía. También es una decisión, no una omisión.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con tres cosas, que sean estas</h2>
+    <ol>
+      <li>No todo es lo mismo. Un entorno <strong>VUCA</strong> tiene cuatro tipos de dificultad distintos, y cada uno se responde diferente: holgura para lo volátil, información para lo incierto, especialistas para lo complejo, pruebas baratas para lo ambiguo. Confundirlos es el error más caro que puedes cometer.</li>
+      <li>Que exista no significa que sirva. Antes de subirte a una tecnología nueva, mira si ya está probada de verdad o solo está en el pico de expectativas — y compra porque resuelve un problema que ya mediste, nunca porque todos la están comprando.</li>
+      <li><strong>Postergar es una decisión, no cobardía.</strong> Adoptar, probar en chico, seguir observando o decir que no son cuatro caminos igual de válidos. La calidad de tu decisión no depende de ser la primera en subirte, sino de entender el contexto lo suficiente para actuar con criterio.</li>
+    </ol>
+    <p class="remate">Tú ya intuyes quién se va a traspasar, quién va a cerrar y a quién llamar primero, sin haberle puesto nombre técnico a lo que haces. La IA solo le puso nombre a algo que tu instinto comercial ya sabía hacer: mirar antes de moverte, y moverte con criterio, no por moda.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para leer el futuro de la IA con el mismo criterio con el que ya lees a tus clientes: sin correr detrás de cada novedad, y sin quedarte atrás por miedo.
+</footer>
+
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
