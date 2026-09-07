@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 6 · Perspectivas futuras de la IA — Mapa conceptual y Flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Innovación empresarial con IA · Máster en IA</div>
+  <h1>Unidad 6 · <b>Perspectivas futuras de la IA</b></h1>
+  <p class="sub">Mapa conceptual interactivo y flashcards con los 80 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Nueve puntos donde el material del curso choca con la evidencia externa verificada. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> VUCA: el curso cita la conclusión y omite la matriz</h3>
+      <p>El curso reproduce la frase de Bennett y Lemoine (2014) —«no plantean el mismo problema y no requieren idénticas respuestas»— pero nunca dice cuáles son esas respuestas. La matriz completa cruza dos ejes (cuánto se sabe / qué tan bien se predice el resultado) y asigna: <b>volatilidad → holgura y agilidad; incertidumbre → información; complejidad → especialistas; ambigüedad → experimentación</b>.</p>
+      <div class="regla"><b>Regla:</b> si preguntan qué es VUCA, basta con las cuatro dimensiones. Si piden por qué requieren respuestas distintas —o aplicarlo a un caso como UDA—, da la respuesta específica por dimensión.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> «Distintos niveles de madurez» sin nombrar ningún marco</h3>
+      <p>El curso repite tres veces que las tecnologías tienen distintos niveles de madurez, sin nombrar ninguna escala. Existen dos marcos complementarios y no intercambiables: los <b>TRL de la NASA</b> (9 niveles, madurez técnica) y el <b>Hype Cycle de Gartner</b> (5 fases, percepción de mercado). Una tecnología puede estar en TRL 9 y en el valle de la desilusión a la vez.</p>
+      <div class="regla"><b>Regla:</b> usa «niveles de madurez» como el curso; si piden justificar cómo se mide, nombra TRL y Hype Cycle.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> El curso advierte contra la moda, pero no cuantifica el riesgo</h3>
+      <p>Gartner (jun-2025): más del <b>40% de los proyectos de IA agéntica</b> serán cancelados para fines de 2027, y solo ~130 de los proveedores «agénticos» lo son de verdad (el resto hace <b>agent washing</b>). MIT/NANDA: 95% de las iniciativas de IA generativa no pasa de piloto. Matiz obligatorio: el 80% de las empresas sí adoptó IA generativa — <b>adopción ≠ impacto</b>.</p>
+      <div class="regla"><b>Regla:</b> estas cifras respaldan la advertencia del curso, nunca la contradicen.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> Agentes de IA: no existe una escala numerada de autonomía</h3>
+      <p>El curso habla de «qué grado de autonomía resulta apropiado». El informe <b>WEF & Capgemini (2025)</b> —en la propia bibliografía del curso— no propone niveles numerados: usa 7 dimensiones de clasificación y distingue <b>autonomía</b> (elegir qué hacer) de <b>automatización</b> (hacer lo programado). Dato: 82% de las organizaciones planea integrar agentes en 1–3 años.</p>
+      <div class="regla"><b>Regla:</b> si piden «el nivel de autonomía», no inventes una escala 1–5: describe dónde cae en el espectro y en qué dimensiones.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> «Vigilancia tecnológica»: el nombre de la norma cambió en 2018</h3>
+      <p>Sí existe una norma formal, la <b>UNE 166006</b>. Pero desde la edición 2018 ya no se llama «Sistema de vigilancia tecnológica e inteligencia competitiva» sino simplemente <b>«Vigilancia e Inteligencia»</b>, porque lo relevante no es solo lo tecnológico, también lo económico, político, social y ambiental.</p>
+      <div class="regla"><b>Regla:</b> usa «vigilancia tecnológica» como el curso; si preguntan por la norma o el alcance, el término vigente es «vigilancia e inteligencia».</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> «Mapa de oportunidades» no es un término estándar</h3>
+      <p>No existe una herramienta canónica con ese nombre en gestión de innovación. Lo documentado es el <b>Opportunity Solution Tree</b> de Teresa Torres y el marco <b>Jobs to Be Done</b>. El «mapa de oportunidades» del curso es una síntesis pedagógica propia.</p>
+      <div class="regla"><b>Regla:</b> en el examen úsalo tal cual lo define el curso; si piden una herramienta formal reconocida, el OST es la respuesta.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> Señal débil: falta Ansoff y la frontera con wild card y cisne negro</h3>
+      <p>El concepto viene de <b>Igor Ansoff (1975)</b>: la respuesta debe ser graduada y proporcional a cuánto se sabe. Faltan además dos primos cercanos: el <b>wild card</b> (baja probabilidad, alto impacto, con cierta preparación posible) y el <b>cisne negro</b> de Taleb (mismo perfil, pero racionalizado solo en retrospectiva e inanticipable). La diferencia es la anticipabilidad.</p>
+      <div class="regla"><b>Regla:</b> una señal débil no es un cisne negro. Si algo es por definición inanticipable, la vigilancia tecnológica no lo va a atrapar.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">08</span> Los tres escenarios del curso no son una matriz 2×2 ni son excluyentes</h3>
+      <p>El curso ofrece acelerado, más regulado y colaborativo como una lista que mezcla ejes (velocidad de adopción y grado de regulación) y que <b>puede coexistir</b>. El método canónico —<b>GBN / Peter Schwartz</b>, cuyo caso fundacional es Shell y Pierre Wack antes de la crisis del petróleo de 1973— cruza dos incertidumbres críticas en ejes perpendiculares y produce cuatro escenarios mutuamente excluyentes.</p>
+      <div class="regla"><b>Regla:</b> para el examen usa los tres del curso. Si piden <i>construir</i> escenarios —como en la Pregunta 2 de UDA—, la matriz 2×2 es la técnica correcta.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">09</span> El caso NovaLog no está completo en el PDF descargable</h3>
+      <p>La página 19 solo trae la portada y la bajada del recurso interactivo; el desarrollo del caso vive tras el QR o la versión online de la clase. Las tres preguntas de cierre sí están en el PDF y son conceptuales.</p>
+      <div class="regla"><b>Regla:</b> si el control evalúa detalles específicos de NovaLog, hay que entrar a la versión online; el PDF no alcanza. Las tres preguntas sí se responden desde la unidad.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 6 — Perspectivas futuras de la IA» · Curso: Innovación empresarial con IA · Archivo autocontenido, funciona sin internet.</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Tecnologías emergentes"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Vigilancia tecnológica"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Prospectiva y escenarios"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"Creación de valor"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Entorno VUCA"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Madurez y decisión"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Casos y continuidad"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Raíz"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Tecnologías emergentes"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Vigilancia tecnológica"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Prospectiva y escenarios"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"Creación de valor"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Entorno VUCA"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Madurez y decisión"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Casos y continuidad"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {id:"root", t:"PERSPECTIVAS FUTURAS DE LA IA", c:"root", d:"Mirada a las posibles formas en que puede evolucionar la IA y a sus efectos en las organizaciones y la sociedad. Cierra el curso Innovación empresarial con IA integrando y proyectando hacia el futuro lo ya construido en las cinco unidades previas: se apoya en la Unidad 3 (creación de valor) y en la Unidad 5 (ética, gobernanza y confianza). No enseña una técnica ni un marco cerrado, sino una disposición para decidir cuando la información es insuficiente.", k:[
+  {e:"se apoyan en", t:"Tecnologías emergentes", c:"azul", d:"Conjunto de capacidades que están extendiendo lo que la IA puede hacer y los ámbitos donde puede usarse: sistemas multimodales, agentes con más autonomía, Edge AI y la convergencia de la IA con robótica, IoT y gemelos digitales. El curso advierte que estas tecnologías presentan distintos niveles de madurez y que su utilidad depende del contexto, los objetivos y las capacidades de cada organización, no de una jerarquía universal entre ellas.", k:[
+  {e:"parte de", t:"De generar a actuar", c:"azul", d:"La IA dejó de limitarse a generar contenido —textos, imágenes, código— y empezó a combinar información de distintas fuentes, recurrir a herramientas digitales y participar de forma más directa en algunos procesos de negocio. No es un salto hacia una inteligencia distinta, sino una ampliación gradual de lo que estos sistemas pueden hacer.", k:[
+  {e:"arranca en", t:"IA generativa", c:"azul", d:"Sistemas que producen contenidos nuevos —texto, imágenes, código, audio— a partir de una instrucción. En los últimos años pasó a producir contenido cada vez más elaborado, pero su evolución no se limita a generar información: de ahí surgen los sistemas que combinan fuentes, usan herramientas y participan en procesos."},
+  {e:"evoluciona hacia", t:"Nuevas formas de interacción", c:"azul", d:"Ya no se limita a comandos simples ni a respuestas predeterminadas: los sistemas empiezan a comprender contextos más complejos, interpretar múltiples lenguajes —no solo verbales, también visuales o sonoros— y adaptar sus respuestas a cada usuario. La frase que resume el cambio: la IA no solo ejecuta, sino que también propone, anticipa y acompaña decisiones en tiempo real."},
+  {id:"agi", e:"exige distinguir", t:"AGI vs. IA de tarea concreta", c:"azul", d:"La Inteligencia Artificial General (AGI) se asocia con capacidades amplias y adaptables, capaces de desenvolverse con solvencia en cualquier contexto; los sistemas actuales, por avanzados que sean, siguen siendo IA de tarea concreta (narrow AI): resuelven bien un conjunto acotado de problemas, no cualquier problema. Como enriquecimiento verificado: los niveles de AGI de Google DeepMind (Morris et al., 2023) ordenan el debate en una matriz Desempeño × Generalidad, del Nivel 0 (sin IA) al Nivel 5 (sobrehumano), y ubican “Competente” —percentil 50 general, aún no alcanzado— como el punto de inflexión que mejor coincide con las definiciones históricas de AGI."}
+]},
+  {id:"multimodal", e:"se amplía con", t:"IA multimodal", c:"azul", d:"Sistemas que pueden trabajar de manera conjunta con distintos tipos de información —texto, imágenes, audio y video—, lo que permite abordar situaciones que antes requerían herramientas independientes para cada dato. Usan codificadores especializados por modalidad para convertir cada tipo de información en vectores numéricos, y luego un espacio de representación compartido —o mecanismos de atención cruzada— para unificarlos.", k:[
+  {e:"procesa mediante", t:"Modalidad y codificadores", c:"azul", d:"Una modalidad (modality) es cada tipo de información que un sistema puede procesar: texto, imagen, audio, video o incluso una señal de sensor. Los codificadores por modalidad (modality encoders) —redes convolucionales o vision transformers para imágenes, transformers para texto— convierten cada modalidad en un vector numérico que captura sus características relevantes."},
+  {e:"unifica en", t:"Espacio de representación compartido", c:"azul", d:"Espacio numérico común (shared embedding space) donde texto, imagen y audio quedan representados de forma comparable entre sí, típicamente mediante mecanismos de atención cruzada. Es el paso que permite relacionar información que originalmente vive en espacios matemáticos distintos: los números que describen un píxel no tienen la misma naturaleza que los que describen una palabra."},
+  {e:"integra mediante", t:"Fusión temprana y tardía", c:"azul", d:"La fusión temprana (early fusion) codifica todas las modalidades en un espacio común desde el inicio del procesamiento, manteniendo la información alineada en el tiempo; la fusión tardía (late fusion) procesa cada modalidad por separado y combina las salidas solo al final. La diferencia importa en la práctica: detectar sarcasmo —un tono irónico que coincide exactamente con una sonrisa contenida— exige fusión temprana, porque la fusión tardía nunca ve la coincidencia temporal exacta entre audio y gesto."}
+]},
+  {id:"agentes", e:"avanza hacia", t:"Agentes de IA", c:"azul", d:"Sistemas que utilizan información y herramientas para llevar adelante acciones vinculadas con un objetivo determinado, y que pueden participar en secuencias completas de actividades, no solo en una tarea aislada. Su avance desde prototipos hacia aplicaciones reales está generando nuevos desafíos —autonomía, seguridad, integración, supervisión y confianza— que obligan a las organizaciones a pensar conjuntamente innovación y gobernanza.", k:[
+  {e:"se apoya en", t:"Uso de herramientas", c:"azul", d:"Capacidad de un sistema de IA de invocar recursos externos —buscar, consultar una base de datos, escribir un archivo— para cumplir su objetivo. Es lo que permite que un agente deje de quedarse “corto”: un modelo que solo genera texto no puede, por sí mismo, completar un proceso de varios pasos que involucre consultar datos y ejecutar una acción."},
+  {e:"encadena", t:"Cadena de actividades", c:"azul", d:"Secuencia completa de tareas encadenadas (activity chain) que un agente puede recorrer, más allá de una tarea aislada. Los agentes llevan la automatización más allá de un paso suelto y participan en cadenas completas orientadas a un objetivo."},
+  {e:"se distingue de", t:"Workflow vs. agente", c:"azul", d:"Según Anthropic, un workflow es “un sistema donde los modelos de lenguaje y las herramientas se orquestan a través de rutas de código predefinidas”: el desarrollador decide de antemano cada paso. Un agente es “un sistema donde los modelos de lenguaje dirigen dinámicamente sus propios procesos y su uso de herramientas, manteniendo control sobre cómo logran las tareas”. La diferencia no es cuánto sabe hacer el sistema: es quién elige la ruta."},
+  {e:"se estandariza con", t:"MCP y A2A", c:"azul", d:"El Model Context Protocol (MCP), introducido por Anthropic a fines de 2024, estandariza cómo un modelo se conecta a herramientas y fuentes de datos externas. El Agent2Agent (A2A), lanzado por Google y donado a la Linux Foundation el 23–24 de junio de 2025 (con AWS, Cisco, Microsoft, Salesforce, SAP y ServiceNow como socios fundadores), estandariza en cambio cómo dos agentes se comunican y colaboran entre sí."},
+  {id:"desafios", e:"trae consigo", t:"Desafíos: autonomía, seguridad, integración, supervisión, confianza", c:"azul", d:"A medida que aumenta la capacidad de actuación de los agentes, adquieren importancia los límites de actuación y la responsabilidad: qué actividades puede desarrollar el sistema, qué grado de autonomía resulta apropiado y en qué situaciones debe mantenerse la intervención humana. El informe WEF & Capgemini (2025) no propone una escala numerada de autonomía: usa siete dimensiones de clasificación y distingue autonomía —flexibilidad de decisión, elegir qué hacer— de automatización —fiabilidad de ejecución, hacer lo programado—; reporta además que el 82% de las organizaciones planea integrar agentes en uno a tres años."}
+]},
+  {id:"edge", e:"acerca la IA con", t:"Edge AI", c:"azul", d:"Uso de capacidades de IA en el mismo lugar, o muy cerca de él, donde se producen los datos, en lugar de enviar toda la información a un servidor remoto y esperar la respuesta de vuelta. Es especialmente útil cuando importan la rapidez de respuesta, la conectividad limitada o la privacidad de la información.", k:[
+  {e:"gana en", t:"Latencia, conectividad y privacidad", c:"azul", d:"Al ejecutar el modelo en el dispositivo se gana latencia —respuesta casi instantánea, sin ida y vuelta a un servidor—, privacidad —los datos no salen del dispositivo— y autonomía de red —el sistema sigue funcionando aunque se pierda la conexión—. El costo es una pérdida de capacidad del modelo respecto de su versión completa en la nube."},
+  {e:"se logra con", t:"Cuantización y destilación", c:"azul", d:"La cuantización reduce la precisión numérica de los pesos del modelo —por ejemplo de 32 a 8 o 4 bits— para que quepa en un dispositivo limitado; la destilación entrena un modelo pequeño para imitar el comportamiento de uno grande. Ambas técnicas sacrifican capacidad por eficiencia, que es exactamente el trade-off que hace posible Edge AI."}
+]},
+  {id:"convergencia", e:"se potencia con", t:"Convergencia tecnológica", c:"azul", d:"Combinación de varias capacidades tecnológicas —IA con robótica, Internet de las Cosas, gemelos digitales y automatización— donde el valor surge de la articulación entre ellas y no del desarrollo aislado de una sola. Estas tecnologías presentan distintos niveles de madurez: mientras algunas ya se incorporan en procesos organizacionales, otras siguen evolucionando y no necesariamente están preparadas para usarse igual en todas las organizaciones.", k:[
+  {e:"combina en", t:"Robótica con IA (VLA)", c:"azul", d:"Los modelos Vision-Language-Action (VLA) combinan comprensión visual, comprensión de lenguaje y generación de acciones físicas para controlar un robot. Ejemplo verificado: Gemini Robotics, de Google DeepMind con Apptronik, lanzado sobre Gemini el 12 de marzo de 2025, con una variante on-device el 24 de junio de 2025."},
+  {e:"conecta con", t:"Internet de las Cosas", c:"azul", d:"Red de dispositivos físicos con sensores y conectividad (IoT) que generan datos del mundo real de forma continua. Es la materia prima que, combinada con IA, permite analizar en tiempo real el funcionamiento de equipos y procesos."},
+  {e:"se refleja en", t:"Gemelos digitales", c:"azul", d:"Según IBM, un gemelo digital es “una representación virtual de un objeto o sistema físico que usa datos en tiempo real para reflejar con precisión el comportamiento, desempeño y condiciones de su contraparte del mundo real”. Sus usos centrales son el mantenimiento predictivo, la optimización operacional —experimentar en el gemelo antes de tocar el activo físico— y la toma de decisiones basada en datos."},
+  {e:"se distingue de", t:"Automatización", c:"azul", d:"Ejecución de una tarea por un sistema siguiendo reglas definidas, con énfasis en la fiabilidad de la ejecución. Se distingue de la autonomía: la automatización hace lo que está programada para hacer; la autonomía elige qué hacer."},
+  {id:"mantenimiento", e:"se ejemplifica en", t:"Ejemplo: mantenimiento industrial inteligente", c:"gris", d:"Una empresa industrial combina sensores, dispositivos conectados e IA para analizar continuamente sus equipos e identificar anomalías que anticipan fallas: el valor no surge de incorporar IA, sino de articular capacidades para resolver un problema concreto. Caso real y chileno: la División El Teniente de Codelco instaló cerca de 200 sensores de vibración en su Planta Concentradora, detectando fallas críticas que evitaron pérdidas potenciales por más de US$11 millones y eliminando la exposición al Riesgo Crítico N.º 9 (atrapamiento en partes móviles)."}
+]}
+]},
+  {id:"vuca", e:"ocurre dentro de", t:"Entorno VUCA", c:"coral", d:"Contexto de volatilidad, incertidumbre, complejidad y ambigüedad. El curso cita a Bennett y Lemoine (2014): “estas dimensiones no plantean el mismo problema y, por eso, tampoco requieren idénticas respuestas por parte de las organizaciones”, pero no desarrolla cuál es la respuesta específica para cada una —una innovación puede además ser oportunidad para una empresa mientras representa un riesgo para otra.", k:[
+  {e:"se responde con", t:"Volatilidad → holgura y agilidad", c:"coral", d:"El cambio es rápido e impredecible en magnitud, aunque se entiende su naturaleza y su causa: se sabe qué pasa, no cuánto ni por cuánto tiempo. En IA se parece al costo de cómputo o al acceso a una API externa; la respuesta correcta no es adivinar el precio futuro, es construir holgura —no depender de un solo proveedor, dejar margen presupuestario."},
+  {e:"se resuelve con", t:"Incertidumbre → información", c:"coral", d:"El evento base se entiende, pero no se puede predecir su efecto: por ejemplo, lanzar un agente de atención a clientes sin saber si el mercado lo valorará como comodidad o lo rechazará como despersonalización. La respuesta es información: pilotar con un segmento acotado, medir satisfacción y quejas antes de decidir el despliegue completo."},
+  {e:"se aborda con", t:"Complejidad → especialistas", c:"coral", d:"Muchas variables interconectadas —datos personales, exigencias regulatorias, acuerdos laborales, contratos con proveedores— cuya red de relaciones es difícil de descifrar de un vistazo. La respuesta no es velocidad: es reestructuración y especialistas, un equipo dedicado que sostenga la coordinación en lugar de que cada área resuelva su parte de forma aislada."},
+  {e:"se enfrenta con", t:"Ambigüedad → experimentación", c:"coral", d:"No hay precedente causal claro: no se sabe ni qué se desconoce, como cuando una capacidad de IA no tiene antecedente en la industria de la organización. La respuesta correcta es experimentar barato: montar un piloto pequeño diseñado para enseñar algo, no para que funcione a la primera."},
+  {e:"recuerda que", t:"Efectos distintos según la organización", c:"coral", d:"Aplicar las cuatro dimensiones por separado —en vez de hablar de “incertidumbre” en general— evita dos errores simétricos: tratar como volatilidad algo que es en realidad ambigüedad (guardar holgura para un problema que ninguna reserva resuelve, porque falta precedente, no margen), o tratar como ambigüedad algo que es complejidad (lanzar un piloto cuando lo que falta es coordinar áreas que ya existen)."}
+]},
+  {id:"vigilancia", e:"se observa con", t:"Vigilancia tecnológica", c:"verde", d:"Seguimiento organizado de tecnologías, tendencias y señales emergentes que podrían llegar a tener consecuencias para una organización. Convierte la observación del entorno en un proceso sistemático —no una tarea ocasional— y transforma información dispersa en antecedentes útiles para decidir.", k:[
+  {e:"recorre", t:"Qué se observa", c:"verde", d:"El curso identifica cinco fuentes que conviene observar de forma organizada y continua, no ocasional: tecnologías emergentes, movimientos de competidores, cambios regulatorios, nuevas necesidades de clientes y otros acontecimientos relevantes para la organización.", k:[
+  {e:"rastrea", t:"Tecnologías emergentes", c:"verde", d:"Capacidades nuevas o en desarrollo cuya evolución puede alterar cómo opera o compite la organización; es la primera fuente que la vigilancia tecnológica sigue de forma sistemática."},
+  {e:"monitorea", t:"Movimientos de competidores", c:"verde", d:"Acciones o experimentos de otros actores de la industria que pueden anticipar un cambio de mayor alcance, como en el Ejemplo 3 del curso sobre agentes de IA entre competidores."},
+  {e:"sigue", t:"Cambios regulatorios", c:"verde", d:"Modificaciones normativas —como el Ómnibus Digital europeo de 2026— que alteran las condiciones de operación y las obligaciones de una organización frente a la IA."},
+  {e:"detecta", t:"Nuevas necesidades de clientes", c:"verde", d:"Cambios en lo que esperan clientes y colaboradores, como la presión de los estudiantes de UDA por interacciones más personalizadas e inmediatas."}
+]},
+  {id:"horizonte", e:"se formaliza con", t:"Exploración del horizonte (OCDE)", c:"verde", d:"Horizon scanning: “un proceso sistemático y continuo de examinar fuentes de información diversas para detectar señales tempranas de cambio [...] y, lo más importante, señales débiles que se encuentran en los márgenes del pensamiento dominante”. La frase clave es “en los márgenes”: la exploración del horizonte busca activamente en los bordes, no en el centro, porque en el centro ya está lo obvio.", k:[
+  {e:"se ejecuta en", t:"Cuatro fases del proceso", c:"verde", d:"La OCDE describe el proceso en cuatro fases: (1) definir el alcance, (2) recolectar señales, (3) analizar los datos y (4) traducir el análisis en inteligencia utilizable. La cuarta fase es la que casi siempre falla: las primeras tres pueden ejecutarse bien con un equipo dedicado, pero si el análisis no llega a quien decide, en un formato y momento útiles, la vigilancia deja de ser información y vuelve a ser solo archivo."}
+]},
+  {id:"senal", e:"detecta", t:"Señales débiles", c:"verde", d:"Indicio inicial de un posible cambio que todavía no es una tendencia consolidada, aunque puede ganar importancia con el tiempo. Resuelve el problema de detectar el cambio antes de que sea evidente para todos, cuando la ventaja de haberlo anticipado ya desapareció.", k:[
+  {e:"se gradúa según", t:"Respuesta graduada (Ansoff)", c:"verde", d:"El concepto viene de Igor Ansoff (1975, California Management Review): la respuesta a una señal débil debe ser graduada y proporcional a cuánto se sabe —ni se espera la certeza para actuar, ni se actúa en grande frente a una señal incipiente—."},
+  {e:"se distingue de", t:"Señal, wild card y cisne negro", c:"verde", d:"El wild card es un evento de baja probabilidad y alto impacto para el que cabe cierta preparación; el cisne negro de Taleb también es de baja probabilidad y alto impacto, pero se racionaliza solo en retrospectiva y es, por definición, inanticipable. La diferencia es la anticipabilidad: si algo es inanticipable por definición, la vigilancia tecnológica no lo va a atrapar, para eso están las contingencias, no la prospectiva."}
+]},
+  {id:"drivers", e:"identifica", t:"Drivers de cambio", c:"verde", d:"Factor tecnológico, económico, social, ambiental o regulatorio capaz de impulsar transformaciones significativas: a diferencia de la señal débil, ya está actuando sobre el sistema, con causas identificables y consecuencias visibles. En UDA, la masificación de la IA generativa entre los estudiantes es un driver: el propio enunciado la describe como ya ocurrida y generando presión, no como un indicio incipiente."},
+  {e:"se formaliza en", t:"Norma UNE 166006", c:"verde", d:"Norma española de gestión de la I+D+i que formaliza el sistema de vigilancia de una organización. La edición 2006/2011 se llamaba “Sistema de vigilancia tecnológica e inteligencia competitiva”; la edición 2018 la renombró “Vigilancia e Inteligencia”, porque reconoce que factores económicos, políticos, sociales y ambientales —no solo tecnológicos— también son relevantes para decidir."},
+  {id:"senalejemplo", e:"se ejemplifica en", t:"Ejemplo: una señal que merece atención", c:"gris", d:"Una empresa observa que varios competidores empiezan a experimentar con agentes de IA. En vez de interpretarlo como una obligación de adoptar la misma tecnología, analiza qué problemas están resolviendo, qué resultados obtienen y qué riesgos aparecen, para determinar si son experiencias aisladas o una señal que anticipa un cambio más amplio de industria."}
+]},
+  {id:"prospectiva", e:"se proyecta con", t:"Prospectiva y escenarios", c:"ambar", d:"Exploración ordenada de futuros plausibles para anticipar cambios, oportunidades y desafíos sin intentar predecir un único resultado; la OCDE la plantea como una forma de prepararse ante varios futuros posibles. Complementa a la vigilancia tecnológica: mientras esta responde “¿qué está pasando?”, la prospectiva responde “¿qué podría llegar a pasar, y cómo me preparo?”.", k:[
+  {e:"se define por", t:"Explorar, no predecir", c:"ambar", d:"Frente a la incertidumbre es tentador asumir que el futuro seguirá las condiciones del presente, pero prolongar sin más el presente puede ocultar señales importantes cuando la tecnología cambia rápido. La prospectiva trabaja con varios futuros a la vez porque busca mejorar las decisiones de hoy, no acertar una única predicción."},
+  {id:"escenario", e:"construye", t:"Qué es un escenario", c:"ambar", d:"Representación coherente de una situación futura plausible que permite analizar posibles consecuencias y preparar decisiones. No pretende describir exactamente lo que ocurrirá: plantea una situación que podría ocurrir y permite preguntarse cómo se combinarían ciertas tendencias y qué efectos tendrían."},
+  {id:"tres", e:"propone", t:"Los tres escenarios del curso", c:"ambar", d:"Acelerado, más regulado y colaborativo: ninguno pretende decir qué va a suceder, sirven para pensar cómo respondería una organización ante condiciones distintas. Mezclan sin embargo dos ejes —velocidad de adopción y grado de regulación— y por eso pueden coexistir: un futuro “más regulado” y uno “colaborativo” no se excluyen entre sí.", k:[
+  {e:"plantea", t:"Acelerado", c:"ambar", d:"Las capacidades de IA crecen con rapidez, los clientes se acostumbran a nuevas formas de interacción y los competidores automatizan cada vez más procesos; exige capacidad de absorber cambio a gran velocidad."},
+  {e:"plantea", t:"Más regulado", c:"ambar", d:"La IA sigue expandiéndose, pero bajo exigencias más estrictas de transparencia, responsabilidad y supervisión; exige cumplimiento y documentación, poder demostrar cómo funciona un sistema y quién responde por él."},
+  {e:"plantea", t:"Colaborativo", c:"ambar", d:"Incorporación gradual de la IA mientras las personas conservan un papel importante en la interpretación, la supervisión y las decisiones; exige diseño de procesos híbridos y formación para que la supervisión humana sea efectiva."}
+]},
+  {id:"matriz", e:"se formaliza con", t:"Matriz de incertidumbres críticas", c:"ambar", d:"Técnica de Peter Schwartz y el Global Business Network (The Art of the Long View): se eligen las dos incertidumbres más críticas del entorno, se cruzan en ejes perpendiculares y cada cuadrante da un escenario, produciendo cuatro escenarios mutuamente excluyentes y colectivamente exhaustivos. Su caso fundacional es Shell con Pierre Wack y Ted Newland (1971–1973), que anticipó que el petróleo podría subir de US$2 a cerca de US$10 el barril —“inimaginable” entonces, el precio real llegó a ~US$13 en 1975— y llevó a Shell a convertirse en uno de los dos líderes de la industria tras la crisis de 1973."},
+  {id:"robusta", e:"produce", t:"Decisión robusta", c:"ambar", d:"Decisión que resulta razonable en varios escenarios a la vez, no solo en el más probable: el curso describe el concepto sin nombrarlo en el Ejemplo 4. Ejemplo numérico: si la capacidad A sirve en los tres escenarios del curso, la B en dos y la C en uno solo, la A se financia hoy, la C espera, y la B queda en compromiso parcial mientras se observa el entorno."},
+  {id:"financiera", e:"se ejemplifica en", t:"Ejemplo: empresa financiera frente a escenarios", c:"gris", d:"Una institución financiera analiza qué capacidades necesitaría frente a una adopción acelerada de IA, más regulación o mayor colaboración humano-IA, y descubre que mejorar la calidad de sus datos, desarrollar competencias en sus colaboradores y mantener gobernanza resultan relevantes en más de una situación a la vez."}
+]},
+  {id:"valor", e:"se traduce en", t:"Creación de valor", c:"violeta", d:"Capacidad de una iniciativa de contribuir efectivamente a un objetivo o necesidad relevante de la organización. Una tecnología emergente puede ser atractiva desde el punto de vista técnico, pero adquiere importancia estratégica recién cuando se conecta con una necesidad, un problema o una forma realista de crear valor.", k:[
+  {id:"mapa", e:"se instrumenta con", t:"Mapa de oportunidades", c:"violeta", d:"Recurso que ayuda a vincular tecnologías o tendencias emergentes con necesidades, problemas o retos concretos de una organización; retoma la lógica de la Unidad 3 sobre modelos de negocio, agregando una pregunta de futuro: “¿qué oportunidades podrían aparecer a partir de los cambios tecnológicos que recién comienzan a observarse?”. En la práctica se construye como una tabla con tecnología, necesidad, beneficio, condiciones, riesgos y prioridad —como la que resuelve la Pregunta 3 del ejercicio de UDA.", k:[
+  {e:"convierte", t:"De la tendencia a la oportunidad", c:"violeta", d:"Frente a una nueva capacidad, la organización debería preguntarse qué problema ayudaría a resolver, qué beneficio concreto aportaría y qué condiciones necesitaría para usarla bien, evitando así empezar por la herramienta solo porque está disponible."},
+  {e:"se profundiza con", t:"Criterios de evaluación", c:"violeta", d:"Las capacidades disponibles, los posibles efectos sobre clientes y colaboradores, y los riesgos asociados: el curso aclara que no son un modelo metodológico cerrado, sino criterios que ayudan a analizar con más profundidad una oportunidad antes de transformarla en decisión."}
+]},
+  {id:"solucionismo", e:"evita", t:"Solucionismo tecnológico", c:"violeta", d:"Empezar por la herramienta porque está disponible o está de moda, sin haber definido qué necesidad resuelve, y buscar después dónde meterla. Es exactamente lo que el mapa de oportunidades busca evitar, y lo que la evidencia de fracaso de Gartner y MIT muestra que sale caro en la práctica."},
+  {id:"pensamiento", e:"exige", t:"Pensamiento estratégico", c:"violeta", d:"Capacidad de interpretar cambios, considerar alternativas y decidir pensando también en sus efectos futuros. Las decisiones tecnológicas no ocurren de manera aislada: una nueva capacidad de IA se relaciona simultáneamente con el mercado, las expectativas de clientes, la regulación, las competencias internas y la cultura de la organización.", k:[
+  {e:"implica", t:"Mirar el sistema completo", c:"violeta", d:"Implica preguntarse por las consecuencias de las decisiones, no solo por sus beneficios inmediatos —la misma mirada de largo plazo de la Unidad 5 sobre ética, gobernanza y confianza—: adoptar una capacidad no termina en el beneficio del primer día, sino en todo lo que reconfigura a su alrededor con el tiempo."}
+]},
+  {e:"se ejemplifica en", t:"Ejemplo: nuevas oportunidades en retail", c:"gris", d:"Una empresa de retail identifica tres posibilidades atractivas —personalizar recomendaciones, anticipar demanda, automatizar consultas— y, antes de avanzar, analiza qué necesidad es prioritaria, qué beneficios podría obtener y qué condiciones necesita: el trabajo real no es descartar las que “no sirven”, sino priorizar entre varias que sí sirven."}
+]},
+  {id:"madurez", e:"se calibra con", t:"Madurez y decisión", c:"cian", d:"El curso repite que las tecnologías emergentes tienen distintos niveles de madurez y no necesariamente resultan apropiadas para todas las organizaciones, aunque no nombra ninguna escala concreta para evaluarla. Frente a esa madurez, una decisión estratégica no siempre termina en adoptar: puede probarse a pequeña escala, seguir observando, postergarse o concluir que no es adecuada.", k:[
+  {e:"reconoce", t:"Distintos niveles de madurez", c:"cian", d:"El curso advierte varias veces que no todas las tecnologías emergentes alcanzan el mismo nivel de madurez ni producen transformaciones significativas, pero no nombra ningún marco concreto para medirla —esa es exactamente la pieza que TRL y Hype Cycle vienen a completar."},
+  {id:"trl", e:"se mide con", t:"TRL de la NASA", c:"cian", d:"Technology Readiness Level: escala de nueve niveles que mide madurez técnica —¿funciona?—, desde TRL 1 (principios básicos observados) hasta TRL 9 (sistema real probado con éxito en operaciones reales). Es un marco complementario y no intercambiable con el Hype Cycle: una tecnología puede estar en TRL 9 y, al mismo tiempo, en el valle de la desilusión del mercado."},
+  {id:"hype", e:"se percibe con", t:"Hype Cycle de Gartner", c:"cian", d:"Curva de Gartner en cinco fases —disparador de innovación, pico de expectativas infladas, valle de la desilusión, rampa de la iluminación, meseta de productividad— que mide percepción de mercado: ¿qué se espera de la tecnología? Según Gartner (5-ago-2025), los agentes de IA se ubican hoy en el pico de expectativas infladas, mientras la IA multimodal y el AI TRiSM se destacan con expectativa de adopción masiva en los próximos cinco años."},
+  {id:"salidas", e:"resuelve en", t:"Las cuatro salidas de una decisión", c:"cian", d:"Una decisión estratégica no siempre termina en la adopción de una tecnología: según el contexto, puede ser más razonable probarla a pequeña escala, seguir observando, postergar su incorporación o concluir que no es adecuada. Postergar y seguir observando son decisiones, no omisiones: ambas exigen un criterio explícito de cuándo revisar la decisión.", k:[
+  {t:"Probar a pequeña escala", c:"cian", d:"Conviene cuando el beneficio potencial es alto pero la ambigüedad también lo es: sin precedente, un piloto acotado permite aprender antes de comprometer más recursos."},
+  {t:"Seguir observando", c:"cian", d:"Conviene cuando la señal todavía es débil y no hay evidencia suficiente de que sea algo más que una experiencia aislada de otros actores."},
+  {t:"Postergar", c:"cian", d:"Decisión deliberada de esperar, distinta de no decidir: se fija de antemano una fecha o condición futura a partir de la cual se retomará la decisión."},
+  {t:"Concluir que no es adecuada", c:"cian", d:"Corresponde cuando el análisis de necesidad, beneficio y condiciones muestra que la tecnología no responde a un problema real de la organización."}
+]},
+  {id:"fracaso", e:"cuantifica", t:"Evidencia de fracaso: Gartner y MIT", c:"cian", d:"Gartner (jun-2025): más del 40% de los proyectos de IA agéntica serán cancelados para fines de 2027, y de miles de proveedores que se dicen “agénticos” solo unos 130 lo son —al resto lo llama agent washing—. MIT/NANDA (2025): el 95% de las iniciativas de IA generativa personalizada no pasa de piloto a producción, aunque el 80% de las empresas sí la probó: el cuello de botella fue la falta de memoria, retroalimentación e integración, no la tecnología en sí —adopción no es lo mismo que impacto."},
+  {e:"se ejemplifica en", t:"Ejemplo: adoptar ahora o continuar observando", c:"gris", d:"Una organización detecta un rápido crecimiento de agentes de IA en su industria y, antes de incorporarlos, analiza beneficios, capacidades internas, riesgos y la evolución de otras organizaciones del sector. Frase de examen: “la calidad de la decisión no depende de ser la primera organización en adoptar la innovación, sino de comprender suficientemente el contexto para actuar con criterio”."}
+]},
+  {e:"se practica en", t:"Casos y continuidad", c:"gris", d:"Terreno donde las seis ramas anteriores se ponen a prueba juntas: los casos NovaLog y UDA, y los puentes explícitos con lo ya visto en las Unidades 3 y 5 del curso. La unidad no reemplaza lo anterior, lo proyecta hacia adelante.", k:[
+  {e:"ilustra", t:"Caso NovaLog (logística)", c:"gris", d:"“NovaLog enfrentó la encrucijada de la IA: ¿adoptar todo o esperar? La ventaja no está en correr tras la tecnología, sino en construir capacidades internas para elegir.” El desarrollo completo del caso vive tras el QR de la versión online: el PDF descargable solo trae la portada, la bajada y las tres preguntas de cierre, que sí son conceptuales y respondibles con lo visto en la unidad."},
+  {id:"uda", e:"se resuelve en", t:"Ejercicio UDA (universidad)", c:"gris", d:"La Universidad Digital Avanzada evalúa IA multimodal, agentes de IA y Edge AI frente a la presión estudiantil por interacciones personalizadas, con el área académica y el área de calidad académica divididas. El ejercicio pide identificar señal débil y driver de cambio bajo VUCA, construir dos escenarios a tres años y elaborar un mapa de oportunidades con una decisión estratégica justificada."},
+  {e:"retoma", t:"Puente con la Unidad 3: modelos de negocio", c:"gris", d:"El mapa de oportunidades retoma directamente la relación entre modelos de negocio y creación de valor trabajada en la Unidad 3, agregándole ahora una pregunta de futuro sobre tecnologías que recién comienzan a observarse."},
+  {id:"unidad5", e:"retoma", t:"Puente con la Unidad 5: ética, gobernanza y confianza", c:"gris", d:"La creciente autonomía de los agentes de IA mantiene conexión directa con los principios de ética, gobernanza y confianza de la Unidad 5: a mayor capacidad de actuación, mayor importancia de los límites de actuación, la supervisión humana y la responsabilidad."}
+]}
+]};
+
+const CROSS = [
+ {from:"agentes", to:"unidad5", label:"obligan a", bend:70},
+ {from:"vuca", to:"prospectiva", label:"justifica", bend:-70},
+ {from:"senal", to:"escenario", label:"alimenta", bend:60},
+ {from:"vigilancia", to:"mapa", label:"alimenta", bend:-90},
+ {from:"edge", to:"mantenimiento", label:"hace posible", bend:50},
+ {from:"hype", to:"agentes", label:"los ubica en el pico", bend:-60},
+ {from:"matriz", to:"tres", label:"es la técnica detrás", bend:80},
+ {from:"robusta", to:"salidas", label:"orienta", bend:-50},
+ {from:"mapa", to:"uda", label:"se aplica en", bend:65},
+ {from:"fracaso", to:"solucionismo", label:"es su costo", bend:-75}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["clave","Perspectivas futuras de la IA","Future perspectives on AI","Mirada a las posibles formas en que puede evolucionar la IA y a sus efectos en las organizaciones y la sociedad."],
+["clave","Agentes de IA","AI agents","Sistemas que utilizan información y herramientas para llevar adelante acciones vinculadas con un objetivo determinado."],
+["clave","Driver de cambio","Change driver","Factor tecnológico, económico, social, ambiental o regulatorio capaz de impulsar transformaciones significativas."],
+["clave","Edge AI","Edge AI","Uso de capacidades de IA en el mismo lugar, o muy cerca de él, donde se producen los datos."],
+["clave","Entorno VUCA","VUCA environment","Contexto de volatilidad, incertidumbre, complejidad y ambigüedad, cuyas dimensiones requieren respuestas distintas."],
+["clave","Escenario futuro","Future scenario","Representación coherente de una situación futura plausible que permite analizar consecuencias y preparar decisiones."],
+["clave","IA multimodal","Multimodal AI","Sistemas que trabajan de manera conjunta con distintos tipos de información: texto, imágenes, audio y video."],
+["clave","Mapa de oportunidades","Opportunity map","Recurso que vincula tecnologías o tendencias emergentes con necesidades, problemas o retos concretos de una organización."],
+["clave","Pensamiento estratégico","Strategic thinking","Capacidad de interpretar cambios, considerar alternativas y decidir pensando también en sus efectos futuros."],
+["clave","Prospectiva estratégica","Strategic foresight","Exploración ordenada de futuros plausibles para anticipar cambios, oportunidades y desafíos sin predecir un único resultado."],
+["clave","Señal débil","Weak signal","Indicio inicial de un posible cambio que todavía no es una tendencia consolidada, pero puede ganar importancia."],
+["clave","Vigilancia tecnológica","Technology watch","Seguimiento organizado de tecnologías, tendencias y señales emergentes que podrían tener consecuencias para una organización."],
+["tec","IA generativa","Generative AI","Sistemas que producen contenidos nuevos —texto, imágenes, código, audio— a partir de una instrucción."],
+["tec","Inteligencia Artificial General (AGI)","Artificial General Intelligence","Capacidad hipotética de desenvolverse con solvencia en cualquier contexto, no solo en tareas concretas; el curso la distingue de los sistemas actuales."],
+["tec","IA de tarea concreta","Narrow AI","Sistema diseñado para resolver un problema acotado, por bien que lo haga; es lo opuesto a la AGI."],
+["tec","Modalidad","Modality","Cada tipo de información que un sistema puede procesar: texto, imagen, audio, video, señal de sensor."],
+["tec","Codificador por modalidad","Modality encoder","Módulo especializado que convierte una modalidad concreta en vectores numéricos comparables."],
+["tec","Espacio de representación compartido","Shared embedding space","Espacio numérico común donde texto, imagen y audio quedan representados de forma comparable entre sí."],
+["tec","Fusión temprana","Early fusion","Estrategia multimodal que codifica todas las modalidades en un espacio común desde el inicio del procesamiento."],
+["tec","Fusión tardía","Late fusion","Estrategia multimodal donde cada modalidad se procesa por separado y las salidas se combinan al final."],
+["tec","Uso de herramientas","Tool use","Capacidad de un sistema de IA de invocar recursos externos —buscar, consultar una base, escribir un archivo— para cumplir su objetivo."],
+["tec","Flujo de trabajo predefinido","Workflow","Sistema donde el modelo y las herramientas se orquestan por rutas de código fijadas de antemano; se distingue del agente."],
+["tec","Protocolo MCP","Model Context Protocol","Estándar abierto que define cómo un modelo se conecta a herramientas y fuentes de datos externas."],
+["tec","Protocolo A2A","Agent2Agent","Estándar abierto que define cómo dos agentes de IA se comunican y colaboran entre sí."],
+["tec","Internet de las Cosas (IoT)","Internet of Things","Red de dispositivos físicos con sensores y conectividad que generan datos del mundo real de forma continua."],
+["tec","Gemelo digital","Digital twin","Representación virtual de un objeto o sistema físico que usa datos en tiempo real para reflejar su comportamiento y condición."],
+["tec","Robótica con IA (VLA)","Vision-Language-Action model","Modelos que combinan comprensión visual, comprensión de lenguaje y generación de acciones físicas para controlar robots."],
+["tec","Automatización","Automation","Ejecución de una tarea por un sistema siguiendo reglas definidas, con énfasis en la fiabilidad de la ejecución."],
+["tec","Convergencia tecnológica","Technological convergence","Combinación de varias capacidades tecnológicas donde el valor surge de la articulación y no de cada una por separado."],
+["tec","Mantenimiento predictivo","Predictive maintenance","Uso de sensores y modelos para detectar anomalías que anticipan una falla antes de que ocurra."],
+["tec","Latencia","Latency","Tiempo que transcurre entre que se genera un dato y se obtiene la respuesta del sistema que lo procesa."],
+["tec","Cuantización de modelos","Model quantization","Reducción de la precisión numérica de los pesos de un modelo para que quepa y corra en un dispositivo limitado."],
+["tec","Destilación de modelos","Model distillation","Entrenamiento de un modelo pequeño para imitar el comportamiento de uno grande, sacrificando capacidad por eficiencia."],
+["tec","Cadena de actividades","Activity chain","Secuencia completa de tareas encadenadas que un agente puede recorrer, más allá de una tarea aislada."],
+["tec","Sistema multimodal nativo","Natively multimodal system","Modelo entrenado desde el inicio con varias modalidades, en lugar de acoplar módulos separados después."],
+["vigi","Exploración del horizonte","Horizon scanning","Proceso sistemático y continuo de examinar fuentes diversas para detectar señales tempranas de cambio, incluidas las que están al margen del pensamiento dominante."],
+["vigi","Inteligencia competitiva","Competitive intelligence","Recolección y análisis organizado de información sobre competidores y mercado para apoyar decisiones."],
+["vigi","Norma UNE 166006","UNE 166006 standard","Norma española de gestión de la I+D+i que formaliza el sistema de vigilancia e inteligencia de una organización."],
+["vigi","Vigilancia e inteligencia","Watch and intelligence","Nombre vigente del sistema desde la edición 2018 de la norma, que ya no se restringe a lo tecnológico."],
+["vigi","Evidencia emergente","Emerging evidence","Indicios todavía fragmentarios que la exploración del horizonte permite detectar antes de que se consoliden."],
+["vigi","Wild card","Wild card","Evento futuro de baja probabilidad y alto impacto para el cual, a diferencia del cisne negro, cabe cierta preparación."],
+["vigi","Cisne negro","Black swan","Evento de baja probabilidad y alto impacto que solo se racionaliza en retrospectiva y es, por naturaleza, inanticipable."],
+["vigi","Respuesta graduada","Graduated response","Principio de Ansoff según el cual la reacción a una señal debe ser proporcional a cuánto se sabe sobre ella."],
+["vigi","Ruido","Noise","Información que parece relevante pero no anticipa ningún cambio; el problema central de toda vigilancia."],
+["vigi","Experiencia aislada","Isolated experiment","Movimiento puntual de un actor que no representa una tendencia de industria; hay que distinguirlo de una señal real."],
+["vigi","Tendencia consolidada","Established trend","Cambio ya visible y sostenido, a diferencia de la señal débil, que todavía es un indicio."],
+["pros","Futuro plausible","Plausible future","Situación futura coherente y posible, que la prospectiva explora sin afirmar que vaya a ocurrir."],
+["pros","Predicción","Prediction","Afirmación sobre un único futuro; es lo que la prospectiva estratégica explícitamente no intenta hacer."],
+["pros","Escenario acelerado","Accelerated scenario","Futuro donde las capacidades de IA crecen rápido, los clientes se acostumbran a nuevas interacciones y los competidores automatizan más procesos."],
+["pros","Escenario más regulado","More regulated scenario","Futuro donde la IA sigue expandiéndose pero bajo exigencias más estrictas de transparencia, responsabilidad y supervisión."],
+["pros","Escenario colaborativo","Collaborative scenario","Futuro de incorporación gradual donde las personas conservan un papel central en interpretación, supervisión y decisión."],
+["pros","Matriz de incertidumbres críticas","2x2 critical uncertainties matrix","Técnica que cruza las dos incertidumbres más críticas del entorno en ejes perpendiculares para generar cuatro escenarios excluyentes."],
+["pros","Incertidumbre crítica","Critical uncertainty","Factor que importa mucho para el resultado y cuyo desenlace no se puede prever; es el insumo de la matriz de escenarios."],
+["pros","Decisión robusta","Robust decision","Decisión que resulta razonable en varios escenarios a la vez, no solo en el más probable."],
+["pros","Planificación por escenarios","Scenario planning","Método de decisión que construye varios futuros coherentes para probar la estrategia contra todos ellos."],
+["pros","Extrapolación del presente","Business-as-usual extrapolation","Supuesto implícito de que el futuro seguirá las condiciones actuales; es lo que la construcción de escenarios rompe deliberadamente."],
+["pros","Risk-World","Risk-World","Escenario de contexto alternativo, en la metodología de la OCDE, donde un riesgo emergente podría materializarse."],
+["madu","Nivel de madurez tecnológica (TRL)","Technology Readiness Level","Escala de nueve niveles de la NASA que mide cuán probada está una tecnología, desde el principio básico hasta la operación real."],
+["madu","Hype Cycle","Hype Cycle","Curva de Gartner en cinco fases que describe la evolución de las expectativas del mercado sobre una tecnología."],
+["madu","Pico de expectativas infladas","Peak of Inflated Expectations","Segunda fase del Hype Cycle, donde las historias de éxito conviven con fracasos y la expectativa supera a la evidencia."],
+["madu","Valle de la desilusión","Trough of Disillusionment","Tercera fase del Hype Cycle, donde el interés cae porque los experimentos no cumplieron lo prometido."],
+["madu","Meseta de productividad","Plateau of Productivity","Quinta fase del Hype Cycle, donde la tecnología alcanza adopción amplia y beneficios comprobados."],
+["madu","Piloto acotado","Limited pilot","Prueba de alcance reducido que permite aprender sobre una tecnología antes de comprometer recursos mayores."],
+["madu","Postergar la incorporación","Deferred adoption","Decisión deliberada de esperar, distinta de no decidir: se elige un momento posterior con criterios explícitos."],
+["madu","Mantener vigilancia activa","Active monitoring","Opción de seguir observando de forma sistemática sin adoptar todavía; es una decisión, no una omisión."],
+["madu","Agent washing","Agent washing","Práctica de re-etiquetar como agentes de IA productos que en realidad son chatbots o automatizaciones previas."],
+["valor","Creación de valor","Value creation","Capacidad de una iniciativa de contribuir efectivamente a un objetivo o necesidad relevante de la organización."],
+["valor","Solucionismo tecnológico","Technology-first approach","Empezar por la herramienta porque está disponible, sin haber definido qué necesidad resuelve."],
+["valor","Opportunity Solution Tree","Opportunity Solution Tree","Herramienta de Teresa Torres que conecta un resultado deseado con oportunidades, soluciones y experimentos."],
+["valor","Jobs to Be Done","Jobs to Be Done","Marco que analiza para qué trabajo concreto un cliente contrata un producto o servicio."],
+["valor","Criterios de evaluación de una oportunidad","Opportunity evaluation criteria","Beneficio esperado, capacidades disponibles, efectos sobre clientes y colaboradores, y riesgos asociados."],
+["gob","Grado de autonomía","Degree of autonomy","Cuánta flexibilidad de decisión tiene un sistema para elegir qué hacer, entendida como espectro y no como escala fija."],
+["gob","Límites de actuación","Boundaries of action","Definición explícita de qué puede y qué no puede hacer un sistema autónomo dentro de un proceso."],
+["gob","Supervisión humana","Human oversight","Puntos del proceso donde una persona revisa, aprueba o corrige lo que el sistema propone o ejecuta."],
+["gob","Autonomía frente a automatización","Autonomy vs. automation","La autonomía es flexibilidad para elegir qué hacer; la automatización es fiabilidad para hacer lo programado."],
+["gob","Reglamento europeo de IA","EU AI Act","Marco regulatorio de la Unión Europea cuyas obligaciones de alto riesgo fueron aplazadas por el Ómnibus Digital de 2026."],
+["vuca","Volatilidad","Volatility","Cambio rápido e impredecible en magnitud, aunque su naturaleza y su causa se entiendan; se responde con holgura y agilidad."],
+["vuca","Incertidumbre","Uncertainty","El evento se entiende, pero no se puede predecir su efecto; se responde invirtiendo en información."],
+["vuca","Complejidad","Complexity","Muchas variables interconectadas que hacen difícil descifrar la red de relaciones; se responde con especialistas y reestructuración."],
+["vuca","Ambigüedad","Ambiguity","Ausencia de precedente causal claro: no se sabe ni qué se desconoce; se responde con experimentación barata."]
+];
+
+const CATS = {
+  clave:{n:"Conceptos clave", col:"var(--azul)"},
+  tec:{n:"Tecnologías emergentes", col:"var(--cian)"},
+  vigi:{n:"Vigilancia y señales", col:"var(--verde)"},
+  pros:{n:"Prospectiva y escenarios", col:"var(--ambar)"},
+  madu:{n:"Madurez y decisión", col:"var(--violeta)"},
+  valor:{n:"Valor y estrategia", col:"var(--violeta)"},
+  gob:{n:"Autonomía y gobernanza", col:"var(--coral)"},
+  vuca:{n:"El entorno VUCA", col:"var(--coral)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
