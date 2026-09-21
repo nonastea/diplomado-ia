@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 1 · Introducción a la IA en el entorno empresarial — Mapa conceptual y Flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Tecnologías de IA para Negocios · Máster en IA</div>
+  <h1>Unidad 1 · <b>Introducción a la IA en el entorno empresarial</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 105 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Diecisiete puntos donde el material del curso choca con la evidencia verificada o con la definición técnica correcta. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> Samuel no era un sistema de reglas</h3>
+      <p>El curso presenta el programa de damas de Arthur Samuel como ejemplo icónico de la primera fase «basada en reglas». Pero el propio curso reconoce que usaba «aprendizaje automático rudimentario» y ajustaba su estrategia con el tiempo: eso es aprendizaje, no reglas fijas. El programa aprendía jugando contra sí mismo, y a Samuel se le atribuye haber popularizado el término «machine learning» en 1959.</p>
+      <div class="regla"><b>Regla:</b> Si preguntan por el ejemplo de la primera fase «basada en reglas», responde Logic Theorist; si preguntan por el primer programa que aprendía por su cuenta, responde el programa de damas de Samuel.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> Cronología simplificada: un invierno, y el 2000 como inicio de la 3ª fase</h3>
+      <p>El curso habla de un único «invierno de la IA» en los años 70 y sitúa el inicio de la tercera fase (deep learning y generativos) en el año 2000. La historiografía distingue en realidad dos inviernos (~1974–1980 y ~1987–1993), y el hito que la literatura técnica suele marcar como el despegue real del deep learning moderno es 2012, con AlexNet en ImageNet.</p>
+      <div class="regla"><b>Regla:</b> En el examen usa siempre las tres fases y los rangos de años tal como los da el curso (1950–1970 / 1980–2000 / 2000–presente); trata los dos inviernos y el hito de 2012 como contexto adicional, no como la periodización evaluada.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> MYCIN: década equivocada y conclusión exagerada</h3>
+      <p>El curso ubica a MYCIN en la 2ª fase (1980–2000) y dice que «superó a médicos en ciertos diagnósticos», sin masificarse por «resistencia de la industria». En realidad se desarrolló en los años 70; su evaluación ciega (Yu et al., 1979, JAMA) lo comparó con especialistas de forma más matizada, y la explicación habitual de su no uso clínico incluye responsabilidad legal y ética, no solo resistencia de la industria.</p>
+      <div class="regla"><b>Regla:</b> MYCIN = primer sistema experto emblemático (diagnóstico de infecciones bacterianas, Stanford); si te piden las razones de su no uso clínico tal como las da el curso, cítalas textual.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> Tesseract no es «un modelo de Google»</h3>
+      <p>El curso dice que Google mejoró el OCR «a través de modelos como Tesseract», dando a entender que es un producto propio de Google. Tesseract nació en Hewlett-Packard entre 1985 y 1994, se liberó como código abierto en 2005 y Google lo patrocinó entre 2006 y 2017: lo impulsó, no lo creó. El caso de Xerox con cheques en los años 90 no se pudo verificar con una fuente adicional.</p>
+      <div class="regla"><b>Regla:</b> Tesseract = motor de OCR de código abierto y multilingüe, impulsado por Google, no creado originalmente por Google.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> Brown et al. (2020) describe GPT-3, no GPT-4</h3>
+      <p>El curso cita Brown et al. (2020) para GPT-4 y para la creación de texto, imágenes y videos. Esa referencia describe en realidad a GPT-3 (175.000 millones de parámetros); GPT-4 se lanzó recién el 14 de marzo de 2023, con un informe técnico de detalles limitados.</p>
+      <div class="regla"><b>Regla:</b> Si piden el ejemplo de LLM, responde GPT-4 (como dice el curso); si piden la referencia, Brown et al. 2020 = GPT-3 y aprendizaje con pocos ejemplos, no GPT-4.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> El autor de la técnica de ajuste fino está mal citado</h3>
+      <p>El curso atribuye la técnica de ajuste fino a «Howard &amp; Gugger (2018)». El paper real, ULMFiT (ACL 2018), es de Jeremy Howard y Sebastian Ruder; no existe ningún «Gugger» como coautor de esa técnica.</p>
+      <div class="regla"><b>Regla:</b> El concepto de preentrenamiento y ajuste fino que describe el curso es correcto; si necesitas citar la referencia, el nombre correcto es Howard &amp; Ruder (2018).</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> Bibliografía incompleta, duplicada y con una atribución cruzada</h3>
+      <p>El curso trae 8 entradas bibliográficas, con Brown et al. repetida, y cita en el texto a varios autores (Nilsson, McCarthy, Silver et al., Redmon &amp; Farhadi, Bojarski et al., Hennessy &amp; Patterson, IBM, AI Now, Amnesty) que no figuran en esa lista. Además, Bojarski et al. (2016) es un trabajo de NVIDIA, no de Tesla, aunque va junto al ejemplo de Tesla; y DALL·E 1 combinaba transformer con un autoencoder convolucional, mientras que DALL·E 2 y 3 usan difusión.</p>
+      <div class="regla"><b>Regla:</b> No te apoyes en la bibliografía del curso como lista completa ni asumas que cada cita corresponde exactamente al ejemplo con el que aparece junto.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">08</span> Tesla no tiene vehículos plenamente autónomos</h3>
+      <p>El curso habla de los «vehículos autónomos» de Tesla que detectan obstáculos, interpretan señales y deciden en tiempo real. El sistema FSD de Tesla es en realidad asistencia de conducción de nivel 2 SAE (supervisada por el conductor), con un robotaxi limitado desde 2025; Waymo, en cambio, opera en nivel 4 (sin conductor, en zonas definidas).</p>
+      <div class="regla"><b>Regla:</b> Sistemas autónomos = percibir el entorno y decidir en tiempo real, como concepto general; si preguntan por niveles, distingue asistencia supervisada (nivel 2, Tesla) de autonomía sin conductor (nivel 4, Waymo).</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">09</span> La Ley de IA de la UE ya no es una propuesta</h3>
+      <p>El curso dice que la Unión Europea «ha propuesto» regulaciones de IA. En realidad es el Reglamento (UE) 2024/1689, vigente desde agosto de 2024 y aplicado por etapas; en mayo de 2026 hubo un acuerdo político («Digital Omnibus») para postergar las obligaciones de alto riesgo a diciembre de 2027 y agosto de 2028. En Chile, la Ley 21.719 de datos personales rige desde el 1 de diciembre de 2026.</p>
+      <div class="regla"><b>Regla:</b> Responde con la idea del curso (sistemas de alto riesgo → explicabilidad y auditoría); si preguntan por el estado legal, di que ya es un reglamento vigente con aplicación escalonada, no una propuesta.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">10</span> Clearview AI y COMPAS: cifras y fuente equivocadas</h3>
+      <p>El curso dice que Clearview recopiló «millones» de imágenes y cita a AI Now Institute (2023) para COMPAS. Clearview superó las 30.000 millones de imágenes y fue multada con 30,5 millones de euros en los Países Bajos (2024); el análisis original de COMPAS es de ProPublica (2016): 44,9% de falsos positivos en acusados afroamericanos frente a 23,5% en blancos, cifra que el fabricante del sistema rebatió.</p>
+      <div class="regla"><b>Regla:</b> La idea evaluada —falta de privacidad en Clearview, sesgo racial y falta de transparencia en COMPAS— no cambia; solo corrige la cifra o la fuente si te la piden puntualmente.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">11</span> Maersk ya no es «la mayor naviera del mundo»</h3>
+      <p>El curso describe a Maersk como «la mayor empresa de transporte marítimo del mundo». MSC (Mediterranean Shipping Company) la superó en capacidad de transporte desde enero de 2022.</p>
+      <div class="regla"><b>Regla:</b> El caso Maersk vale como ejemplo de optimización de rutas con IA y reducción de huella de carbono; no afirmes que sigue siendo la número uno del mundo si preguntan por el ranking actual.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">12</span> IBM Watson Health y Watson Supply Chain ya no son productos vigentes con esos nombres</h3>
+      <p>El curso presenta ambos como productos activos de IBM. IBM vendió la unidad Watson Health a Francisco Partners en 2022 (hoy Merative); no se pudo confirmar un producto llamado exactamente «Watson Supply Chain» — la línea documentada es IBM Sterling Supply Chain.</p>
+      <div class="regla"><b>Regla:</b> Usa los ejemplos del curso como ilustración de IA en salud y en cadena de suministro; no des por sentado que esos nombres de producto siguen vigentes tal cual.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">13</span> ShakeAlert no usa redes neuronales, y CAL FIRE tiene otro socio documentado</h3>
+      <p>El curso dice que el USGS «emplea redes neuronales» para ShakeAlert. ShakeAlert usa algoritmos sismológicos específicos (EPIC, FinDer, GFAST-PGD), no redes neuronales, y cubre California, Oregón y Washington completos. El socio tecnológico documentado de CAL FIRE es ALERTCalifornia (UC San Diego) con DigitalPath, no necesariamente Chooch AI o Descartes Labs.</p>
+      <div class="regla"><b>Regla:</b> ShakeAlert = alerta sísmica temprana con segundos de anticipación mediante sismología algorítmica, no redes neuronales; si preguntan por el socio de CAL FIRE, la respuesta verificada es ALERTCalifornia/UC San Diego con DigitalPath.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">14</span> AlphaFold acelera la estructura de la proteína, no el fármaco completo</h3>
+      <p>El curso dice que AlphaFold redujo el tiempo para descubrir fármacos «de varios años a solo unos meses». Lo que AlphaFold acelera con precisión es la determinación de la estructura de las proteínas (de años de laboratorio a horas o días); desarrollar y aprobar un fármaco completo sigue tomando años. AlphaFold 2 ganó CASP14 en 2020, y ese trabajo valió el Nobel de Química 2024 a Demis Hassabis y John Jumper, junto con David Baker.</p>
+      <div class="regla"><b>Regla:</b> AlphaFold = predicción de estructuras de proteínas que acelera la investigación, no el desarrollo completo de un fármaco; si preguntan qué ganó el Nobel de Química 2024, es AlphaFold (Hassabis y Jumper) junto con David Baker.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">15</span> Ejemplos de herramientas sin confirmación pública</h3>
+      <p>El curso presenta a Airbnb usando TensorFlow para precios, a Waymo usando PyTorch, y a Grammarly, Zalando y Shopify usando Hugging Face. No se encontró confirmación pública específica de esos usos (sí está documentado el uso de PyTorch por Tesla y por OpenAI, y el caso de Stanford con una CNN de 121 capas equivalente a CheXNet).</p>
+      <div class="regla"><b>Regla:</b> Memoriza cada herramienta con su rasgo distintivo (TensorFlow = escalable, Google; PyTorch = prototipado, Meta; Hugging Face = modelos preentrenados de PLN); trata los ejemplos de empresa como ilustraciones del curso, no como datos técnicos confirmados.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">16</span> ShopSmart: la técnica no es PLN, es filtrado colaborativo</h3>
+      <p>El curso dice que Javier implementó «modelos de PLN» para analizar el historial de navegación y compras y generar recomendaciones. Los sistemas de recomendación típicos usan filtrado colaborativo (comparar patrones entre usuarios parecidos) y representaciones de usuarios y productos; el PLN entra cuando hay texto de por medio —búsquedas, reseñas, descripciones—.</p>
+      <div class="regla"><b>Regla:</b> Si te preguntan qué técnica usó ShopSmart según el caso, responde lo que dice el curso: modelos de PLN combinados con redes neuronales para predecir probabilidad de compra.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">17</span> Faltan partes del PDF: recursos solo online</h3>
+      <p>Faltan del PDF dos recursos interactivos (aplicaciones de la 3ª fase y el caso FinAI), el video resumen, y el video del profesor Rodrigo Pereira sobre ingeniería de prompts con su PDF descargable. La sección de prompts de esta unidad está reconstruida con principios generales, no con lo que dijo específicamente el profesor.</p>
+      <div class="regla"><b>Regla:</b> Antes del examen, revisa el video y el PDF de Rodrigo Pereira en la versión online del curso (disponibles hasta el 30 de noviembre de 2026).</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 1 — Introducción a la IA en el entorno empresarial» · Curso: Tecnologías de Inteligencia Artificial para Negocios · Archivo autocontenido, funciona sin internet</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Unidad 1"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Conceptos clave"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Historia y evolución"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Casos prácticos"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"IA generativa y LLM"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Ética y desafíos"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Aplicaciones avanzadas"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Herramientas"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Unidad 1"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Conceptos clave"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Historia y evolución"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Casos prácticos"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"IA generativa y LLM"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Ética y desafíos"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Aplicaciones avanzadas"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Herramientas"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {t:"IA EN EL ENTORNO EMPRESARIAL", c:"root", id:"root", d:"Unidad de apertura del módulo «Tecnologías de Inteligencia Artificial para Negocios»: sienta el vocabulario básico de IA, cuenta la historia de la disciplina en tres fases y muestra, con tres casos narrativos (AutoTech, ShopSmart, FinAI), cómo esas tecnologías generan valor medible en una empresa. Retoma sin redefinir desde cero lo que ya viste en M1 (aprendizaje automático, aprendizaje supervisado, redes neuronales, PLN) y en M2 (sesgo algorítmico, transparencia, IA generativa, AGI); lo nuevo aquí es la línea histórica completa y el vocabulario de herramientas (TensorFlow, PyTorch, Hugging Face). El material original es un PDF de divulgación sin fórmulas: no hay matemática que desglosar, sino conceptos, hitos y casos que hay que dominar con precisión de nombres, cifras y fechas.",
+ k:[
+ {e:"define", t:"CONCEPTOS CLAVE", c:"azul", d:"Ocho conceptos que funcionan como vocabulario base del módulo, ordenados de lo más general (qué es la IA) a lo más específico (un tipo de modelo generativo): cada uno se apoya en el anterior. Es la sección que hay que dominar de memoria porque el resto de la unidad —historia, ética, aplicaciones y los tres casos— da por sabido este vocabulario sin volver a definirlo.",
+  k:[
+  {t:"Inteligencia Artificial (IA)", c:"azul", d:"Desarrollo de sistemas capaces de realizar tareas que normalmente requieren inteligencia humana: razonar, aprender y tomar decisiones (Russell & Norvig, 2020). El campo se divide en dos categorías que el curso nombra IA débil e IA fuerte, la misma distinción que en M1 viste como IA estrecha e IA general.",
+   k:[
+   {t:"IA débil", c:"azul", d:"Toda la IA que existe hoy en producción: sistemas diseñados para una tarea específica —reconocer una cara, traducir un texto, recomendar un producto— sin comprensión general del mundo fuera de esa tarea. Es la categoría a la que pertenecen, sin excepción, todos los ejemplos de esta unidad, desde AlphaGo hasta el sistema de fraude de FinAI."},
+   {t:"IA fuerte", c:"azul", d:"Idea teórica de una inteligencia artificial con capacidades comparables a las de un humano en cualquier dominio, capaz de aprender tareas nuevas sin haber sido diseñada específicamente para ellas. Frase de examen: la IA fuerte es puramente conceptual y no existe ningún sistema desplegado hoy que la alcance; cuando se habla de riesgos existenciales de la IA casi siempre se habla de esta categoría teórica."}
+  ]},
+  {t:"Aprendizaje automático (ML)", c:"azul", id:"ml", d:"Rama de la IA que permite a las computadoras aprender de los datos y mejorar su desempeño sin ser programadas explícitamente (Goodfellow, Bengio & Courville, 2016). Se opone a la programación explícita —escribir a mano cada regla que el programa sigue—: en vez de eso, se muestran muchos ejemplos y el sistema encuentra el patrón por sí mismo, codificándolo en sus parámetros, los números internos que ajusta durante el entrenamiento y que en los modelos más grandes de hoy se cuentan por miles de millones. El curso lo clasifica en tres tipos según cómo es la interacción con los datos.",
+   k:[
+   {t:"Aprendizaje supervisado", c:"azul", d:"Entrena al modelo con ejemplos que ya traen la respuesta correcta —la etiqueta— para que aprenda a predecirla en casos nuevos; es como estudiar con un solucionario al lado. Ejemplo: un modelo de crédito que aprende de miles de solicitudes pasadas, cada una etiquetada «pagó» o «no pagó», a predecir el riesgo de una solicitud nueva."},
+   {t:"Aprendizaje no supervisado", c:"azul", d:"El modelo recibe solo los datos, sin etiquetas, y su tarea es encontrar estructura por sí mismo —agrupar casos parecidos o detectar patrones ocultos—; es como entregarle una caja de fotos sueltas y pedirle que arme pilas «con sentido» sin decirle el criterio. Se usa cuando no sabes de antemano en qué categorías se dividen tus clientes."},
+   {t:"Aprendizaje por refuerzo", c:"azul", d:"Un agente interactúa con un entorno, recibe una recompensa o un castigo según el resultado de cada acción, y ajusta su comportamiento para maximizar la recompensa acumulada; es la lógica de aprender a andar en bicicleta, no la de un solucionario. No hay un conjunto fijo de ejemplos correctos: el sistema descubre por prueba y error qué secuencia de acciones funciona mejor."}
+  ]},
+  {t:"Deep Learning (aprendizaje profundo)", c:"azul", id:"dl", d:"Uso de redes neuronales con múltiples capas para modelar datos complejos y detectar patrones de alto nivel; el curso lo describe como especialmente efectivo en reconocimiento facial, procesamiento del lenguaje y análisis de imágenes (LeCun, Bengio & Hinton, 2015). Cada capa aprende rasgos algo más abstractos que la anterior —en una red que procesa imágenes, bordes, después formas, después conceptos completos como una cara—, sin que nadie programe esa jerarquía a mano: emerge del entrenamiento. Es el motor técnico detrás de toda la tercera fase de la historia de la IA que verás más abajo, en la rama de Historia y evolución.",
+   k:[
+   {t:"Red neuronal artificial y red neuronal profunda", c:"azul", d:"Una red neuronal artificial es un modelo de capas de unidades conectadas —inspirado, de forma simplificada, en las neuronas biológicas— cuyos pesos se ajustan durante el entrenamiento para aprender patrones sin reglas explícitas. Cuando esa red tiene muchas capas ocultas se llama red neuronal profunda: cada capa aprende rasgos más abstractos que la anterior, la misma idea de «bordes → formas → objetos» explicada arriba."},
+   {t:"Red neuronal convolucional (CNN)", c:"azul", d:"Red especializada en imágenes: filtros pequeños que recorren la imagen detectando bordes, formas y objetos, y que las capas superiores combinan en estructuras mayores. Es la técnica detrás de la visión por computadora que verás en la rama de Historia (YOLO, OpenCV) y en la rama de Aplicaciones (radiología con Qure.ai y Aidoc)."},
+   {t:"Red neuronal recurrente (RNN)", c:"azul", d:"Red con memoria de lo procesado anteriormente, adecuada para datos que llegan en secuencia —una transacción después de otra, en el tiempo—: no evalúa cada dato de forma aislada, sino en el contexto de lo que vio antes en esa misma secuencia. Es exactamente la técnica que usa FinAI, en la rama de Casos prácticos, para detectar fraude comparando cada transacción nueva contra el historial de la cuenta."}
+  ]},
+  {t:"Big Data", c:"azul", id:"bigdata", d:"Manejo y análisis de grandes volúmenes de datos con alta velocidad y variedad, que requieren métodos avanzados para su procesamiento; su análisis permite descubrir patrones y tendencias útiles para decidir (Mayer-Schönberger & Cukier, 2013). El punto que vale la pena fijar en esta unidad es la relación causal con el deep learning: las redes neuronales profundas necesitan enormes cantidades de datos de entrenamiento para ajustar sus millones de parámetros sin memorizar en vez de generalizar; el Big Data es la materia prima que hace posible la tercera fase de la historia de la IA.",
+   k:[
+   {t:"Las tres V del Big Data", c:"azul", d:"Volumen (cuántos datos hay, de gigabytes a petabytes), velocidad (qué tan rápido se generan y hay que procesarlos) y variedad (qué tan distintos son sus formatos: texto, imágenes, sensores, transacciones). Los sensores IoT que instala Ana en el caso AutoTech, por ejemplo, generan exactamente este tipo de dato: miles de lecturas por hora, en vez de una inspección humana por turno."}
+  ]}
+ ]},
+ {e:"crea contenido con", t:"IA GENERATIVA Y LLM", c:"violeta", d:"El segundo grupo de conceptos clave del curso, dedicado a los modelos que no clasifican sino que crean contenido nuevo —texto, imágenes— a partir de los patrones que aprendieron. Ya viste la categoría en M2 U6 junto a la IA multimodal y los agentes; aquí se retoma desde el ángulo de qué tecnologías concretas la implementan.",
+  k:[
+  {t:"IA generativa", c:"violeta", id:"genai", d:"Modelos avanzados que crean contenido nuevo —texto, imágenes— basándose en patrones aprendidos de datos previos (Brown et al., 2020); el curso da como ejemplos destacados a GPT y GAN. La diferencia de fondo frente a un modelo de clasificación es el tipo de salida: uno dice a qué categoría pertenece algo que ya existe, el otro produce algo que no existía antes, con una estructura estadísticamente parecida a sus datos de entrenamiento.",
+   k:[
+   {t:"GPT", c:"violeta", d:"Generative Pre-trained Transformer, «transformer generativo preentrenado»: la familia de LLM de OpenAI, de la que GPT-4 es un ejemplo. Son modelos transformer que se preentrenan sobre grandes cantidades de texto y luego generan texto de forma autorregresiva, prediciendo una palabra a la vez a partir de todo lo escrito antes."},
+   {t:"GAN", c:"violeta", d:"Dos redes que compiten entre sí: el generador intenta producir contenido que parezca real, el discriminador intenta distinguirlo del contenido real, y ambas se entrenan a la vez y mejoran una contra la otra. Analogía de examen: un falsificador de billetes compitiendo contra un detective, en un ciclo de mejora continua hasta que el billete falso es casi indistinguible del real."}
+  ]},
+  {t:"LLM (modelo de lenguaje a gran escala)", c:"violeta", id:"llm", d:"Modelo entrenado con grandes cantidades de texto para generar, traducir, resumir y analizar lenguaje —el análisis semántico es interpretar el significado de un texto, no solo sus palabras sueltas—. El curso da como ejemplo a GPT-4, que usa estructuras de red neuronal avanzadas —en concreto la arquitectura transformer, que procesa secuencias completas en paralelo con un mecanismo de atención— para comprender y generar lenguaje natural.",
+   k:[
+   {t:"GPT-4", c:"violeta", d:"Ejemplo de LLM que da el curso, citando a Brown et al. (2020). Nota de examen (discrepancia 5): esa referencia describe en realidad a GPT-3 (175.000 millones de parámetros); GPT-4 se lanzó recién el 14 de marzo de 2023 con un informe técnico de detalles limitados. Si te piden el ejemplo de LLM, responde GPT-4 como dice el curso; si te piden qué describe la referencia Brown et al. 2020, la respuesta correcta es GPT-3 y el aprendizaje con pocos ejemplos: la capacidad de un LLM de resolver una tarea nueva con solo unos pocos ejemplos dentro de la instrucción, sin reentrenamiento."},
+   {t:"BERT", c:"violeta", d:"Modelo de Google basado en la arquitectura transformer, orientado a comprender el lenguaje en su contexto. A diferencia de GPT, que está orientado sobre todo a generar texto, BERT está optimizado para entender el significado de un texto ya existente, por ejemplo para mejorar un buscador."}
+  ]},
+  {t:"Preentrenamiento y ajuste fino", c:"violeta", id:"finetune", d:"Preentrenar es entrenar un modelo de lenguaje con un conjunto de datos general y masivo, sin apuntar todavía a ninguna tarea específica; el ajuste fino toma ese modelo ya preentrenado y lo adapta a una tarea concreta con un conjunto de datos más pequeño y relevante. Este proceso de dos etapas es lo que permite que modelos como GPT se especialicen en aplicaciones concretas, y es mucho más eficiente que entrenar cada tarea desde cero. Nota de examen (discrepancia 6): el curso atribuye la técnica a «Howard & Gugger (2018)»; el paper real (ULMFiT, ACL 2018) es de Jeremy Howard y Sebastian Ruder, no de ningún «Gugger» — el concepto es correcto, solo la cita está mal atribuida."},
+  {t:"Texto a imagen", c:"violeta", d:"Generación de imágenes a partir de descripciones escritas. El curso lo ejemplifica con DALL·E, que combina transformers y redes convolucionales para interpretar el texto de entrada y producir una imagen coherente con esa descripción (Ramesh et al., 2021).",
+   k:[
+   {t:"DALL·E", c:"violeta", d:"Modelo de OpenAI cuya primera versión combinaba un componente convolucional (un autoencoder variacional discreto) con un transformer autorregresivo, tal como describe el curso. Nota de examen (discrepancia 7): esa descripción corresponde solo a DALL·E 1; DALL·E 2 y 3 ya no funcionan así, usan modelos de difusión, que parten de ruido aleatorio y lo «limpian» de forma iterativa hasta llegar a una imagen coherente con el texto."},
+   {t:"Midjourney y Stable Diffusion", c:"violeta", d:"Generadores de imágenes que transformaron la industria creativa; ambos son, en esencia, la misma familia de modelos de difusión mencionada para DALL·E 2 y 3: parten de ruido y lo refinan iterativamente hasta producir una imagen coherente con una descripción de texto."}
+  ]},
+  {t:"Ingeniería de prompts", c:"violeta", id:"prompts", d:"Formular instrucciones precisas y adecuadas para que un modelo generativo entregue el resultado deseado. El video del profesor Rodrigo Pereira sobre este tema es solo online y no viene en el PDF (discrepancia 17); esta sección se reconstruye con principios generales ampliamente aceptados, no con lo que dijo el profesor: dar rol, contexto, tarea clara con verbo, formato de salida, ejemplos (zero-shot vs few-shot, que conecta con Brown et al. 2020), restricciones, pedir razonamiento por pasos en tareas complejas, iterar y verificar la salida, porque los LLM pueden inventar datos (alucinaciones)."}
+ ]},
+ {e:"evolucionó en", t:"HISTORIA Y EVOLUCIÓN", c:"verde", d:"El curso organiza la historia de la IA en tres fases con rangos de años exactos que conviene memorizar tal cual, aun cuando la historia real sea un poco más matizada: 1950–1970 (reglas), 1980–2000 (aprendizaje automático) y 2000–presente (deep learning y generativos). El argumento que atraviesa las tres fases: cada una resolvió el cuello de botella de la anterior —reglas escritas a mano → reglas aprendidas de datos → rasgos aprendidos en profundidad creciente—, algo que se apoya directamente en lo visto en Conceptos clave (programación explícita vs. aprendizaje automático, deep learning).",
+  k:[
+  {t:"1ª fase (1950–1970): IA simbólica", c:"verde", d:"Sistemas programados para seguir reglas específicas —IA simbólica o basada en reglas—, mediante instrucciones predefinidas que resolvían problemas en contextos cerrados: entornos acotados donde el conjunto de reglas alcanza para cubrir todos los casos posibles. Es el opuesto exacto del aprendizaje automático visto en Conceptos clave: aquí un ingeniero escribe a mano cada «si pasa esto, haz esto otro», sin que el sistema aprenda de datos.",
+   k:[
+   {t:"Damas de Arthur Samuel", c:"verde", id:"samuel", d:"Programa de la década de 1950 que jugaba damas de forma autónoma: evaluaba movimientos y ajustaba su estrategia con el tiempo mediante lo que el curso llama «aprendizaje automático rudimentario». Nota de examen (discrepancia 1): el curso lo presenta como ejemplo de la fase «basada en reglas», pero técnicamente ya era aprendizaje —el programa aprendía jugando contra sí mismo, y a Samuel se le atribuye haber popularizado el término «machine learning» en 1959—. Si preguntan por el ejemplo de la primera fase, responde Logic Theorist; si preguntan por el primer programa que aprendía por su cuenta, responde Samuel."},
+   {t:"Logic Theorist", c:"verde", d:"Sistema de Allen Newell y Herbert Simon capaz de demostrar teoremas matemáticos con reglas lógicas; el curso lo presenta como precursor de la IA simbólica, que inspiró los sistemas expertos y la resolución automatizada de problemas (McCarthy, 2007). Es el ejemplo icónico que sí encaja limpiamente en «basada en reglas», a diferencia del programa de Samuel."},
+   {t:"Límites: flexibilidad, cómputo, escalabilidad", c:"verde", d:"Estos sistemas ejecutaban tareas estructuradas con gran precisión, pero carecían por completo de flexibilidad para adaptarse a entornos no programados de antemano. A eso se sumaban las limitaciones de la época —baja capacidad de procesamiento y almacenamiento— que restringían severamente la escalabilidad: la capacidad de un sistema de crecer en datos o tareas sin colapsar."},
+   {t:"Invierno de la IA", c:"verde", d:"Período de estancamiento y recorte de financiamiento por falta de avances significativos, que el curso sitúa en la década de 1970 (Nilsson, 1998). Nota de examen (discrepancia 2): la historiografía distingue en realidad dos inviernos, uno de ~1974 a 1980 (tras el informe Lighthill de 1973) y otro de ~1987 a 1993; para el examen usa siempre la periodización simple del curso y trata los dos inviernos como contexto adicional."}
+  ]},
+  {t:"2ª fase (1980–2000): aprendizaje automático", c:"verde", d:"La introducción de redes neuronales y algoritmos de aprendizaje automático permitió a las máquinas procesar datos y ajustarse automáticamente, un avance frente a los sistemas de reglas de la primera fase. Tres desarrollos representativos: redes neuronales artificiales tempranas, OCR y sistemas expertos, más el hardware especializado que los sostuvo.",
+   k:[
+   {t:"Redes neuronales artificiales", c:"verde", id:"redes", d:"Uno de los primeros hitos de la fase: redes capaces de aprender patrones sin ser programadas explícitamente para cada caso, el mismo principio de aprendizaje automático de Conceptos clave, aplicado con una arquitectura inspirada de forma simplificada en las neuronas biológicas. Estas redes tempranas son el antecedente directo de las redes profundas que se profundizan más abajo, en la tercera fase."},
+   {t:"OCR y Tesseract", c:"verde", d:"El reconocimiento óptico de caracteres (OCR) convierte texto escrito o impreso en una imagen —una página escaneada— en texto digital editable; el curso dice que Xerox lo implementó en los años 90 para automatizar el escaneo de cheques y documentos administrativos. Google mejoró esta tecnología con Tesseract OCR, un motor multilingüe.",
+    k:[
+    {t:"Tesseract OCR", c:"verde", d:"Motor de OCR de código abierto y multilingüe. Nota de examen (discrepancia 4): el curso da a entender que es «un modelo de Google», pero nació en Hewlett-Packard entre 1985 y 1994, se liberó como código abierto en 2005 y Google lo patrocinó entre 2006 y 2017 —Google lo impulsó, no lo creó—. El caso de Xerox y los cheques no se pudo verificar con una fuente adicional."}
+   ]},
+   {t:"Sistemas expertos y MYCIN", c:"verde", d:"Un sistema experto imita la capacidad de decisión de un especialista humano en un área específica mediante reglas construidas a partir de su conocimiento. El curso destaca a MYCIN, de Stanford, que diagnosticaba infecciones bacterianas y recomendaba tratamientos.",
+    k:[
+    {t:"MYCIN", c:"verde", d:"Sistema experto emblemático que diagnosticaba infecciones bacterianas; el curso dice que «superó a médicos en ciertos diagnósticos» y que no se masificó por resistencia de la industria y limitaciones computacionales. Nota de examen (discrepancia 3): se desarrolló en los años 70, no en el rango 1980–2000 donde el curso lo encuadra; su evaluación ciega (Yu et al., 1979, JAMA) lo comparó con especialistas en infectología sin cifras suficientemente verificadas, y la razón habitual de su no uso clínico incluye responsabilidad legal y ética, no solo «resistencia de la industria». Si preguntan por el ejemplo del curso, cita MYCIN y sus razones textuales."}
+   ]},
+   {t:"Hardware especializado → GPU", c:"verde", id:"gpu", d:"Primeros aceleradores de hardware: procesadores especializados, por ejemplo en cálculos de matrices, que mejoraron la velocidad de entrenamiento de las redes neuronales y sentaron la base de las GPU (unidad de procesamiento gráfico) de empresas como NVIDIA, esenciales hoy para entrenar deep learning con millones de parámetros (Russell & Norvig, 2020). Una GPU está diseñada para hacer, en paralelo, millones de multiplicaciones simples —el mismo tipo de cálculo que exige entrenar una red neuronal—, mientras que un procesador central tradicional está optimizado para tareas secuenciales complejas."}
+  ]},
+  {t:"3ª fase (2000–presente): deep learning y generativos", c:"verde", d:"Fase caracterizada por el uso intensivo del aprendizaje profundo: redes neuronales profundas procesando grandes cantidades de datos, lo que llevó a hitos como AlphaGo y a cuatro grandes familias de aplicación (PLN, visión, sistemas autónomos, IA generativa creativa), sostenidas por el crecimiento del poder computacional.",
+   k:[
+   {t:"AlphaGo", c:"verde", d:"Sistema de DeepMind que combinaba redes neuronales profundas con una técnica de búsqueda de jugadas, entrenado primero con partidas humanas y luego jugando contra sí mismo; venció a campeones humanos del juego de estrategia Go (Silver et al., 2016), considerado durante décadas demasiado complejo para que una máquina lo dominara. Dato de contexto: venció a Fan Hui 5-0 en octubre de 2015 y a Lee Sedol 4-1 en marzo de 2016."},
+   {t:"Asistentes virtuales (Alexa y Siri)", c:"verde", d:"Software conversacional capaz de entender instrucciones habladas y ejecutar tareas complejas en tiempo real. El curso los presenta junto a AlphaGo y a los modelos generativos como GPT-4 y DALL·E como los grandes hitos con los que abre la tercera fase."},
+   {t:"PLN (GPT, BERT)", c:"verde", d:"Procesamiento de Lenguaje Natural: el área de la IA que permite a las máquinas comprender y generar lenguaje humano. El curso menciona a GPT y BERT como modelos que permitieron avances en la comprensión del lenguaje, mejorando chatbots y asistentes virtuales."},
+   {t:"Visión (YOLO, OpenCV)", c:"verde", id:"vision", d:"Visión por computadora: el área de la IA que permite a las máquinas interpretar imágenes y video. El curso menciona a YOLO (You Only Look Once), una familia de modelos de detección de objetos en tiempo real que analiza la imagen completa en una sola pasada, y a OpenCV, una biblioteca abierta para procesar imágenes y video; ambas sirven de base a tareas como el reconocimiento facial. El curso cita Redmon & Farhadi (2018), que corresponde específicamente a YOLOv3."},
+   {t:"Sistemas autónomos (Tesla)", c:"verde", id:"autonomos", d:"Sistemas que perciben su entorno y deciden en tiempo real sin intervención humana directa; el curso los ejemplifica con Tesla, deteniéndose en el sensor LiDAR (Light Detection and Ranging), que mide distancias con pulsos láser y arma un mapa 3D del entorno. Nota de examen (discrepancia 8): el FSD de Tesla es asistencia de nivel 2 SAE, supervisada por el conductor, con un robotaxi limitado desde 2025; Waymo, en cambio, opera en nivel 4 (sin conductor en zonas definidas). El curso cita Bojarski et al. (2016) junto al ejemplo de Tesla, pero ese paper es de NVIDIA, no de Tesla."},
+   {t:"IA generativa creativa", c:"verde", d:"Cuarta aplicación de la fase: MidJourney y Stable Diffusion transformaron la industria creativa generando contenido visual y audiovisual, con la misma familia de modelos de difusión vista en la rama de IA generativa y LLM."},
+   {t:"Poder computacional", c:"verde", id:"compute", d:"Capacidad de cálculo disponible; su crecimiento exponencial fue, según el curso, «un factor determinante» en la expansión de la IA, con Google, Microsoft y NVIDIA desarrollando hardware optimizado para entrenar ML y deep learning (Hennessy & Patterson, 2018). Es el mismo hilo de las GPU de la segunda fase, escalado en órdenes de magnitud: junto con el Big Data, es una de las dos piernas sobre las que camina toda la tercera fase."}
+  ]}
+ ]},
+ {e:"plantea", t:"ÉTICA Y DESAFÍOS", c:"coral", d:"Cuanto más decide o genera un sistema por su cuenta, más preguntas abre sobre a quién beneficia, a quién perjudica y quién responde cuando algo sale mal. El curso organiza esto en tres frentes encadenados: qué datos se recolectan y con qué autorización (privacidad), qué hace el modelo con esos datos (sesgos) y quién responde por sus decisiones (rendición de cuentas y transparencia) — dato mal recolectado → modelo sesgado → decisión sin supervisión.",
+  k:[
+  {t:"Privacidad de los datos", c:"coral", d:"Derecho de una persona a controlar cómo se recolectan, almacenan y usan sus datos personales. El curso pone tres aplicaciones de riesgo alto: reconocimiento facial (identificar o verificar a una persona a partir de una imagen de su rostro), análisis de comportamiento y publicidad personalizada.",
+   k:[
+   {t:"Clearview AI", c:"coral", d:"Empresa criticada por recopilar imágenes de usuarios sin su consentimiento —extraídas de redes sociales y sitios públicos— para alimentar bases de datos usadas por fuerzas de seguridad y empresas privadas. Nota de examen (discrepancia 10): el curso dice «millones» de imágenes; la cifra verificada supera los 30.000 millones (2023), con una multa de 30,5 millones de euros de la autoridad neerlandesa en septiembre de 2024."},
+   {t:"GDPR y CCPA", c:"coral", id:"gdpr", d:"El GDPR (Reglamento General de Protección de Datos de la Unión Europea) y la CCPA (Ley de Privacidad del Consumidor de California) obligan a las empresas a transparentar qué datos recolectan y para qué, y a obtener consentimiento informado: una autorización explícita dada sabiendo con precisión para qué se usarán los datos. En Chile, la Ley 21.719 de protección de datos personales entra en vigencia el 1 de diciembre de 2026 y crea la Agencia de Protección de Datos Personales (discrepancia 9, parte privacidad); no la menciona el curso, pero es la respuesta correcta si preguntan por la norma chilena."},
+   {t:"Uso indebido de datos", c:"coral", d:"Usar datos personales para fines distintos de los autorizados, sumado a la falta de supervisión efectiva en muchos países: que existan leyes no garantiza que se cumplan, hace falta fiscalización activa. Es el desafío pendiente con el que el curso cierra esta sección."}
+  ]},
+  {t:"Sesgos en los algoritmos", c:"coral", id:"sesgo", d:"El sesgo algorítmico es un error sistemático de un modelo que perpetúa discriminación, casi siempre porque hereda prejuicios ya presentes en sus datos de entrenamiento —sesgo en datos históricos—. El modelo no razona sobre lo que es justo: solo detecta patrones estadísticos y los reproduce, aunque nadie haya puesto ahí ese patrón a propósito.",
+   k:[
+   {t:"Amazon: contratación sesgada", c:"coral", d:"Amazon entrenó un modelo para evaluar currículos usando como datos las contrataciones exitosas de los diez años anteriores; como esa industria había contratado históricamente más hombres, el modelo aprendió a penalizar currículos con términos asociados a mujeres, aunque el sexo nunca fuera un dato de entrada explícito. Amazon detectó el problema y descontinuó el sistema antes de usarlo en decisiones reales."},
+   {t:"AI Fairness 360", c:"coral", d:"Conjunto de bibliotecas de código abierto de IBM para detectar y mitigar sesgos en modelos de machine learning: miden si un modelo trata distinto a distintos grupos demográficos y ofrecen técnicas de corrección sobre los datos, el entrenamiento o las predicciones. Se lanzó el 19 de septiembre de 2018 con 9 algoritmos de mitigación en su versión inicial."},
+   {t:"Solvencia y minorías", c:"coral", id:"sesgofin", d:"Algoritmos usados para evaluar la solvencia de clientes discriminaron a minorías étnicas por datos históricos con prejuicios sistémicos, el mismo mecanismo del caso Amazon aplicado ahora al crédito. El curso concluye que esto obliga a auditorías de algoritmos constantes en decisiones críticas: revisiones periódicas e independientes hechas específicamente para detectar sesgos y errores antes de que causen daño a gran escala."}
+  ]},
+  {t:"Rendición de cuentas y transparencia", c:"coral", d:"Rendición de cuentas son los mecanismos para identificar quién responde por las decisiones de un sistema de IA; es hermana de la transparencia (poder conocer cómo funciona el sistema y con qué datos decide) y de la explicabilidad (poder explicar, para un caso concreto, por qué el modelo tomó esa decisión). Sin transparencia no se puede auditar, sin explicabilidad no se puede apelar un caso concreto, y sin rendición de cuentas nadie tiene el incentivo de corregir el sistema.",
+   k:[
+   {t:"COMPAS", c:"coral", d:"Algoritmo de la justicia penal de EE.UU. que predice la reincidencia (la probabilidad de que una persona vuelva a delinquir); mostró un sesgo racial significativo, clasificando erróneamente a personas afroamericanas con mayor probabilidad de reincidencia que a blancas con delitos similares. Nota de examen (discrepancia 10, parte COMPAS): el análisis original es de ProPublica (2016), no de AI Now Institute como cita el curso: 44,9% de falsos positivos en afroamericanos frente a 23,5% en blancos, un debate que expone que distintas definiciones de equidad no pueden cumplirse todas a la vez cuando las tasas base difieren entre grupos."},
+   {t:"Ley de Inteligencia Artificial de la UE", c:"coral", id:"aiact", d:"El curso dice que la Unión Europea «ha propuesto» regulaciones que exigen explicabilidad y auditoría a los sistemas de alto riesgo (los que afectan derechos o seguridad: crédito, empleo, justicia). Nota de examen (discrepancia 9): ya no es propuesta, es el Reglamento (UE) 2024/1689, vigente desde agosto de 2024, con un acuerdo de mayo de 2026 (paquete «Digital Omnibus») que posterga las obligaciones de alto riesgo a diciembre de 2027 y agosto de 2028. Responde con la idea del curso (alto riesgo → explicabilidad y auditoría); si preguntan por el estado legal, ya es reglamento vigente en aplicación escalonada."}
+  ]}
+ ]},
+ {e:"se aplica en", t:"APLICACIONES AVANZADAS", c:"cian", d:"Después de revisar los riesgos, el curso muestra el otro lado: casos donde la IA genera valor real y medible en logística, medicina y prevención de desastres. En los tres bloques se repite el mismo patrón: datos de distinto tipo (sensores, imágenes, historiales) más una técnica de IA ya vista (visión, deep learning, redes neuronales) igual a una decisión o alerta más rápida y precisa que un proceso manual.",
+  k:[
+  {t:"Logística predictiva", c:"cian", d:"Uso de IA para anticipar demanda, ajustar inventarios y mejorar tiempos de entrega, en vez de reaccionar después de que el problema ya ocurrió. El curso usa a Amazon como ejemplo directo de esto.",
+   k:[
+   {t:"Maersk: optimización de rutas", c:"cian", d:"Optimización de rutas combina datos meteorológicos, tráfico marítimo y tiempos de carga y descarga para elegir el recorrido de un barco que minimice tiempo y combustible; Maersk redujo así sus costos operativos y su huella de carbono, las emisiones asociadas a esa operación. Nota de examen (discrepancia 11): el curso la llama «la mayor naviera del mundo», pero MSC la superó en capacidad desde enero de 2022 —el caso vale como ejemplo de optimización de rutas, no de ranking."},
+   {t:"Watson Supply Chain (COVID-19)", c:"cian", d:"Durante la pandemia, IBM Watson Supply Chain habría previsto interrupciones en la distribución de bienes esenciales analizando en tiempo real proveedores, clima y demanda, protegiendo la cadena de suministro —la red de proveedores, producción y distribución hasta el cliente— de quiebres. Nota de examen (discrepancia 12): no se pudo confirmar ese nombre exacto de producto; la línea documentada de IBM es Sterling Supply Chain."},
+   {t:"Almacenes automatizados (Ocado, Walmart)", c:"cian", d:"Bodegas donde robots inteligentes y ML optimizan la colocación de productos en estanterías y reducen los tiempos de procesamiento de pedidos de e-commerce, aprendiendo del historial de pedidos qué productos conviene tener cerca entre sí."}
+  ]},
+  {t:"Medicina personalizada", c:"cian", d:"Ajustar tratamientos a cada paciente según sus datos clínicos y genómicos particulares, en vez de aplicar el mismo protocolo a todos los pacientes con un diagnóstico similar; existe porque dos pacientes con el «mismo» diagnóstico pueden responder muy distinto por diferencias genéticas o de historial.",
+   k:[
+   {t:"IBM Watson Health", c:"cian", d:"Analiza historiales clínicos, resultados de pruebas y literatura científica para ayudar en la detección temprana de enfermedades como el cáncer. Nota de examen (discrepancia 12): IBM vendió esta unidad a Francisco Partners en 2022; hoy opera como Merative —usa el caso como ejemplo de IA en salud, no como producto vigente de IBM."},
+   {t:"Tempus: perfil genómico", c:"cian", d:"El perfil genómico es la información genética de un paciente; Tempus lo analiza y sugiere terapias personalizadas, permitiendo a los oncólogos anticipar, antes de empezar, qué tratamientos tienen mayor probabilidad de éxito para el tumor de ese paciente en particular."},
+   {t:"AlphaFold", c:"cian", d:"Sistema de DeepMind que predice estructuras de proteínas con precisión sin precedentes, a partir únicamente de su secuencia de aminoácidos, en horas en vez de los años que tomaba la determinación experimental en laboratorio. Nota de examen (discrepancia 14): lo que acelera es la determinación de la estructura, no el desarrollo completo de un fármaco, que sigue tomando años; AlphaFold 2 ganó CASP14 (2020) y valió el Nobel de Química 2024 a Demis Hassabis y John Jumper, junto con David Baker."},
+   {t:"Radiología: Qure.ai y Aidoc", c:"cian", id:"radiologia", d:"Imágenes médicas con IA: visión por computador —la misma familia técnica de YOLO— aplicada a radiografías y tomografías para detectar fracturas, tumores y hemorragias cerebrales en segundos, priorizando los casos más urgentes para que el radiólogo los revise primero."}
+  ]},
+  {t:"Prevención de desastres", c:"cian", d:"Un sistema de alerta temprana anticipa un desastre —inundación, incendio o sismo— para dar tiempo de reacción antes del daño mayor, combinando datos históricos y en tiempo real (imágenes satelitales, sensores, cámaras) con un modelo entrenado para reconocer los patrones que preceden al desastre.",
+   k:[
+   {t:"Google AI: inundaciones", c:"cian", d:"Sistemas que combinan datos meteorológicos históricos, imágenes satelitales y simulación climática para prever inundaciones, dando alertas con días de anticipación en India y Bangladesh."},
+   {t:"Incendios: Chooch, Descartes, CAL FIRE", c:"cian", d:"Visión por computador sobre imágenes satelitales y drones identifica focos de incendio para una respuesta rápida de emergencia; el curso menciona a Chooch AI y Descartes Labs y a CAL FIRE integrando IA en su red de cámaras para detectar humo temprano. Nota de examen (discrepancia 13): el socio documentado de CAL FIRE es ALERTCalifornia (UC San Diego) con DigitalPath, lanzado en 2023; no se encontró evidencia de que Chooch AI o Descartes Labs trabajen directamente con CAL FIRE."},
+   {t:"ShakeAlert (USGS)", c:"cian", d:"Sistema de alerta sísmica temprana que opera en la costa oeste de EE.UU., dando segundos de anticipación a ciudades como San Francisco y Los Ángeles antes de que llegue la onda de mayor intensidad de un terremoto. Nota de examen (discrepancia 13): el curso dice que el USGS «emplea redes neuronales»; en realidad usa algoritmos sismológicos específicos (EPIC, FinDer, GFAST-PGD), no redes neuronales, y cubre California, Oregón y Washington completos, no solo esas dos ciudades."}
+  ]}
+ ]},
+ {e:"se implementa con", t:"HERRAMIENTAS", c:"gris", d:"Tres bibliotecas de código abierto —conjuntos de herramientas de programación con el código disponible públicamente y de uso gratuito— con las que se construyen los modelos de IA en la práctica: TensorFlow para escala, PyTorch para prototipado, Hugging Face para modelos ya listos. Son complementarias más que competidoras: es común entrenar con una y publicar o reutilizar modelos con otra.",
+  k:[
+  {t:"TensorFlow", c:"gris", d:"Biblioteca de código abierto de Google, valorada por su flexibilidad y escalabilidad: el mismo código que entrena un modelo pequeño en una laptop puede, con ajustes mínimos, entrenar un modelo mucho más grande repartido entre cientos de GPU.",
+   k:[
+   {t:"Airbnb: precio dinámico", c:"gris", id:"airbnb", d:"El curso dice que Airbnb usa TensorFlow para ajustar dinámicamente los precios de habitaciones según demanda y eventos locales —el mismo concepto de precio dinámico que verás en el caso ShopSmart—. Nota de examen (discrepancia 15): no se encontró confirmación pública específica de TensorFlow en el motor de precios de Airbnb, aunque la empresa sí usa ML intensivamente en esa área; trata el ejemplo como ilustración del concepto, no como dato técnico verificado."},
+   {t:"Stanford: rayos X con CNN", c:"gris", d:"Stanford aplicó TensorFlow en la detección temprana de enfermedades pulmonares con redes neuronales convolucionales sobre radiografías, con precisión comparable a la de radiólogos humanos. El estudio documentado es CheXNet (2017): una CNN de 121 capas para detectar neumonía, con un F1 de 0,435 frente a 0,387 de cuatro radiólogos en promedio; el framework exacto usado no se pudo confirmar."}
+  ]},
+  {t:"PyTorch", c:"gris", id:"pytorch", d:"Biblioteca de código abierto de Meta, popular por su facilidad de uso y su prototipado rápido: construir versiones de prueba de un modelo rápidamente para validar una idea antes de invertir en la versión final. Se usa mucho en PLN, visión por computador y generación de contenido.",
+   k:[
+   {t:"ChatGPT (OpenAI)", c:"gris", d:"ChatGPT se basa en modelos de lenguaje entrenados con PyTorch; su flexibilidad mejoró la generación de texto y la comprensión de contextos complejos. Este uso, a diferencia de otros ejemplos de esta rama, sí está documentado públicamente."},
+   {t:"Tesla y Waymo: conducción autónoma", c:"gris", d:"Ambas empresas usan PyTorch para entrenar redes que procesan cámaras, radares y LiDAR (Light Detection and Ranging) en tiempo real: el LiDAR mide distancias con pulsos láser y arma un mapa 3D del entorno, complementando a las cámaras (que ven color y señales) y a los radares (que funcionan con lluvia o niebla). Nota de examen (discrepancia 15): el uso de PyTorch por Tesla y por OpenAI sí está documentado; el de Waymo no se pudo confirmar con fuente pública."}
+  ]},
+  {t:"Hugging Face", c:"gris", id:"hf", d:"Plataforma y comunidad centrada en PLN, distinta de TensorFlow y PyTorch en que no es una biblioteca para construir modelos desde cero, sino un repositorio de modelos preentrenados —ya entrenados por alguien más, listos para reutilizar o ajustar— que hoy supera los 3 millones de modelos públicos en su Hub. Reutilizar un modelo preentrenado es, en esencia, el mismo principio de ajuste fino visto en la rama de IA generativa y LLM.",
+   k:[
+   {t:"Grammarly", c:"gris", d:"Usa modelos de PLN para sugerencias gramaticales, corrección de estilo y análisis de sentimientos —detectar si un texto expresa una opinión positiva, negativa o neutra— y detección de tono en tiempo real. Nota de examen (discrepancia 15): no se encontró confirmación pública de que Grammarly use específicamente Hugging Face."},
+   {t:"Zalando y Shopify: chatbots", c:"gris", d:"Implementaron chatbots avanzados con modelos preentrenados de la plataforma, reduciendo tiempos de respuesta y mejorando la satisfacción del cliente. Igual que con Grammarly, no se encontró confirmación pública específica de este uso (discrepancia 15); trátalo como ejemplo ilustrativo del curso."}
+  ]}
+ ]},
+ {e:"se practica en", t:"CASOS PRÁCTICOS", c:"ambar", d:"Tres empresas ficticias que sirven de laboratorio para ver la IA aplicada de punta a punta, cada una con tres soluciones y cifras de resultado concretas. Conviene leer cada caso como una cadena donde cada paso ataca un cuello de botella distinto de la misma operación, no como anécdotas sueltas.",
+  k:[
+  {t:"AutoTech (industria automotriz)", c:"ambar", d:"Empresa que enfrenta averías inesperadas y gestión ineficiente de inventarios; el equipo lo forman Carlos (gerente de producción), Ana (ingeniera de datos) y Luis (cadena de suministro). El caso avanza en tres pasos que atacan cuellos de botella distintos de la misma operación.",
+   k:[
+   {t:"Mantenimiento predictivo (−25%)", c:"ambar", id:"mantpred", d:"Ana instaló sensores IoT (vibración, temperatura, desgaste) que generan Big Data en tiempo real; una red neuronal los analizó junto con registros históricos y aprendió a predecir fallas antes de que ocurrieran. El mantenimiento predictivo —anticipar la falla— es siempre más barato que el mantenimiento correctivo —repararla después de que ocurrió—, porque el correctivo suma tiempo de inactividad, la línea detenida sin producir. Resultado reportado: reducción del 25% en tiempos de inactividad."},
+   {t:"Cadena de suministro (−30%)", c:"ambar", d:"Modelos de ML anticipan la demanda de autopartes y ajustan órdenes de compra en tiempo real, priorizando proveedores con menor tiempo de entrega y mejores costos. Resultado: reducción del 30% en costos de almacenamiento, menor desperdicio de piezas y mayor disponibilidad de componentes clave —el mismo principio de predicción a partir de patrones que el paso anterior, aplicado a otro problema de negocio."},
+   {t:"Control de calidad automatizado (98%)", c:"ambar", d:"Visión por computadora revisa pintura, alineación y ensamblaje con una precisión del 98%. Esa cifra no significa cero errores: el sistema puede dejar pasar un defecto o marcar como defectuoso algo que está bien (un falso positivo), por lo que en la práctica trabaja como primera capa de filtro y no como reemplazo total de la inspección humana."}
+  ]},
+  {t:"ShopSmart (e-commerce)", c:"ambar", d:"Plataforma global que busca mejorar la experiencia de compra y su tasa de conversión; Mariana (marketing) detecta alta tasa de abandono de carrito y bajo ROI en publicidad, y trabaja con Javier (IA) y Andrés (servicio al cliente) en tres frentes de solución.",
+   k:[
+   {t:"Sistema de recomendación (+35% / −20%)", c:"ambar", id:"recom", d:"Analiza el historial de navegación y compras para predecir, con redes neuronales, qué productos tiene más probabilidad de comprar cada usuario, y personaliza anuncios y correos. Nota de examen (discrepancia 16): el curso dice que Javier usó «modelos de PLN» para esto; la técnica típica de un sistema de recomendación es el filtrado colaborativo, no PLN —el PLN entra cuando hay texto de por medio, como búsquedas o reseñas—; para el examen responde lo que dice el curso. Resultado: +35% en tasa de conversión de clientes recurrentes y −20% de abandono de carrito."},
+   {t:"Chatbots de servicio (−50% / +30%)", c:"ambar", d:"Chatbots integrados en redes sociales y WhatsApp para preguntas frecuentes y el proceso de pago, reduciendo la fricción de compra. Resultado: −50% en tiempo de espera de atención al cliente y +30% en satisfacción."},
+   {t:"Precio dinámico (+15% margen)", c:"ambar", id:"precio", d:"Un modelo de ML ajusta el precio de un producto según demanda y tendencias, la misma lógica que hace variar el precio de un pasaje aéreo según la fecha de compra. Resultado: +15% de margen de ganancia y mayor competitividad frente a otras plataformas."}
+  ]},
+  {t:"FinAI (banca digital)", c:"ambar", d:"Banco digital con aumento de intentos de fraude y necesidad de optimizar la evaluación de riesgos crediticios, sin poder procesar manualmente el volumen de solicitudes y transacciones en tiempo real.",
+   k:[
+   {t:"Detección de fraude con RNN (−40%)", c:"ambar", id:"fraude", d:"Una red neuronal recurrente (RNN) analiza transacciones en tiempo real, manteniendo memoria de la actividad anterior de cada cuenta; con análisis de patrones —comparar la actividad histórica contra la nueva— detecta saltos sospechosos, como una transferencia inusual a una cuenta desconocida. Resultado: reducción del 40% del fraude, con alertas antes de procesar la transacción, no después. Un falso positivo aquí es una compra legítima bloqueada por error: afinar el sistema para atrapar más fraude real casi siempre significa bloquear también más transacciones legítimas."},
+   {t:"Análisis crediticio con ML (48h→<5min; −25%)", c:"ambar", id:"credito", d:"Modelo que analiza comportamiento financiero, historial crediticio y factores externos —estabilidad laboral, ubicación geográfica— para estimar solvencia; bajó el tiempo de procesamiento de 48 horas a menos de 5 minutos y el índice de morosidad (la proporción de créditos con pagos atrasados) en 25%. Es el ejemplo de manual de sistema de alto riesgo bajo la Ley de IA de la UE, y puede heredar el mismo sesgo en datos históricos que el caso Amazon si, por ejemplo, cierto código postal fue rechazado con más frecuencia por razones ajenas a la verdadera capacidad de pago."},
+   {t:"Asistentes virtuales financieros", c:"ambar", d:"Chatbots y asistentes que dan asesoría personalizada (mejorar el puntaje crediticio, manejar finanzas) y alertas en la app sobre pagos pendientes, inversión y ahorro, aumentando el compromiso y la retención de clientes."}
+  ]},
+  {t:"Foro colaborativo", c:"ambar", d:"Cierra la unidad con tres preguntas de reflexión: qué oportunidades y desafíos trae implementar IA en una empresa; si la IA reemplazará completamente ciertos roles o transformará el trabajo; y cómo prepararse para adoptar IA de forma ética y eficiente. Es el mismo debate que atraviesa los tres casos prácticos: la IA no reemplaza sin más, habilita decisiones y libera tiempo humano para las tareas que el modelo no puede hacer."}
+ ]}
+]};
+const CROSS = [
+ {from:"samuel", to:"ml", label:"en realidad ya aprendía", bend:60},
+ {from:"redes", to:"dl", label:"se profundizan en", bend:-60},
+ {from:"gpu", to:"compute", label:"habilita", bend:50},
+ {from:"vision", to:"radiologia", label:"se aplica en", bend:-50},
+ {from:"autonomos", to:"pytorch", label:"se entrenan con", bend:70},
+ {from:"pytorch", to:"llm", label:"entrena (ChatGPT)", bend:-70},
+ {from:"finetune", to:"hf", label:"modelos preentrenados", bend:40},
+ {from:"prompts", to:"llm", label:"instruye a", bend:-40},
+ {from:"bigdata", to:"mantpred", label:"datos de sensores IoT", bend:80},
+ {from:"fraude", to:"dl", label:"usa RNN", bend:-80},
+ {from:"recom", to:"sesgo", label:"¿es justa?", bend:55},
+ {from:"credito", to:"aiact", label:"es alto riesgo", bend:-55},
+ {from:"credito", to:"sesgofin", label:"riesgo de", bend:65},
+ {from:"precio", to:"airbnb", label:"mismo patrón", bend:-65},
+ {from:"gdpr", to:"recom", label:"limita datos de", bend:45}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["fund","Inteligencia Artificial (IA)","Artificial Intelligence (AI)","Desarrollo de sistemas capaces de realizar tareas que normalmente requieren inteligencia humana: razonar, aprender y decidir."],
+["fund","IA débil","Weak / Narrow AI","IA enfocada en tareas específicas; es toda la IA que existe hoy en producción."],
+["fund","IA fuerte","Strong AI / AGI","Idea teórica de una inteligencia comparable a la humana en cualquier tarea; aún no existe."],
+["fund","Aprendizaje automático","Machine Learning (ML)","Rama de la IA que permite a las computadoras aprender de los datos y mejorar sin ser programadas explícitamente."],
+["fund","Programación explícita","Explicit programming","Escribir a mano cada regla que el programa sigue; lo opuesto a aprender la regla desde los datos."],
+["fund","Aprendizaje supervisado","Supervised learning","El modelo aprende de ejemplos con la respuesta correcta (etiqueta) para predecirla en casos nuevos."],
+["fund","Aprendizaje no supervisado","Unsupervised learning","El modelo busca estructura (grupos, patrones) en datos sin etiquetas."],
+["fund","Aprendizaje por refuerzo","Reinforcement learning","Un agente aprende por ensayo y error, maximizando la recompensa acumulada de sus acciones."],
+["fund","Big Data","Big Data","Manejo y análisis de grandes volúmenes de datos, de alta velocidad y variedad, que exigen métodos avanzados."],
+["fund","Las tres V del Big Data","Volume, Velocity, Variety","Volumen (cuántos datos), velocidad (qué tan rápido llegan) y variedad (qué tan distintos son sus formatos)."],
+["fund","Patrón","Pattern","Regularidad en los datos que un modelo detecta y usa para predecir o decidir."],
+["fund","Parámetros","Parameters","Números internos que el modelo ajusta al entrenar; los modelos grandes tienen millones o miles de millones."],
+["hist","IA simbólica (basada en reglas)","Symbolic / rule-based AI","Primera fase: sistemas que siguen instrucciones predefinidas para resolver problemas en contextos cerrados."],
+["hist","Contexto cerrado","Closed-world context","Entorno acotado y totalmente especificado, donde las reglas cubren todos los casos posibles."],
+["hist","Programa de damas de Samuel","Samuel's checkers program","Programa de los años 50 que evaluaba jugadas y ajustaba su estrategia; uno de los primeros que aprendía."],
+["hist","Logic Theorist","Logic Theorist","Sistema de Newell y Simon que demostraba teoremas con reglas lógicas; precursor de la IA simbólica."],
+["hist","Escalabilidad","Scalability","Capacidad de un sistema de crecer en datos o tareas sin colapsar; faltó en la IA temprana."],
+["hist","Invierno de la IA","AI winter","Período de estancamiento y recorte de financiamiento; el curso lo sitúa en la década de 1970."],
+["hist","Sistema experto","Expert system","Programa que imita la decisión de un especialista humano en un área específica mediante reglas."],
+["hist","MYCIN","MYCIN","Sistema experto de Stanford que diagnosticaba infecciones bacterianas y recomendaba tratamientos."],
+["hist","Reconocimiento óptico de caracteres (OCR)","Optical Character Recognition","Tecnología que convierte texto escrito o impreso en una imagen en texto digital editable."],
+["hist","Tesseract OCR","Tesseract OCR","Motor de OCR de código abierto, multilingüe, nacido en HP y luego impulsado por Google."],
+["hist","Acelerador de hardware","Hardware accelerator","Procesador especializado (por ejemplo, en cálculos de matrices) que acelera el entrenamiento de redes neuronales."],
+["hist","GPU","Graphics Processing Unit","Unidad de procesamiento gráfico; hace miles de cálculos en paralelo y es esencial para entrenar deep learning."],
+["hist","AlphaGo","AlphaGo","Sistema de DeepMind que venció a campeones humanos de Go con deep learning y búsqueda (2016)."],
+["hist","Asistente virtual","Virtual assistant","Software conversacional (Alexa, Siri) que entiende instrucciones y ejecuta tareas en tiempo real."],
+["hist","Poder computacional","Computational power (compute)","Capacidad de cálculo disponible; su crecimiento exponencial fue determinante en la expansión de la IA."],
+["tec","Aprendizaje profundo","Deep Learning","Uso de redes neuronales con múltiples capas para modelar datos complejos y detectar patrones de alto nivel."],
+["tec","Red neuronal artificial","Artificial neural network","Modelo de capas de unidades conectadas cuyos pesos se ajustan para aprender patrones sin reglas explícitas."],
+["tec","Red neuronal profunda","Deep neural network","Red neuronal con muchas capas ocultas; cada capa aprende rasgos más abstractos que la anterior."],
+["tec","Red neuronal convolucional (CNN)","Convolutional Neural Network","Red especializada en imágenes: filtros que recorren la imagen detectando bordes, formas y objetos."],
+["tec","Red neuronal recurrente (RNN)","Recurrent Neural Network","Red con memoria de lo anterior, adecuada para secuencias como transacciones en el tiempo."],
+["tec","Transformer","Transformer","Arquitectura basada en atención que procesa secuencias completas en paralelo; base de GPT y BERT."],
+["tec","Procesamiento de lenguaje natural (PLN)","Natural Language Processing (NLP)","Área de la IA que permite a las máquinas comprender y generar lenguaje humano."],
+["tec","BERT","BERT","Modelo de Google basado en transformers, orientado a comprender el lenguaje en contexto."],
+["tec","Visión por computadora","Computer vision","Área de la IA que permite a las máquinas interpretar imágenes y video."],
+["tec","YOLO","You Only Look Once","Familia de modelos de detección de objetos en tiempo real que analiza la imagen en una sola pasada."],
+["tec","OpenCV","OpenCV","Biblioteca abierta de visión por computadora para procesar imágenes y video."],
+["tec","Reconocimiento facial","Facial recognition","Identificar o verificar a una persona a partir de su rostro en una imagen."],
+["tec","Detección de objetos","Object detection","Localizar y clasificar objetos dentro de una imagen o video."],
+["tec","Sistema autónomo","Autonomous system","Sistema que percibe su entorno y decide en tiempo real sin intervención humana directa."],
+["tec","LiDAR","Light Detection and Ranging","Sensor que mide distancias con pulsos láser y arma un mapa 3D del entorno."],
+["tec","Sensores IoT","Internet of Things sensors","Dispositivos conectados que miden variables físicas (vibración, temperatura) y envían datos en tiempo real."],
+["tec","Análisis de patrones","Pattern analysis","Comparar la actividad nueva con la histórica para detectar desviaciones sospechosas."],
+["gen","IA generativa","Generative AI","IA que crea contenido nuevo (texto, imágenes, video) a partir de patrones aprendidos de datos previos."],
+["gen","Modelo de lenguaje a gran escala (LLM)","Large Language Model","Modelo entrenado con enormes cantidades de texto para generar, traducir, resumir y analizar lenguaje."],
+["gen","GPT","Generative Pre-trained Transformer","Familia de LLM de OpenAI: transformers preentrenados que generan texto (GPT-4 es un ejemplo)."],
+["gen","GAN","Generative Adversarial Network","Dos redes que compiten: una genera contenido y otra intenta distinguirlo del real."],
+["gen","Preentrenamiento","Pre-training","Entrenar un modelo de lenguaje con un conjunto de datos general y masivo."],
+["gen","Ajuste fino","Fine-tuning","Adaptar un modelo preentrenado a una tarea específica con datos relevantes de esa tarea."],
+["gen","Texto a imagen","Text-to-Image","Generación de imágenes a partir de una descripción escrita."],
+["gen","DALL·E","DALL·E","Modelo de OpenAI que genera imágenes desde texto; su primera versión combinaba transformer y redes convolucionales."],
+["gen","Midjourney y Stable Diffusion","Midjourney & Stable Diffusion","Generadores de imágenes que transformaron la industria creativa."],
+["gen","Chatbot","Chatbot","Programa conversacional que responde preguntas y asiste a usuarios por texto o voz."],
+["gen","Análisis semántico","Semantic analysis","Interpretar el significado de un texto, no solo sus palabras."],
+["gen","Ingeniería de prompts","Prompt engineering","Formular instrucciones precisas para que un modelo generativo entregue el resultado deseado."],
+["gen","Aprendizaje con pocos ejemplos","Few-shot learning","Capacidad de un LLM de resolver una tarea con solo unos ejemplos dentro del prompt."],
+["etica","Privacidad de los datos","Data privacy","Derecho a controlar cómo se recolectan y usan los datos personales."],
+["etica","Consentimiento informado","Informed consent","Autorización explícita de la persona, sabiendo para qué se usarán sus datos."],
+["etica","Clearview AI","Clearview AI","Empresa criticada por recopilar imágenes de usuarios sin consentimiento para reconocimiento facial."],
+["etica","GDPR","General Data Protection Regulation","Reglamento General de Protección de Datos de la Unión Europea."],
+["etica","CCPA","California Consumer Privacy Act","Ley de Privacidad del Consumidor de California."],
+["etica","Uso indebido de datos","Data misuse","Usar datos personales para fines no autorizados o sin supervisión efectiva."],
+["etica","Sesgo algorítmico","Algorithmic bias","Error sistemático de un modelo que perpetúa discriminación, casi siempre heredado de datos históricos."],
+["etica","Sesgo en datos históricos","Historical data bias","Prejuicios del pasado registrados en los datos que el modelo aprende como si fueran regla."],
+["etica","AI Fairness 360","AI Fairness 360","Conjunto de bibliotecas de IBM para detectar y mitigar sesgos en modelos de ML."],
+["etica","Auditoría de algoritmos","Algorithmic audit","Revisión periódica e independiente de un modelo para detectar sesgos y errores en decisiones críticas."],
+["etica","Rendición de cuentas","Accountability","Mecanismos para que alguien responda por las decisiones que toma un sistema de IA."],
+["etica","Transparencia","Transparency","Que se pueda conocer cómo funciona un sistema de IA y con qué datos decide."],
+["etica","Explicabilidad","Explainability","Capacidad de explicar por qué un modelo tomó una decisión específica."],
+["etica","COMPAS","COMPAS","Algoritmo de la justicia penal de EE.UU. que predice reincidencia y mostró sesgo racial."],
+["etica","Reincidencia","Recidivism","Volver a cometer un delito; lo que COMPAS intenta predecir."],
+["etica","Ley de IA de la Unión Europea","EU AI Act","Regulación europea que clasifica la IA por riesgo y exige explicabilidad y auditoría a los sistemas de alto riesgo."],
+["etica","Sistema de alto riesgo","High-risk AI system","Sistema de IA cuyas decisiones afectan derechos o seguridad (crédito, empleo, justicia) y enfrenta exigencias estrictas."],
+["etica","Falso positivo","False positive","Alerta que marca como sospechoso algo legítimo, por ejemplo una compra real bloqueada como fraude."],
+["apli","Logística predictiva","Predictive logistics","Usar IA para anticipar demanda, ajustar inventarios y mejorar tiempos de entrega."],
+["apli","Optimización de rutas","Route optimization","Elegir recorridos con datos de clima, tráfico y tiempos de puerto para ahorrar costos y combustible."],
+["apli","Huella de carbono","Carbon footprint","Emisiones de gases de efecto invernadero asociadas a una operación."],
+["apli","Cadena de suministro","Supply chain","Red de proveedores, producción y distribución que lleva un producto hasta el cliente."],
+["apli","Almacén automatizado","Automated warehouse","Bodega con robots y ML que optimizan la colocación de productos y el procesamiento de pedidos."],
+["apli","Medicina personalizada","Personalized medicine","Tratamientos ajustados a cada paciente según sus datos clínicos y genómicos."],
+["apli","Perfil genómico","Genomic profile","Información genética de un paciente usada para elegir terapias con mayor probabilidad de éxito."],
+["apli","AlphaFold","AlphaFold","Sistema de DeepMind que predice la estructura 3D de proteínas con precisión sin precedentes."],
+["apli","Imágenes médicas con IA","AI medical imaging","Visión por computadora que detecta fracturas, tumores o hemorragias en radiografías y tomografías."],
+["apli","Sistema de alerta temprana","Early warning system","Sistema que anticipa un desastre (inundación, incendio, sismo) para dar tiempo de reacción."],
+["apli","ShakeAlert","ShakeAlert","Sistema de alerta sísmica temprana del USGS en la costa oeste de EE.UU."],
+["apli","Mantenimiento predictivo","Predictive maintenance","Predecir fallas de máquinas con datos de sensores antes de que ocurran."],
+["apli","Mantenimiento correctivo","Corrective maintenance","Reparar después de que la máquina falló; es más caro y detiene la producción."],
+["apli","Tiempo de inactividad","Downtime","Tiempo en que una máquina o línea está detenida y no produce."],
+["apli","Control de calidad automatizado","Automated quality control","Visión por computadora que inspecciona pintura, alineación y ensamblaje."],
+["apli","Sistema de recomendación","Recommender system","Modelo que predice qué productos tiene más probabilidad de comprar cada usuario."],
+["apli","Tasa de conversión","Conversion rate","Porcentaje de visitantes que terminan comprando."],
+["apli","Abandono de carrito","Cart abandonment","Cuando el usuario agrega productos pero no completa la compra."],
+["apli","Precio dinámico","Dynamic pricing","Ajuste automático del precio según demanda y tendencias del mercado."],
+["apli","Detección de fraude","Fraud detection","Identificar transacciones sospechosas en tiempo real antes de procesarlas."],
+["apli","Análisis crediticio","Credit scoring","Estimar la solvencia de un cliente con datos financieros, historial y factores externos."],
+["apli","Índice de morosidad","Delinquency rate","Proporción de créditos con pagos atrasados."],
+["apli","Retorno sobre la inversión (ROI)","Return on Investment","Cuánto gana una empresa por cada peso invertido, por ejemplo en publicidad."],
+["herr","Biblioteca de código abierto","Open-source library","Conjunto de herramientas de programación con código público y gratuito."],
+["herr","TensorFlow","TensorFlow","Biblioteca abierta de Google para ML y deep learning, flexible y escalable."],
+["herr","PyTorch","PyTorch","Biblioteca abierta creada por Meta, popular en investigación por su facilidad de uso y prototipado rápido."],
+["herr","Hugging Face","Hugging Face","Plataforma y comunidad con una enorme colección de modelos preentrenados, sobre todo de PLN."],
+["herr","Modelo preentrenado","Pre-trained model","Modelo ya entrenado que se reutiliza o ajusta en vez de entrenarlo desde cero."],
+["herr","Prototipado rápido","Rapid prototyping","Construir versiones de prueba en poco tiempo para validar una idea."],
+["herr","Análisis de sentimientos","Sentiment analysis","Detectar si un texto expresa una opinión positiva, negativa o neutra."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos", col:"var(--azul)"},
+  hist:{n:"Historia y evolución", col:"var(--verde)"},
+  tec:{n:"Técnicas de deep learning", col:"var(--ambar)"},
+  gen:{n:"IA generativa y lenguaje", col:"var(--violeta)"},
+  etica:{n:"Ética y regulación", col:"var(--coral)"},
+  apli:{n:"Aplicaciones y casos", col:"var(--cian)"},
+  herr:{n:"Herramientas", col:"var(--gris)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
