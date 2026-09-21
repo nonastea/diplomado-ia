@@ -1,6 +1,6 @@
 // Generado automaticamente por Actualizar.command - no editar a mano
 window.CONTENIDO = {
-  "generado": "2026-09-07 02:05",
+  "generado": "2026-09-16 03:10",
   "diplomado": "IA aplicada a los negocios",
   "modulos": {
     "1": {
@@ -80,14 +80,18 @@ window.CONTENIDO = {
     "3": {
       "nombre": "Fundamentos de Inteligencia Artificial para negocios",
       "titulos": {
+        "1":"Introduccion a la IA en el entorno empresarial"
       },
       "archivos": {
         "josue": {
+          "1":{"explicacion":"contenido/josue/Tercer modulo/Unidad 1/Explicacion_Unidad1_Introduccion_a_la_IA_en_el_entorno_empresarial.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 1/Unidad1_Mapa_Conceptual_y_Flashcards.html"}
         },
         "jeanette": {
+          "1":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 1/IA_explicada_para_ventas_Unidad1.html"}
         }
       },
       "audiolibros": {
+        "1":"contenido/audiolibros/Tercer modulo/Unidad 1/audiolibro_unidad1.html"
       }
     },
     "4": {
