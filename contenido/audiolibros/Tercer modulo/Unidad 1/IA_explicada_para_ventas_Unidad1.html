@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La IA en tu industria: introducción para vendedoras (Unidad 1)</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial</p>
+    <h1>La IA ya trabaja en tu industria, aunque todavía no la hayas visto entrar</h1>
+    <p class="lead">Cuando intuyes qué afiliado está por traspasarse antes de que lo diga, o sabes a quién llamar primero un lunes en la mañana, estás haciendo algo muy parecido a lo que hace una IA: leer patrones en información y anticipar lo que va a pasar. La diferencia es que tú lo haces con años de oficio, y las máquinas lo están empezando a hacer con datos.</p>
+    <p class="lead">Esta primera guía te da el mapa completo: de dónde viene la inteligencia artificial, qué palabras vas a escuchar una y otra vez en este máster, qué riesgos hay que cuidar, dónde ya está cambiando industrias enteras (incluida la de servicios financieros, que es la tuya) y tres casos de empresas que la usaron para vender más y perder menos clientes.</p>
+    <span class="nota">No necesitas saber programar ni de matemáticas. Aquí solo vas a ponerle nombre técnico a cosas que, como buena vendedora, ya intuyes.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>Para qué te sirve este módulo</a></li>
+      <li><a href="#p2"><span class="n">2</span>El vocabulario que vas a necesitar todo el máster</a></li>
+      <li><a href="#p3"><span class="n">3</span>Cómo llegamos hasta aquí: la historia en tres actos</a></li>
+      <li><a href="#p4"><span class="n">4</span>Los riesgos que nadie puede ignorar</a></li>
+      <li><a href="#p5"><span class="n">5</span>Dónde ya está cambiando industrias enteras</a></li>
+      <li><a href="#p6"><span class="n">6</span>Las cajas de herramientas de los que construyen esto</a></li>
+      <li><a href="#p7"><span class="n">7</span>AutoTech: cuando la fábrica dejó de improvisar</a></li>
+      <li><a href="#p8"><span class="n">8</span>ShopSmart: la tienda que dejó de vender a ciegas</a></li>
+      <li><a href="#p9"><span class="n">9</span>FinAI: el banco que le ganó la carrera al fraude</a></li>
+      <li><a href="#p10"><span class="n">10</span>Cómo pedirle algo a una IA generativa</a></li>
+      <li><a href="#p11"><span class="n">11</span>El foro: la pregunta que también es para ti</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">Para partir</span></div>
+    <h2 class="titulo">Para qué te sirve este módulo</h2>
+
+    <p>Este es el primer módulo de "Tecnologías de Inteligencia Artificial para Negocios", y su trabajo es simple: darte el mapa general antes de entrar al detalle. En las próximas unidades vas a ver herramientas específicas; en esta vas a construir el terreno común para entenderlas todas.</p>
+
+    <p>Concretamente vas a recorrer tres cosas. Primero, la historia de la IA con sus momentos clave, para que entiendas por qué hoy existe lo que existe. Segundo, los conceptos básicos y cómo se clasifican las distintas tecnologías relacionadas con IA, que es el vocabulario que vas a arrastrar durante todo el máster. Tercero, casos prácticos de empresas aplicando estas ideas, para que dejen de sonar abstractas.</p>
+
+    <p>¿Para qué te va a servir en concreto? Para tres cosas: reconocer la IA como un motor de competitividad para cualquier empresa, incluida una AFP; tener un criterio básico para evaluar si una idea de IA vale la pena en tu área; y quedar lista para las tecnologías más específicas que vienen en los módulos siguientes.</p>
+
+    <p>Un detalle práctico: algunos recursos de este módulo (enlaces y códigos que aparecen en el dineroforma) podrían dejar de estar disponibles desde fines de noviembre de 2026. Si algo te interesa revisarlo con calma, mejor no lo dejes para el último día.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      No partes de cero. Cuando distingues, solo por el tono de voz de un afiliado en el call center, si va a renovar o si está por irse, estás detectando un patrón con información incompleta. Este módulo le pone nombre técnico a esa habilidad y te muestra cómo una máquina hace algo parecido, pero con miles de afiliados a la vez.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Este módulo no te enseña a programar: te da el vocabulario y el criterio para entender, de aquí en adelante, de qué está hablando todo el mundo cuando dice "IA".</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">El vocabulario base</span></div>
+    <h2 class="titulo">El vocabulario que vas a necesitar todo el máster</h2>
+
+    <p>Antes de la historia y de los casos, hay un puñado de palabras que se van a repetir sin parar. Si te las llevas claras de esta parte, todo lo que sigue se entiende solo.</p>
+
+    <h3>Inteligencia artificial: la idea grande</h3>
+    <p>La <span class="term">Inteligencia Artificial (IA)</span> es, en su definición más aceptada, el desarrollo de sistemas capaces de hacer tareas que normalmente requieren inteligencia humana: razonar, aprender y tomar decisiones. Nada más místico que eso. Dentro de esa idea grande hay dos categorías que conviene distinguir de entrada:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">IA débil</div>
+        <div class="sub">Lo que existe hoy</div>
+        <ul>
+          <li>Está hecha para una tarea específica: detectar fraude, recomendar un producto, leer una radiografía.</li>
+          <li>Es extremadamente buena en esa tarea, y torpe en cualquier otra.</li>
+          <li>Toda la IA que vas a ver en este máster, sin excepción, es IA débil.</li>
+        </ul>
+        <p class="nm">En una línea: hace una cosa muy bien.</p>
+      </div>
+      <div class="card a">
+        <div class="q">IA fuerte</div>
+        <div class="sub">Todavía no existe</div>
+        <ul>
+          <li>Sería una inteligencia comparable a la humana en cualquier tarea, no solo en una.</li>
+          <li>Por ahora es una idea teórica, más de ciencia ficción que de producto real.</li>
+          <li>No confundas los sistemas de hoy, por impresionantes que parezcan, con esto.</li>
+        </ul>
+        <p class="nm">En una línea: haría de todo, como una persona.</p>
+      </div>
+    </div>
+
+    <h3>Cómo aprenden las máquinas: el aprendizaje automático</h3>
+    <p>El <span class="term">aprendizaje automático</span> (en inglés, <em>Machine Learning</em>) es la rama de la IA que permite que una computadora mejore su desempeño aprendiendo de los datos, en vez de que alguien le escriba a mano cada regla que debe seguir. Existen tres maneras de aprender, y las tres tienen un equivalente directo en tu trabajo:</p>
+
+    <p><span class="term">Aprendizaje supervisado</span>: al sistema se le muestran ejemplos con la respuesta ya conocida —miles de afiliados históricos, marcados como "se quedó" o "se traspasó"— y aprende a predecir esa etiqueta en casos nuevos. <span class="term">Aprendizaje no supervisado</span>: no hay etiquetas; el sistema busca grupos o estructuras por sí solo, como si agrupara tu cartera en "perfiles" sin que nadie le dijera cuáles perfiles buscar. <span class="term">Aprendizaje por refuerzo</span>: el sistema prueba, se equivoca, recibe una señal de "esto sirvió" o "esto no sirvió", y ajusta su estrategia con el tiempo, parecido a un vendedor nuevo que aprende con la práctica qué argumentos cierran y cuáles no.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      El aprendizaje supervisado es literalmente tu histórico de traspasos usado como maestro: "estos afiliados se fueron, estos se quedaron, ¿qué tenían en común los que se fueron?". Eso es todo lo que hace el modelo.
+    </div>
+
+    <h3>Aprendizaje profundo: capas sobre capas</h3>
+    <p>El <span class="term">aprendizaje profundo</span> (<em>Deep Learning</em>) es una forma particular de aprendizaje automático que usa <span class="term">redes neuronales artificiales</span> con muchas capas apiladas. Cada capa detecta un patrón un poco más complejo que la anterior: la primera nota bordes o palabras sueltas, la siguiente arma formas o frases, la de más arriba ya reconoce un rostro completo o la intención de un mensaje. Es el motor detrás del reconocimiento facial, del procesamiento del lenguaje y del análisis de imágenes que vas a ver una y otra vez en este módulo.</p>
+
+    <h3>Big Data: cuando los datos se salen de control</h3>
+    <p><span class="term">Big Data</span> no es solo "muchos datos": es el manejo y análisis de información cuando su volumen, su velocidad de llegada y su variedad de formatos ya no se pueden procesar con planillas comunes. A esas tres características se les llama <strong>las tres uves del Big Data</strong>: cuánto hay (volumen), qué tan rápido llega (velocidad) y qué tan distinta es entre sí (variedad): texto, audio, número, imagen, todo mezclado.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Cada llamada de tu call center, cada cotización, cada cambio de fondo y cada clic en la app de la AFP es un dato. Por separado son anécdotas; juntos, con suficiente volumen, velocidad y variedad, son Big Data: la materia prima con la que se entrena cualquier modelo que después te va a decir a quién llamar hoy.
+    </div>
+
+    <h3>La IA que crea cosas nuevas: la IA generativa</h3>
+    <p>La <span class="term">IA generativa</span> es la familia de modelos que, en vez de solo clasificar o predecir, crea contenido nuevo —texto, imágenes, audio— a partir de los patrones que aprendió en enormes cantidades de ejemplos previos. Ejemplos que vas a escuchar: <span class="term">GPT</span> (para texto) y <span class="term">GAN</span> (dos redes que compiten entre sí, una generando contenido y otra tratando de detectar si es falso).</p>
+
+    <p>Dentro de la IA generativa está el <span class="term">modelo de lenguaje a gran escala</span> (<em>Large Language Model</em> o <span class="term">LLM</span>): un modelo entrenado con cantidades enormes de texto, capaz de generar redacciones, traducir, resumir y entender el sentido de lo que se le escribe. GPT-4 es el ejemplo que da el curso.</p>
+
+    <p>Estos modelos se construyen en dos etapas. Primero el <span class="term">preentrenamiento</span>: se entrena al modelo con un conjunto de datos general y masivo, de todo un poco. Después el <span class="term">ajuste fino</span> (<em>fine-tuning</em>): se lo adapta a una tarea específica con datos relevantes de esa tarea. Es exactamente la lógica de capacitar a un vendedor: primero una formación general de ventas, después el ajuste fino con el producto y el guion específico de tu AFP.</p>
+
+    <p>Y hay una rama que trabaja con imágenes en vez de texto: el <span class="term">texto a imagen</span>, que genera imágenes a partir de una descripción escrita. DALL·E es el ejemplo típico; se usa en diseño, publicidad y creación de contenido visual.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">IA es la idea grande; aprendizaje automático es cómo aprende de los datos; aprendizaje profundo es la versión con muchas capas; y la IA generativa es la que, además de predecir, crea contenido nuevo.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">De dónde viene</span></div>
+    <h2 class="titulo">Cómo llegamos hasta aquí: la historia en tres actos</h2>
+
+    <p>La IA no apareció de un día para otro. El curso la cuenta en tres momentos, y entender la lógica de cada uno te sirve para entender por qué las herramientas de hoy funcionan como funcionan.</p>
+
+    <h3>Primer acto (1950–1970): las reglas fijas</h3>
+    <p>La primera forma de IA fue la <span class="term">IA simbólica</span> (o basada en reglas): sistemas que seguían instrucciones predefinidas, escritas a mano por una persona, para resolver problemas dentro de contextos cerrados y bien delimitados. El ejemplo clásico es el <span class="term">Logic Theorist</span>, de Allen Newell y Herbert Simon: un programa que demostraba teoremas matemáticos aplicando reglas lógicas paso a paso. Fue el precursor de los llamados sistemas expertos que vas a ver más abajo.</p>
+
+    <p>De esta misma época se suele citar el programa de damas de Arthur Samuel, aunque aquí vale la pena una precisión honesta: no era un sistema de puras reglas fijas. En realidad ya aprendía: jugaba contra sí mismo, evaluaba sus propias jugadas y ajustaba su estrategia con el tiempo. Fue, en los hechos, uno de los primeros programas que aprendía de la experiencia, un adelanto de lo que vendría en el segundo acto.</p>
+
+    <p>Estos primeros sistemas eran muy precisos en tareas estructuradas, pero sin nada de flexibilidad para lo que no estuviera programado de antemano. Con la baja capacidad de procesamiento y almacenamiento de la época, tampoco había forma de hacerlos crecer: les faltaba <span class="term">escalabilidad</span>. Hacia la década de 1970, la falta de avances y la caída del financiamiento llevaron a lo que el curso llama el <span class="term">invierno de la IA</span>: un período de estancamiento del que la disciplina tardó años en recuperarse.</p>
+
+    <h3>Segundo acto (1980–2000): las máquinas empiezan a aprender solas</h3>
+    <p>La introducción de las redes neuronales artificiales y de algoritmos de aprendizaje automático permitió, por primera vez, que las máquinas procesaran datos y se ajustaran por sí mismas, sin que alguien les escribiera cada regla. Fue un salto respecto a la etapa anterior.</p>
+
+    <p>De esta época viene el <span class="term">reconocimiento óptico de caracteres</span> (<em>Optical Character Recognition</em> u <span class="term">OCR</span>): la tecnología que convierte texto escrito o impreso en una imagen en texto digital editable, algo que revolucionó el procesamiento de documentos. Uno de los motores de OCR más conocidos es <span class="term">Tesseract OCR</span>, de código abierto y multilingüe, que más adelante fue impulsado por Google, aunque no nació como un desarrollo de esa empresa.</p>
+
+    <p>También aparecieron los <span class="term">sistemas expertos</span>: programas que imitan la forma de decidir de un especialista humano en un área acotada. El caso más citado es <span class="term">MYCIN</span>, desarrollado en Stanford, que diagnosticaba infecciones bacterianas y recomendaba tratamientos a partir de un conjunto de reglas médicas. Fue uno de los primeros sistemas expertos emblemáticos, aunque su uso en la práctica clínica diaria nunca llegó a masificarse.</p>
+
+    <p>En paralelo surgió el primer <span class="term">hardware especializado</span> para IA: procesadores dedicados a cálculos de matrices, pensados para acelerar el entrenamiento de redes neuronales. Esa línea de desarrollo es el antecesor directo de la <span class="term">GPU</span> (<em>Graphics Processing Unit</em>, unidad de procesamiento gráfico) que hoy resulta indispensable para entrenar modelos de aprendizaje profundo con millones de ajustes internos.</p>
+
+    <h3>Tercer acto (2000–hoy): la explosión del aprendizaje profundo</h3>
+    <p>Esta es la fase en la que vivimos. Su hito más citado es <span class="term">AlphaGo</span>, el sistema que venció a campeones humanos del juego Go usando aprendizaje profundo. En paralelo se popularizaron los asistentes virtuales como Alexa y Siri, capaces de resolver tareas complejas en tiempo real, y modelos generativos como GPT-4 y DALL·E, que cambiaron por completo la forma de crear texto e imágenes.</p>
+
+    <p>El uso intensivo del aprendizaje profundo se despliega en cuatro frentes que vas a reconocer sin esfuerzo: el <span class="term">procesamiento de lenguaje natural (PLN)</span> detrás de chatbots y asistentes; la <span class="term">visión por computadora</span> aplicada a reconocimiento facial, detección de objetos y automatización de fábricas; los <span class="term">sistemas autónomos</span>, vehículos que detectan obstáculos e interpretan señales de tránsito para decidir en tiempo real (vale aclarar que hoy la mayoría de estos sistemas en autos comerciales, como los de Tesla, todavía funcionan como asistencia de conducción supervisada por una persona, no como autonomía total); y la IA generativa creativa de herramientas como Midjourney y Stable Diffusion.</p>
+
+    <p>Detrás de todo esto hay un factor que lo hizo posible: el crecimiento exponencial del <span class="term">poder computacional</span> disponible. Google, Microsoft y NVIDIA invirtieron en hardware cada vez más potente y especializado para entrenar modelos de aprendizaje automático y profundo, y ese crecimiento sostenido es, según el curso, el factor determinante de todo lo que vino después.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Reconoces esta misma evolución en tu propia herramienta de trabajo: de la ficha de papel con reglas fijas ("si no paga dos meses, llamar"), a un sistema que aprende de casos pasados, hasta un modelo que hoy te entrega una lista ya ordenada de a quién conviene llamar primero. Las tres fases del curso son, en el fondo, la historia de cómo tu propio call center llegó hasta donde está.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Primero reglas escritas a mano, después máquinas que aprenden solas de los datos, y hoy redes profundas entrenadas con un poder de cálculo que hace veinte años era impensable.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">Los límites</span></div>
+    <h2 class="titulo">Los riesgos que nadie puede ignorar</h2>
+
+    <p>Trabajas en una industria que maneja datos sensibles de personas reales: su dinero, su salud, su historial laboral. Por eso esta parte no es un capítulo de relleno: es directamente aplicable a tu día a día. El curso agrupa los riesgos éticos de la IA en tres frentes: privacidad, sesgos y rendición de cuentas.</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Privacidad</div>
+        <div class="sub">¿Quién controla el dato?</div>
+        <ul>
+          <li><span class="term">Privacidad de los datos</span>: el derecho de una persona a controlar cómo se recolecta y se usa su información.</li>
+          <li>Clearview AI fue muy criticada por juntar miles de millones de fotos de personas, sin su <span class="term">consentimiento informado</span>, para armar bases de datos usadas por policías y empresas privadas.</li>
+          <li>Normas como el <span class="term">GDPR</span> en Europa y el <span class="term">CCPA</span> en California obligan a las empresas a transparentar qué hacen con los datos y a pedir permiso explícito antes de usarlos.</li>
+        </ul>
+        <p class="nm">Riesgo pendiente: el uso indebido de datos donde no hay supervisión efectiva.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Sesgos</div>
+        <div class="sub">¿A quién perjudica el patrón?</div>
+        <ul>
+          <li><span class="term">Sesgo algorítmico</span>: un error sistemático del modelo que termina perjudicando siempre al mismo grupo de personas, casi siempre porque así era el historial con el que aprendió.</li>
+          <li>La herramienta de selección de personal de Amazon terminó castigando a las postulantes mujeres, porque aprendió de años de contrataciones donde predominaban los hombres. Fue dada de baja.</li>
+          <li>IBM creó una caja de herramientas llamada AI Fairness 360, de uso gratuito, justamente para detectar y corregir este tipo de sesgos en un modelo.</li>
+        </ul>
+        <p class="nm">Ejemplo financiero: modelos de solvencia que discriminaron a minorías étnicas porque los datos históricos ya traían ese prejuicio incorporado.</p>
+      </div>
+    </div>
+
+    <h3>Rendición de cuentas y transparencia</h3>
+    <p>Cuando una decisión de un modelo afecta de verdad la vida de una persona —si le dan o no un crédito, si lo marcan como sospechoso de fraude, si lo condenan o no—, alguien tiene que poder responder por esa decisión. A eso se le llama <span class="term">rendición de cuentas</span>, y va de la mano de la <span class="term">transparencia</span> (poder saber cómo funciona el sistema) y la <span class="term">explicabilidad</span> (poder explicar por qué tomó esa decisión puntual, y no otra).</p>
+
+    <p>El caso más citado es <span class="term">COMPAS</span>, un algoritmo usado en la justicia penal de Estados Unidos para predecir la <span class="term">reincidencia</span> de una persona. Un análisis independiente encontró que el sistema marcaba como "alto riesgo" a personas afroamericanas que después no reincidieron casi el doble de veces que a personas blancas en la misma situación: 44,9% de falsas alarmas en un grupo contra 23,5% en el otro. El fabricante del sistema discutió esas cifras, pero el caso quedó como el ejemplo de manual de por qué la transparencia importa.</p>
+
+    <p>Frente a esto, la Unión Europea ya no está "estudiando" el tema: existe una ley de IA europea vigente, que clasifica los sistemas según su nivel de riesgo y exige explicabilidad y auditoría estricta a los que llama <span class="term">sistemas de alto riesgo</span> —justamente la categoría donde cae, por ejemplo, un modelo que evalúa si te dan o no un crédito—. Chile va en camino similar: la nueva ley de protección de datos personales entra en vigencia en diciembre de 2026.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Sin auditoría</div>
+        <p>El modelo decide, nadie revisa por qué, y el sesgo que trae desde los datos se repite mes tras mes sin que nadie lo note, hasta que estalla como un problema reputacional o legal.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Con <span class="term">auditoría de algoritmos</span></div>
+        <p>Alguien revisa periódicamente las decisiones del modelo, mide si está tratando distinto a grupos que deberían tratarse igual, y corrige antes de que el error se acumule.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el mismo cuidado que aplicas cuando evalúas el crédito de un afiliado o revisas una alerta de posible fraude en su cuenta: un <span class="term">falso positivo</span> (marcar como sospechoso a alguien que no hizo nada malo) también tiene un costo, en confianza y en la relación con ese cliente. La ética de la IA, en el fondo, es cuidar que la herramienta no termine perjudicando a la persona que estás tratando de ayudar.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Privacidad, sesgos y rendición de cuentas no son un capítulo aparte de la IA: son el precio de usarla con datos de personas reales, y hoy además son ley.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Ya está pasando</span></div>
+    <h2 class="titulo">Dónde ya está cambiando industrias enteras</h2>
+
+    <p>Para que estos conceptos dejen de sonar abstractos, el curso muestra tres industrias donde la IA ya opera todos los días, muy lejos de la fantasía de ciencia ficción.</p>
+
+    <h3>Logística predictiva</h3>
+    <p>Amazon usa <span class="term">logística predictiva</span> para anticipar la demanda, ajustar inventarios y mejorar los tiempos de entrega. Maersk, una de las mayores navieras del mundo, optimiza sus rutas cruzando datos meteorológicos, tráfico marítimo y tiempos de carga y descarga, lo que le baja costos y su <span class="term">huella de carbono</span> por menor consumo de combustible. En crisis globales como la del COVID-19, herramientas de IBM ayudaron a anticipar quiebres en la <span class="term">cadena de suministro</span> de bienes esenciales, cruzando datos de proveedores, clima y demanda en tiempo real. Cadenas como Ocado y Walmart tienen <span class="term">almacenes automatizados</span>, con robots y aprendizaje automático que deciden dónde ubicar cada producto y aceleran el armado de pedidos online.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la misma lógica que decidir a qué afiliados priorizar hoy en el call center según su probabilidad de traspaso: no es adivinar, es anticipar con datos antes de que el problema (el inventario que falta, el cliente que se va) ya sea un hecho consumado.
+    </div>
+
+    <h3>Medicina personalizada</h3>
+    <p>Una herramienta de IBM llamada Watson Health analizaba historiales clínicos, resultados de exámenes y literatura científica para apoyar la detección temprana de enfermedades como el cáncer. La empresa Tempus va un paso más allá: analiza el <span class="term">perfil genómico</span> de un paciente y sugiere terapias hechas a su medida, para que el médico elija el tratamiento con mayor probabilidad de éxito. DeepMind, de Google, desarrolló <span class="term">AlphaFold</span>, un sistema capaz de predecir la forma tridimensional de una proteína con una precisión sin precedentes; eso acelera enormemente la parte de la investigación que antes tomaba años de trabajo de laboratorio, un paso clave para entender enfermedades como el Alzheimer o la fibrosis quística (el desarrollo completo de un medicamento nuevo, eso sí, sigue tomando años). En radiología, herramientas como Qure.ai y Aidoc usan visión por computadora sobre radiografías y tomografías para detectar fracturas, tumores o hemorragias cerebrales en segundos.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piénsalo como la versión AFP de la medicina personalizada: en vez de ofrecerle a todo el mundo el mismo plan de ahorro, un modelo puede sugerir el producto que mejor calza con el perfil, la edad y el historial de cada afiliado.
+    </div>
+
+    <h3>Prevención de desastres</h3>
+    <p>Google AI usa datos meteorológicos históricos, imágenes satelitales y simulación climática para prever inundaciones y emitir alertas con días de anticipación en países como India y Bangladesh. Para incendios forestales, cámaras inteligentes con visión por computadora detectan humo de forma temprana y alertan a los bomberos. Y para terremotos y tsunamis, el sistema ShakeAlert, del servicio geológico de Estados Unidos, usa algoritmos especializados en analizar ondas sísmicas en tiempo real (no redes neuronales, como a veces se simplifica) para dar segundos de anticipación a ciudades como San Francisco y Los Ángeles: pocos segundos, pero suficientes para salvar vidas.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un <span class="term">sistema de alerta temprana</span> contra un desastre y una alerta de churn en tu cartera son, en el fondo, la misma idea: detectar la señal débil antes de que se convierta en catástrofe, mientras todavía hay tiempo de actuar.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Logística, medicina y prevención de desastres comparten un mismo truco: usar datos del pasado para anticipar el problema del futuro, con días o segundos de ventaja.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Las marcas del rubro</span></div>
+    <h2 class="titulo">Las cajas de herramientas de los que construyen esto</h2>
+
+    <p>No vas a programar nada de esto, pero sí vas a escuchar estos tres nombres en reuniones con el equipo de tecnología o de datos de tu empresa. Saber qué son, aunque sea a grandes rasgos, te da autoridad en la conversación.</p>
+
+    <h3>TensorFlow</h3>
+    <p><span class="term">TensorFlow</span> es una <span class="term">biblioteca de código abierto</span> creada por Google: un conjunto de herramientas de programación gratuitas y públicas, pensadas para construir modelos de aprendizaje automático y profundo. Se destaca por su flexibilidad y capacidad de crecer, tanto en investigación académica como en empresas. El curso menciona, como ejemplo, que Airbnb la usaría para ajustar en tiempo real el precio de sus alojamientos según la demanda y los eventos locales, y que en Stanford se usó para detectar enfermedades pulmonares en radiografías con una precisión comparable a la de un radiólogo.</p>
+
+    <h3>PyTorch</h3>
+    <p><span class="term">PyTorch</span>, creado por Meta (antes Facebook), es conocido por su facilidad de uso y porque permite armar prototipos muy rápido. Se usa mucho en procesamiento de lenguaje, visión y generación de contenido. Un caso emblemático que menciona el curso: ChatGPT, de OpenAI, se apoya en modelos de lenguaje entrenados con PyTorch. También se usa en conducción asistida: empresas como Tesla y Waymo entrenan con él las redes que procesan en tiempo real la información de cámaras, radares y sensores <span class="term">LiDAR</span> (un sensor que mide distancias con pulsos de láser para armar un mapa tridimensional del entorno).</p>
+
+    <h3>Hugging Face</h3>
+    <p><span class="term">Hugging Face</span> es una plataforma y comunidad, más que una sola herramienta: reúne una enorme colección de <span class="term">modelos preentrenados</span>, sobre todo de procesamiento de lenguaje, listos para usar en traducción, análisis de sentimientos o generación de texto sin tener que entrenar nada desde cero. El curso la asocia con casos como Grammarly, que sugiere correcciones de gramática, estilo y detecta el tono de un texto en tiempo real, y con empresas como Zalando y Shopify, que usan modelos preentrenados para armar chatbots más rápidos y con clientes más satisfechos.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en estas tres como distintos proveedores de un mismo tipo de servicio, igual que en tu empresa hay un proveedor de CRM y otro de telefonía. La marca la elige tecnología; a ti te sirve reconocer el nombre cuando aparezca en una presentación, para no perderte en la conversación.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">TensorFlow, PyTorch y Hugging Face son las cajas de herramientas más usadas para construir modelos de IA: no necesitas manejarlas, sí reconocerlas cuando las nombren.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">Caso 1 · Industria</span></div>
+    <h2 class="titulo">AutoTech: cuando la fábrica dejó de improvisar</h2>
+
+    <p><strong>AutoTech</strong>, una empresa automotriz, tenía dos dolores de cabeza constantes: averías inesperadas en sus máquinas y una gestión de inventarios poco eficiente. Carlos, el gerente de producción, junto con Ana (ingeniera de datos) y Luis (a cargo de la cadena de suministro), decidieron atacar el problema con IA, en tres pasos.</p>
+
+    <ol class="pasos">
+      <li><b>Mantenimiento predictivo.</b> Ana instaló sensores IoT que miden vibración, temperatura y desgaste en las máquinas. Una red neuronal cruza esos datos en tiempo real con los registros históricos de fallas y predice cuándo una máquina está a punto de fallar. Resultado: 25% menos tiempo de inactividad, más disponibilidad de las líneas y menos gasto en reparar después de que algo ya se rompió (lo que el curso llama <span class="term">mantenimiento correctivo</span>, siempre más caro que anticiparse).</li>
+      <li><b>Optimización de la cadena de suministro.</b> Modelos de aprendizaje automático anticipan la demanda de repuestos y ajustan las órdenes de compra en tiempo real, priorizando a los proveedores con mejor tiempo de entrega y mejor costo. Resultado: 30% menos costos de almacenamiento, menos piezas desperdiciadas y más disponibilidad de los componentes clave.</li>
+      <li><b>Control de calidad automatizado.</b> Visión por computadora revisa la pintura, la alineación y el ensamblaje de cada vehículo con una precisión del 98%. Resultado: menos productos defectuosos y clientes finales más satisfechos.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      El mantenimiento predictivo de AutoTech es exactamente lo mismo que una alerta de traspaso bien construida: en vez de esperar a que la máquina falle (o el afiliado se traspase) para reaccionar, los datos de comportamiento —el <span class="term">tiempo de inactividad</span> de una máquina, las llamadas que un afiliado deja de contestar— te avisan antes de que el problema exista de verdad.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">AutoTech no reemplazó a su equipo: le dio datos con anticipación suficiente para actuar antes de que la falla, el costo o el defecto ya fueran un hecho.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">Caso 2 · E-commerce</span></div>
+    <h2 class="titulo">ShopSmart: la tienda que dejó de vender a ciegas</h2>
+
+    <p><strong>ShopSmart</strong>, una tienda de comercio electrónico global, tenía una alta tasa de <span class="term">abandono de carrito</span> y un mal <span class="term">retorno sobre la inversión (ROI)</span> en publicidad. Mariana (directora de marketing), junto con Javier (especialista en IA) y Andrés (gerente de servicio al cliente), atacaron el problema en tres frentes.</p>
+
+    <ol class="pasos">
+      <li><b>Sistema de recomendación.</b> Javier implementó modelos que analizan el historial de navegación y compra de cada usuario; redes neuronales predicen qué productos tienen más probabilidad de interesarle a esa persona en particular, y con eso se personalizan anuncios y correos. Resultado: 35% más <span class="term">tasa de conversión</span> en clientes recurrentes y 20% menos abandono de carrito.</li>
+      <li><b>Automatización del servicio al cliente.</b> Chatbots atienden preguntas frecuentes y acompañan el proceso de pago, con asistentes también en redes sociales y WhatsApp. Resultado: 50% menos tiempo de espera y 30% más satisfacción declarada por los clientes.</li>
+      <li><b><span class="term">Precio dinámico</span> con IA.</b> Un modelo de aprendizaje automático ajusta los precios según la demanda y las tendencias del momento. Resultado: 15% más margen de ganancia y mayor competitividad frente a otras tiendas.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un <span class="term">sistema de recomendación</span> no es más que una campaña personalizada llevada al extremo: en vez de mandar la misma oferta de ahorro voluntario a toda tu cartera, el sistema le sugiere a cada afiliado el producto que, según su comportamiento, más le puede interesar. Eso ya lo intuyes cuando decides no ofrecerle lo mismo a un afiliado joven que recién empieza que a uno que está por jubilar.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Recomendar, atender y cobrar el precio correcto a la persona correcta: eso fue todo lo que cambió ShopSmart, y le bastó para mejorar tres números de negocio de una vez.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 9 -->
+  <section class="parte reveal" id="p9">
+    <div class="kicker"><span class="num">9</span><span class="tag">Caso 3 · Banca</span></div>
+    <h2 class="titulo">FinAI: el banco que le ganó la carrera al fraude</h2>
+
+    <p>El banco digital <strong>FinAI</strong> enfrentaba dos problemas al mismo tiempo: un aumento en los intentos de fraude y la necesidad de evaluar el riesgo crediticio de sus clientes más rápido de lo que su equipo podía procesar a mano, lo que generaba retrasos y dejaba huecos de seguridad.</p>
+
+    <ol class="pasos">
+      <li><b>Modelo de <span class="term">detección de fraude</span>.</b> Redes neuronales recurrentes (RNN, un tipo de red con memoria de lo que pasó antes, ideal para seguir una secuencia de transacciones en el tiempo) analizan cada transacción en tiempo real y comparan la actividad pasada del cliente con los intentos nuevos, buscando compras o transferencias fuera de su patrón habitual. Resultado: 40% menos fraude, con alertas preventivas a clientes y agentes antes de que la transacción se procese.</li>
+      <li><b><span class="term">Análisis crediticio</span> con aprendizaje automático.</b> El modelo cruza comportamiento financiero, historial crediticio y factores externos (estabilidad laboral, ubicación geográfica) para estimar la solvencia de una persona. El tiempo de procesamiento bajó de 48 horas a menos de 5 minutos, con 25% menos <span class="term">índice de morosidad</span> y un portafolio de clientes mejor clasificado por nivel de riesgo.</li>
+      <li><b>Asistentes virtuales financieros.</b> Chatbots que dan asesoría personalizada para mejorar el puntaje crediticio o manejar las finanzas del día a día, más alertas dentro de la app sobre pagos pendientes, inversión o ahorro. Resultado: clientes más comprometidos con su salud financiera y mejor retención.</li>
+    </ol>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Falsa alarma</div>
+        <small>Un <span class="term">falso positivo</span>: se bloquea una compra real de un cliente honesto porque el sistema la confundió con fraude. El costo es en confianza y en la experiencia del cliente.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Fraude no detectado</div>
+        <small>Un fraude real que el sistema no logra pescar a tiempo. El costo es directamente financiero, para el cliente y para el banco.</small>
+      </div>
+    </div>
+
+    <p>Ajustar bien un sistema antifraude es equilibrar esas dos fallas: uno demasiado estricto molesta a clientes honestos con bloqueos de más; uno demasiado permisivo deja pasar fraude real. No hay un ajuste perfecto, solo el punto donde el costo total de ambos errores es más bajo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si alguna vez has tenido que calmar a un afiliado furioso porque le bloquearon una operación real pensando que era fraude, ya conoces en carne propia el costo de un falso positivo. Y si alguna vez has visto un caso de fraude real en la cuenta de un afiliado que nadie detectó a tiempo, conoces el otro lado de la misma moneda.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">FinAI no eliminó el fraude ni el riesgo crediticio: los redujo mucho y los procesó en minutos en vez de días, sin dejar de cuidar al cliente que no hizo nada malo.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 10 -->
+  <section class="parte reveal" id="p10">
+    <div class="kicker"><span class="num">10</span><span class="tag">Escribir bien un pedido</span></div>
+    <h2 class="titulo">Cómo pedirle algo a una IA generativa</h2>
+
+    <p>Antes del detalle: el curso incluye un video del profesor Rodrigo Pereira dedicado por completo a esto, con material descargable, pero ese video y su documento solo están disponibles en el dineroforma online, no en este resumen. Si te interesa el tema (y te va a servir en tu trabajo diario), vale la pena que lo revises directamente ahí. Lo que sigue acá son principios generales, ampliamente aceptados en el rubro, para que entiendas la lógica mientras tanto.</p>
+
+    <p>A la habilidad de escribir bien la instrucción que le das a una IA generativa como ChatGPT se le llama <span class="term">ingeniería de prompts</span>. La idea de fondo es simple: estos modelos responden mucho mejor cuando la instrucción es precisa que cuando es vaga, exactamente igual que un ejecutivo de tu equipo rinde mejor con un objetivo claro que con un "hazlo bien no más".</p>
+
+    <p>Un buen prompt suele incluir: un <strong>rol</strong> (dile qué papel debe cumplir: "actúa como un redactor de correos de retención"); <strong>contexto</strong> (la situación específica); una <strong>tarea</strong> clara, con un verbo concreto; el <strong>formato</strong> de salida que esperas (una lista, un correo corto, tres opciones); algunos <strong>ejemplos</strong> de lo que buscas, si el caso lo permite; <strong>restricciones</strong> (extensión, tono, qué evitar); y, en tareas más complejas, pedirle explícitamente que razone paso a paso antes de responder. Después conviene <strong>iterar</strong>: revisar la respuesta y pedir ajustes, en vez de esperar que salga perfecta a la primera.</p>
+
+    <p>Un último cuidado, importante: estos modelos a veces inventan datos con total seguridad, como si fueran ciertos. Nunca uses una cifra, un nombre o un dato que te entregue una IA generativa sin verificarlo antes, sobre todo si vas a usarlo frente a un cliente.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Prompt vago</div>
+        <p>"Escríbeme algo para que un afiliado no se traspase." El modelo no sabe a quién le hablas, con qué tono, ni qué tan largo debe ser. El resultado va a ser genérico y probablemente inútil.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Prompt claro</div>
+        <p>"Actúa como ejecutivo de retención de una AFP. Escribe un correo corto (máximo 120 palabras), tono cercano y sin tecnicismos, para un afiliado de 35 años que consultó por cambiarse de AFP por rentabilidad. Destaca dos beneficios concretos de quedarse, sin sonar desesperado."</p>
+      </div>
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un buen prompt es un buen brief: mientras más claro seas con el rol, el contexto y lo que esperas, mejor va a ser lo que te devuelva la IA. Y siempre, siempre, verifica los datos antes de usarlos.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 11 -->
+  <section class="parte reveal" id="p11">
+    <div class="kicker"><span class="num">11</span><span class="tag">Para reflexionar</span></div>
+    <h2 class="titulo">El foro: la pregunta que también es para ti</h2>
+
+    <p>El módulo cierra con un foro colaborativo, y las preguntas que propone no son solo un ejercicio académico: valen para tu propio rol. ¿Cuáles son las oportunidades y los desafíos de implementar IA en un sector como el tuyo? ¿La IA va a <em>reemplazar</em> por completo ciertos roles, o los va a <em>transformar</em>? ¿Cómo se prepara alguien para adoptar estas herramientas de forma ética y eficiente?</p>
+
+    <p>La respuesta honesta, después de todo lo que acabas de ver, es que la IA es muy buena detectando patrones en datos —quién va a traspasarse, qué transacción parece fraude, qué producto le puede interesar a cada persona—, pero sigue siendo pésima en lo que tú haces mejor: leer una conversación completa, sostener una relación de confianza en el tiempo, y decidir con criterio cuándo una regla general no aplica a esta persona en particular. Lo más probable es que la IA no reemplace tu trabajo, sino que cambie qué parte de tu trabajo haces tú y cuál hace la máquina primero.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Prepararte para la IA no es aprender a programar: es aprender a usar bien sus predicciones sin dejar de poner tu propio criterio encima.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Inteligencia Artificial (IA)</dt><dd>Sistemas capaces de hacer tareas que normalmente necesitan inteligencia humana: razonar, aprender y decidir.</dd>
+        <dt>IA débil</dt><dd>IA hecha para una tarea específica. Es toda la IA que existe hoy en la práctica.</dd>
+        <dt>IA fuerte</dt><dd>Una inteligencia comparable a la humana en cualquier tarea. Todavía no existe, es una idea teórica.</dd>
+        <dt>Aprendizaje automático</dt><dd>Rama de la IA donde el sistema aprende de los datos en vez de que alguien le escriba cada regla a mano.</dd>
+        <dt>Aprendizaje supervisado</dt><dd>El modelo aprende de ejemplos donde ya se conoce la respuesta correcta, como un histórico de traspasos etiquetado.</dd>
+        <dt>Aprendizaje no supervisado</dt><dd>El modelo busca grupos o patrones en los datos sin que nadie le diga de antemano cuáles buscar.</dd>
+        <dt>Aprendizaje por refuerzo</dt><dd>El sistema aprende por ensayo y error, ajustando su estrategia según si la acción funcionó o no.</dd>
+        <dt>Big Data</dt><dd>Manejo de datos cuando su volumen, velocidad y variedad ya no se pueden procesar con herramientas comunes.</dd>
+        <dt>Las tres uves del Big Data</dt><dd>Volumen (cuánto hay), velocidad (qué tan rápido llega) y variedad (qué tan distinto es entre sí).</dd>
+        <dt>Patrón</dt><dd>Una regularidad en los datos que el modelo detecta y usa para predecir o decidir.</dd>
+        <dt>Aprendizaje profundo</dt><dd>Aprendizaje automático que usa redes neuronales con muchas capas, cada una detectando un patrón más complejo.</dd>
+        <dt>Red neuronal artificial</dt><dd>Modelo inspirado en capas de unidades conectadas entre sí, que se ajustan solas para aprender un patrón.</dd>
+        <dt>IA simbólica</dt><dd>La primera forma de IA: sistemas que siguen reglas predefinidas, escritas a mano, para contextos cerrados.</dd>
+        <dt>Invierno de la IA</dt><dd>Período de estancamiento y menos financiamiento para la investigación en IA, que el curso ubica en los años setenta.</dd>
+        <dt>Sistema experto</dt><dd>Programa que imita la forma de decidir de un especialista humano en un área acotada, usando reglas.</dd>
+        <dt>MYCIN</dt><dd>Sistema experto de Stanford que diagnosticaba infecciones bacterianas y sugería tratamientos.</dd>
+        <dt>Reconocimiento óptico de caracteres (OCR)</dt><dd>Tecnología que convierte texto escrito o impreso en una imagen en texto digital editable.</dd>
+        <dt>Tesseract OCR</dt><dd>Motor de OCR de código abierto y multilingüe, impulsado más tarde por Google.</dd>
+        <dt>GPU</dt><dd>Unidad de procesamiento gráfico. Hace muchísimos cálculos en paralelo y es clave para entrenar aprendizaje profundo.</dd>
+        <dt>AlphaGo</dt><dd>Sistema que venció a campeones humanos del juego Go usando aprendizaje profundo.</dd>
+        <dt>Asistente virtual</dt><dd>Software conversacional (como Alexa o Siri) que entiende instrucciones y ejecuta tareas en tiempo real.</dd>
+        <dt>Poder computacional</dt><dd>La capacidad de cálculo disponible para entrenar modelos. Su crecimiento explica gran parte del avance de la IA.</dd>
+        <dt>Red neuronal convolucional (CNN)</dt><dd>Red especializada en imágenes, que detecta bordes, formas y objetos capa por capa.</dd>
+        <dt>Red neuronal recurrente (RNN)</dt><dd>Red con memoria de lo que pasó antes, útil para analizar secuencias como transacciones en el tiempo.</dd>
+        <dt>Procesamiento de lenguaje natural (PLN)</dt><dd>Área de la IA que permite a una máquina entender y generar lenguaje humano.</dd>
+        <dt>Visión por computadora</dt><dd>Área de la IA que permite a una máquina interpretar imágenes y video.</dd>
+        <dt>Reconocimiento facial</dt><dd>Identificar o verificar a una persona a partir de su rostro en una imagen.</dd>
+        <dt>Sistema autónomo</dt><dd>Sistema que percibe su entorno y decide en tiempo real con poca o ninguna intervención humana directa.</dd>
+        <dt>Sensores IoT</dt><dd>Dispositivos conectados que miden variables físicas (vibración, temperatura) y envían los datos en tiempo real.</dd>
+        <dt>IA generativa</dt><dd>IA que crea contenido nuevo (texto, imágenes) a partir de los patrones que aprendió de datos previos.</dd>
+        <dt>Modelo de lenguaje a gran escala (LLM)</dt><dd>Modelo entrenado con enormes cantidades de texto, capaz de generar, traducir y resumir lenguaje.</dd>
+        <dt>GPT</dt><dd>Familia de modelos de lenguaje que generan texto a partir de una instrucción. GPT-4 es un ejemplo.</dd>
+        <dt>Preentrenamiento</dt><dd>Entrenar un modelo con un conjunto de datos general y masivo, antes de especializarlo.</dd>
+        <dt>Ajuste fino</dt><dd>Adaptar un modelo ya entrenado a una tarea específica, con datos propios de esa tarea.</dd>
+        <dt>Texto a imagen</dt><dd>Generar una imagen a partir de una descripción escrita.</dd>
+        <dt>Chatbot</dt><dd>Programa conversacional que responde preguntas y asiste a personas por texto o voz.</dd>
+        <dt>Ingeniería de prompts</dt><dd>La habilidad de formular instrucciones precisas para que una IA generativa entregue el resultado que buscas.</dd>
+        <dt>Privacidad de los datos</dt><dd>El derecho de una persona a controlar cómo se recolecta y se usa su información.</dd>
+        <dt>Consentimiento informado</dt><dd>El permiso explícito de una persona, sabiendo con claridad para qué se van a usar sus datos.</dd>
+        <dt>Sesgo algorítmico</dt><dd>Un error sistemático de un modelo que perjudica siempre al mismo grupo, casi siempre heredado de los datos históricos.</dd>
+        <dt>Auditoría de algoritmos</dt><dd>Revisión periódica e independiente de un modelo, para detectar sesgos y errores en decisiones importantes.</dd>
+        <dt>Rendición de cuentas</dt><dd>Que exista alguien responsable de responder por las decisiones que toma un sistema de IA.</dd>
+        <dt>Transparencia</dt><dd>Poder saber cómo funciona un sistema de IA y con qué datos toma sus decisiones.</dd>
+        <dt>Explicabilidad</dt><dd>La capacidad de explicar por qué un modelo tomó una decisión específica, y no otra.</dd>
+        <dt>Sistema de alto riesgo</dt><dd>Un sistema de IA cuyas decisiones afectan derechos o seguridad de las personas (crédito, empleo, justicia).</dd>
+        <dt>Falso positivo</dt><dd>Una alerta que marca como sospechoso algo legítimo, como bloquear una compra real pensando que era fraude.</dd>
+        <dt>Ley de IA de la Unión Europea</dt><dd>Regulación europea, ya vigente, que clasifica la IA por nivel de riesgo y exige explicabilidad y auditoría.</dd>
+        <dt>Logística predictiva</dt><dd>Usar IA para anticipar la demanda, ajustar inventarios y mejorar los tiempos de entrega.</dd>
+        <dt>Mantenimiento predictivo</dt><dd>Predecir la falla de una máquina con datos de sensores, antes de que ocurra.</dd>
+        <dt>Medicina personalizada</dt><dd>Tratamientos ajustados a cada paciente según sus propios datos clínicos y genéticos.</dd>
+        <dt>AlphaFold</dt><dd>Sistema de DeepMind que predice la forma tridimensional de una proteína con precisión sin precedentes.</dd>
+        <dt>Sistema de recomendación</dt><dd>Modelo que predice qué productos o contenidos tienen más probabilidad de interesarle a cada persona.</dd>
+        <dt>Tasa de conversión</dt><dd>El porcentaje de personas que terminan comprando o contratando, sobre el total que mostró interés.</dd>
+        <dt>Abandono de carrito</dt><dd>Cuando alguien agrega productos a su compra online pero no llega a completarla.</dd>
+        <dt>Precio dinámico</dt><dd>Ajustar automáticamente un precio según la demanda y las tendencias del momento.</dd>
+        <dt>Detección de fraude</dt><dd>Identificar transacciones sospechosas en tiempo real, antes de que se procesen.</dd>
+        <dt>Análisis crediticio</dt><dd>Estimar la solvencia de una persona a partir de sus datos financieros, historial y factores externos.</dd>
+        <dt>Índice de morosidad</dt><dd>La proporción de créditos o pagos que están atrasados.</dd>
+        <dt>Retorno sobre la inversión (ROI)</dt><dd>Cuánto gana una empresa por cada peso que invirtió, por ejemplo en publicidad.</dd>
+        <dt>TensorFlow</dt><dd>Biblioteca de código abierto de Google para construir modelos de aprendizaje automático y profundo.</dd>
+        <dt>PyTorch</dt><dd>Biblioteca de código abierto creada por Meta, muy usada por su facilidad para armar prototipos rápido.</dd>
+        <dt>Hugging Face</dt><dd>Plataforma y comunidad con una enorme colección de modelos preentrenados, sobre todo de lenguaje.</dd>
+        <dt>Modelo preentrenado</dt><dd>Un modelo que alguien ya entrenó y que se puede reutilizar o adaptar, en vez de entrenarlo desde cero.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Si te quedas con tres cosas, que sean estas</h2>
+    <ol>
+      <li>La IA de hoy es <strong>siempre débil</strong>, hecha para una tarea puntual, aunque sea muy buena en ella. Y aprende de datos, no de reglas escritas a mano: por eso mientras mejores y más reales sean tus datos, mejor va a funcionar cualquier modelo que se construya con ellos.</li>
+      <li>Detrás de cada aplicación de IA hay dos preguntas que tú ya te haces todos los días con tus clientes: <strong>¿le aporta valor de verdad a la persona?</strong> y <strong>¿lo estamos usando de forma justa y responsable?</strong> La ética no es un capítulo aparte, es parte del trabajo.</li>
+      <li>Logística, medicina, desastres, fábricas, tiendas y bancos ya usan estos mismos conceptos hoy, con resultados medibles en dinero y en tiempo. Tu industria no es la excepción: es la próxima en la fila.</li>
+    </ol>
+    <p class="remate">No estás aprendiendo un tema nuevo desde cero: estás poniéndole nombre técnico a tu propio olfato comercial, y aprendiendo a trabajar codo a codo con una herramienta que, bien usada, te hace ver ese olfato multiplicado por miles de afiliados a la vez.</p>
+  </section>
+
+</main>
+
+<footer>
+  Unidad 1 de "Tecnologías de Inteligencia Artificial para Negocios", explicada desde el mundo comercial de una vendedora de AFP.
+</footer>
+
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
