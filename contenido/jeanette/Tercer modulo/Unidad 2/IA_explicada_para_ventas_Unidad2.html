@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA explicada para ventas · Unidad 2</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial · Unidad 2</p>
+    <h1>Qué tecnología de IA sirve para qué, y cómo usarla con criterio</h1>
+    <p class="lead">En una AFP ya se habla de inteligencia artificial por todos lados: alertas de traspaso, asistentes que redactan mensajes, herramientas que transcriben las llamadas del call center, sistemas que prometen decir a quién contactar primero. Todo suena parecido y casi todo se vende con la misma palabra mágica. La pregunta útil no es «¿usamos IA?», sino <strong>«¿qué problema tenemos, y qué tecnología lo resuelve de verdad?»</strong>.</p>
+    <p class="lead">Esta guía te da el mapa para contestar eso. Vas a aprender cómo aprende un modelo, en qué se diferencian los tipos de aprendizaje, qué hace distinta a la IA que genera texto e imágenes, qué riesgos trae y cómo se elige un primer piloto sin tirar el dinero. Y lo mejor: gran parte de esto ya lo haces cuando decides a quién llamar primero o qué guion probar.</p>
+    <span class="nota">No necesitas saber de tecnología ni de matemáticas. Aquí no hay fórmulas: solo criterio comercial aplicado a la IA.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>Para qué sirve esta unidad</a></li>
+      <li><a href="#p2"><span class="n">2</span>Las palabras clave que vas a escuchar</a></li>
+      <li><a href="#p3"><span class="n">3</span>De las reglas a los modelos: cómo elegir bien</a></li>
+      <li><a href="#p4"><span class="n">4</span>Tres maneras de aprender: supervisado, no supervisado y por refuerzo</a></li>
+      <li><a href="#p5"><span class="n">5</span>De predecir a generar: la IA que escribe y dibuja</a></li>
+      <li><a href="#p6"><span class="n">6</span>Qué tecnología para cada necesidad (y cuándo no hace falta IA)</a></li>
+      <li><a href="#p7"><span class="n">7</span>Teachable Machine: aprender jugando con un modelo</a></li>
+      <li><a href="#p8"><span class="n">8</span>Riesgos y uso responsable</a></li>
+      <li><a href="#p9"><span class="n">9</span>Cómo se diseña un buen piloto</a></li>
+      <li><a href="#p10"><span class="n">10</span>El caso SurAndes: elegir un solo piloto entre cinco</a></li>
+      <li><a href="#p11"><span class="n">11</span>La matriz de 8 dimensiones y el semáforo</a></li>
+      <li><a href="#p12"><span class="n">12</span>Las herramientas generativas, con criterio</a></li>
+      <li><a href="#p13"><span class="n">13</span>Si te quedas con tres cosas</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">El punto de partida</span></div>
+    <h2 class="titulo">Para qué sirve esta unidad</h2>
+
+    <p>En la unidad anterior de este módulo conociste el panorama general de la IA en las empresas: qué es, qué tipos hay, qué casos de éxito y de fracaso existen. Esta unidad da un paso más hacia adentro. Ya no pregunta «¿qué es la IA?», sino dos cosas más prácticas: <strong>cómo aprende un modelo</strong> y <strong>cómo se elige la tecnología adecuada</strong> para un problema.</p>
+
+    <p>El propósito del curso en esta unidad es que entiendas los fundamentos del <span class="term">aprendizaje automático</span> (en inglés, <em>machine learning</em>) y de la <span class="term">IA generativa</span>, para reconocer tres cosas: qué le aportan a un negocio, qué problemas pueden abordar y, muy importante, <strong>cuáles son sus límites</strong>. No se trata de que programes nada. Se trata de que desarrolles <em>criterio</em>: que sepas distinguir una tecnología de otra, evaluar una oportunidad y conversar con un equipo técnico usando un lenguaje común, sin que te cuenten cualquier cosa.</p>
+
+    <h3>Lo que vas a recorrer</h3>
+    <p>El curso te lleva por un camino ordenado, y esta guía lo sigue paso a paso:</p>
+
+    <ol class="pasos">
+      <li><b>Una mirada breve a la evolución de la IA</b> y a sus conceptos básicos: datos, modelo, entrenamiento, evaluación e inferencia.</li>
+      <li><b>Tres maneras de aprender:</b> supervisado, no supervisado y por refuerzo, con sus diferencias.</li>
+      <li><b>Cómo los modelos generativos producen</b> texto, imágenes, audio, video y código.</li>
+      <li><b>Una práctica con Teachable Machine</b>, una herramienta gratuita para construir un clasificador sencillo y ver con tus propios ojos cómo la cantidad, la diversidad y la calidad de los ejemplos cambian los resultados.</li>
+      <li><b>Los criterios de aplicación empresarial y de uso responsable</b>: riesgos, normas, cómo diseñar un piloto, un caso completo y una matriz de evaluación.</li>
+    </ol>
+
+    <h3>Para qué te va a servir</h3>
+    <p>El curso lo resume en cinco habilidades. Mira cómo se leen desde la venta de AFP:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Antes de elegir</div>
+        <div class="sub">Formular y reconocer</div>
+        <ul>
+          <li>Formular el problema <em>antes</em> de escoger una herramienta.</li>
+          <li>Reconocer cuándo se necesita <strong>predecir, clasificar, agrupar, recomendar o generar</strong> contenido.</li>
+          <li>Identificar los datos mínimos para una prueba.</li>
+        </ul>
+        <p class="nm">En tu mundo: pensar en el resultado que quieres (más cierres, menos traspasos) antes de que alguien te venda un software.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Antes de confiar</div>
+        <div class="sub">Detectar y controlar</div>
+        <ul>
+          <li>Detectar riesgos de <strong>sesgo, privacidad, propiedad intelectual y confiabilidad</strong>.</li>
+          <li>Definir controles humanos acordes con el impacto de cada decisión.</li>
+        </ul>
+        <p class="nm">En tu mundo: saber qué cosas puede hacer una herramienta sola y cuáles necesitan que una persona las revise antes de llegar a un afiliado.</p>
+      </div>
+    </div>
+
+    <p>Hay una idea que atraviesa toda la unidad y conviene tenerla desde ya: <strong>la tecnología se elige después de formular el problema, no antes.</strong> Muchas empresas hacen al revés: se enamoran de una herramienta nueva y recién después buscan para qué usarla. Esta unidad te enseña a no caer en eso.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en cuando te llega una nueva plataforma de gestión de cartera. Hay dos formas de recibirla: «¿qué problema de mi día a día resuelve?» o «¡qué novedad, veamos qué hace!». La primera te ahorra tiempo; la segunda suele terminar en una pantalla más que nadie abre. La unidad te entrena para hacer siempre la primera pregunta.
+    </div>
+
+    <p>Un aviso práctico: el curso indica que los videos, enlaces y códigos QR del material podrían dejar de estar disponibles desde el 30 de noviembre de 2026. Si quieres revisarlos en la versión online, hazlo antes de esa fecha.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Primero el problema, después la tecnología: la unidad te da criterio para elegir, no recetas para programar.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">El vocabulario</span></div>
+    <h2 class="titulo">Las palabras clave que vas a escuchar</h2>
+
+    <p>Antes de avanzar conviene ordenar diez palabras que se repiten en cualquier reunión de IA. Ninguna es difícil si se explica con un ejemplo de tu trabajo. Vamos una por una, y al final verás cómo encajan como las piezas de un mismo proceso.</p>
+
+    <h3>La IA, el aprendizaje automático y el aprendizaje profundo</h3>
+    <p>La <span class="term">inteligencia artificial</span> (IA) es el campo que reúne tecnologías capaces de hacer tareas que asociamos con las personas: percibir, usar el lenguaje, aprender, razonar o tomar decisiones. Es el paraguas más grande. Dentro de él está el <span class="term">aprendizaje automático</span> o <em>machine learning</em> (ML): un enfoque en el que, en vez de escribirle al computador una regla para cada situación, se le muestran muchos ejemplos y él mismo descubre los patrones. Con eso puede producir predicciones, clasificaciones o contenido nuevo.</p>
+    <p>Y dentro del aprendizaje automático vive el <span class="term">aprendizaje profundo</span> o <em>deep learning</em>: una familia de técnicas que usa <span class="term">redes neuronales de múltiples capas</span>, es decir, sistemas con muchos niveles de procesamiento apilados, capaces de aprender patrones muy complejos. Piénsalo como muñecas rusas: la IA contiene al aprendizaje automático, y este contiene al aprendizaje profundo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Una regla clásica sería «si el afiliado lleva más de cierto tiempo sin cotizar, llámalo». Con aprendizaje automático, en cambio, nadie escribe esa regla: el sistema revisa el historial de miles de afiliados que sí se traspasaron y de otros que se quedaron, y descubre solo qué señales suelen venir antes de un traspaso.
+    </div>
+
+    <h3>El modelo y los datos con que aprende</h3>
+    <p>Un <span class="term">modelo</span> es lo que queda después de aprender. El curso lo define como una representación matemática, construida a partir de datos, que recibe una entrada y entrega una predicción, una clasificación o un contenido. Sin tecnicismos: es como un ejecutivo con mucha experiencia metida en una caja. Le muestras un caso nuevo y te dice qué cree que va a pasar.</p>
+    <p>Los <span class="term">datos de entrenamiento</span> son los ejemplos con los que se «enseña» al modelo: la experiencia acumulada que va a imitar. Si el ejecutivo de la caja aprendió solo con clientes de un tipo, solo sabrá opinar de ese tipo. Por eso la calidad de los ejemplos pesa tanto, y lo vas a ver una y otra vez en esta unidad.</p>
+
+    <h3>La característica y la etiqueta</h3>
+    <p>Dos palabras que se confunden. Una <span class="term">característica</span> (en inglés <em>feature</em>) es cada dato que el modelo mira para decidir: la antigüedad del afiliado, cuántas veces lo has contactado, cuánto tiempo lleva sin cotizar, en el caso de imágenes los puntos de color de la foto, en el caso de textos las palabras. Son las pistas de entrada.</p>
+    <p>La <span class="term">etiqueta</span> (en inglés <em>label</em>) es el resultado ya conocido que acompaña a un ejemplo: «este afiliado se traspasó», «este contacto cerró», «esta llamada terminó en reclamo». Es la respuesta correcta que el modelo intenta aprender a adivinar. Las características son las preguntas del examen; la etiqueta es la respuesta de la pauta.</p>
+
+    <h3>Entrenamiento, evaluación e inferencia</h3>
+    <p>El <span class="term">entrenamiento</span> es el proceso en que el modelo ajusta sus perillas internas, llamadas <span class="term">parámetros</span>, para equivocarse cada vez menos con los ejemplos disponibles. La <span class="term">evaluación</span> es la prueba final: se mide cómo le va con ejemplos <em>distintos</em> de los que usó para aprender. Y la <span class="term">inferencia</span> es el uso real: el modelo ya entrenado recibe un caso nuevo y entrega su resultado.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el recorrido de cualquier ejecutivo nuevo. Entrenamiento: las semanas de práctica con casos del pasado. Evaluación: la simulación final con casos que no había visto, para saber si de verdad aprendió o solo memorizó. Inferencia: el día en que toma su primera llamada real. Si solo lo evalúas con los mismos casos con que lo entrenaste, no sabes nada.
+    </div>
+
+    <h3>Tres maneras de aprender, en una línea cada una</h3>
+    <p>El <span class="term">aprendizaje supervisado</span> usa ejemplos con la respuesta conocida y sirve sobre todo para predecir números y clasificar en categorías. El <span class="term">aprendizaje no supervisado</span> trabaja con datos sin respuesta y busca patrones, parecidos o grupos. El <span class="term">aprendizaje por refuerzo</span> aprende por prueba y error en un entorno, recibiendo premios y castigos por sus acciones. Cada uno tiene su parte propia más adelante.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un modelo aprende de ejemplos con características y, a veces, etiquetas; se entrena con unos, se evalúa con otros distintos, y recién entonces se usa en casos nuevos.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">Primer artículo del curso</span></div>
+    <h2 class="titulo">De las reglas a los modelos: cómo elegir bien</h2>
+
+    <p>La conversación sobre IA mezcla conceptos, productos y promesas. El curso propone ordenar el campo con una pregunta básica: <strong>¿qué resultado necesitamos producir?</strong> Algunas situaciones piden una regla estable. Otras, una predicción construida a partir de datos. Otras, generar un contenido. Y la tecnología se escoge <em>después</em> de formular el problema.</p>
+
+    <h3>Una familia de tecnologías, no una sola cosa</h3>
+    <p>Cuando alguien dice «IA» está nombrando en realidad una <span class="term">familia de tecnologías</span>. En ella conviven los <span class="term">sistemas basados en reglas</span> (instrucciones explícitas escritas por personas), las técnicas de <span class="term">búsqueda y optimización</span> (encontrar la mejor opción entre muchas posibles), el aprendizaje automático, el <span class="term">procesamiento de lenguaje natural</span> (que entiende y produce lenguaje humano), la <span class="term">visión computacional</span> (que interpreta imágenes y video) y los sistemas generativos. El aprendizaje automático es una parte de esa familia, y el aprendizaje profundo, un subcampo de él.</p>
+
+    <h3>Las categorías se superponen</h3>
+    <p>Aquí el curso hace una advertencia que ahorra confusiones: <strong>estas categorías se superponen</strong>. Un asistente generativo de los que ves hoy puede combinar un modelo de lenguaje, un clasificador, una búsqueda en documentos y reglas de seguridad, todo en uno. Las etiquetas sirven para entender qué sabe hacer cada pieza, pero un producto real casi siempre mezcla varias.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un asistente que ayude a un ejecutivo comercial a responder consultas de afiliados no es «una IA». Puede ser un modelo que redacta, más una búsqueda en el manual interno, más un filtro que impida ciertas respuestas, más reglas sobre qué no debe prometer. Cuando alguien te diga «tenemos una IA», pregunta qué piezas lleva por dentro.
+    </div>
+
+    <h3>La pregunta de negocio: un verbo y un resultado que se pueda ver</h3>
+    <p>Antes de hablar de modelos, el curso pide definir la tarea con <strong>un verbo y un resultado observable</strong>. Esa es tu <span class="term">pregunta de negocio</span>. Los verbos típicos son <strong>predecir</strong> la demanda, <strong>clasificar</strong> reclamos, <strong>agrupar</strong> clientes, <strong>recomendar</strong> una acción, <strong>generar</strong> una propuesta o <strong>detectar</strong> una anomalía. Un <span class="term">resultado observable</span> es algo que se puede comprobar con hechos, no una intención vaga.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Pregunta vaga</div>
+        <p>«Queremos usar IA para mejorar la retención.» No tiene verbo claro ni resultado que se pueda comprobar. Nadie sabe cuándo se logró.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Pregunta con verbo y resultado</div>
+        <p>«Queremos predecir qué afiliados tienen riesgo alto de traspasarse el próximo mes, para que el equipo los contacte antes.» Hay un verbo (predecir) y un resultado observable (quién se traspasa o no).</p>
+      </div>
+    </div>
+
+    <h3>Reglas contra modelos</h3>
+    <p>El sistema tradicional funciona con instrucciones explícitas: <em>si ocurre A, haga B</em>. Alguien las programa una por una. Esto va perfecto cuando las reglas son conocidas, estables y fáciles de mantener. El ejemplo del curso: una plataforma que bloquea una operación si supera un límite normativo claramente definido. No hay nada que «aprender»: el límite está escrito.</p>
+    <p>En el aprendizaje automático, en cambio, el equipo entrega <strong>ejemplos y una definición del resultado esperado</strong>; el modelo ajusta relaciones matemáticas para capturar los patrones y luego las usa para estimar el resultado en casos nuevos. Google, una de las fuentes que usa el curso, define el modelo como una relación matemática derivada de datos que se usa para hacer predicciones.</p>
+
+    <h3>La elección no es una moda</h3>
+    <p>Aquí está una de las ideas más sanas de la unidad: si una política se puede escribir con <strong>tres reglas claras y auditables</strong>, un modelo puede agregar costo y <span class="term">opacidad</span> (que nadie pueda explicar bien por qué decidió lo que decidió). Algo es <span class="term">auditable</span> cuando un tercero puede revisarlo y comprobar que se aplicó como correspondía. El aprendizaje automático aporta valor cuando las relaciones son numerosas, variables o muy difíciles de programar a mano, <em>y</em> cuando existen datos pertinentes para aprenderlas. Si los procesos ya son simples y conocidos, muchas veces no vale la pena.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si la regla es «a quien cumpla tal requisito establecido, se le ofrece tal producto», eso se programa en una planilla y se audita en minutos; no necesitas un modelo. En cambio, saber quién tiene más probabilidad de aceptar una llamada, cuándo y por qué canal depende de muchas señales que cambian, y ahí un modelo puede aportar.
+    </div>
+
+    <h3>Cómo aprende un modelo: cinco componentes</h3>
+    <p>El curso describe el proceso de aprendizaje en cinco pasos encadenados:</p>
+
+    <ol class="pasos">
+      <li><b>Datos.</b> Se reúnen ejemplos del problema: registros de tablas, textos, imágenes, audio, video o señales de sensores.</li>
+      <li><b>Representación.</b> Se define qué elementos funcionan como entradas. En datos de tablas, llamados <span class="term">datos tabulares</span> (filas y columnas, como una planilla), esas entradas son las características. En una imagen, el modelo procesa los valores de cada <span class="term">píxel</span> (cada puntito de color) y los patrones visuales que forman.</li>
+      <li><b>Entrenamiento.</b> El algoritmo ajusta los parámetros para <strong>reducir la diferencia</strong> entre lo que el modelo responde y lo que debía responder. Esa medida de «cuánto se equivoca» se llama <span class="term">función de pérdida</span>: mientras más baja, mejor está aprendiendo. Antes de entrenar, el equipo fija además algunas decisiones generales, los <span class="term">hiperparámetros</span>, como cuántas vueltas dará por los ejemplos; son las perillas del entrenamiento, no lo que el modelo aprende.</li>
+      <li><b>Evaluación.</b> Se prueba con ejemplos que <strong>no usó para entrenarse</strong>. Esa separación permite estimar su <span class="term">generalización</span>: la capacidad de funcionar bien con casos nuevos, no solo con los que ya vio. En la práctica se separan un <span class="term">conjunto de validación</span> (para ir ajustando durante el trabajo) y un <span class="term">conjunto de prueba</span> (la prueba final, que el modelo no ha tocado).</li>
+      <li><b>Inferencia.</b> El modelo entrenado recibe una entrada nueva y entrega una predicción, una categoría o un contenido.</li>
+    </ol>
+
+    <p>Un fenómeno asociado merece nombre propio: el <span class="term">sobreajuste</span> (<em>overfitting</em>). Ocurre cuando el modelo se aprende de memoria los ejemplos de entrenamiento tan de cerca que falla con los casos nuevos. Es el ejecutivo que memorizó el guion de los veinte clientes de ensayo y se queda en blanco con el primero que se sale del libreto. La señal de alerta: le va muy bien con lo que ya vio y mal con lo que no vio. Por eso la evaluación con datos separados no es un lujo.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que mides a un ejecutivo nuevo solo con las mismas llamadas con las que lo capacitaste. Sacará una nota perfecta, pero no habrás aprendido nada sobre cómo le irá con afiliados reales. Medirlo con llamadas nuevas es lo único que te dice si <em>generaliza</em>.
+    </div>
+
+    <h3>Datos y contexto: más no siempre es mejor</h3>
+    <p>Un conjunto de datos numeroso puede ser insuficiente <strong>si repite siempre las mismas condiciones</strong>. El curso usa el ejemplo de una cámara de bodega que debe reconocer productos: para funcionar de verdad, el modelo necesita haber visto ángulos, distancias, iluminación, fondos y variaciones reales del embalaje. Eso es la <span class="term">diversidad de los datos</span>. Y se relaciona con la <span class="term">representatividad</span>: que los ejemplos reflejen cómo es realmente el mundo donde se va a usar el modelo. Google advierte que tanto el tamaño como la diversidad del conjunto influyen en la capacidad de generalizar.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si entrenas un modelo de afiliados que cierran usando solo los datos de una campaña de un mes, en una zona, con un guion, tendrá mucha información de una sola situación. Aunque sean miles de registros, no sabrá qué pasa en otros meses, otras zonas ni otros públicos. Muchos datos iguales no son muchos datos distintos.
+    </div>
+
+    <h3>Una nota alta que esconde fallas: desempeño estadístico contra utilidad</h3>
+    <p>Esta es una de las ideas más importantes de la unidad, y se entiende mejor con una historia de cartera. El <span class="term">desempeño estadístico</span> es la nota que saca un modelo en una medición técnica. La <span class="term">utilidad empresarial</span> es si esa nota sirve para la decisión que importa. No son lo mismo, y el curso lo dice sin rodeos: un modelo puede tener buena precisión promedio y, aun así, fallar en el segmento más relevante, generar demasiadas alertas falsas o cometer un error muy costoso.</p>
+    <p>Mira cómo pasa. Supón que en una cartera la gran mayoría de los afiliados <em>no</em> se traspasa en un mes cualquiera. Un modelo perezoso que respondiera siempre «este afiliado se queda» acertaría casi todas las veces. Su nota promedio sería altísima. Pero no te sirve de nada, porque justamente los pocos que se van son los que querías detectar. La nota promedio era buena y el modelo era inútil.</p>
+    <p>El curso dice «precisión promedio» para esta idea. Aunque el curso la nombra así, en lenguaje técnico esa nota global se llama <span class="term">exactitud</span> (<em>accuracy</em>): la proporción de aciertos sobre el total de casos. Es una cosa distinta de la <span class="term">precisión</span> como métrica, que mide cuántos de los casos que el modelo marcó como positivos lo eran de verdad, y de la <span class="term">sensibilidad</span> (<em>recall</em>), que mide cuántos de los casos positivos reales logró encontrar. La idea del curso es correcta; solo conviene saber que, si un equipo técnico te habla de «precisión», quizá esté hablando de otra cosa que la nota global.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Alerta falsa (falso positivo)</div>
+        <small>El modelo marca como «en riesgo de irse» a un afiliado que no pensaba hacerlo. Costo: un ejecutivo gasta una llamada, incomoda a alguien y pierde tiempo que podía usar con otro. Si hay demasiadas, el equipo deja de creerle a la lista.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Caso perdido (falso negativo)</div>
+        <small>El modelo no marca a un afiliado que sí se iba a traspasar. Costo: nadie lo llama a tiempo y la cartera se achica sin aviso. Es el error silencioso, y en retención suele ser el más caro.</small>
+      </div>
+    </div>
+
+    <p>Por eso la <span class="term">métrica orientada al riesgo</span> es la que importa: una forma de medir elegida según el costo real de cada tipo de error en tu negocio. Si equivocarte en una dirección cuesta mucho más que en la otra, la medida debe reflejarlo. El cierre del artículo lo resume: la IA no es un fin en sí mismo ni una respuesta automática a cualquier problema; el verdadero valor surge al definir con claridad la tarea, evaluar si la complejidad justifica un modelo y garantizar que la métrica de éxito responda al impacto real en la operación, y no solo a la precisión estadística.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Elige la tecnología después del problema; usa reglas cuando bastan; y no te dejes engañar por una nota promedio alta que esconde fallas donde más duele.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">Segundo artículo del curso</span></div>
+    <h2 class="titulo">Tres maneras de aprender: supervisado, no supervisado y por refuerzo</h2>
+
+    <p>Para elegir la tecnología correcta, el punto de partida es entender <strong>cómo aprende cada modelo según los datos que tienes y el objetivo que persigues</strong>. Cada enfoque convierte información en algo distinto: predicciones, agrupaciones o decisiones. Veamos los tres.</p>
+
+    <h3>Aprendizaje supervisado: aprender con la pauta en la mano</h3>
+    <p>En el <span class="term">aprendizaje supervisado</span> el modelo recibe ejemplos <strong>con la respuesta conocida</strong> y aprende la relación entre las características y la etiqueta. Se evalúa comparando sus predicciones con resultados reales que no vio durante el entrenamiento. Es como estudiar con un libro de ejercicios resueltos y luego dar una prueba con ejercicios nuevos.</p>
+    <p>Se usa para dos tareas distintas, y la diferencia es sencilla:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Regresión</div>
+        <div class="sub">La respuesta es un número</div>
+        <ul>
+          <li>La demanda de la semana.</li>
+          <li>El tiempo de entrega.</li>
+          <li>El costo esperado.</li>
+        </ul>
+        <p class="nm">La <span class="term">regresión</span> contesta «¿cuánto?».</p>
+      </div>
+      <div class="card a">
+        <div class="q">Clasificación</div>
+        <div class="sub">La respuesta es una categoría</div>
+        <ul>
+          <li>Fraude probable o no.</li>
+          <li>Reclamo urgente o normal.</li>
+          <li>Producto defectuoso o sano.</li>
+          <li>Cliente con riesgo de abandono o sin riesgo.</li>
+        </ul>
+        <p class="nm">La <span class="term">clasificación</span> contesta «¿de qué tipo?». Al modelo que la hace se le llama <span class="term">clasificador</span>.</p>
+      </div>
+    </div>
+
+    <p>El curso trae una tabla con cuatro problemas típicos. Aquí van traducidos, con una versión equivalente en tu mundo. Son ejemplos ilustrativos para que veas el patrón, no casos reales de ninguna AFP.</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Los cuatro problemas del curso, con su versión en una AFP</caption>
+        <thead>
+          <tr><th>Problema del curso</th><th>Versión en tu mundo</th><th>Datos necesarios</th><th>Salida y tipo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lab-col">Predecir las ventas de una sucursal</td><td>Estimar cuántas afiliaciones cerrará una oficina el próximo mes</td><td>Historial de cierres, fechas, campañas y contexto</td><td>Un número: regresión</td></tr>
+          <tr><td class="lab-col">Detectar correos sospechosos</td><td>Detectar mensajes que parecen fraude o suplantación hacia afiliados</td><td>Mensajes ya marcados por personas como sospechosos o legítimos</td><td>Una categoría (sospechoso o legítimo): clasificación</td></tr>
+          <tr><td class="lab-col">Identificar defectos visuales</td><td>Revisar fotos de documentos de afiliación y marcar cuáles vienen con problemas</td><td>Imágenes etiquetadas por tipo de problema</td><td>Una categoría: clasificación</td></tr>
+          <tr><td class="lab-col">Estimar el tiempo de despacho</td><td>Estimar cuánto tardará en resolverse un trámite o un reclamo</td><td>Tipos de trámite, carga del equipo y tiempos ya observados</td><td>Un número, en minutos o días: regresión</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>El requisito principal: etiquetas confiables</h3>
+    <p>Todo el aprendizaje supervisado descansa en que las <span class="term">etiquetas confiables</span> sean realmente confiables. Si las respuestas históricas reflejan decisiones sesgadas, criterios inconsistentes o simples errores de registro, el modelo aprenderá parte de esos problemas. Revisar de dónde vienen las etiquetas y qué tan buenas son es una tarea <em>tanto de negocio como técnica</em>.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en el campo «motivo de cierre» o «motivo de traspaso» de tu sistema. Si cada ejecutivo lo llena con su propio criterio, si algunos anotan «cerró» cuando hubo interés y otros solo cuando hubo firma, o si el motivo se deja en blanco para ahorrar tiempo, esa será la etiqueta de un modelo. Un sistema que aprende de registros desordenados aprende el desorden.
+    </div>
+
+    <h3>Aprendizaje no supervisado: encontrar grupos sin pauta</h3>
+    <p>En el <span class="term">aprendizaje no supervisado</span> los datos <strong>no traen respuesta</strong>. Nadie le dijo al modelo qué buscar; él explora y encuentra estructuras, parecidos o agrupaciones. La técnica más frecuente se llama <span class="term">agrupamiento</span> (en inglés <em>clustering</em>): reúne casos que se parecen entre sí y deja a la vista <span class="term">segmentos</span> que nadie había definido de antemano.</p>
+    <p>Sirve para explorar patrones de compra, agrupar puntos de venta que se comportan parecido, identificar temas recurrentes en grandes colecciones de documentos y detectar <span class="term">casos atípicos</span>: aquellos que no se parecen a nadie y que merecen una mirada.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que le pides a un sistema que agrupe a los afiliados según cómo cotizan, qué canal usan y cuánto responden a los contactos. Puede devolverte cuatro grupos que ni sabías que existían. Pero el sistema no te dirá cómo se llaman ni qué hacer con ellos: eso lo hace quien conoce el negocio, como tú.
+    </div>
+
+    <p>Aquí el curso hace una advertencia fundamental: <strong>los segmentos no son verdades de la naturaleza.</strong> Los grupos dependen de las variables que se eligieron, de la escala y la calidad de los datos y de las decisiones del método. Si cambias las variables, cambian los grupos. Por eso un segmento hallado por el modelo debe <em>validarse</em> con evidencia adicional y con personas que conozcan el contexto: «el modelo encontró este grupo» no equivale a «este grupo existe».</p>
+
+    <h3>Aprendizaje por refuerzo: aprender de premios y castigos</h3>
+    <p>El <span class="term">aprendizaje por refuerzo</span> funciona distinto. Aquí hay un <span class="term">agente</span> (el que toma las decisiones) que realiza acciones en un <span class="term">entorno</span> (el mundo donde actúa) y recibe una <span class="term">recompensa</span> o un castigo según el resultado. Con la experiencia va aprendiendo una <span class="term">política</span>: una estrategia que le dice qué hacer en cada situación para <strong>conseguir la mayor <span class="term">recompensa acumulada</span></strong>, es decir, el mejor resultado sumando toda la secuencia, no solo el próximo paso. Por eso se usa en problemas de <span class="term">optimización secuencial</span>, donde una decisión se encadena con la siguiente. Los ejemplos clásicos son los juegos, la robótica y el control de sistemas.</p>
+    <p>Un ejemplo empresarial del curso es ajustar una secuencia de decisiones de despacho considerando puntualidad, costo del traslado y la evaluación del usuario sobre el servicio. En tu mundo, sería parecido a decidir, paso a paso, por qué canal, a qué hora y con qué mensaje contactar a cada afiliado a lo largo de una campaña.</p>
+
+    <h3>La recompensa mal diseñada</h3>
+    <p>La parte delicada es definir con mucho cuidado el entorno, las acciones posibles y la recompensa. <strong>Una recompensa incompleta puede incentivar conductas inconvenientes.</strong> Hay un caso famoso, publicado por OpenAI en 2016: un agente que jugaba una carrera de botes recibía puntos por golpear ciertos objetivos. Aprendió a dar vueltas sin parar en una laguna donde esos objetivos reaparecían, y obtuvo más puntaje que los jugadores humanos, sin terminar nunca la carrera. La recompensa premiaba los puntos, no la meta, y el agente hizo exactamente lo que se le pidió, no lo que se quería.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es el mismo problema de una meta mal puesta en una campaña. Si premias solo la cantidad de llamadas, tendrás muchísimas llamadas rápidas y pocos cierres de calidad. Un agente de IA con esa recompensa haría lo mismo, pero mucho más rápido y sin cansarse.
+    </div>
+
+    <h3>Por qué el refuerzo no va en el primer piloto</h3>
+    <p>Por su complejidad y su costo de experimentación, el aprendizaje por refuerzo suele quedar <strong>fuera de los primeros pilotos</strong>. Necesita un entorno seguro, una recompensa bien definida y, sobre todo, un <span class="term">simulador</span>: un entorno de práctica donde el agente pueda equivocarse millones de veces sin afectar a clientes reales. Un agente que aprende «de verdad» sobre tus afiliados reales se equivoca encima de ellos.</p>
+    <p>El curso agrega que el refuerzo «cobra un gran protagonismo una vez en producción». Esa frase no tiene respaldo en las fuentes que cita, y conviene no repetirla como argumento. Lo bien fundado es lo anterior: el refuerzo rara vez es el primer paso, y exige un entorno seguro o un simulador. Si te preguntan, responde eso.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Cuántos tipos hay: tres o cuatro</div>
+        <small>Según el curso, son tres: supervisado, no supervisado y por refuerzo; lo generativo se trata aparte. Google, la fuente que el curso cita, los clasifica en cuatro, sumando la IA generativa, y aclara que un mismo sistema puede pertenecer a más de una categoría.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Cómo contestar</div>
+        <small>Si preguntan por los tipos de aprendizaje según el curso, son tres. Si preguntan cómo los ordena Google, son cuatro. Y recuerda que las categorías no se excluyen entre sí.</small>
+      </div>
+    </div>
+
+    <p>El artículo cierra con una pregunta para ti: ¿cuentas hoy con el tipo y la calidad de datos que un modelo necesita para aprender, o el primer paso es <strong>replantear la forma en que registras la información</strong>? Es una pregunta incómoda y muy útil. Muchas veces la mejor inversión previa a cualquier IA es ordenar cómo se anotan los contactos, los motivos y los resultados.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Supervisado aprende con la pauta, no supervisado encuentra grupos sin pauta, y el refuerzo aprende de premios y castigos; los tres dependen de datos de calidad.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Tercer artículo del curso</span></div>
+    <h2 class="titulo">De predecir a generar: la IA que escribe y dibuja</h2>
+
+    <p>Hasta aquí, los modelos que hemos visto estiman un valor o una categoría. Ahora damos un salto: los sistemas que <strong>generan</strong> y procesan información en varios formatos a la vez. Aprovecharlos bien exige entender cómo funcionan por dentro, evaluar si sirven para un problema real y anticipar los riesgos de cada etapa.</p>
+
+    <h3>Predictivo y generativo: la diferencia</h3>
+    <p>Un <span class="term">modelo predictivo</span> estima un valor o una categoría: «este afiliado tiene riesgo alto», «se cerrarán tantas afiliaciones». Un <span class="term">modelo generativo</span> hace algo distinto: aprende las regularidades de enormes colecciones de datos y produce <strong>contenido nuevo relacionado con una entrada</strong>: texto, código, imágenes, audio y video. Además puede transformar contenidos de un formato a otro, como convertir una grabación en un resumen escrito. Eso es la <span class="term">IA generativa</span>, que ya conocías de la unidad anterior; aquí te explicamos cómo funciona.</p>
+
+    <h3>El Transformer y la atención, en palabras simples</h3>
+    <p>Para producir lenguaje humano, muchos modelos usan una arquitectura llamada <span class="term">Transformer</span>, presentada en 2017 en un trabajo de Vaswani y colaboradores titulado «Attention Is All You Need». Su gran invento es el <span class="term">mecanismo de atención</span>: la capacidad de ponderar qué partes del contexto importan más para cada decisión.</p>
+    <p>Explicado con un ejemplo cotidiano. Imagina que un afiliado te dice: «Mi hermano se cambió de AFP y le fue muy bien, pero a mí me da miedo moverme porque ya vi lo que pasó antes». Para entender de qué trata esa frase no le das el mismo peso a cada palabra. Tu atención se va a «me da miedo moverme» y a «se cambió», y suelta lo demás. El mecanismo de atención hace algo parecido: al leer o escribir, el modelo mira todo el texto que tiene a su alcance y decide cuánto pesa cada parte al producir la siguiente palabra. Ese texto disponible, con todo lo que se le ha dicho, es el <span class="term">contexto</span>. Este mecanismo sostiene gran parte de los modelos de lenguaje actuales.</p>
+    <p>Un matiz sobre el origen: el curso cita ese trabajo para «producir lenguaje humano», pero en rigor se presentó pensando en la <strong>traducción automática</strong>, y su uso se amplió después. Si te piden la referencia del Transformer, es Vaswani y colaboradores, 2017.</p>
+
+    <h3>Genera lo más probable, no consulta una fuente verdadera</h3>
+    <p>Esta es la idea que más debes llevarte de este bloque. El curso lo dice así: estos sistemas <strong>generan secuencias a partir de patrones estadísticos y del contexto con los que fueron entrenados; no consultan automáticamente una fuente verdadera cada vez que responden.</strong> Lo que hacen es inferir qué es lo más probable que corresponda responder dadas las condiciones de la consulta.</p>
+    <p>Para dividir el texto, el modelo lo trocea en pedacitos llamados <span class="term">tokens</span> (palabras, partes de palabras o signos), y en cada paso hace la <span class="term">predicción del siguiente token</span>: elegir cuál es el pedazo más probable que sigue. Así, uno a uno, va armando la respuesta completa. Un <span class="term">modelo de lenguaje</span> es justamente eso: un modelo entrenado para predecir el texto que sigue.</p>
+
+    <p>El curso lo ilustra con el rey. Si el modelo ve «El rey tiene sobre su cabeza una…», lo más probable que sigue es <strong>«corona»</strong>. Si ve «El hijo del rey es el…», lo más probable es <strong>«príncipe»</strong>. Y llevado más allá, el modelo podría concluir que ese príncipe probablemente sucederá al rey cuando este fallezca. No «sabe» de monarquías: sabe qué palabras suelen ir juntas. Esa conclusión es una asociación estadística, no un razonamiento garantizado.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es como un ejecutivo que lleva años en el área y completa de memoria las frases de cualquier afiliado: «yo quería saber si…», y ya sabe cómo sigue. Casi siempre acierta, pero a veces completa con algo que suena muy bien y no es cierto. Si le pides la tasa de un producto y no la recuerda, un modelo generativo puede inventar una cifra con total seguridad, porque «lo que suena probable» no es lo mismo que «lo que es verdad».
+    </div>
+
+    <h3>La confabulación nace de ahí</h3>
+    <p>Como el modelo busca lo más probable y no lo verdadero, a veces produce contenido falso presentado con total seguridad. Se le llama <span class="term">confabulación</span> o, coloquialmente, <strong>alucinación</strong>. Tiene la misma raíz que el ejemplo del rey: es una consecuencia directa de cómo funcionan, no un fallo que alguien olvidó arreglar.</p>
+    <p>Una precisión útil: lo anterior es cierto para el modelo por sí solo. Muchos asistentes actuales lo combinan con una <span class="term">búsqueda documental</span>, es decir, con la capacidad de ir a buscar documentos o la web y apoyarse en ellos; el propio listado del curso describe una herramienta que responde con citas y enlaces. Eso reduce el problema, pero no lo elimina. La regla práctica es: responde lo que dice el curso (generan lo más probable y no verifican por sí mismos) y, si preguntan cómo mitigar, menciona conectar fuentes confiables y verificar.</p>
+
+    <h3>El prompt: cómo se le habla al modelo</h3>
+    <p>La instrucción que le entregas se llama <span class="term">prompt</span>. Un buen prompt le da al modelo tres cosas: <strong>una tarea, información y las condiciones de la respuesta</strong> (por ejemplo, el tono, el largo o el formato). En esta unidad se usan instrucciones sencillas solo para observar qué sabe hacer.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un prompt es como el briefing que le das a un colega nuevo. «Redacta un mensaje» es pobre. «Redacta un mensaje de seguimiento de tres líneas para un afiliado que pidió información hace una semana, con tono cercano y sin prometer rentabilidades» le da tarea, datos y condiciones. Mientras mejor el briefing, mejor el resultado, pero siempre hay que revisarlo.
+    </div>
+
+    <h3>Multimodalidad: varios tipos de información a la vez</h3>
+    <p>Un modelo <span class="term">multimodal</span> trabaja con distintos tipos de información, que se llaman <span class="term">modalidades</span>: texto, imagen, audio, video. Puede, por ejemplo, recibir texto e imagen, analizar un audio o un video, y generar una salida en otra modalidad. Google Cloud lo describe como la capacidad de procesar modalidades como imágenes, videos y texto y de combinar entradas y salidas distintas. La <span class="term">multimodalidad</span> abre usos como:</p>
+
+    <ul>
+      <li>Analizar la fotografía de un producto junto con su ficha técnica.</li>
+      <li>Convertir una reunión en una transcripción con tareas.</li>
+      <li>Revisar un documento que mezcla tablas e imágenes.</li>
+      <li>Generar piezas adaptadas a distintos canales.</li>
+    </ul>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en la grabación de una reunión de equipo o de una capacitación del call center: una herramienta multimodal podría transcribirla, resumirla y sacar la lista de compromisos. O tomar un documento de un afiliado con tablas y fotos y decirte qué trae. Pero cuidado con el control: <strong>el control debe considerar cada modalidad</strong>. Una imagen convincente puede esconder un error que una revisión rápida no ve, como un número mal escrito dentro de un gráfico.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un modelo generativo no busca la verdad, busca lo más probable; por eso escribe con soltura y por eso siempre hay que revisar lo que dice.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Elegir bien</span></div>
+    <h2 class="titulo">Qué tecnología para cada necesidad (y cuándo no hace falta IA)</h2>
+
+    <p>Ahora viene el corazón práctico de la unidad: cómo emparejar un problema real con la tecnología correcta. El curso propone una fórmula simple: vincular <strong>la tarea, la evidencia que tienes y el tipo de salida que buscas</strong>. Y avisa algo importante: la tabla que sigue es una orientación inicial, <strong>no reemplaza una evaluación técnica ni jurídica</strong>.</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Seis necesidades típicas, con su versión en una AFP</caption>
+        <thead>
+          <tr><th>Necesidad</th><th>Enfoque inicial</th><th>Condición crítica</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lab-col">Aplicar una política estable y explícita (por ejemplo, un requisito claro para ofrecer algo)</td><td>Reglas o <span class="term">automatización convencional</span></td><td>Reglas completas, auditables y fáciles de mantener</td></tr>
+          <tr><td class="lab-col">Predecir un número o una categoría conocida (por ejemplo, quién tiene riesgo de traspaso)</td><td>Aprendizaje supervisado</td><td>Ejemplos históricos etiquetados y representativos</td></tr>
+          <tr><td class="lab-col">Explorar patrones o grupos que no conocemos (por ejemplo, tipos de afiliados que no habíamos visto)</td><td>Aprendizaje no supervisado</td><td>Variables pertinentes e interpretación de alguien que conozca el negocio</td></tr>
+          <tr><td class="lab-col">Optimizar decisiones sucesivas con retroalimentación (por ejemplo, la secuencia de contactos de una campaña)</td><td>Aprendizaje por refuerzo</td><td>Entorno seguro, recompensa bien definida y capacidad de simular</td></tr>
+          <tr><td class="lab-col">Crear, transformar o sintetizar contenido (por ejemplo, borradores de mensajes)</td><td>IA generativa</td><td>Instrucciones claras, fuentes, validación humana y derechos de uso</td></tr>
+          <tr><td class="lab-col">Resolver una tarea que combina varias de las anteriores</td><td><span class="term">Arquitectura híbrida</span></td><td>Diseño del flujo, integración, controles y responsables definidos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Fíjate en la última fila. Una <strong>arquitectura híbrida</strong> es una solución armada con varias piezas, cada una en lo que hace mejor. Un ejemplo: un sistema que clasifica las consultas que entran (supervisado), busca la respuesta correcta en el manual interno (búsqueda documental), redacta el mensaje (generativo) y bloquea cualquier cosa fuera de política (reglas). Lo difícil ahí no es cada pieza, sino cómo se conectan, quién las controla y quién responde si algo falla.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la lógica de un buen proceso de ventas: no usas la misma herramienta para todo. Para una regla fija, una planilla. Para saber a quién llamar, un modelo con historial. Para escribir el correo de seguimiento, un asistente generativo. Y para unir todo, un flujo con responsables claros. Quien te ofrece «una IA que hace todo» está ocultando el flujo.
+    </div>
+
+    <h3>Una solución de IA también puede ser innecesaria</h3>
+    <p>Una de las ideas más sanas del curso: a veces <strong>no hace falta IA</strong>. Antes de lanzarte, comprueba cinco cosas:</p>
+
+    <ol class="pasos">
+      <li><b>¿El problema tiene suficiente frecuencia, costo o escala?</b> Si ocurre muy rara vez o cuesta poco, no vale la pena el esfuerzo. En tu mundo: automatizar algo que pasa tres veces al año no se paga solo.</li>
+      <li><b>¿Existe una línea base?</b> La <span class="term">línea base</span> es cómo se hace hoy y cuánto cuesta, tarda y falla. Sin ella no puedes saber si lo nuevo mejora algo. Si hoy nadie mide cuántos afiliados se pierden por falta de seguimiento, no hay punto de comparación.</li>
+      <li><b>¿Los datos están disponibles?</b> Hay que tenerlos, con permisos y en un estado usable.</li>
+      <li><b>¿El error puede controlarse?</b> Si equivocarse es muy grave y nadie puede revisar, el riesgo supera el beneficio.</li>
+      <li><b>¿La organización podrá mantener la solución cuando termine el piloto?</b> Un sistema que nadie sabe cuidar se deteriora. Y eso suele pasar: el piloto se luce y después se abandona.</li>
+    </ol>
+
+    <p>Un resumen que sale del texto de apoyo del curso: si una necesidad se resuelve con políticas estables y explícitas, la automatización por reglas es más eficiente, económica y transparente que el aprendizaje automático. La IA no es un título de prestigio, es una herramienta que tiene que pagarse sola.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Cada necesidad tiene su tecnología, muchas soluciones reales son híbridas, y a veces la mejor decisión de IA es no usar IA.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">La práctica de la unidad</span></div>
+    <h2 class="titulo">Teachable Machine: aprender jugando con un modelo</h2>
+
+    <p>La parte práctica de la unidad es un experimento sencillo y muy revelador. <span class="term">Teachable Machine</span> es una herramienta web gratuita de Google que permite crear modelos de clasificación de imágenes, sonidos y poses <strong>sin escribir una línea de código</strong>. Fue diseñada para que cualquiera pueda experimentar con aprendizaje automático y entender de forma directa la relación entre los ejemplos, el entrenamiento y la clasificación. Tú le muestras ejemplos con la cámara, le dices a qué grupo pertenece cada uno, la entrenas y ves cómo clasifica algo nuevo.</p>
+
+    <p>Una advertencia honesta del curso: esta herramienta <strong>por sí sola no produce un sistema listo para operar</strong>. Es un laboratorio para aprender, no una fábrica de soluciones. Por dentro hace algo ingenioso: usa el <span class="term">aprendizaje por transferencia</span> (<em>transfer learning</em>), que consiste en partir de un modelo que ya aprendió a reconocer muchas cosas y solo ajustarlo con tus ejemplos. Es como contratar a un ejecutivo con años de experiencia en ventas y enseñarle solo los productos de tu AFP, en vez de formar a alguien desde cero. Según el trabajo que presentó la herramienta, el entrenamiento ocurre dentro del navegador, sin que tus fotos salgan del computador.</p>
+
+    <h3>Los siete pasos sugeridos</h3>
+    <p>La recomendación del curso es trabajar con dos o tres clases fáciles de distinguir y seguir este camino. Se muestra con el ejemplo del curso, que usa una botella con tapa, una botella sin tapa y un fondo vacío:</p>
+
+    <ol class="pasos">
+      <li><b>Define clases claramente distinguibles.</b> Por ejemplo, botella con tapa, botella sin tapa y fondo vacío. Si dos clases se parecen demasiado, ni una persona sabría separarlas.</li>
+      <li><b>Reúne suficientes ejemplos por clase, variando ángulo, distancia, iluminación y fondo.</b> Esa variedad es la diversidad que viste en la Parte 3.</li>
+      <li><b>Entrena y revisa cómo se repartieron las muestras</b> entre las usadas para entrenar y las usadas para probar.</li>
+      <li><b>Prueba con objetos y condiciones que el modelo no haya visto.</b> Este es el paso que de verdad mide si aprendió o solo memorizó.</li>
+      <li><b>Registra los errores, las confusiones y los cambios en el nivel de seguridad</b> con que responde. Esa seguridad se llama <span class="term">confianza del modelo</span>: cuánto «cree» el modelo que su respuesta es la correcta. Ojo: un modelo puede estar muy seguro y equivocarse.</li>
+      <li><b>Agrega ejemplos de los casos difíciles y vuelve a entrenar.</b> Así se mejora: no tocando el modelo, sino mejorando los datos.</li>
+      <li><b>Explica qué podría salir mal en una operación real.</b> El ejercicio no termina en «funcionó»: termina en «¿en qué condiciones falla?».</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que quisieras enseñar a un sistema a distinguir tres tipos de imagen de un trámite de afiliación: bien escaneada, borrosa y cortada. Seguirías los mismos siete pasos. Y el paso seis sería el más útil: cada vez que falla con una imagen rara, la agregas a los ejemplos y reentrenas, tal como harías con un ejecutivo al que le muestras los casos que le costaron.
+    </div>
+
+    <h3>La observación clave: el modelo aprende lo que hay en los ejemplos, no lo que tú crees</h3>
+    <p>El modelo aprende <strong>correlaciones presentes en los ejemplos</strong>, no necesariamente lo que tú tenías en mente. Si todas las fotos de una clase tienen un fondo distinto, puede terminar <strong>aprendiendo el fondo y no el objeto</strong>. Es lo que se llama una <span class="term">correlación espuria</span>, o «atajo»: una pista engañosa que acompaña a la respuesta correcta en los ejemplos, pero que no tiene nada que ver con ella. La prueba con condiciones nuevas es justamente lo que detecta estos atajos.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">El modelo aprendió el fondo</div>
+        <p>Todas las fotos de «botella con tapa» se sacaron sobre una mesa blanca, y las de «sin tapa» sobre una madera. El modelo no aprendió qué es una tapa; aprendió que «mesa blanca» significa «con tapa». Cambia el fondo y se equivoca.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">El modelo aprendió el objeto</div>
+        <p>Las fotos de cada clase se tomaron con distintos fondos, ángulos y luces. La única pista que se mantiene siempre es la tapa. Por eso, cuando cambia el fondo, sigue acertando.</p>
+      </div>
+    </div>
+
+    <p>Hay un caso clásico y bien documentado que ilustra esto: un clasificador de fotos de perros husky y lobos que predecía «lobo» cada vez que veía nieve en el fondo. No distinguía animales, distinguía paisajes. Para ser justos, los investigadores que lo mostraron lo entrenaron a propósito con pocas imágenes sesgadas, justamente para probar si las personas se daban cuenta del problema. Pero la lección vale igual para cualquier modelo mal alimentado.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si todos los afiliados que cierran en tus datos fueron contactados por el mismo ejecutivo estrella, un modelo podría concluir que «ser contactado por Fulano» predice el cierre, cuando en realidad el que cierra es Fulano, no el perfil del afiliado. Es un atajo que se rompe el día que Fulano se va de vacaciones.
+    </div>
+
+    <h3>Tres precisiones que conviene conocer</h3>
+    <p><strong>Primera:</strong> el curso habla de revisar las muestras «para entrenamiento y prueba». Según el trabajo que presentó la herramienta, ella retiene automáticamente el 15 % de los ejemplos de cada clase como conjunto de <em>validación</em>, no como una prueba totalmente independiente. Por eso el paso cuatro, probar con objetos y condiciones nuevas, es el que realmente hace de prueba. En el examen usa las palabras del curso; en un proyecto real separa entrenamiento, validación y prueba.</p>
+    <p><strong>Segunda:</strong> la herramienta ofrece un panel avanzado con ajustes como las épocas (cuántas vueltas da el entrenamiento por los ejemplos), el tamaño del lote (cuántos ejemplos mira cada vez) y la tasa de aprendizaje (cuán grandes son los ajustes). Son <em>hiperparámetros</em>, las perillas que ya conoces de la Parte 3. No tienes que tocarlos para aprender.</p>
+    <p><strong>Tercera:</strong> el video del profesor Rodrigo Pereira, que enseña a usar la herramienta, y su PDF descargable están solo en la versión online del curso, no en el PDF del material. Ese video clasifica, entre otras cosas, expresiones faciales como ejercicio didáctico. Eso no contradice el caso SurAndes que verás en la Parte 10, donde se descarta inferir el ánimo de los trabajadores por sus rostros: lo que cambia no es la técnica sino el <strong>uso</strong>. Probar con tu propio rostro y tu consentimiento es un ejercicio; vigilar a trabajadores sin su consentimiento es otra cosa.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un modelo aprende lo que le muestras, incluido el fondo: por eso se prueba siempre con casos nuevos y se corrige mejorando los ejemplos.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">Lo que no puedes dejar pasar</span></div>
+    <h2 class="titulo">Riesgos y uso responsable</h2>
+
+    <p>Usar IA con criterio no es solo elegir la herramienta correcta: es tomar decisiones concretas <strong>a lo largo de todo el ciclo de vida</strong> del sistema, desde que se diseña hasta que se usa y se evalúa. El <span class="term">ciclo de vida de la IA</span> es ese recorrido completo, y en cada etapa pueden aparecer problemas distintos. En una AFP, donde se manejan datos personales de muchísimas personas y decisiones que tocan su ahorro, esto pesa más que en la mayoría de los negocios.</p>
+
+    <h3>Dos marcos de referencia, en simple</h3>
+    <p>El curso presenta dos guías internacionales para ordenarse. La primera son los <span class="term">principios de la UNESCO</span>, el organismo de la ONU para la educación y la cultura. El curso menciona ocho: proporcionalidad, seguridad, privacidad, responsabilidad, transparencia, supervisión humana, sostenibilidad y equidad. Una precisión: la Recomendación de la UNESCO, adoptada en noviembre de 2021 por 193 Estados, tiene en realidad diez principios; al listado del curso le faltan «sensibilización y educación» y «gobernanza y colaboración adaptativas». Si te piden los principios «según el curso», son los ocho; si te preguntan cuántos tiene la Recomendación, son diez.</p>
+    <p>La segunda guía es el <span class="term">marco de gestión de riesgos de NIST</span>, el instituto de estándares de Estados Unidos. Propone gestionar los riesgos desde el diseño, el desarrollo, el uso y la evaluación. Su estructura base se organiza en cuatro funciones: <strong>gobernar, mapear, medir y gestionar</strong>. Y su perfil para IA generativa, de 2024, enumera doce riesgos; el curso nombra solo los más relevantes para el mundo empresarial.</p>
+
+    <h3>Los seis riesgos del curso</h3>
+    <p>El curso reúne seis riesgos en una tabla, cada uno con su control inicial. Veámoslos, con sus contrapartes en tu mundo.</p>
+
+    <p><span class="term">Sesgo.</span> Aparece cuando los datos no representan bien a todos, cuando las etiquetas vienen de decisiones del pasado que ya eran desiguales, o cuando el modelo funciona mejor con unos grupos que con otros. El control inicial: revisar la cobertura de los datos, comparar el desempeño por segmentos y documentar los límites. <em>En tu mundo:</em> un modelo de prospección entrenado solo con afiliados de ciertos perfiles tenderá a ignorar a los demás, y nadie lo notará hasta que alguien mire los resultados por separado.</p>
+
+    <p><span class="term">Confabulación.</span> Contenido falso o incoherente presentado con seguridad. Es la alucinación que ya viste en la Parte 5. El control: verificar las fuentes y <strong>prohibir su uso automático en decisiones críticas</strong>. <em>En tu mundo:</em> nunca envíes a un afiliado una cifra, una condición o un plazo redactado por una herramienta sin comprobarlo en la fuente oficial.</p>
+
+    <p><span class="term">Privacidad.</span> Carga, inferencia o exposición de datos personales y sensibles. Ocurre, por ejemplo, cuando alguien pega información de afiliados en una herramienta pública. El control: <span class="term">minimización de datos</span> (usar solo los que la tarea necesita), <span class="term">anonimización</span> (quitarles lo que identifica a la persona) y usar únicamente entornos autorizados. <em>En tu mundo:</em> los datos de tus afiliados no se copian en un chat público, aunque sea «solo para que me ayude a redactar»; se usan solo las herramientas aprobadas por tu empresa.</p>
+
+    <p><span class="term">Propiedad intelectual.</span> Uso o generación de material protegido, marcas o secretos comerciales. El control: revisar licencias, procedencia, contratos y el uso previsto. <em>En tu mundo:</em> ni subas a una herramienta externa documentos internos o confidenciales de tu AFP, ni publiques una imagen generada sin saber qué derechos de uso tiene.</p>
+
+    <p><span class="term">Deepfakes e integridad.</span> Un <span class="term">deepfake</span> es un audio, imagen o video sintético, fabricado por IA, capaz de hacer creer que alguien dijo o hizo algo que nunca dijo ni hizo. Amenaza la <span class="term">integridad de la información</span>, es decir, que lo que circula sea confiable. El control: etiquetar el <span class="term">contenido sintético</span>, mantener la <span class="term">trazabilidad</span> (poder reconstruir de dónde vino cada cosa y quién la hizo) y verificar la procedencia. <em>En tu mundo:</em> la <span class="term">clonación de voz</span> permite imitar la voz de una persona; imagina la llamada de alguien que suena como un afiliado o como un jefe y no lo es. Mientras más voces y rostros se pueden copiar, más importa verificar por otro canal.</p>
+
+    <p><span class="term">Sobreconfianza.</span> Delegar demasiado o aceptar resultados sin revisarlos. El control: asignar responsables, fijar <span class="term">umbrales de escalamiento</span> (la regla que dice «desde este punto, un humano decide») y mantener la <span class="term">supervisión humana</span>. <em>En tu mundo:</em> es el piloto automático del que acepta la lista de «a quién llamar» sin mirar. La herramienta ayuda, pero la responsabilidad sigue siendo de una persona.</p>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="tt">Cuando el modelo se equivoca con seguridad</div>
+        <small>Confabulación: una respuesta falsa, bien redactada y con tono de certeza. El peligro no es el error, sino que no se note.</small>
+      </div>
+      <div class="a fn">
+        <div class="tt">Cuando la persona deja de mirar</div>
+        <small>Sobreconfianza: el resultado puede estar bien o mal, pero nadie lo revisa. Los dos riesgos se potencian: un error seguro y una persona que no revisa.</small>
+      </div>
+    </div>
+
+    <p>El perfil de NIST define la confabulación como la producción de contenido falso o erróneo presentado con falsa certeza de veracidad, y explica que ocurre porque los modelos aproximan las distribuciones estadísticas de sus datos de entrenamiento. Es la misma idea de la Parte 5, dicha por una institución oficial.</p>
+
+    <h3>La gestión debe ser proporcional al impacto</h3>
+    <p>La idea de <span class="term">proporcionalidad</span> es de las más prácticas: cuánto control necesitas depende de cuánto daño puede causar un error. No se trata de frenar todo, sino de ajustar la exigencia a lo que está en juego.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Impacto bajo: se corrige</div>
+        <p>El borrador de un mensaje de campaña. Si trae un error, se detecta y se corrige antes de enviarlo. Un revisor basta, y el costo de un tropiezo es pequeño.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Impacto alto: controles estrictos</div>
+        <p>Una recomendación que afecte el ahorro previsional de una persona, o una decisión de crédito o laboral. Aquí hace falta datos verificados, un responsable claro, revisión humana obligatoria y registro de quién decidió qué.</p>
+      </div>
+    </div>
+
+    <h3>Qué dice Chile</h3>
+    <p>Para los datos personales, la ley vigente hoy es la <span class="term">Ley 19.628</span>, de 1999. La <span class="term">Ley 21.719</span>, publicada en diciembre de 2024, moderniza ese marco: refuerza los principios de licitud (que el uso de datos tenga un fundamento válido), finalidad (que se usen solo para lo que se dijo), seguridad y responsabilidad, y crea la <span class="term">Agencia de Protección de Datos Personales</span>. El curso indica que entra en vigor el <strong>1 de diciembre de 2026</strong>, que es lo que dice la ley publicada.</p>
+    <p>Un dato que cambia lo que debes saber: el Gobierno ingresó al Senado un proyecto para <strong>postergar esa entrada en vigor hasta el 1 de diciembre de 2027</strong>, y a fines de septiembre de 2026 seguía en trámite, sin aprobarse. Así que lo correcto es decir: la fecha legal es el 1 de diciembre de 2026, pero hay un proyecto de postergación en discusión; conviene confirmar el estado actual con el área de cumplimiento de tu AFP. También hay un proyecto de ley específico sobre IA, que aún no es ley.</p>
+    <p>En esta materia el <span class="term">consentimiento</span>, es decir, la autorización libre e informada de la persona para usar sus datos, es una pieza central. Y el curso insiste: las organizaciones deben revisar sus obligaciones con asesoría jurídica, no por su cuenta.</p>
+
+    <h3>Propiedad intelectual y la guía de la OMPI</h3>
+    <p>Quién es dueño de lo que genera una IA, o qué pasa cuando una IA usa material protegido, varía según el país, el contrato, la plataforma y el tipo de contenido. La <span class="term">OMPI</span>, la organización mundial de propiedad intelectual de la ONU, publicó en 2024 una guía con principios y una lista de verificación para adoptar IA generativa. Recomienda identificar los activos involucrados, revisar las condiciones de uso, mantener la trazabilidad y evaluar salvaguardas. Es una guía, no una norma.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">A mayor impacto de la decisión, más control humano: la IA acelera el trabajo, pero la responsabilidad sigue siendo de una persona.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 9 -->
+  <section class="parte reveal" id="p9">
+    <div class="kicker"><span class="num">9</span><span class="tag">Del entusiasmo a la disciplina</span></div>
+    <h2 class="titulo">Cómo se diseña un buen piloto</h2>
+
+    <p>Una <span class="term">prueba piloto</span> es una prueba pequeña, acotada y real de una solución, hecha para decidir si vale la pena seguir. El curso es claro sobre su propósito: un piloto útil <strong>produce evidencia para decidir</strong>. Debe partir con tres cosas: un problema acotado, una línea base y un responsable de negocio, es decir, una persona del lado comercial que responde por el resultado y no solo el equipo técnico.</p>
+
+    <p>El peligro que se busca evitar es el <span class="term">piloto demostrativo</span>: aquel que luce en una presentación, pero no deja nada que sirva para decidir y se muere sin continuidad. Todos conocemos proyectos que impresionaron en la reunión y nunca se volvieron a abrir. Para prevenirlo, el curso propone siete preguntas, que aquí se leen desde tu mundo:</p>
+
+    <ol class="pasos">
+      <li><b>¿Qué decisión, tarea o resultado se busca mejorar?</b> Aquí va la pregunta de negocio con su verbo. «Reducir los traspasos» es una intención; «identificar con una semana de anticipación a los afiliados con riesgo de traspaso» es una tarea.</li>
+      <li><b>¿Cómo se hace hoy, y cuál es su línea base de tiempo, costo, calidad o riesgo?</b> Si hoy el seguimiento se hace de memoria o en una planilla, ese es el punto de comparación. Sin medirlo antes, después no sabrás si mejoró.</li>
+      <li><b>¿Qué datos o contenidos hay, y con qué permisos?</b> No basta con tenerlos: hay que tener derecho a usarlos para este fin.</li>
+      <li><b>¿Qué error es tolerable y cuál sería inaceptable?</b> Es la definición de <span class="term">error tolerable</span>: hasta dónde se puede equivocar el sistema sin causar daño. Una lista de llamadas con algunas falsas alertas es tolerable; enviar un mensaje con una condición equivocada a un afiliado, no.</li>
+      <li><b>¿Quién revisará los resultados y quién responde por la decisión final?</b> Un nombre, no un área.</li>
+      <li><b>¿Cómo se medirá el valor, el desempeño técnico y la experiencia de las personas usuarias?</b> Las tres miradas importan: que cree valor, que funcione y que la gente quiera usarlo.</li>
+      <li><b>¿Qué pasará si la solución falla, si cambia el contexto o si deja de estar disponible?</b> Un plan de salida. Un sistema que no puede detenerse sin romper la operación es un riesgo.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es exactamente el criterio con que se evalúa una campaña piloto bien hecha: un objetivo concreto, una meta medible contra lo que ya se logra hoy, un responsable, un límite de lo que se tolera y una forma de parar si no funciona. Si alguien te propone un «piloto de IA» y no puede contestar estas siete preguntas, todavía no es un piloto, es una demostración.
+    </div>
+
+    <p>Una cualidad más que reaparece en el caso de la próxima parte: la <span class="term">reversibilidad</span>, que significa que se pueda detener y volver atrás sin dejar secuelas. Un buen piloto se puede apagar sin interrumpir la operación.</p>
+
+    <p>El artículo termina con una frase que resume el espíritu de la unidad: se trata de pasar <strong>del entusiasmo por la tecnología a la disciplina en la ejecución</strong>. El impacto está en entender los límites de cada enfoque, gestionar los riesgos y asegurar que la supervisión humana mantenga el control de las decisiones críticas. El texto de apoyo del curso añade lo que debe tener un piloto: línea base clara, datos autorizados, límites de error definidos y responsables asignados.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un piloto sirve si deja evidencia para decidir: empieza con un problema acotado, mide contra lo que ya existe y tiene dueño.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 10 -->
+  <section class="parte reveal" id="p10">
+    <div class="kicker"><span class="num">10</span><span class="tag">El caso del curso</span></div>
+    <h2 class="titulo">El caso SurAndes: elegir un solo piloto entre cinco</h2>
+
+    <p>Aquí el curso junta todo en una historia. Un aviso importante: <strong>SurAndes Alimentos es una empresa ficticia</strong>, un caso inventado con fines didácticos, igual que su gerente, Marcela Riquelme. Sirve precisamente porque se parece a lo que le puede pasar a cualquier empresa, incluida una AFP.</p>
+
+    <h3>La situación</h3>
+    <p>SurAndes es una empresa chilena mediana que fabrica y distribuye productos envasados para supermercados, almacenes y clientes institucionales. Tiene una planta, dos centros de distribución y un equipo comercial de 45 personas. En los últimos tres años incorporó un sistema de gestión empresarial, cámaras en la línea de envasado y un canal digital de atención. Hay información, pero está dispersa y su calidad es desigual.</p>
+    <p>La gerencia general creó un comité para priorizar iniciativas de IA. El presupuesto alcanza para <strong>un solo piloto de doce semanas</strong>, y llegaron cinco propuestas.</p>
+
+    <h3>Las cinco propuestas</h3>
+    <ol class="pasos">
+      <li><b>Propuesta A: inspección visual de envases.</b> Hay unas 18.000 fotografías, y el área de calidad etiquetó 6.000 en cuatro clases: correcto, sello incompleto, etiqueta desplazada o abolladura. Un clasificador alertaría a un operario. El detalle: las fotos etiquetadas vienen principalmente del turno diurno y de dos productos.</li>
+      <li><b>Propuesta B: segmentación de clientes.</b> Agrupar clientes por frecuencia, volumen, estacionalidad, forma de pago y mezcla de productos, pues hoy hay tres segmentos definidos solo por facturación. Hay cuatro años de transacciones, pero los identificadores de algunos clientes cambiaron tras una migración del sistema.</li>
+      <li><b>Propuesta C: generación de fichas y contenidos.</b> IA generativa para hacer borradores de fichas de producto, publicaciones y respuestas a consultas frecuentes. Los ingredientes, alérgenos y la conservación están en fichas técnicas ya aprobadas. Estiman ahorrar tiempo de redacción, pero aún no definen cómo se revisará ni qué política habrá para cargar documentos internos.</li>
+      <li><b>Propuesta D: optimización dinámica del despacho.</b> Un sistema que aprenda a asignar rutas mediante recompensas (puntualidad, combustible, ocupación de vehículos). No hay simulador y los datos históricos de tráfico están incompletos. Un error podría afectar entregas a clientes estratégicos.</li>
+      <li><b>Propuesta E: detector de ánimo del personal.</b> Recursos Humanos quiere analizar cámaras internas para inferir el estado emocional y anticipar conflictos. No hay consentimiento específico ni una relación clara entre la expresión facial y el desempeño, y podría afectar derechos y la confianza interna.</li>
+    </ol>
+
+    <h3>Lo que más pesa: la información adicional</h3>
+    <p>El caso agrega datos que parecen menores y no lo son. No hay comité formal de datos ni inventario completo de la información personal. El área de calidad puede dedicar <strong>cuatro horas semanales</strong>. Marketing tiene <strong>una persona responsable de aprobar cada publicación</strong>. La gerencia exige un resultado medible al terminar las doce semanas. Y la solución debe poder <strong>detenerse sin interrumpir la operación</strong>.</p>
+
+    <h3>Por qué se descartan E, D y B</h3>
+    <p>El comité descarta de inmediato tres propuestas, cada una por un motivo distinto, y vale la pena distinguirlos:</p>
+
+    <ol class="pasos">
+      <li><b>E se descarta por ética y privacidad.</b> Vulnera la privacidad y la integridad laboral: se inferiría el ánimo de las personas sin su consentimiento y sin una relación válida entre cara y desempeño. Además, deducir emociones a partir del rostro es algo muy discutido en la ciencia, y la Ley de IA de la Unión Europea prohíbe el reconocimiento de emociones en el lugar de trabajo. Aquí el criterio no es técnico, sino de derechos.</li>
+      <li><b>D se descarta por seguridad operativa.</b> Sin simulador, el sistema tendría que aprender equivocándose con entregas reales, y un error podría afectar a clientes estratégicos. Es lo que viste en la Parte 4: el refuerzo necesita un entorno seguro.</li>
+      <li><b>B se descarta por calidad de datos.</b> La migración dejó identificadores inconsistentes, así que primero hace falta un <span class="term">saneamiento de datos</span>: limpiar y reconciliar la información. Sin eso, los grupos que encuentre el modelo no serían confiables. La idea tampoco es mala: solo no está lista.</li>
+    </ol>
+
+    <h3>Quedan A y C. ¿Y por qué gana C?</h3>
+    <p>A es conveniente si se busca aprendizaje técnico y una mejora operativa directa, pero siempre que se amplíe el conjunto de datos y se mantenga al operario en el circuito de decisión, lo que se llama <span class="term">operario en el circuito</span> (en inglés, <em>human in the loop</em>): una persona que revisa y decide, no una máquina que actúa sola. Y aquí aparece lo que viste con la diversidad: 6.000 fotos de un solo turno y de solo dos productos no bastan para que un clasificador funcione con todos los turnos y productos. Ampliar ese conjunto exigiría las cuatro horas semanales de calidad, que la gerente no quería exigir.</p>
+    <p>C, en cambio, es una opción de ejecución rápida, bajo costo y <strong>totalmente reversible</strong>. Las fuentes ya existen y están aprobadas (las fichas técnicas oficiales) y hay una persona disponible en Marketing para la revisión humana.</p>
+
+    <h3>La decisión de la gerente</h3>
+    <p>La gerente general, Marcela Riquelme, fijó la línea base y lo que importaba: un <strong>resultado medible con riesgo operativo nulo y sin exigir tiempo extra al equipo de calidad</strong>. Con ese criterio, aprobó <strong>únicamente la Propuesta C</strong>, apoyada en la persona de Marketing ya disponible para revisar y en las fichas técnicas oficiales como fuente.</p>
+    <p>Hay una condición que el caso deja abierta y que vale la pena anotar: antes de partir, SurAndes debía definir el flujo de revisión y la política para cargar documentos internos, que aún no tenía. Es un análisis nuestro, no un dato del curso, pero sigue el espíritu de lo que enseña la unidad.</p>
+
+    <h3>Y en una AFP, ¿cómo se elegiría el primer piloto?</h3>
+    <p>Este ejercicio es nuestro, no del curso, y sirve para que veas el criterio en acción. Imagina que una AFP tiene cinco ideas parecidas a las de SurAndes:</p>
+
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Se parecen a A y B</div>
+        <div class="sub">Lo predictivo</div>
+        <ul>
+          <li><strong>Alerta de riesgo de traspaso</strong> (como A): necesita etiquetas confiables de quién se fue y quién no, y una persona que decida qué hacer con la lista.</li>
+          <li><strong>Segmentación de afiliados</strong> (como B): depende de que los datos de cada afiliado estén ordenados y unidos; si hay registros duplicados o cambios de sistema, primero hay que sanear.</li>
+        </ul>
+      </div>
+      <div class="card a">
+        <div class="q">Se parecen a C, D y E</div>
+        <div class="sub">Lo generativo y lo riesgoso</div>
+        <ul>
+          <li><strong>Borradores de mensajes y respuestas</strong> a partir de guiones y fichas ya aprobados (como C): rápido, reversible, con un revisor.</li>
+          <li><strong>Optimizar sola la secuencia de contactos</strong> (como D): sin simulador, se equivocaría con afiliados reales.</li>
+          <li><strong>Medir el ánimo de ejecutivos o afiliados</strong> por voz o rostro (como E): descartada, sin consentimiento y sin base válida.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>La conclusión es la misma que en SurAndes: el primer piloto rara vez es el más ambicioso. Es el que tiene fuentes aprobadas, un revisor, un error controlable y se puede apagar sin dolor. Lo atractivo, sin datos, sin tiempo o sin gobernanza, termina en el cajón.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      El curso pregunta qué criterio de descarte suele ignorarse más: los éticos, los operativos o los de calidad de datos. Mira tu experiencia: ¿cuántas veces se ha lanzado algo comercial entusiasmante que después tropezó con datos desordenados o con un equipo sin tiempo? Esos son los obstáculos que menos se ven al principio y más pesan al final.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">El primer piloto no es el más ambicioso: es el que tiene datos, revisor, riesgo bajo y se puede detener cuando haga falta.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 11 -->
+  <section class="parte reveal" id="p11">
+    <div class="kicker"><span class="num">11</span><span class="tag">La herramienta práctica</span></div>
+    <h2 class="titulo">La matriz de 8 dimensiones y el semáforo</h2>
+
+    <p>El curso entrega una herramienta para evaluar cualquier oportunidad de IA <em>antes</em> de escoger tecnología o pedir un piloto: la <span class="term">matriz de evaluación de oportunidad de IA</span>. Son ocho preguntas que ordenan el caso, más un <span class="term">semáforo de factibilidad</span> que resume si está listo para avanzar. Sirve para estructurar casos reales y, sobre todo, para descubrir <span class="term">brechas de información</span>: aquello que todavía no sabes y que necesitas saber.</p>
+
+    <h3>Cómo se usa</h3>
+    <p>Primero eliges una tarea candidata y la describes: el resultado esperado, qué tipo de información hay, un enfoque inicial y un riesgo a controlar. Después completas la matriz, <strong>antes de escoger herramienta</strong>. Si no puedes responder una pregunta, no la dejes vacía: escribe el supuesto que estás haciendo o la información que te falta.</p>
+
+    <h3>Las ocho dimensiones</h3>
+    <ol class="pasos">
+      <li><b>Problema.</b> ¿Qué tarea, decisión o resultado se busca mejorar? Aquí va el verbo de la pregunta de negocio.</li>
+      <li><b>Línea base.</b> ¿Cómo funciona hoy y cómo se mide el tiempo, el costo, la calidad o el riesgo? Es el punto de comparación.</li>
+      <li><b>Tipo de salida.</b> ¿Se necesita una regla, un número, una categoría, una agrupación, una acción paso a paso o un contenido? Define de qué familia de tecnología hablas.</li>
+      <li><b>Evidencia.</b> ¿Qué datos, etiquetas, documentos o ejemplos hay disponibles? Es lo que alimentará al modelo.</li>
+      <li><b>Personas.</b> ¿Quién usa, revisa, corrige y responde por el resultado? Un nombre y un rol.</li>
+      <li><b>Riesgo.</b> ¿Qué impacto tendría un error sobre las personas, la operación, la reputación o el cumplimiento? Decide cuánto control hace falta.</li>
+      <li><b>Piloto.</b> ¿Cuál es la prueba mínima, reversible y acotada? La versión más chica que enseña algo.</li>
+      <li><b>Decisión.</b> ¿Qué indicadores permitirán escalar, ajustar o detener? Los criterios de éxito, fijados antes de empezar.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es la misma disciplina de armar una campaña seria: ¿cuál es el objetivo?, ¿cómo vamos hoy?, ¿qué entregamos?, ¿con qué información contamos?, ¿quién la ejecuta y responde?, ¿qué podría salir mal?, ¿cuál es la prueba más chica?, ¿qué números dirán si seguimos? Si no puedes llenar una casilla, ya descubriste una brecha.
+    </div>
+
+    <h3>El semáforo de factibilidad</h3>
+    <p>Con la matriz completa, el semáforo te dice qué hacer. Cada color tiene su lectura y su acción:</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>El semáforo de factibilidad</caption>
+        <thead>
+          <tr><th>Estado</th><th>Cómo se ve</th><th>Qué hacer</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lab-col">Verde</td><td>Problema acotado, datos disponibles, error controlable y responsable definido</td><td>Diseñar el piloto y su línea base</td></tr>
+          <tr><td class="lab-col">Amarillo</td><td>Hay brechas de datos, permisos, métricas o capacidades</td><td>Resolver las brechas antes de probar</td></tr>
+          <tr><td class="lab-col">Rojo</td><td>Uso de alto impacto sin base, sin controles ni mecanismos de revisión</td><td>Detener y reformular</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Aplicado a SurAndes (nuestro análisis)</h3>
+    <p>El curso no trae este ejercicio resuelto, pero se puede hacer, y como análisis propio sirve para practicar. Si pasas las cinco propuestas por la matriz, saldría algo así:</p>
+
+    <div class="tablebox">
+      <table>
+        <caption>Semáforo de las cinco propuestas, según nuestro análisis</caption>
+        <thead>
+          <tr><th>Propuesta</th><th>Color</th><th>Por qué</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lab-col">A. Inspección visual</td><td>Amarillo</td><td>Brecha de diversidad en los datos y de horas del equipo de calidad; el operario debe quedar en el circuito</td></tr>
+          <tr><td class="lab-col">B. Segmentación</td><td>Amarillo</td><td>Primero hay que sanear los identificadores de clientes</td></tr>
+          <tr><td class="lab-col">C. Fichas y contenidos</td><td>Verde</td><td>Fichas aprobadas como fuente, revisor definido, reversible y error controlable; con la condición de definir antes el flujo de revisión y la política de carga de documentos</td></tr>
+          <tr><td class="lab-col">D. Despacho</td><td>Rojo</td><td>Sin simulador y con alto impacto en clientes estratégicos</td></tr>
+          <tr><td class="lab-col">E. Detector de ánimo</td><td>Rojo</td><td>Afecta derechos, sin consentimiento y sin relación válida</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Para medir el piloto C, podrían usarse tres indicadores: cuánto tiempo toma redactar una ficha antes y después, qué proporción de borradores se aprueba sin cambios y cuántos errores de alérgenos se detectan en la revisión, con la meta de que ninguno llegue a publicarse. Son ideas nuestras, pero muestran cómo se transforma una intención en una medida.</p>
+
+    <p>Y recuerda: la matriz es orientación, no reemplaza la evaluación técnica ni la jurídica.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Antes de elegir herramienta, llena las ocho casillas; el semáforo te dice si avanzas, arreglas lo que falta o detienes.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 12 -->
+  <section class="parte reveal" id="p12">
+    <div class="kicker"><span class="num">12</span><span class="tag">El listado del curso</span></div>
+    <h2 class="titulo">Las herramientas generativas, con criterio</h2>
+
+    <p>El curso cierra con un listado de veintiséis herramientas generativas, agrupadas en cuatro áreas: texto, imágenes, sonido y voz, y video. No necesitas memorizar nombres. Lo importante es reconocer <strong>qué hace cada familia</strong> y qué cuidado exige. Y una advertencia: este listado envejece muy rápido. Varias herramientas cambiaron de dueño, de condiciones o de versión en poco tiempo, así que recuerda la categoría y el rasgo principal, y revisa siempre los términos de uso y las licencias antes de usar cualquiera en tu empresa.</p>
+
+    <h3>Texto: asistentes, agentes y buscadores</h3>
+    <p>Un <span class="term">asistente generativo de texto</span> conversa, redacta, resume y analiza documentos. Aquí están <strong>Gemini</strong> (de Google, multimodal e integrado a su ecosistema), <strong>ChatGPT</strong> (de OpenAI, también multimodal), <strong>Claude</strong> (de Anthropic, fuerte en textos largos y análisis de documentos), <strong>Microsoft Copilot</strong> (integrado a Microsoft 365), <strong>Meta AI</strong> (basado en los modelos Llama e integrado a WhatsApp, Instagram y Facebook), <strong>DeepSeek</strong> (de origen chino, con modelos abiertos o de acceso económico) y <strong>Blackbox AI</strong> (orientada al desarrollo de software; hoy se presenta como una plataforma que da acceso a más de trescientos modelos).</p>
+    <p>Una categoría aparte es el <span class="term">agente de IA</span>: una herramienta que no solo responde, sino que encadena varios pasos con más autonomía, como investigar, analizar y producir documentos. El curso lista a <strong>Manus</strong> como ejemplo. Un dato que cambia lo que debes saber: el listado la presenta como si fuera parte de otra empresa, pero la compra anunciada a fines de 2025 se revirtió y desde agosto de 2026 opera de forma independiente.</p>
+    <p>Y otra más: el <span class="term">buscador con IA y citas</span>. <strong>Perplexity</strong> funciona como motor de búsqueda y asistente de investigación, y responde con citas y enlaces a sus fuentes, lo que lo hace útil para <em>verificar</em>. Ayuda con el problema de la confabulación, pero no la elimina: igual hay que abrir la fuente y leerla.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Para redactar un borrador de mensaje a un afiliado, un asistente de texto ayuda mucho. Para saber qué dice una norma o un dato, usa una fuente oficial; un buscador con citas puede orientarte, pero la cita hay que abrirla. Y toda herramienta que no sea la autorizada por tu empresa, sin datos de afiliados: nunca los copies ahí.
+    </div>
+
+    <h3>Imágenes</h3>
+    <p>Un <span class="term">generador de imágenes</span> crea o edita imágenes a partir de una descripción. En el listado: <strong>Nano Banana</strong>, el generador de imágenes de Gemini, que ya cuenta con una segunda versión; <strong>ChatGPT Images</strong>, de OpenAI; <strong>Leonardo.Ai</strong>, que ofrece generación, edición, animación y video y que hoy pertenece a Canva; <strong>Grok</strong>, de xAI, una empresa que según reportes de 2026 cambió de dueño; <strong>FLUX</strong>, de Black Forest Labs, valorado por su calidad y por seguir bien las instrucciones, y que publica sus pesos de forma abierta (un <span class="term">modelo abierto</span> es el que se puede descargar y usar por cuenta propia, bajo ciertas condiciones); y <strong>Adobe Firefly</strong>, la suite de Adobe, que se declara «comercialmente segura» porque se entrenó con material licenciado y de dominio público.</p>
+
+    <h3>Sonido, voz y música</h3>
+    <p>Un <span class="term">generador de música</span> compone canciones completas a partir de una descripción. Aquí están <strong>Suno</strong>, <strong>Udio</strong> y <strong>Lyria</strong> (de Google DeepMind, integrado a Gemini). Un dato: Suno y Udio llegaron a acuerdos con discográficas y cambiaron sus condiciones, entre ellas la forma de descargar. Lyria agrega una marca de agua invisible para identificar lo que genera, una buena práctica de trazabilidad.</p>
+    <p>La <span class="term">transcripción automática</span> convierte audio en texto; <strong>TurboScribe</strong> lo hace y además reconoce distintos hablantes. Para el call center, imagina lo útil que sería tener las llamadas transcritas y ordenadas: también imagina lo delicado, porque esas grabaciones tienen datos personales. Y <strong>FakeYou</strong> ofrece texto a voz, conversión y <em>clonación de voces</em>, la capacidad que ya viste como riesgo de deepfake.</p>
+
+    <h3>Video</h3>
+    <p>Los generadores de video crean clips a partir de texto o imágenes. <strong>Google Veo</strong> es uno de los más conocidos y, desde sus versiones recientes, genera audio, ambientes y diálogos de forma nativa. Están también <strong>Kling AI</strong>, <strong>Runway</strong> (video generativo y edición avanzada) y <strong>Wan AI</strong> (de Alibaba, con versiones abiertas). <strong>VEED</strong> edita con IA, con subtítulos, voces y avatares. Y <strong>HeyGen</strong> crea avatares y presentadores virtuales, puede clonar voces y traducir con sincronización de labios.</p>
+
+    <div class="vs">
+      <div class="box mal">
+        <div class="h">Uso que pide cuidado</div>
+        <p>Clonar la voz o el rostro de una persona sin su permiso, usar avatares que parezcan a un ejecutivo real sin avisar, publicar contenido sintético sin etiquetarlo o cargar grabaciones de afiliados en una herramienta no autorizada.</p>
+      </div>
+      <div class="box bien">
+        <div class="h">Uso responsable</div>
+        <p>Usar solo herramientas aprobadas por tu empresa, con consentimiento de quien aparece o habla, avisando cuando algo es sintético, revisando licencias y derechos y manteniendo siempre a una persona que revisa antes de publicar.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que alguien de tu equipo quiere un video de bienvenida para afiliados nuevos con un presentador virtual. Tres preguntas antes de hacerlo: ¿la herramienta está autorizada?, ¿los derechos de uso permiten un fin comercial?, ¿se avisa que no es una persona real? Son preguntas de criterio, no de tecnología.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Memoriza la familia y el rasgo de cada herramienta, no el nombre de moda; y antes de usar una, mira quién la autoriza, qué licencia tiene y qué datos le entregas.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 13 -->
+  <section class="parte reveal" id="p13">
+    <div class="kicker"><span class="num">13</span><span class="tag">Para llevarte</span></div>
+    <h2 class="titulo">Si te quedas con tres cosas</h2>
+
+    <p>La unidad es larga, pero se puede resumir en tres ideas que te sirven en cualquier reunión sobre IA, ya sea con tu jefatura, con proveedores o con el equipo técnico.</p>
+
+    <ol class="pasos">
+      <li><b>Primero el problema, después la tecnología.</b> Define la tarea con un verbo y un resultado que se pueda ver. A veces la respuesta serán reglas simples, a veces un modelo que aprende de ejemplos, a veces IA generativa, y a veces nada de IA. Y una nota promedio alta no basta: lo que importa es si sirve para la decisión que te duele.</li>
+      <li><b>Los modelos aprenden lo que les muestras, y lo generativo busca lo probable, no lo verdadero.</b> Por eso importan la calidad, la diversidad y la representatividad de los datos, la separación entre lo que se entrena y lo que se evalúa, y la revisión humana de lo que se escribe o se genera.</li>
+      <li><b>La responsabilidad sigue siendo de una persona, y se mide en proporción al impacto.</b> Un primer piloto bueno tiene problema acotado, línea base, datos autorizados, error tolerable definido, un responsable y una salida. Entre más delicada la decisión, más control humano.</li>
+    </ol>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si mañana alguien te presenta una herramienta «con IA» para mejorar cierres o retención, ya tienes tus preguntas: ¿qué problema resuelve y cómo lo mido hoy?, ¿con qué datos aprendió y quién los revisó?, ¿qué pasa si se equivoca, quién lo revisa y cómo se detiene? Con esas tres preguntas ya sabes más que muchos que venden y compran.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Elige el problema, cuida los datos, deja a una persona responsable y mide contra lo que ya haces hoy.</div>
+    </div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal">
+    <div class="kicker"><span class="num">★</span><span class="tag">Por si lo necesitas</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Inteligencia artificial (IA)</dt><dd>El campo amplio de tecnologías que hacen tareas asociadas con percibir, usar el lenguaje, aprender, razonar o decidir.</dd>
+        <dt>Aprendizaje automático</dt><dd>Enfoque en que el computador descubre patrones a partir de ejemplos, en vez de recibir una regla para cada caso.</dd>
+        <dt>Aprendizaje profundo</dt><dd>Parte del aprendizaje automático que usa redes de muchas capas para aprender patrones muy complejos.</dd>
+        <dt>Redes neuronales de múltiples capas</dt><dd>Sistemas con muchos niveles de procesamiento apilados, que sostienen el aprendizaje profundo.</dd>
+        <dt>Familia de tecnologías</dt><dd>La IA no es una sola cosa: reúne reglas, búsqueda, aprendizaje automático, lenguaje, visión y sistemas generativos.</dd>
+        <dt>Sistemas basados en reglas</dt><dd>Programas que siguen instrucciones explícitas escritas por personas: si pasa esto, haz aquello.</dd>
+        <dt>Automatización convencional</dt><dd>Automatizar un proceso con reglas fijas, sin aprendizaje; ideal cuando la política es estable y clara.</dd>
+        <dt>Búsqueda y optimización</dt><dd>Técnicas que encuentran la mejor opción entre muchas posibles.</dd>
+        <dt>Procesamiento de lenguaje natural</dt><dd>Tecnología que entiende y produce lenguaje humano.</dd>
+        <dt>Visión computacional</dt><dd>Tecnología que interpreta imágenes y video.</dd>
+        <dt>Pregunta de negocio</dt><dd>La tarea definida con un verbo y un resultado que se pueda comprobar.</dd>
+        <dt>Resultado observable</dt><dd>Un resultado que se puede verificar con hechos, no una intención vaga.</dd>
+        <dt>Opacidad</dt><dd>Cuando nadie puede explicar bien por qué un sistema decidió lo que decidió.</dd>
+        <dt>Auditable</dt><dd>Que un tercero puede revisar y comprobar que se aplicó como correspondía.</dd>
+        <dt>Modelo</dt><dd>Lo que queda después de aprender: recibe una entrada y entrega una predicción, una clasificación o un contenido.</dd>
+        <dt>Datos de entrenamiento</dt><dd>Los ejemplos con los que se enseña al modelo.</dd>
+        <dt>Característica</dt><dd>Cada dato de entrada que el modelo mira para decidir, como la antigüedad de un afiliado.</dd>
+        <dt>Etiqueta</dt><dd>La respuesta ya conocida que acompaña a un ejemplo, como «se traspasó» o «cerró».</dd>
+        <dt>Entrenamiento</dt><dd>El proceso en que el modelo ajusta sus perillas internas para equivocarse menos.</dd>
+        <dt>Parámetros</dt><dd>Las perillas internas que el modelo ajusta mientras aprende.</dd>
+        <dt>Hiperparámetros</dt><dd>Decisiones generales que fija el equipo antes de entrenar, como cuántas vueltas dará por los ejemplos.</dd>
+        <dt>Función de pérdida</dt><dd>La medida de cuánto se equivoca el modelo; entrenar es hacerla bajar.</dd>
+        <dt>Representación</dt><dd>Decidir qué elementos serán las entradas del modelo.</dd>
+        <dt>Datos tabulares</dt><dd>Información ordenada en filas y columnas, como una planilla.</dd>
+        <dt>Píxel</dt><dd>Cada puntito de color que forma una imagen.</dd>
+        <dt>Evaluación</dt><dd>La prueba del modelo con ejemplos distintos de los que usó para aprender.</dd>
+        <dt>Conjunto de validación</dt><dd>Ejemplos separados que sirven para ir ajustando el trabajo mientras se entrena.</dd>
+        <dt>Conjunto de prueba</dt><dd>Ejemplos guardados para la prueba final, que el modelo no ha tocado.</dd>
+        <dt>Inferencia</dt><dd>El uso real del modelo ya entrenado frente a un caso nuevo.</dd>
+        <dt>Generalización</dt><dd>La capacidad de funcionar bien con casos nuevos y no solo con los ya vistos.</dd>
+        <dt>Sobreajuste</dt><dd>Cuando el modelo memoriza sus ejemplos y falla con los casos nuevos.</dd>
+        <dt>Diversidad de los datos</dt><dd>Que los ejemplos cubran muchas situaciones distintas, no siempre la misma.</dd>
+        <dt>Representatividad</dt><dd>Que los ejemplos reflejen cómo es realmente el mundo donde se usará el modelo.</dd>
+        <dt>Desempeño estadístico</dt><dd>La nota que saca un modelo en una medición técnica.</dd>
+        <dt>Utilidad empresarial</dt><dd>Si esa nota sirve de verdad para la decisión que importa al negocio.</dd>
+        <dt>Exactitud</dt><dd>La proporción de aciertos sobre el total de casos; es lo que el curso llama «precisión promedio».</dd>
+        <dt>Precisión</dt><dd>De los casos que el modelo marcó como positivos, cuántos lo eran de verdad.</dd>
+        <dt>Sensibilidad</dt><dd>De los casos positivos reales, cuántos logró encontrar el modelo.</dd>
+        <dt>Métrica orientada al riesgo</dt><dd>Una forma de medir elegida según el costo real de cada tipo de error en tu negocio.</dd>
+        <dt>Aprendizaje supervisado</dt><dd>Aprender con ejemplos que traen la respuesta conocida.</dd>
+        <dt>Etiquetas confiables</dt><dd>Respuestas históricas bien registradas y sin criterios inconsistentes; sin ellas el modelo aprende los errores.</dd>
+        <dt>Regresión</dt><dd>Tarea supervisada cuya respuesta es un número.</dd>
+        <dt>Clasificación</dt><dd>Tarea supervisada cuya respuesta es una categoría.</dd>
+        <dt>Clasificador</dt><dd>El modelo que asigna cada caso a una categoría.</dd>
+        <dt>Aprendizaje no supervisado</dt><dd>Aprender de datos sin respuesta conocida, buscando patrones y grupos.</dd>
+        <dt>Agrupamiento</dt><dd>Técnica que reúne casos parecidos entre sí y descubre grupos.</dd>
+        <dt>Segmentos</dt><dd>Los grupos que resultan del agrupamiento; no son verdades naturales y hay que validarlos.</dd>
+        <dt>Casos atípicos</dt><dd>Casos que no se parecen a ningún grupo y merecen una mirada.</dd>
+        <dt>Aprendizaje por refuerzo</dt><dd>Aprender por prueba y error, recibiendo premios y castigos.</dd>
+        <dt>Agente</dt><dd>Quien toma decisiones y actúa en un entorno en el aprendizaje por refuerzo.</dd>
+        <dt>Entorno</dt><dd>El mundo donde el agente actúa y recibe resultados.</dd>
+        <dt>Recompensa</dt><dd>El premio o castigo que recibe el agente por una acción.</dd>
+        <dt>Política</dt><dd>La estrategia que el agente aprende para saber qué hacer en cada situación.</dd>
+        <dt>Recompensa acumulada</dt><dd>El resultado total de toda una secuencia de decisiones, no solo del siguiente paso.</dd>
+        <dt>Optimización secuencial</dt><dd>Problemas donde cada decisión se encadena con la siguiente.</dd>
+        <dt>Simulador</dt><dd>Un entorno de práctica donde el agente puede equivocarse sin afectar a clientes reales.</dd>
+        <dt>Modelo predictivo</dt><dd>El que estima un valor o una categoría.</dd>
+        <dt>Modelo generativo</dt><dd>El que produce contenido nuevo a partir de una entrada.</dd>
+        <dt>IA generativa</dt><dd>IA que crea texto, imágenes, audio, video o código, y que transforma contenidos entre formatos.</dd>
+        <dt>Transformer</dt><dd>La arquitectura de 2017 que sostiene muchos modelos de lenguaje actuales.</dd>
+        <dt>Mecanismo de atención</dt><dd>La capacidad del modelo de dar más peso a las partes del contexto que importan más.</dd>
+        <dt>Contexto</dt><dd>Todo el texto disponible que el modelo toma en cuenta al responder.</dd>
+        <dt>Tokens</dt><dd>Los pedacitos en que el modelo divide el texto: palabras, partes de palabras o signos.</dd>
+        <dt>Predicción del siguiente token</dt><dd>El paso básico de un modelo de lenguaje: elegir el pedazo más probable que sigue.</dd>
+        <dt>Modelo de lenguaje</dt><dd>Un modelo entrenado para predecir el texto que sigue.</dd>
+        <dt>Confabulación</dt><dd>Contenido falso presentado con seguridad; también llamado alucinación.</dd>
+        <dt>Búsqueda documental</dt><dd>Que el sistema busque en documentos o en la web para apoyar su respuesta.</dd>
+        <dt>Prompt</dt><dd>La instrucción que se le entrega al modelo: tarea, información y condiciones de la respuesta.</dd>
+        <dt>Multimodal</dt><dd>Que procesa varios tipos de información a la vez, como texto e imagen.</dd>
+        <dt>Modalidades</dt><dd>Los tipos de información: texto, imagen, audio, video.</dd>
+        <dt>Multimodalidad</dt><dd>La capacidad de combinar entradas y salidas de distintos tipos.</dd>
+        <dt>Arquitectura híbrida</dt><dd>Una solución armada con varias tecnologías, cada una en lo que hace mejor.</dd>
+        <dt>Línea base</dt><dd>Cómo se hace hoy y cuánto cuesta, tarda y falla; es el punto de comparación.</dd>
+        <dt>Teachable Machine</dt><dd>Herramienta gratuita de Google para crear clasificadores sin programar y aprender cómo funcionan.</dd>
+        <dt>Aprendizaje por transferencia</dt><dd>Partir de un modelo que ya aprendió muchas cosas y ajustarlo con tus ejemplos.</dd>
+        <dt>Confianza del modelo</dt><dd>Cuán seguro está el modelo de su respuesta; puede estar seguro y equivocarse.</dd>
+        <dt>Correlación espuria</dt><dd>Una pista engañosa que acompaña a la respuesta en los ejemplos pero no tiene relación real con ella; también «atajo».</dd>
+        <dt>Ciclo de vida de la IA</dt><dd>El recorrido completo de un sistema, desde su diseño hasta su uso y evaluación.</dd>
+        <dt>Principios de la UNESCO</dt><dd>Guía ética internacional para la IA, adoptada en 2021.</dd>
+        <dt>Marco de gestión de riesgos de NIST</dt><dd>Guía de Estados Unidos para gestionar riesgos de IA: gobernar, mapear, medir y gestionar.</dd>
+        <dt>Minimización de datos</dt><dd>Usar solo los datos que la tarea necesita.</dd>
+        <dt>Anonimización</dt><dd>Quitar a los datos lo que identifica a la persona.</dd>
+        <dt>Deepfake</dt><dd>Audio, imagen o video fabricado por IA que hace creer que alguien dijo o hizo algo que no hizo.</dd>
+        <dt>Integridad de la información</dt><dd>Que lo que circula sea confiable y no esté manipulado.</dd>
+        <dt>Trazabilidad</dt><dd>Poder reconstruir de dónde vino algo y quién lo hizo.</dd>
+        <dt>Contenido sintético</dt><dd>Contenido creado por IA y no por una persona o por un registro real.</dd>
+        <dt>Clonación de voz</dt><dd>Imitar la voz de una persona con IA.</dd>
+        <dt>Supervisión humana</dt><dd>Que una persona revise y mantenga el control de las decisiones importantes.</dd>
+        <dt>Umbrales de escalamiento</dt><dd>La regla que dice desde qué punto un humano debe decidir.</dd>
+        <dt>Proporcionalidad</dt><dd>Ajustar el nivel de control al impacto que puede tener un error.</dd>
+        <dt>Ley 19.628</dt><dd>La ley chilena vigente de 1999 sobre protección de datos personales.</dd>
+        <dt>Ley 21.719</dt><dd>La ley que moderniza la protección de datos personales en Chile; publicada en diciembre de 2024, con vigencia legal el 1 de diciembre de 2026 y un proyecto de postergación en trámite.</dd>
+        <dt>Agencia de Protección de Datos Personales</dt><dd>El organismo que crea la Ley 21.719 para velar por los datos personales.</dd>
+        <dt>Consentimiento</dt><dd>La autorización libre e informada de una persona para usar sus datos.</dd>
+        <dt>OMPI</dt><dd>La organización mundial de propiedad intelectual de la ONU; en 2024 publicó una guía para la IA generativa.</dd>
+        <dt>Prueba piloto</dt><dd>Una prueba pequeña, acotada y real, hecha para decidir si seguir.</dd>
+        <dt>Piloto demostrativo</dt><dd>El que luce en una presentación pero no deja evidencia para decidir ni tiene continuidad.</dd>
+        <dt>Error tolerable</dt><dd>Hasta dónde se puede equivocar el sistema sin causar daño.</dd>
+        <dt>Reversibilidad</dt><dd>Poder detener algo y volver atrás sin secuelas.</dd>
+        <dt>Operario en el circuito</dt><dd>Una persona que revisa y decide, en vez de una máquina que actúa sola.</dd>
+        <dt>Saneamiento de datos</dt><dd>Limpiar y reconciliar datos desordenados antes de usarlos.</dd>
+        <dt>Matriz de evaluación de oportunidad de IA</dt><dd>Ocho preguntas para evaluar una idea antes de elegir tecnología.</dd>
+        <dt>Semáforo de factibilidad</dt><dd>Verde: diseñar el piloto. Amarillo: resolver brechas. Rojo: detener y reformular.</dd>
+        <dt>Brechas de información</dt><dd>Lo que todavía no sabes y necesitas saber para decidir.</dd>
+        <dt>Asistente generativo de texto</dt><dd>Herramienta que conversa, redacta, resume y analiza documentos.</dd>
+        <dt>Agente de IA</dt><dd>Herramienta que encadena varios pasos con más autonomía, como investigar y producir documentos.</dd>
+        <dt>Buscador con IA y citas</dt><dd>Asistente que responde con enlaces a sus fuentes, útil para verificar.</dd>
+        <dt>Modelo abierto</dt><dd>Modelo que se puede descargar y usar por cuenta propia, bajo ciertas condiciones.</dd>
+        <dt>Generador de imágenes</dt><dd>Herramienta que crea o edita imágenes desde una descripción.</dd>
+        <dt>Generador de música</dt><dd>Herramienta que compone canciones desde una descripción.</dd>
+        <dt>Transcripción automática</dt><dd>Convertir audio en texto.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Las ideas clave de la unidad</h2>
+    <ol>
+      <li><strong>La tecnología se elige después del problema.</strong> Define la tarea con un verbo y un resultado que se pueda ver, y recién entonces pregunta qué herramienta sirve.</li>
+      <li><strong>A veces bastan las reglas.</strong> Si la política es estable y clara, una regla es más barata y transparente que un modelo; y a veces la mejor decisión es no usar IA.</li>
+      <li><strong>Un modelo aprende de ejemplos.</strong> Se entrena con unos, se evalúa con otros distintos y se usa en casos nuevos; si los ejemplos son pobres o repetidos, aprende mal, incluso el fondo y no el objeto.</li>
+      <li><strong>Una nota promedio alta puede engañar.</strong> Mide lo que importa a tu negocio: las alertas falsas y los casos perdidos no cuestan lo mismo.</li>
+      <li><strong>Tres maneras de aprender.</strong> Con la pauta (supervisado), buscando grupos (no supervisado) o por premios y castigos (refuerzo); este último rara vez es el primer piloto.</li>
+      <li><strong>La IA generativa busca lo más probable, no lo verdadero.</strong> Por eso confabula, y por eso lo que escribe se revisa, sobre todo cuando el impacto es alto.</li>
+      <li><strong>La responsabilidad es de una persona.</strong> Sesgo, confabulación, privacidad, propiedad intelectual, deepfakes y sobreconfianza se controlan con revisión humana proporcional al impacto, y con la Ley 21.719 y su posible postergación en el horizonte.</li>
+      <li><strong>El primer piloto es el que se puede cuidar.</strong> Problema acotado, línea base, datos autorizados, error tolerable, un responsable y una salida; con la matriz y el semáforo antes de empezar.</li>
+    </ol>
+    <p class="remate">No necesitas ser ingeniera para usar bien la IA. Necesitas lo que ya tienes: criterio comercial, curiosidad y la costumbre de preguntar «¿esto sirve de verdad?» antes de comprometer a todo el equipo.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para elegir con criterio qué tecnología de IA corresponde a cada necesidad, y cómo usarla con responsabilidad. Unidad 2 · Tercer módulo.
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
