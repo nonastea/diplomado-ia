@@ -1,6 +1,6 @@
 // Generado automaticamente por Actualizar.command - no editar a mano
 window.CONTENIDO = {
-  "generado": "2026-09-16 03:10",
+  "generado": "2026-10-05 23:55",
   "diplomado": "IA aplicada a los negocios",
   "modulos": {
     "1": {
@@ -80,18 +80,22 @@ window.CONTENIDO = {
     "3": {
       "nombre": "Fundamentos de Inteligencia Artificial para negocios",
       "titulos": {
-        "1":"Introduccion a la IA en el entorno empresarial"
+        "1":"Introduccion a la IA en el entorno empresarial",
+        "2":"Tecnologias clave para la IA generativa"
       },
       "archivos": {
         "josue": {
-          "1":{"explicacion":"contenido/josue/Tercer modulo/Unidad 1/Explicacion_Unidad1_Introduccion_a_la_IA_en_el_entorno_empresarial.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 1/Unidad1_Mapa_Conceptual_y_Flashcards.html"}
+          "1":{"explicacion":"contenido/josue/Tercer modulo/Unidad 1/Explicacion_Unidad1_Introduccion_a_la_IA_en_el_entorno_empresarial.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 1/Unidad1_Mapa_Conceptual_y_Flashcards.html"},
+          "2":{"explicacion":"contenido/josue/Tercer modulo/Unidad 2/Explicacion_Unidad2_Tecnologias_clave_para_la_IA_generativa.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 2/Unidad2_Mapa_Conceptual_y_Flashcards.html"}
         },
         "jeanette": {
-          "1":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 1/IA_explicada_para_ventas_Unidad1.html"}
+          "1":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 1/IA_explicada_para_ventas_Unidad1.html"},
+          "2":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 2/IA_explicada_para_ventas_Unidad2.html"}
         }
       },
       "audiolibros": {
-        "1":"contenido/audiolibros/Tercer modulo/Unidad 1/audiolibro_unidad1.html"
+        "1":"contenido/audiolibros/Tercer modulo/Unidad 1/audiolibro_unidad1.html",
+        "2":"contenido/audiolibros/Tercer modulo/Unidad 2/audiolibro_unidad2.html"
       }
     },
     "4": {
