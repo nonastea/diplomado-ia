@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 2 · Tecnologías clave para la IA generativa — Mapa conceptual y Flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Tecnologías de IA para Negocios · Máster en IA</div>
+  <h1>Unidad 2 · <b>Tecnologías clave para la IA generativa</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 123 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Doce puntos donde el material del curso se queda corto, está desactualizado o choca con la fuente que cita. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> ¿Tres o cuatro tipos de aprendizaje?</h3>
+      <p>El curso presenta <b>tres</b> enfoques (supervisado, no supervisado, por refuerzo) y trata lo generativo aparte. La fuente que cita (Google for Developers, <i>What is ML?</i>) clasifica los sistemas en <b>cuatro</b> categorías, sumando la IA generativa, y aclara que un sistema puede pertenecer a una o más.</p>
+      <div class="regla"><b>Regla:</b> Si preguntan «tipos de aprendizaje» según el curso, son tres; si preguntan cómo los clasifica Google, cuatro (agrega generativa). Las categorías no son excluyentes.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> «El refuerzo cobra protagonismo en producción»</h3>
+      <p>El curso lo afirma tras decir que el refuerzo suele quedar fuera de los primeros pilotos. La fuente citada no lo respalda: Google lo ilustra con juegos (AlphaGo) y robótica, y la literatura lo muestra frágil ante <b>recompensas mal especificadas</b> (CoastRunners, OpenAI, 2016). Lo bien fundado es que exige entorno, simulador y recompensa bien definida.</p>
+      <div class="regla"><b>Regla:</b> Responde que el refuerzo rara vez es el primer piloto por complejidad y costo y que necesita un entorno seguro o simulador; no lo uses como argumento de que «en producción domina».</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> UNESCO: el curso nombra 8 principios; son 10</h3>
+      <p>El curso lista proporcionalidad, seguridad, privacidad, responsabilidad, transparencia, supervisión humana, sostenibilidad y equidad. La Recomendación (nov-2021, 193 Estados) tiene <b>10 principios</b>: faltan <b>sensibilización y educación</b> y <b>gobernanza y colaboración adaptativas</b>, y los nombres completos son más amplios (transparencia y explicabilidad, equidad y no discriminación).</p>
+      <div class="regla"><b>Regla:</b> Si piden los principios «según el curso», los 8; si piden cuántos tiene la Recomendación, 10.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> «Precisión promedio» no es la métrica precision</h3>
+      <p>El curso dice que un modelo puede tener «buena precisión promedio» y fallar en el segmento relevante. En terminología técnica eso es <b>accuracy (exactitud)</b>: aciertos sobre el total. <b>Precision</b> es otra cosa: de lo marcado positivo, cuánto lo era; <b>recall</b>, de los positivos reales, cuántos se detectaron.</p>
+      <div class="regla"><b>Regla:</b> La idea del curso (una métrica global esconde fallas costosas) es correcta; en un ejercicio técnico distingue accuracy, precision y recall.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> Teachable Machine: «prueba» y alcance real</h3>
+      <p>El curso habla de revisar la distribución de muestras «para entrenamiento y prueba». Según Carney et al. (2020), la herramienta retiene el <b>15 %</b> de cada clase como conjunto de <b>validación</b> (no una prueba independiente), usa <b>transfer learning</b> sobre MobileNet y entrena en el navegador. Por eso el paso 4 (probar objetos y condiciones nuevas) es el que realmente hace de prueba.</p>
+      <div class="regla"><b>Regla:</b> En el examen usa las palabras del curso; en un proyecto real separa entrenamiento, validación y prueba.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> «No consultan una fuente verdadera»: modelo vs producto</h3>
+      <p>Cierto para el modelo base; no siempre para el producto. Muchos asistentes combinan el modelo con <b>búsqueda o documentos</b> (el listado del curso describe a Perplexity respondiendo con citas). Eso reduce pero <b>no elimina</b> la confabulación. El ejemplo del príncipe que «sucederá al rey» es asociación estadística, no razonamiento garantizado.</p>
+      <div class="regla"><b>Regla:</b> Responde lo del curso (generan lo más probable, no verifican por sí mismos) y, si preguntan cómo mitigar, menciona conectar fuentes y verificar.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> Ley 21.719: la fecha está en disputa</h3>
+      <p>El curso dice que entra en vigor el 1 de diciembre de 2026, que es la fecha legal vigente. Pero el 1-sep-2026 el Gobierno ingresó un proyecto para <b>postergarla al 1-dic-2027</b>, en trámite a fines de septiembre de 2026. El proyecto de ley de IA sigue en el Senado.</p>
+      <div class="regla"><b>Regla:</b> Responde 1-dic-2026 (lo que dice la ley publicada) y agrega que hay un proyecto de postergación en trámite.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">08</span> Bibliografía incompleta</h3>
+      <p>El curso lista 7 entradas, pero el texto cita además <b>Vaswani et al. (2017)</b> («Attention Is All You Need») y distingue fuentes («Google for Developers 2026a», «2025», «Google Cloud s. f.-b», «Google s. f.») que la lista no separa. El paper de Vaswani se presentó para <b>traducción automática</b>, no para «producir lenguaje humano» en general.</p>
+      <div class="regla"><b>Regla:</b> Si piden la referencia del Transformer: Vaswani et al., 2017.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">09</span> El listado de herramientas envejece rápido</h3>
+      <p>A oct-2026: <b>Manus</b> no pertenece a Meta (la compra se revirtió; opera como independiente); <b>Blackbox AI</b> se presenta como plataforma de acceso a más de 300 modelos; <b>Nano Banana</b> ya tiene segunda versión; <b>Leonardo.Ai</b> es de Canva; <b>xAI</b> (Grok) pasó a manos de SpaceX; <b>Suno y Udio</b> firmaron acuerdos con discográficas y cambiaron sus condiciones de descarga.</p>
+      <div class="regla"><b>Regla:</b> Memoriza la categoría (texto, imagen, sonido/voz, video) y el rasgo distintivo de cada herramienta; revisa términos de uso y licencias antes de usarla en la empresa.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">10</span> NIST: más riesgos y otra estructura</h3>
+      <p>El curso dice que NIST gestiona riesgos «desde el diseño, desarrollo, uso y evaluación» y nombra confabulación, privacidad, sesgo, integridad de la información, PI y relación persona-sistema. El perfil NIST AI 600-1 enumera <b>12 riesgos</b> (suma QBRN, contenido violento u obsceno, impacto ambiental, seguridad de la información y cadena de valor) y el marco base (AI RMF 1.0, 2023) se organiza en cuatro funciones: <b>Gobernar, Mapear, Medir y Gestionar</b>.</p>
+      <div class="regla"><b>Regla:</b> La definición de confabulación del curso es fiel a NIST; si piden la estructura del marco, las cuatro funciones.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">11</span> Partes que solo están online</h3>
+      <p>Faltan en el PDF el <b>video resumen</b>, el <b>video del profesor Rodrigo Pereira sobre Teachable Machine</b> (que incluye clasificar expresiones faciales) y su PDF descargable. La explicación de esas piezas está reconstruida desde el texto del curso y el paper de Teachable Machine.</p>
+      <div class="regla"><b>Regla:</b> Antes del examen revisa esos recursos en la versión online (disponibles hasta el 30-nov-2026).</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">12</span> Tensión: expresiones faciales vs. Propuesta E</h3>
+      <p>El video del profesor usa la clasificación de <b>expresiones faciales</b> como ejercicio didáctico, y el caso SurAndes descarta la Propuesta E (inferir el ánimo por expresión facial) por falta de consentimiento y de relación clara entre expresión y desempeño. No es una contradicción: cambia el <b>uso</b> (ejercicio personal y consentido vs. vigilancia de trabajadores). Inferir emociones de rostros es además científicamente discutido, y la Ley de IA de la UE prohíbe el reconocimiento de emociones en el lugar de trabajo.</p>
+      <div class="regla"><b>Regla:</b> El criterio de examen es el del caso: sin consentimiento ni relación válida, se descarta.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 2 — Tecnologías clave para la IA generativa» · Curso: Tecnologías de Inteligencia Artificial para Negocios · Archivo autocontenido, funciona sin internet.</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Unidad 2"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Conceptos y familia"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Cómo aprende un modelo"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Tipos de aprendizaje"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"IA generativa"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Riesgos y uso responsable"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Piloto, caso y matriz"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Herramientas generativas"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Unidad 2"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Conceptos y familia"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Cómo aprende un modelo"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Tipos de aprendizaje"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"IA generativa"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Riesgos y uso responsable"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Piloto, caso y matriz"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Herramientas generativas"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+ "id": "root",
+ "t": "TECNOLOGÍAS CLAVE PARA LA IA GENERATIVA",
+ "c": "root",
+ "d": "Unidad 2 del Tercer módulo (Tecnologías de IA para Negocios). Pasa de «qué es la IA» a cómo elegir la tecnología adecuada para un problema de negocio, cómo aprende un modelo, qué pueden y no pueden hacer los modelos generativos, qué riesgos traen y cómo se diseña un piloto que produzca evidencia para decidir. Se apoya en la Unidad 1 (IA, ML, Transformer, sesgo, normativa). Idea maestra: la tecnología se escoge después de formular el problema.",
+ "k": [
+  {
+   "e": "parte de",
+   "t": "Conceptos y familia",
+   "c": "azul",
+   "d": "Primera pregunta de la unidad: qué es cada tecnología y cómo se ordena el campo antes de elegir una. La IA es una familia amplia; el ML es una parte; el deep learning es un subcampo del ML. La tecnología se escoge después de formular el problema, no antes.",
+   "k": [
+    {
+     "e": "parte con",
+     "t": "Propósito y 13 definiciones base",
+     "c": "azul",
+     "d": "El curso busca criterio: distinguir tecnologías, evaluar oportunidades y conversar con equipos técnicos con un lenguaje común. Las 13 definiciones base son IA, ML, modelo, datos de entrenamiento, característica, etiqueta, entrenamiento, evaluación, inferencia, aprendizaje supervisado, no supervisado, por refuerzo y deep learning. Todas se profundizan en los nodos de este mapa."
+    },
+    {
+     "e": "incluye",
+     "t": "Familia de tecnologías de IA",
+     "c": "azul",
+     "d": "La IA es un campo amplio que incluye métodos basados en reglas, técnicas de búsqueda y optimización, machine learning, procesamiento de lenguaje, visión computacional y sistemas generativos. El ML es una parte de ese campo, no sinónimo de IA. Se define la IA como el campo que reúne tecnologías capaces de realizar tareas asociadas con percepción, lenguaje, aprendizaje, razonamiento o decisión.",
+     "k": [
+      {
+       "e": "empieza con",
+       "t": "Métodos basados en reglas",
+       "c": "azul",
+       "d": "Una persona programa instrucciones explícitas: si ocurre A, ejecute B. Funcionan cuando las reglas son conocidas, estables y fáciles de mantener. Es la automatización convencional, más eficiente, barata y transparente que el ML cuando la política es estable."
+      },
+      {
+       "e": "también",
+       "t": "Búsqueda, PLN y visión",
+       "c": "azul",
+       "d": "Búsqueda y optimización: técnicas que exploran alternativas para encontrar la mejor solución según un criterio. Procesamiento de lenguaje natural: permite a las máquinas comprender y producir lenguaje humano. Visión computacional: interpretar imágenes y video. Son áreas de la familia, no sustitutos del ML, y muchas veces se construyen con él."
+      },
+      {
+       "id": "ml",
+       "e": "incluye",
+       "t": "Machine Learning (ML)",
+       "c": "azul",
+       "d": "Enfoque que entrena modelos con datos para producir predicciones, clasificaciones o contenido, sin programar una regla específica para cada situación. Es una parte de la IA, no toda la IA. Entrena software para aprender relaciones a partir de datos y entregar resultados frente a casos nuevos.",
+       "k": [
+        {
+         "id": "dl",
+         "e": "subcampo con",
+         "t": "Deep Learning",
+         "c": "azul",
+         "d": "Subcampo del ML que usa redes neuronales con múltiples capas para aprender patrones complejos. Cada capa transforma la salida de la anterior en rasgos más abstractos. Se vio en la Unidad 1 del módulo; aquí se retoma como pieza de la familia."
+        }
+       ]
+      },
+      {
+       "e": "y",
+       "t": "Sistemas generativos",
+       "c": "azul",
+       "d": "Sistemas que producen contenido nuevo (texto, código, imágenes, audio, video). Cierran la lista de la familia de tecnologías y son el tema de la rama violeta de este mapa."
+      }
+     ]
+    },
+    {
+     "id": "superpos",
+     "e": "advierte que",
+     "t": "Las categorías se superponen",
+     "c": "azul",
+     "d": "«Estas categorías se superponen.» Un asistente generativo puede combinar un modelo de lenguaje, un clasificador, búsqueda documental y reglas de seguridad. Las etiquetas sirven para comprender capacidades, aunque una solución real puede reunir varios componentes. Google clasifica el ML en cuatro categorías y un sistema puede caer en una o más (ver discrepancia 1)."
+    },
+    {
+     "id": "pregunta",
+     "e": "parte de la",
+     "t": "Pregunta de negocio",
+     "c": "azul",
+     "d": "Antes de hablar de modelos, se define la tarea con un verbo y un resultado observable. Es el filtro que ordena toda la unidad: primero el problema, después la herramienta.",
+     "k": [
+      {
+       "e": "se formula con",
+       "t": "Verbo + resultado observable",
+       "c": "azul",
+       "d": "Los verbos del curso: predecir demanda, clasificar reclamos, agrupar clientes, recomendar una acción, generar una propuesta o detectar una anomalía. Un resultado observable es un efecto concreto y medible. Si la tarea no se puede decir con un verbo y un resultado, aún no está lista para elegir tecnología."
+      }
+     ]
+    },
+    {
+     "id": "reglas",
+     "e": "se decide entre",
+     "t": "Reglas vs modelos",
+     "c": "azul",
+     "d": "Sistema tradicional: se programan instrucciones explícitas (si ocurre A, ejecute B); sirve cuando las reglas son conocidas, estables y fáciles de mantener, por ejemplo bloquear una operación que supera un límite normativo definido. En ML se entregan ejemplos y una definición del resultado esperado, y el modelo ajusta relaciones matemáticas para capturar patrones. Google define el modelo como «una relación matemática derivada de datos que se utiliza para desarrollar predicciones». El ML aporta valor cuando las relaciones son numerosas, variables o difíciles de programar a mano y hay datos pertinentes para aprenderlas.",
+     "k": [
+      {
+       "e": "si basta con",
+       "t": "Tres reglas claras y auditables",
+       "c": "azul",
+       "d": "Si una política puede expresarse con tres reglas claras y auditables, un modelo puede agregar costo y opacidad. No siempre vale la pena usar ML si las reglas y procesos ya son simples y conocidos. Auditable significa que una persona puede revisar cómo se tomó la decisión."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "e": "se construye con",
+   "t": "Cómo aprende un modelo",
+   "c": "verde",
+   "d": "Los cinco componentes del aprendizaje: datos, representación, entrenamiento, evaluación e inferencia. Esta rama profundiza lo que la Unidad 1 presentó en una línea. Aquí también viven las ideas más difíciles de la unidad: generalización, diversidad de datos y la diferencia entre desempeño estadístico y utilidad empresarial.",
+   "k": [
+    {
+     "id": "datos",
+     "e": "1. se reúnen",
+     "t": "Datos",
+     "c": "verde",
+     "d": "Se reúnen ejemplos del problema: registros de tablas, textos, imágenes, audio, video o señales de sensores. Los datos de entrenamiento son los ejemplos que se usan para ajustar el modelo y que aprenda patrones."
+    },
+    {
+     "e": "2. se define la",
+     "t": "Representación",
+     "c": "verde",
+     "d": "Se define qué elementos funcionan como entradas. En datos tabulares (filas y columnas) se llaman características; en imágenes, el modelo procesa valores de píxeles y patrones visuales. Una característica es una variable o atributo de entrada, como antigüedad, frecuencia de compra, píxeles o palabras."
+    },
+    {
+     "id": "entren",
+     "e": "3. se ajusta en el",
+     "t": "Entrenamiento",
+     "c": "verde",
+     "d": "El algoritmo ajusta los parámetros para reducir la diferencia entre sus resultados y los resultados esperados. Matemáticamente es un problema de optimización: se necesita una forma de medir cuán lejos están las predicciones y un procedimiento para mover los parámetros en la dirección que reduce esa distancia.",
+     "k": [
+      {
+       "e": "ajusta",
+       "t": "Parámetros e hiperparámetros",
+       "c": "verde",
+       "d": "Los parámetros son los números internos que el entrenamiento ajusta (pueden ser uno o millones). Los hiperparámetros los fija el equipo antes de entrenar (por ejemplo, épocas, tamaño de lote o tasa de aprendizaje en Teachable Machine)."
+      },
+      {
+       "e": "mide con",
+       "t": "Función de pérdida",
+       "c": "verde",
+       "d": "Formaliza la «diferencia» entre resultado y esperado. Para valores numéricos se usa el error cuadrático medio: promedio de (y real − y predicho)². El cuadrado evita que errores positivos y negativos se cancelen y castiga más los errores grandes. El descenso por gradiente mueve los parámetros hacia menor pérdida."
+      }
+     ]
+    },
+    {
+     "id": "eval",
+     "e": "4. se mide en la",
+     "t": "Evaluación",
+     "c": "verde",
+     "d": "Se prueba el modelo con ejemplos que no utilizó para entrenarse; esa separación permite estimar su capacidad de generalizar. Medir con los mismos datos del entrenamiento sería evaluar con la guía ya memorizada.",
+     "k": [
+      {
+       "e": "usa datos de",
+       "t": "Validación y prueba",
+       "c": "verde",
+       "d": "El conjunto de validación sirve para ajustar decisiones durante el desarrollo; el de prueba se reserva para la evaluación final, sin haberlo usado antes. Teachable Machine retiene automáticamente el 15 % de cada clase como validación (ver discrepancia 5)."
+      },
+      {
+       "e": "mide la",
+       "t": "Generalización",
+       "c": "verde",
+       "d": "Capacidad de funcionar bien con casos nuevos, no solo con los vistos en el entrenamiento. El tamaño y la diversidad del conjunto influyen en ella (Google for Developers, 2025). Su opuesto es el sobreajuste."
+      },
+      {
+       "e": "su fallo es el",
+       "t": "Sobreajuste (overfitting)",
+       "c": "verde",
+       "d": "El modelo «memoriza» el entrenamiento tan de cerca que falla con datos nuevos. Causas: datos poco representativos y complejidad excesiva. Señal: la pérdida de entrenamiento sigue bajando mientras la de validación sube. Regla práctica de Google: al menos uno o dos órdenes de magnitud más ejemplos que parámetros entrenables. El término no aparece en el PDF, pero explica lo que describe."
+      }
+     ]
+    },
+    {
+     "e": "5. termina en la",
+     "t": "Inferencia",
+     "c": "verde",
+     "d": "El modelo entrenado recibe una entrada nueva y entrega una predicción, categoría o contenido. Es el uso del modelo en operación, distinto del entrenamiento y de la evaluación."
+    },
+    {
+     "id": "diversidad",
+     "e": "depende de",
+     "t": "Datos y contexto",
+     "c": "verde",
+     "d": "Un conjunto numeroso puede seguir siendo insuficiente si repite las mismas condiciones. Ejemplo del curso: reconocer productos con una cámara de bodega exige considerar ángulos, distancias, iluminación, fondos y variaciones reales del embalaje. Google advierte que el tamaño y la diversidad del conjunto influyen en la generalización. Diversidad: los ejemplos cubren las condiciones reales de uso; representatividad: reflejan lo que el modelo enfrentará."
+    },
+    {
+     "id": "utilidad",
+     "e": "se distingue de la",
+     "t": "Desempeño vs utilidad empresarial",
+     "c": "verde",
+     "d": "Un modelo puede alcanzar buena precisión promedio y fallar en el segmento más relevante, generar demasiadas alertas falsas o producir un error costoso. La métrica debe representar el riesgo y la decisión que se quiere apoyar. La IA no es un fin en sí mismo: el valor surge al definir la tarea y garantizar que la métrica responda al impacto real en la operación.",
+     "k": [
+      {
+       "e": "se mide con",
+       "t": "Exactitud, precisión, sensibilidad",
+       "c": "verde",
+       "d": "Con la matriz de confusión: exactitud = aciertos totales sobre todos los casos; precisión = de lo marcado positivo, cuánto lo era; sensibilidad (recall) = de los positivos reales, cuántos se detectaron. La «precisión promedio» del curso es en rigor exactitud (ver discrepancia 4). Falso positivo = alerta falsa; falso negativo = defecto que se escapó; cuál cuesta más depende del negocio, y por eso la métrica debe ser orientada al riesgo, elegida según el costo del error y el segmento que más importa."
+      },
+      {
+       "e": "se elige como",
+       "t": "Métrica orientada al riesgo",
+       "c": "verde",
+       "d": "La métrica de éxito debe responder al riesgo empresarial y no solo a la precisión estadística. Se elige según el costo del error y el segmento que más importa."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "e": "se elige entre",
+   "t": "Tipos de aprendizaje",
+   "c": "ambar",
+   "d": "Cada modelo aprende según los datos disponibles y el objetivo. El curso presenta tres enfoques: supervisado, no supervisado y por refuerzo, que transforman información en predicciones, agrupaciones o decisiones. Google agrega la IA generativa como cuarta categoría (discrepancia 1).",
+   "k": [
+    {
+     "id": "sup",
+     "e": "o bien",
+     "t": "Aprendizaje supervisado",
+     "c": "ambar",
+     "d": "Aprende con ejemplos de respuesta conocida: relaciona características con una etiqueta y se evalúa comparando predicciones con resultados reales que no vio. Se emplea principalmente para regresión y clasificación. Requisito principal: etiquetas confiables.",
+     "k": [
+      {
+       "e": "si es numérica →",
+       "t": "Regresión",
+       "c": "ambar",
+       "d": "Predice un valor numérico: demanda semanal, tiempo de entrega, costo esperado. Ejemplos de la tabla del curso: predecir ventas de una sucursal (número de unidades) y estimar tiempo de despacho (minutos estimados)."
+      },
+      {
+       "e": "si es categoría →",
+       "t": "Clasificación",
+       "c": "ambar",
+       "d": "Predice una categoría: fraude probable, reclamo urgente, producto defectuoso, cliente con riesgo de abandono. Ejemplos: detectar correos sospechosos (spam o legítimo) e identificar defectos visuales en imágenes etiquetadas por tipo."
+      },
+      {
+       "e": "se ilustra con",
+       "t": "Tabla de 4 problemas",
+       "c": "ambar",
+       "d": "Problema | Datos | Salida | Tipo: predecir ventas (historial, fechas, promociones; unidades; regresión); detectar correos sospechosos (correos marcados; spam o legítimo; clasificación); identificar defectos (imágenes etiquetadas; categoría; clasificación); estimar despacho (rutas, carga, clima, tiempos observados; minutos; regresión)."
+      },
+      {
+       "id": "etiquetas",
+       "e": "exige",
+       "t": "Etiquetas confiables",
+       "c": "ambar",
+       "d": "Si las respuestas históricas reflejan decisiones sesgadas, criterios inconsistentes o errores de registro, el modelo aprenderá parte de esos problemas. La revisión del origen y calidad de las etiquetas es tarea de negocio y técnica."
+      }
+     ]
+    },
+    {
+     "id": "nosup",
+     "e": "o bien",
+     "t": "Aprendizaje no supervisado",
+     "c": "ambar",
+     "d": "Trabaja con datos sin respuesta predefinida y busca estructuras, similitudes o agrupaciones. El modelo encuentra grupos; la interpretación y el nombre de cada grupo requieren conocimiento del negocio. Requiere validación experta.",
+     "k": [
+      {
+       "e": "técnica:",
+       "t": "Clustering",
+       "c": "ambar",
+       "d": "Técnica frecuente: reúne casos parecidos y permite explorar segmentos que no estaban definidos (Google for Developers, 2026a)."
+      },
+      {
+       "e": "sirve para",
+       "t": "Usos del no supervisado",
+       "c": "ambar",
+       "d": "Explorar patrones de compra, agrupar puntos de venta con comportamientos semejantes, identificar temas recurrentes en grandes colecciones de documentos y detectar casos atípicos."
+      },
+      {
+       "e": "advierte que",
+       "t": "Los segmentos no son verdades",
+       "c": "ambar",
+       "d": "Los segmentos no son verdades naturales: dependen de las variables seleccionadas, la escala y calidad de los datos y las decisiones metodológicas. Deben validarse con evidencia adicional y con personas que conozcan el contexto."
+      }
+     ]
+    },
+    {
+     "id": "rl",
+     "e": "o bien",
+     "t": "Aprendizaje por refuerzo",
+     "c": "ambar",
+     "d": "Un agente realiza acciones en un entorno y recibe recompensas o penalizaciones; con la experiencia aprende una política orientada a maximizar la recompensa acumulada. Se usa en juegos, robótica, control y optimización secuencial. Por su complejidad y costo de experimentación suele quedar fuera de los primeros pilotos.",
+     "k": [
+      {
+       "e": "se compone de",
+       "t": "Agente, entorno, recompensa",
+       "c": "ambar",
+       "d": "El agente decide, el entorno responde, la recompensa dice qué tan bien salió. Exige definir con cuidado entorno, acciones posibles y recompensa. Un simulador permite ensayar sin riesgo real."
+      },
+      {
+       "e": "aprende una",
+       "t": "Política y recompensa acumulada",
+       "c": "ambar",
+       "d": "La política es la estrategia aprendida de qué acción tomar en cada situación. Es optimización secuencial: cada decisión cambia el estado del sistema y las siguientes (por ejemplo, una secuencia de decisiones logísticas que pesa puntualidad, costo del traslado y evaluación del servicio). La recompensa acumulada es lo que se busca maximizar; en el complemento matemático, el retorno descontado: G = suma de γ^k por la recompensa futura, con γ entre 0 y 1."
+      },
+      {
+       "e": "riesgo:",
+       "t": "Recompensa incompleta",
+       "c": "ambar",
+       "d": "Una recompensa incompleta puede incentivar conductas inconvenientes. Caso verificado: en CoastRunners (OpenAI, 2016) el agente dio vueltas golpeando objetivos que reaparecen y obtuvo más puntaje que los humanos sin terminar la carrera."
+      },
+      {
+       "e": "por eso queda",
+       "t": "Fuera de los primeros pilotos",
+       "c": "ambar",
+       "d": "Por su complejidad y costo de experimentación rara vez es el primer piloto, y necesita un entorno seguro o simulador. El curso añade que «cobra protagonismo en producción», afirmación que la fuente citada no respalda (discrepancia 2)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "e": "evoluciona a",
+   "t": "IA generativa",
+   "c": "violeta",
+   "d": "Evolución de modelos que predicen valores a sistemas que generan y procesan información en múltiples formatos. Exige entender las arquitecturas actuales, evaluar viabilidad y anticipar riesgos. La idea de examen: estos sistemas infieren lo más probable, no consultan una fuente verdadera.",
+   "k": [
+    {
+     "id": "generar",
+     "e": "cambia de predecir a",
+     "t": "De predecir a generar",
+     "c": "violeta",
+     "d": "Los modelos predictivos estiman un valor o categoría; los generativos aprenden regularidades de grandes colecciones de datos para producir contenido nuevo relacionado con una entrada: texto, código, imágenes, audio y video, además de transformar contenidos entre modalidades (Google for Developers, 2026a)."
+    },
+    {
+     "id": "transformer",
+     "e": "se sustenta en el",
+     "t": "Transformer y atención (2017)",
+     "c": "violeta",
+     "d": "Arquitectura presentada en 2017 y base de gran parte de los modelos de lenguaje contemporáneos. Su mecanismo de atención pondera relaciones entre elementos del contexto (Vaswani et al., 2017). Fórmula del complemento: softmax(QKᵀ/√dk)V. El paper se presentó para traducción automática (discrepancia 8).",
+     "k": [
+      {
+       "e": "pondera con",
+       "t": "Atención: Q, K, V",
+       "c": "violeta",
+       "d": "Cada token se convierte en una consulta (Q: lo que busca), una clave (K: lo que ofrece) y un valor (V: la información que aporta). QKᵀ da puntajes de relación entre pares; se divide por √dk para no saturar; softmax los vuelve pesos que suman 1; multiplicar por V da un promedio ponderado."
+      }
+     ]
+    },
+    {
+     "id": "probable",
+     "e": "genera lo más",
+     "t": "Secuencias probables",
+     "c": "violeta",
+     "d": "Estos sistemas generan secuencias a partir de patrones estadísticos y contexto con los que fueron entrenados; no consultan automáticamente una fuente verdadera. Es decir, infieren qué es lo más probable que se debiese responder dadas ciertas condiciones. Es la frase con olor a examen de la unidad.",
+     "k": [
+      {
+       "e": "se ilustra con el",
+       "t": "Ejemplo del rey",
+       "c": "violeta",
+       "d": "«El rey tiene sobre su cabeza una…» → «corona». «El hijo del rey es el…» → «príncipe». Llevado más allá, el modelo podría inferir que el príncipe sucederá al rey. En los tres casos hay asociación estadística, no consulta de una fuente ni razonamiento garantizado."
+      },
+      {
+       "e": "opera con",
+       "t": "Token y siguiente token",
+       "c": "violeta",
+       "d": "Modelo de lenguaje: el que predice y genera texto; el contexto es todo lo que ya leyó y condiciona la respuesta. Token: trozo de texto, una palabra o parte de ella. El modelo asigna un puntaje (logit) a cada palabra posible y softmax lo convierte en probabilidades que suman 1. Por eso predice el siguiente token, uno tras otro."
+      }
+     ]
+    },
+    {
+     "id": "prompt",
+     "e": "se guía con un",
+     "t": "Prompt",
+     "c": "violeta",
+     "d": "Una instrucción o prompt entrega al modelo una tarea, información y condiciones de salida. En la unidad se usan instrucciones sencillas para observar capacidades."
+    },
+    {
+     "id": "multimodal",
+     "e": "amplía con",
+     "t": "Multimodalidad",
+     "c": "violeta",
+     "d": "Un modelo multimodal procesa información de distintos tipos: recibe texto e imagen, analiza audio o video y genera salida en otra modalidad. Google Cloud la define como procesar modalidades como imágenes, videos y texto y combinar entradas y salidas diversas.",
+     "k": [
+      {
+       "e": "sirve para",
+       "t": "Usos empresariales",
+       "c": "violeta",
+       "d": "Analizar la fotografía de un producto junto con su ficha técnica; convertir una reunión en transcripción y tareas; revisar un documento con tablas e imágenes; generar piezas adaptadas a distintos canales."
+      },
+      {
+       "e": "exige",
+       "t": "Control por modalidad",
+       "c": "violeta",
+       "d": "El control debe considerar cada modalidad: una imagen convincente puede contener un error que pasa inadvertido en una revisión superficial."
+      }
+     ]
+    },
+    {
+     "id": "matriz",
+     "e": "se elige con la",
+     "t": "¿Qué tecnología corresponde?",
+     "c": "violeta",
+     "d": "Formulación útil: vincular la tarea, la evidencia disponible y el tipo de salida. La matriz es orientación inicial; no reemplaza una evaluación técnica ni jurídica. Necesidad → enfoque → condición crítica: política estable → reglas (completas, auditables); número o categoría → supervisado (ejemplos etiquetados y representativos); grupos desconocidos → no supervisado (interpretación experta); decisiones sucesivas → refuerzo (entorno seguro, simulador); crear o transformar contenido → generativa (instrucciones, fuentes, validación, derechos); tarea combinada → arquitectura híbrida.",
+     "k": [
+      {
+       "e": "si se combinan →",
+       "t": "Arquitectura híbrida",
+       "c": "violeta",
+       "d": "Para resolver una tarea que combina varios enfoques: diseño de flujo, integración, controles y responsables. Un asistente real mezcla modelo de lenguaje, clasificador, búsqueda documental (conectar documentos reduce, pero no elimina, la confabulación) y reglas."
+      },
+      {
+       "e": "antes, verifica si",
+       "t": "IA innecesaria: 5 comprobaciones",
+       "c": "violeta",
+       "d": "Cinco comprobaciones: (1) frecuencia, costo o escala suficientes; (2) existe una línea base; (3) los datos están disponibles; (4) el error puede controlarse; (5) la organización podrá mantener la solución una vez terminado el piloto."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "e": "exige",
+   "t": "Riesgos y uso responsable",
+   "c": "coral",
+   "d": "El uso responsable exige decisiones concretas a lo largo del ciclo de vida de la IA. Esta rama reúne la experiencia con Teachable Machine, los marcos UNESCO y NIST, la tabla de seis riesgos, la proporcionalidad y la normativa chilena. Regla central: la supervisión humana mantiene el control sobre las decisiones críticas.",
+   "k": [
+    {
+     "id": "tm",
+     "e": "se experimenta con",
+     "t": "Teachable Machine",
+     "c": "coral",
+     "d": "Herramienta web de Google para crear modelos de clasificación de imágenes, sonidos y poses sin escribir código (Carney et al., 2020). Hace accesible la relación entre ejemplos, entrenamiento y clasificación. Por sí sola no produce un sistema listo para operar. Usa transfer learning sobre MobileNet y entrena en el navegador.",
+     "k": [
+      {
+       "e": "sigue",
+       "t": "Siete pasos sugeridos",
+       "c": "coral",
+       "d": "(1) Definir clases distinguibles (botella con tapa, sin tapa, fondo vacío); (2) reunir ejemplos variando ángulo, distancia, iluminación y fondo; (3) entrenar y revisar la distribución de muestras; (4) probar objetos y condiciones no vistas; (5) registrar errores, confusiones y cambios de confianza; (6) agregar casos difíciles y reentrenar; (7) explicar qué podría salir mal en la operación real."
+      },
+      {
+       "e": "por debajo usa",
+       "t": "Transfer learning",
+       "c": "coral",
+       "d": "Se aprovecha MobileNet, un modelo base preentrenado con 1.000 clases, en lugar de entrenar una red desde cero. Teachable Machine retiene el 15 % de las muestras de cada clase como validación y exporta con TensorFlow.js."
+      },
+      {
+       "id": "atajos",
+       "e": "observación clave:",
+       "t": "Atajos: aprende el fondo",
+       "c": "coral",
+       "d": "El modelo aprende correlaciones presentes en los ejemplos. Si todas las fotos de una clase tienen un fondo distinto, puede aprender el fondo y no el objeto. La prueba con condiciones nuevas detecta estos atajos. También conviene registrar los cambios de confianza del modelo, que no garantiza acierto. Ejemplo clásico: clasificador husky vs lobo que predecía «lobo» por la nieve."
+      }
+     ]
+    },
+    {
+     "id": "marcos",
+     "e": "se ordena con",
+     "t": "Marcos: UNESCO y NIST",
+     "c": "coral",
+     "d": "UNESCO plantea principios de proporcionalidad, seguridad, privacidad, responsabilidad, transparencia, supervisión humana, sostenibilidad y equidad (UNESCO, 2021); el curso nombra 8, la Recomendación tiene 10 (discrepancia 3). NIST propone gestionar riesgos desde el diseño, desarrollo, uso y evaluación (NIST, 2024), con perfil de 12 riesgos y cuatro funciones: Gobernar, Mapear, Medir, Gestionar (discrepancia 10)."
+    },
+    {
+     "e": "se concreta en",
+     "t": "Tabla de 6 riesgos",
+     "c": "coral",
+     "d": "Riesgo | Cómo aparece | Control inicial. Seis riesgos del curso: sesgo, confabulación, privacidad, propiedad intelectual, deepfakes e integridad, sobreconfianza.",
+     "k": [
+      {
+       "id": "sesgo",
+       "e": "control: cobertura",
+       "t": "Sesgo",
+       "c": "coral",
+       "d": "Aparece por datos poco representativos, etiquetas históricas o desempeño desigual entre grupos. Control inicial: revisar cobertura, comparar desempeño por segmentos y documentar límites."
+      },
+      {
+       "id": "confab",
+       "e": "control: verificar",
+       "t": "Confabulación",
+       "c": "coral",
+       "d": "Contenido falso o inconsistente presentado con seguridad. NIST la define como contenido falso o erróneo presentado con falsa certeza de veracidad. Control: verificar fuentes y prohibir uso automático en decisiones críticas."
+      },
+      {
+       "id": "privacidad",
+       "e": "control: minimizar",
+       "t": "Privacidad",
+       "c": "coral",
+       "d": "Carga, inferencia o exposición de datos personales y sensibles. Control: minimizar datos, anonimizar y utilizar entornos autorizados. Exige consentimiento específico."
+      },
+      {
+       "id": "pi",
+       "e": "control: licencias",
+       "t": "Propiedad intelectual",
+       "c": "coral",
+       "d": "Uso o generación de material protegido, marcas o secretos comerciales. Control: revisar licencias, procedencia, contratos y uso previsto. Varía según jurisdicción, contrato, plataforma y tipo de contenido."
+      },
+      {
+       "id": "deepfake",
+       "e": "control: etiquetar",
+       "t": "Deepfakes e integridad",
+       "c": "coral",
+       "d": "Audio, imagen o video sintético capaz de inducir a error. Control: etiquetar contenido, preservar trazabilidad y verificar procedencia."
+      },
+      {
+       "id": "sobreconf",
+       "e": "control: revisión humana",
+       "t": "Sobreconfianza",
+       "c": "coral",
+       "d": "Delegación excesiva o aceptación de resultados sin revisión. Control: asignar responsables, umbrales de escalamiento y revisión humana."
+      }
+     ]
+    },
+    {
+     "id": "proporcional",
+     "e": "se gradúa por",
+     "t": "Proporcionalidad al impacto",
+     "c": "coral",
+     "d": "La gestión debe ser proporcional al impacto: un borrador publicitario admite corrección; una recomendación clínica, crediticia o laboral exige controles mucho más rigurosos. La supervisión humana crece con el impacto de la decisión."
+    },
+    {
+     "id": "chile",
+     "e": "se rige por",
+     "t": "Chile: Ley 19.628 y 21.719",
+     "c": "coral",
+     "d": "El tratamiento de datos personales se rige hoy por la Ley 19.628. La Ley 21.719, publicada en diciembre de 2024, entra en vigor el 1 de diciembre de 2026, refuerza licitud, finalidad, seguridad y responsabilidad y crea la Agencia de Protección de Datos Personales (BCN, 2024). Hay un proyecto de postergación en trámite (discrepancia 7). Se revisa con asesoría jurídica.",
+     "k": [
+      {
+       "e": "complementa la",
+       "t": "OMPI y propiedad intelectual",
+       "c": "coral",
+       "d": "La OMPI recomienda identificar los activos involucrados, revisar condiciones de uso, mantener trazabilidad y evaluar salvaguardas al adoptar IA generativa (OMPI, 2024). Es una guía con lista de verificación, no una norma."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "e": "se decide con",
+   "t": "Piloto, caso y matriz",
+   "c": "cian",
+   "d": "Cómo pasar del entusiasmo por la tecnología a la disciplina de ejecución. Un piloto útil produce evidencia para decidir. Aquí se reúnen los criterios de piloto, el caso SurAndes y la matriz de ocho dimensiones con semáforo.",
+   "k": [
+    {
+     "id": "lineabase",
+     "e": "parte con",
+     "t": "Criterios de una prueba piloto",
+     "c": "cian",
+     "d": "Un piloto útil produce evidencia para decidir: comienza con un problema acotado, una línea base y un responsable de negocio. La línea base es cómo funciona hoy el proceso en tiempo, costo, calidad o riesgo; sin ella no se mide mejora. Siete preguntas evitan pilotos demostrativos (los que lucen pero no tienen continuidad): (1) qué mejorar; (2) cómo se hace hoy; (3) qué datos y con qué permisos; (4) qué error es tolerable e inaceptable; (5) quién revisa y responde; (6) cómo se mide valor, desempeño técnico y experiencia de usuarios; (7) qué pasa si falla o deja de estar disponible."
+    },
+    {
+     "e": "se aplica en el",
+     "t": "Caso SurAndes Alimentos",
+     "c": "cian",
+     "d": "Empresa chilena mediana (ficticia, caso didáctico): una planta, dos centros de distribución, equipo comercial de 45 personas. Presupuesto para un solo piloto de doce semanas y cinco propuestas. Información adicional: sin comité formal de datos, calidad dispone de cuatro horas semanales, marketing tiene una persona que aprueba cada publicación.",
+     "k": [
+      {
+       "id": "propA",
+       "e": "propuesta",
+       "t": "A · Inspección visual",
+       "c": "cian",
+       "d": "Unas 18.000 fotografías, 6.000 etiquetadas en cuatro clases (correcto, sello incompleto, etiqueta desplazada, abolladura); clasificador que alerta a un operario. Las fotos etiquetadas vienen del turno diurno y de dos productos. Conveniente si se amplía el conjunto y el operario sigue en el circuito."
+      },
+      {
+       "id": "propB",
+       "e": "propuesta",
+       "t": "B · Segmentación de clientes",
+       "c": "cian",
+       "d": "Agrupar por frecuencia, volumen, estacionalidad, forma de pago y mezcla de productos; hoy hay tres segmentos definidos solo por facturación. Cuatro años de transacciones, pero los identificadores cambiaron tras una migración. Se descarta: requiere saneamiento previo de datos."
+      },
+      {
+       "id": "propC",
+       "e": "propuesta",
+       "t": "C · Fichas y contenidos (elegida)",
+       "c": "cian",
+       "d": "IA generativa para borradores de fichas, publicaciones y respuestas frecuentes. Ingredientes y alérgenos están en fichas técnicas aprobadas. Es de ejecución rápida, bajo costo y 100 % reversible; falta definir flujo de revisión y política de carga de documentos internos. Fue la única aprobada."
+      },
+      {
+       "id": "propD",
+       "e": "propuesta",
+       "t": "D · Despacho dinámico",
+       "c": "cian",
+       "d": "Sistema que aprende asignación de rutas mediante recompensas (puntualidad, combustible, ocupación). No hay simulador y los datos de tráfico están incompletos; un error afectaría a clientes estratégicos. Se descarta de inmediato."
+      },
+      {
+       "id": "propE",
+       "e": "propuesta",
+       "t": "E · Detector de ánimo",
+       "c": "cian",
+       "d": "RR. HH. quiere inferir el estado emocional del personal con cámaras internas. Sin consentimiento específico ni relación clara entre expresión facial y desempeño, vulnera privacidad e integridad laboral. Se descarta de inmediato (discrepancia 12)."
+      },
+      {
+       "e": "resuelve con la",
+       "t": "Decisión de Marcela Riquelme",
+       "c": "cian",
+       "d": "La gerente general (ficticia) fijó la prioridad: resultado medible con riesgo operativo nulo y sin exigir tiempo extra a calidad. Se aprobó únicamente la propuesta C, con la persona de Marketing para la revisión humana y las fichas técnicas oficiales como fuente."
+      },
+      {
+       "e": "enseña",
+       "t": "Gobernanza y saneamiento de datos",
+       "c": "cian",
+       "d": "Lecciones del caso: sin comité de datos ni inventario de información personal, una idea atractiva puede descartarse por falta de datos, tiempos o gobernanza. Saneamiento de datos es corregir identificadores y calidad antes de modelar. El criterio de descarte más ignorado suele ser el ético."
+      }
+     ]
+    },
+    {
+     "id": "matriz8",
+     "e": "se completa con la",
+     "t": "Matriz de 8 dimensiones",
+     "c": "cian",
+     "d": "Herramienta para evaluar y diagnosticar oportunidades de IA antes de seleccionar tecnología o solicitar un piloto. Ocho dimensiones con pregunta guía: Problema, Línea base, Tipo de salida, Evidencia, Personas, Riesgo, Piloto y Decisión. Si no se puede responder, se registra el supuesto o la información que falta (brecha de información).",
+     "k": [
+      {
+       "id": "semaforo",
+       "e": "termina en el",
+       "t": "Semáforo de factibilidad",
+       "c": "cian",
+       "d": "Verde: problema acotado, datos disponibles, error controlable y responsable definido → diseñar piloto y línea base. Amarillo: brechas de datos, permisos, métricas o capacidades → resolver brechas antes de probar. Rojo: uso de alto impacto sin base, controles ni revisión → detener y reformular."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "herram",
+   "e": "se apoya en",
+   "t": "Herramientas generativas",
+   "c": "gris",
+   "d": "Listado del curso con 26 herramientas en cuatro áreas: texto (9), imágenes (6), sonido, voz y música (5) y video (6). El listado envejece rápido: memoriza la categoría y el rasgo distintivo de cada una, y revisa términos de uso y licencias antes de usarlas en la empresa (discrepancia 9).",
+   "k": [
+    {
+     "e": "área",
+     "t": "Texto (9)",
+     "c": "gris",
+     "d": "Asistentes generativos de texto y agentes: Gemini, DeepSeek, Manus, Claude, ChatGPT, Microsoft Copilot, Perplexity, Meta AI y Blackbox AI.",
+     "k": [
+      {
+       "e": "herramienta",
+       "t": "Gemini",
+       "c": "gris",
+       "d": "Google. Asistente multimodal: texto, documentos, imágenes y código; integrado al ecosistema Google."
+      },
+      {
+       "e": "herramienta",
+       "t": "DeepSeek",
+       "c": "gris",
+       "d": "China. Razonamiento, programación; modelos abiertos o de acceso económico."
+      },
+      {
+       "e": "herramienta",
+       "t": "Manus",
+       "c": "gris",
+       "d": "Agente de IA para tareas de varios pasos con mayor autonomía: investigar, analizar y producir documentos."
+      },
+      {
+       "e": "herramienta",
+       "t": "Claude",
+       "c": "gris",
+       "d": "Anthropic. Análisis y textos extensos, razonamiento, documentos y programación."
+      },
+      {
+       "e": "herramienta",
+       "t": "ChatGPT",
+       "c": "gris",
+       "d": "OpenAI. Multimodal: texto, imágenes, archivos, investigación, programación y tareas con herramientas."
+      },
+      {
+       "e": "herramienta",
+       "t": "Microsoft Copilot",
+       "c": "gris",
+       "d": "Asistente integrado a Microsoft 365."
+      },
+      {
+       "e": "herramienta",
+       "t": "Perplexity",
+       "c": "gris",
+       "d": "Motor de búsqueda y asistente de investigación; responde con citas y enlaces a fuentes, útil para verificación."
+      },
+      {
+       "e": "herramienta",
+       "t": "Meta AI",
+       "c": "gris",
+       "d": "Meta; modelos Llama; integrado a WhatsApp, Instagram y Facebook; genera y edita imágenes."
+      },
+      {
+       "e": "herramienta",
+       "t": "Blackbox AI",
+       "c": "gris",
+       "d": "Desarrollo de software y agentes de programación; acceso a cientos de modelos en una misma plataforma."
+      }
+     ]
+    },
+    {
+     "e": "área",
+     "t": "Imágenes (6)",
+     "c": "gris",
+     "d": "Generadores de imágenes: Nano Banana, GPT Image 2, Leonardo.Ai, Grok, FLUX y Adobe Firefly.",
+     "k": [
+      {
+       "e": "herramienta",
+       "t": "Nano Banana (Gemini)",
+       "c": "gris",
+       "d": "Generación de imágenes de Gemini (Google)."
+      },
+      {
+       "e": "herramienta",
+       "t": "GPT Image 2 / ChatGPT Images 2.0",
+       "c": "gris",
+       "d": "Generación de imágenes de OpenAI."
+      },
+      {
+       "e": "herramienta",
+       "t": "Leonardo.Ai",
+       "c": "gris",
+       "d": "Generación visual, edición, animación y video."
+      },
+      {
+       "e": "herramienta",
+       "t": "Grok",
+       "c": "gris",
+       "d": "xAI. Multimodal general con generación de imágenes."
+      },
+      {
+       "e": "herramienta",
+       "t": "FLUX (Black Forest Labs)",
+       "c": "gris",
+       "d": "Se destaca por calidad visual y seguimiento de prompts; tiene pesos abiertos."
+      },
+      {
+       "e": "herramienta",
+       "t": "Adobe Firefly",
+       "c": "gris",
+       "d": "Suite de Adobe: imágenes, video, audio y gráficos."
+      }
+     ]
+    },
+    {
+     "e": "área",
+     "t": "Sonido, voz y música (5)",
+     "c": "gris",
+     "d": "Música, transcripción y voz: Suno, Udio, Lyria 3, TurboScribe y FakeYou. FakeYou ilustra el riesgo de la clonación de voz.",
+     "k": [
+      {
+       "e": "herramienta",
+       "t": "Suno",
+       "c": "gris",
+       "d": "Canciones completas desde una descripción: instrumentación, letra y voces."
+      },
+      {
+       "e": "herramienta",
+       "t": "Udio",
+       "c": "gris",
+       "d": "Generación musical por prompts."
+      },
+      {
+       "e": "herramienta",
+       "t": "Lyria 3",
+       "c": "gris",
+       "d": "Google DeepMind; integrado a Gemini; incluso admite referencias visuales para generar música."
+      },
+      {
+       "e": "herramienta",
+       "t": "TurboScribe",
+       "c": "gris",
+       "d": "Transcripción automática que reconoce distintos hablantes."
+      },
+      {
+       "e": "herramienta",
+       "t": "FakeYou",
+       "c": "gris",
+       "d": "Texto a voz, conversión y clonación de voces."
+      }
+     ]
+    },
+    {
+     "e": "área",
+     "t": "Video (6)",
+     "c": "gris",
+     "d": "Texto a video, edición y avatares: Google Veo, VEED, Kling AI, Runway, HeyGen y Wan AI.",
+     "k": [
+      {
+       "e": "herramienta",
+       "t": "Google Veo",
+       "c": "gris",
+       "d": "Google DeepMind. Video desde texto o imágenes; las versiones recientes generan audio, ambientes y diálogos de manera nativa."
+      },
+      {
+       "e": "herramienta",
+       "t": "VEED",
+       "c": "gris",
+       "d": "Edición online con IA: subtítulos, voces y avatares."
+      },
+      {
+       "e": "herramienta",
+       "t": "Kling AI",
+       "c": "gris",
+       "d": "Kuaishou. Texto a video e imagen a video."
+      },
+      {
+       "e": "herramienta",
+       "t": "Runway",
+       "c": "gris",
+       "d": "Video generativo, texto o imagen a video y edición avanzada."
+      },
+      {
+       "e": "herramienta",
+       "t": "HeyGen",
+       "c": "gris",
+       "d": "Avatares y presentadores virtuales; clonación de voces; traducción con sincronización labial."
+      },
+      {
+       "e": "herramienta",
+       "t": "Wan AI",
+       "c": "gris",
+       "d": "Ecosistema Alibaba. Video desde texto e imágenes."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+};
+
+const CROSS = [
+ {"from": "ml", "to": "dl", "label": "subcampo", "bend": 50},
+ {"from": "etiquetas", "to": "sesgo", "label": "etiquetas sesgadas → modelo sesgado", "bend": -70},
+ {"from": "diversidad", "to": "atajos", "label": "poca diversidad → atajos", "bend": 60},
+ {"from": "tm", "to": "sup", "label": "es clasificación supervisada", "bend": -90},
+ {"from": "utilidad", "to": "lineabase", "label": "se mide contra", "bend": 70},
+ {"from": "probable", "to": "confab", "label": "origen de", "bend": -60},
+ {"from": "propA", "to": "sup", "label": "clasificador", "bend": 80},
+ {"from": "propA", "to": "diversidad", "label": "turno diurno, dos productos", "bend": -50},
+ {"from": "propB", "to": "nosup", "label": "clustering", "bend": 90},
+ {"from": "propD", "to": "rl", "label": "recompensas, sin simulador", "bend": -80},
+ {"from": "propE", "to": "privacidad", "label": "sin consentimiento", "bend": 55},
+ {"from": "propC", "to": "generar", "label": "IA generativa", "bend": -65},
+ {"from": "propC", "to": "sobreconf", "label": "revisor humano", "bend": 75},
+ {"from": "matriz", "to": "matriz8", "label": "se profundiza en", "bend": -45},
+ {"from": "herram", "to": "pi", "label": "licencias y derechos", "bend": 85},
+ {"from": "herram", "to": "deepfake", "label": "clonación de voz", "bend": -40}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["fund", "Inteligencia artificial (IA)", "Artificial Intelligence (AI)", "Campo que reúne tecnologías capaces de realizar tareas asociadas con percepción, lenguaje, aprendizaje, razonamiento o decisión."],
+["fund", "Aprendizaje automático", "Machine Learning (ML)", "Enfoque que entrena modelos con datos para producir predicciones, clasificaciones o contenido sin programar una regla para cada caso."],
+["fund", "Aprendizaje profundo", "Deep Learning", "Subcampo del machine learning que usa redes neuronales con múltiples capas para aprender patrones complejos."],
+["fund", "Red neuronal de múltiples capas", "Multilayer neural network", "Modelo formado por capas de unidades conectadas; cada capa transforma la salida de la anterior en rasgos más abstractos."],
+["fund", "Familia de tecnologías de IA", "AI technology family", "La IA incluye reglas, búsqueda y optimización, ML, procesamiento de lenguaje, visión computacional y sistemas generativos."],
+["fund", "Sistema basado en reglas", "Rule-based system", "Software que sigue instrucciones explícitas escritas por personas: si ocurre A, ejecute B."],
+["fund", "Automatización convencional", "Conventional automation", "Automatizar con reglas fijas; es más eficiente, barata y transparente que el ML cuando la política es estable."],
+["fund", "Búsqueda y optimización", "Search and optimization", "Técnicas de IA que exploran alternativas para encontrar la mejor solución según un criterio."],
+["fund", "Procesamiento de lenguaje natural (PLN)", "Natural Language Processing (NLP)", "Área de la IA que permite a las máquinas comprender y producir lenguaje humano."],
+["fund", "Visión computacional", "Computer vision", "Área de la IA que permite a las máquinas interpretar imágenes y video."],
+["fund", "Superposición de categorías", "Overlapping categories", "Una solución real combina varias tecnologías, por ejemplo un modelo de lenguaje, un clasificador, búsqueda y reglas."],
+["fund", "Pregunta de negocio", "Business question", "Definir la tarea con un verbo y un resultado observable antes de hablar de modelos o herramientas."],
+["fund", "Resultado observable", "Observable outcome", "Efecto concreto y medible que se quiere producir: predecir, clasificar, agrupar, recomendar, generar o detectar."],
+["fund", "Opacidad", "Opacity", "Dificultad para entender por qué un sistema decide lo que decide; es un costo que agrega un modelo frente a reglas claras."],
+["fund", "Auditable", "Auditable", "Que una persona puede revisar y verificar cómo se tomó una decisión."],
+["ciclo", "Modelo", "Model", "Representación matemática aprendida de los datos que transforma una entrada en una predicción, clasificación o contenido."],
+["ciclo", "Datos de entrenamiento", "Training data", "Ejemplos usados para ajustar el modelo y que aprenda patrones."],
+["ciclo", "Representación", "Representation", "Decisión de qué elementos funcionarán como entradas del modelo: columnas de una tabla, píxeles o palabras."],
+["ciclo", "Característica", "Feature", "Variable o atributo de entrada, como antigüedad, frecuencia de compra, píxeles o palabras."],
+["ciclo", "Datos tabulares", "Tabular data", "Datos organizados en filas y columnas, como una planilla o una tabla de base de datos."],
+["ciclo", "Píxel", "Pixel", "Punto mínimo de una imagen digital; sus valores numéricos son la entrada de un modelo de visión."],
+["ciclo", "Entrenamiento", "Training", "Proceso en que el algoritmo ajusta los parámetros del modelo para reducir la diferencia entre sus resultados y los esperados."],
+["ciclo", "Parámetros", "Parameters", "Números internos del modelo que se ajustan durante el entrenamiento."],
+["ciclo", "Hiperparámetros", "Hyperparameters", "Configuraciones que se fijan antes de entrenar, como épocas, tamaño de lote o tasa de aprendizaje."],
+["ciclo", "Función de pérdida", "Loss function", "Fórmula que mide cuánto se equivoca el modelo; entrenar es hacerla lo más pequeña posible."],
+["ciclo", "Evaluación", "Evaluation", "Medición del desempeño del modelo con datos distintos de los que usó para entrenar."],
+["ciclo", "Conjunto de validación", "Validation set", "Parte de los datos reservada para revisar el modelo mientras se ajusta; Teachable Machine aparta el 15 %."],
+["ciclo", "Conjunto de prueba", "Test set", "Datos que el modelo nunca vio, usados al final para estimar su desempeño real."],
+["ciclo", "Inferencia", "Inference", "Uso del modelo ya entrenado para producir un resultado frente a una entrada nueva."],
+["ciclo", "Generalización", "Generalization", "Capacidad del modelo de acertar en casos nuevos, no solo en los que vio al entrenar."],
+["ciclo", "Sobreajuste", "Overfitting", "Cuando el modelo memoriza el entrenamiento y falla con datos nuevos."],
+["ciclo", "Diversidad de los datos", "Data diversity", "Variedad de condiciones en los ejemplos (ángulos, luz, fondos); pesa tanto como la cantidad."],
+["ciclo", "Representatividad", "Representativeness", "Grado en que los datos reflejan las condiciones reales donde operará el modelo."],
+["ciclo", "Desempeño estadístico", "Statistical performance", "Qué tan bien acierta el modelo según una métrica técnica."],
+["ciclo", "Utilidad empresarial", "Business utility", "Valor real que el modelo aporta a la decisión, considerando el costo de cada tipo de error."],
+["ciclo", "Exactitud", "Accuracy", "Proporción de todas las predicciones que fueron correctas; es la «precisión promedio» del curso."],
+["ciclo", "Precisión (métrica)", "Precision", "De todo lo que el modelo marcó como positivo, qué proporción lo era de verdad."],
+["ciclo", "Sensibilidad", "Recall", "De todos los positivos reales, qué proporción detectó el modelo."],
+["ciclo", "Falso positivo (alerta falsa)", "False positive", "El modelo da una alerta y no había problema."],
+["ciclo", "Falso negativo", "False negative", "El modelo no alerta y sí había problema."],
+["ciclo", "Métrica orientada al riesgo", "Risk-oriented metric", "Indicador elegido según la decisión y el costo de equivocarse, no solo según el acierto promedio."],
+["tipos", "Aprendizaje supervisado", "Supervised learning", "Aprendizaje con ejemplos etiquetados; se usa principalmente para regresión y clasificación."],
+["tipos", "Etiqueta", "Label", "Resultado conocido que acompaña un ejemplo, como fraude, defecto o nivel de demanda."],
+["tipos", "Etiquetas confiables", "Reliable labels", "Respuestas históricas sin sesgos, criterios inconsistentes ni errores de registro; requisito principal del supervisado."],
+["tipos", "Regresión", "Regression", "Tarea supervisada que estima un valor numérico, como demanda semanal o minutos de despacho."],
+["tipos", "Clasificación", "Classification", "Tarea supervisada que estima una categoría, como spam o legítimo, defectuoso o correcto."],
+["tipos", "Clasificador", "Classifier", "Modelo que asigna cada entrada a una de varias clases."],
+["tipos", "Aprendizaje no supervisado", "Unsupervised learning", "Aprendizaje con datos sin etiquetas, orientado a encontrar patrones, similitudes o agrupaciones."],
+["tipos", "Agrupamiento", "Clustering", "Técnica no supervisada que reúne casos parecidos en grupos que no estaban definidos."],
+["tipos", "Segmento", "Segment", "Grupo de clientes o casos con comportamiento parecido; su nombre y sentido los pone el negocio."],
+["tipos", "Caso atípico", "Outlier / anomaly", "Dato que se aleja claramente del comportamiento habitual del resto."],
+["tipos", "Aprendizaje por refuerzo", "Reinforcement learning", "Un agente aprende por acciones, recompensas y penalizaciones dentro de un entorno."],
+["tipos", "Agente", "Agent", "Quien toma las acciones en el aprendizaje por refuerzo."],
+["tipos", "Entorno", "Environment", "El mundo, real o simulado, donde actúa el agente y que responde a sus acciones."],
+["tipos", "Recompensa", "Reward", "Señal numérica que premia o castiga cada acción del agente."],
+["tipos", "Política", "Policy", "Regla aprendida que indica qué acción tomar en cada situación para maximizar la recompensa acumulada."],
+["tipos", "Recompensa acumulada", "Cumulative reward", "Suma de recompensas a lo largo de una secuencia de decisiones; es lo que el agente maximiza."],
+["tipos", "Recompensa incompleta", "Misspecified reward", "Recompensa mal diseñada que incentiva conductas inconvenientes no previstas."],
+["tipos", "Optimización secuencial", "Sequential optimization", "Mejorar una cadena de decisiones donde cada una afecta a las siguientes."],
+["tipos", "Simulador", "Simulator", "Entorno artificial donde el agente puede equivocarse sin dañar la operación real."],
+["gen", "Modelo predictivo", "Predictive model", "Modelo que estima un valor o una categoría."],
+["gen", "Modelo generativo", "Generative model", "Modelo que aprende regularidades de grandes colecciones de datos para producir contenido nuevo."],
+["gen", "IA generativa", "Generative AI", "IA que crea o transforma texto, código, imágenes, audio y video a partir de una entrada."],
+["gen", "Transformer", "Transformer", "Arquitectura de red neuronal presentada en 2017 basada en el mecanismo de atención; base de los modelos de lenguaje actuales."],
+["gen", "Mecanismo de atención", "Attention mechanism", "Pondera cuánto se relaciona cada elemento del contexto con los demás para decidir qué importa."],
+["gen", "Contexto", "Context", "Información de entrada que el modelo considera para producir su respuesta."],
+["gen", "Token", "Token", "Fragmento de texto (palabra o parte de palabra) con el que trabaja un modelo de lenguaje."],
+["gen", "Predicción del siguiente token", "Next-token prediction", "Mecanismo por el que un modelo de lenguaje genera texto eligiendo, paso a paso, la continuación más probable."],
+["gen", "Modelo de lenguaje", "Language model", "Modelo que estima la probabilidad de secuencias de texto y genera continuaciones."],
+["gen", "Instrucción (prompt)", "Prompt", "Texto que entrega al modelo una tarea, información y condiciones de salida."],
+["gen", "Multimodalidad", "Multimodality", "Capacidad de procesar y combinar distintos tipos de datos (texto, imagen, audio, video) en entradas y salidas."],
+["gen", "Modalidad", "Modality", "Tipo de dato: texto, imagen, audio, video o código."],
+["gen", "Arquitectura híbrida", "Hybrid architecture", "Solución que combina reglas, modelos predictivos y generativos con un flujo, controles y responsables."],
+["gen", "Búsqueda documental", "Document retrieval", "Componente que recupera documentos relevantes para que el modelo responda con fuentes."],
+["riesgo", "Teachable Machine", "Teachable Machine", "Herramienta web de Google para crear clasificadores de imágenes, sonidos y poses sin escribir código."],
+["riesgo", "Aprendizaje por transferencia", "Transfer learning", "Reutilizar un modelo ya entrenado y ajustarlo con pocos ejemplos nuevos; es lo que hace Teachable Machine."],
+["riesgo", "Correlación espuria (atajo)", "Shortcut / spurious correlation", "Patrón accidental que el modelo aprende en lugar del objeto real, como el fondo de la foto."],
+["riesgo", "Confianza del modelo", "Model confidence", "Probabilidad que el modelo asigna a su respuesta; no garantiza que sea correcta."],
+["riesgo", "Ciclo de vida de la IA", "AI lifecycle", "Etapas de diseño, desarrollo, uso y evaluación en las que deben gestionarse los riesgos."],
+["riesgo", "Principios UNESCO", "UNESCO AI ethics principles", "Recomendación de 2021: proporcionalidad, seguridad, privacidad, responsabilidad, transparencia, supervisión humana, sostenibilidad y equidad, entre otros."],
+["riesgo", "Marco de gestión de riesgos de NIST", "NIST AI Risk Management Framework", "Guía estadounidense para gestionar riesgos de IA; su perfil generativo es el NIST AI 600-1 (2024)."],
+["riesgo", "Sesgo", "Bias", "Error sistemático por datos poco representativos, etiquetas históricas o desempeño desigual entre grupos."],
+["riesgo", "Confabulación (alucinación)", "Confabulation / hallucination", "Contenido falso o erróneo presentado con falsa certeza de veracidad."],
+["riesgo", "Privacidad", "Privacy", "Riesgo de cargar, inferir o exponer datos personales y sensibles."],
+["riesgo", "Anonimización", "Anonymization", "Quitar o transformar datos para que no se pueda identificar a las personas."],
+["riesgo", "Minimización de datos", "Data minimization", "Usar solo los datos personales estrictamente necesarios para el fin declarado."],
+["riesgo", "Propiedad intelectual", "Intellectual property", "Derechos sobre obras, marcas y secretos comerciales que pueden infringirse al usar o generar contenido."],
+["riesgo", "Deepfake", "Deepfake", "Audio, imagen o video sintético capaz de inducir a error sobre lo que alguien dijo o hizo."],
+["riesgo", "Integridad de la información", "Information integrity", "Que el contenido sea verificable y no engañe sobre su origen o veracidad."],
+["riesgo", "Trazabilidad", "Traceability", "Poder rastrear el origen, la procedencia y los cambios de un contenido o una decisión."],
+["riesgo", "Contenido sintético", "Synthetic content", "Contenido producido por IA; debe etiquetarse y rastrearse."],
+["riesgo", "Sobreconfianza", "Overreliance", "Delegar en exceso o aceptar resultados del sistema sin revisión."],
+["riesgo", "Supervisión humana", "Human oversight", "Personas que revisan, corrigen y responden por lo que produce el sistema."],
+["riesgo", "Umbral de escalamiento", "Escalation threshold", "Nivel de riesgo o duda a partir del cual el caso pasa a revisión humana."],
+["riesgo", "Proporcionalidad", "Proportionality", "Los controles deben crecer con el impacto de la decisión: un borrador publicitario no es una recomendación clínica."],
+["riesgo", "Ley 19.628", "Chilean Law 19,628", "Ley chilena de protección de la vida privada que rige hoy el tratamiento de datos personales."],
+["riesgo", "Ley 21.719", "Chilean Law 21,719", "Ley chilena que moderniza la protección de datos personales; publicada en dic-2024, vigencia legal 1-dic-2026."],
+["riesgo", "Agencia de Protección de Datos Personales", "Personal Data Protection Agency", "Organismo chileno creado por la Ley 21.719 para fiscalizar el tratamiento de datos."],
+["riesgo", "Consentimiento", "Consent", "Autorización específica de la persona para un uso determinado de sus datos."],
+["riesgo", "OMPI", "WIPO", "Organización Mundial de la Propiedad Intelectual; recomienda identificar activos, revisar condiciones de uso, mantener trazabilidad y evaluar salvaguardas."],
+["piloto", "Prueba piloto", "Pilot", "Prueba acotada que produce evidencia para decidir si escalar, ajustar o detener una solución."],
+["piloto", "Línea base", "Baseline", "Medición de cómo funciona hoy el proceso (tiempo, costo, calidad o riesgo) para comparar después."],
+["piloto", "Piloto demostrativo", "Showcase pilot", "Prueba que impresiona pero no tiene continuidad ni sirve para decidir."],
+["piloto", "Error tolerable", "Tolerable error", "Equivocación que el negocio puede absorber y corregir sin daño serio."],
+["piloto", "Responsable de negocio", "Business owner", "Persona que responde por la decisión final y por los resultados del piloto."],
+["piloto", "Reversibilidad", "Reversibility", "Que la solución pueda detenerse o deshacerse sin interrumpir la operación."],
+["piloto", "Operario en el circuito", "Human in the loop", "Una persona revisa y decide sobre lo que el sistema sugiere."],
+["piloto", "Saneamiento de datos", "Data cleansing", "Corregir, unificar y depurar datos antes de usarlos en un modelo."],
+["piloto", "Gobernanza de datos", "Data governance", "Reglas, roles y responsables sobre cómo se gestionan y usan los datos de una organización."],
+["piloto", "Matriz de evaluación de oportunidad de IA", "AI opportunity assessment matrix", "Herramienta del curso con 8 dimensiones: problema, línea base, tipo de salida, evidencia, personas, riesgo, piloto y decisión."],
+["piloto", "Semáforo de factibilidad", "Feasibility traffic light", "Verde: diseñar piloto; amarillo: resolver brechas antes de probar; rojo: detener y reformular."],
+["piloto", "Brecha de información", "Information gap", "Dato o supuesto que falta para decidir; se registra en la matriz."],
+["herr", "Asistente generativo de texto", "Text generation assistant", "Herramienta conversacional que genera y analiza texto, como Gemini, Claude, ChatGPT, Copilot o Meta AI."],
+["herr", "Agente de IA", "AI agent", "Sistema que ejecuta tareas de varios pasos con mayor autonomía, como Manus."],
+["herr", "Buscador con IA y citas", "AI answer engine", "Asistente que responde con información de la web y enlaces a sus fuentes, como Perplexity."],
+["herr", "Modelo abierto", "Open-weight model", "Modelo cuyos pesos se publican para descargarlo y usarlo, como algunos de DeepSeek o FLUX."],
+["herr", "Generador de imágenes", "Image generator", "Herramienta que crea o edita imágenes desde texto, como Nano Banana, GPT Image, FLUX o Firefly."],
+["herr", "Generador de música", "Music generator", "Herramienta que compone canciones desde una descripción, como Suno, Udio o Lyria 3."],
+["herr", "Transcripción automática", "Automatic transcription", "Conversión de audio o video a texto distinguiendo hablantes, como TurboScribe."],
+["herr", "Clonación de voz", "Voice cloning", "Imitar la voz de una persona con IA; útil y riesgosa (deepfakes y derechos de imagen)."],
+["herr", "Texto a video", "Text-to-video", "Generación de video a partir de una descripción escrita, como Veo, Kling, Runway o Wan."],
+["herr", "Avatar virtual", "Virtual avatar", "Presentador sintético que habla un guion, como en HeyGen o VEED."],
+["herr", "Sincronización labial", "Lip sync", "Ajustar el movimiento de los labios de un video a un audio nuevo, por ejemplo al traducirlo."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos", col:"var(--azul)"},
+  ciclo:{n:"Cómo aprende un modelo", col:"var(--verde)"},
+  tipos:{n:"Tipos de aprendizaje", col:"var(--ambar)"},
+  gen:{n:"IA generativa y multimodal", col:"var(--violeta)"},
+  riesgo:{n:"Riesgos y regulación", col:"var(--coral)"},
+  piloto:{n:"Piloto y decisión", col:"var(--cian)"},
+  herr:{n:"Herramientas generativas", col:"var(--gris)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
