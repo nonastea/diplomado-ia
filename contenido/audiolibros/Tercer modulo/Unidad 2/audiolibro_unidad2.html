@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tecnologías clave para la IA generativa</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 2 &middot; voz del dispositivo</p>
+    <h1>Tecnologías clave para la IA generativa</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "En este rato vas a aprender a elegir qué tecnología de inteligencia artificial sirve para qué, y a decidir cuándo conviene usarla y cuándo no. Y lo mejor: gran parte de esto ya lo haces cuando decides a quién llamar primero o qué guion probar.", "c": false}, {"t": "En una A F P ya se habla de I.A. por todos lados, y casi todo se vende con la misma palabra mágica. Por eso la pregunta útil no es si usamos I.A., sino qué problema tenemos y qué tecnología lo resuelve de verdad. No necesitas matemáticas, solo criterio comercial. Y una nota práctica: el curso avisa que videos, enlaces y códigos Q R podrían dejar de estar disponibles desde el treinta de noviembre de dos mil veintiséis.", "c": false}, {"t": "Capítulo 1. Las palabras clave y la pregunta de negocio", "c": true}, {"t": "En la unidad anterior viste el panorama general. Ahora vamos más adentro, con un propósito claro: que entiendas qué le aportan estas tecnologías a un negocio, qué problemas abordan y cuáles son sus límites, para conversar con un equipo técnico sin que te cuenten cualquier cosa. Y la idea que atraviesa todo: la tecnología se elige después de formular el problema. Muchas se enamoran de una herramienta y después buscan para qué usarla.", "c": false}, {"t": "Ordenemos el vocabulario. La inteligencia artificial es el campo que reúne tecnologías capaces de percibir, usar el lenguaje, aprender, razonar o decidir. Dentro vive el aprendizaje automático, en inglés machine learning, que se dice máshin lérning: en vez de escribirle al computador una regla para cada situación, se le muestran muchos ejemplos y él descubre los patrones. Y dentro de ese vive el aprendizaje profundo, en inglés deep learning, que se dice dip lérning, con redes neuronales de múltiples capas, o sea, muchos niveles de procesamiento apilados. Son muñecas rusas, una dentro de otra.", "c": false}, {"t": "Cuando alguien dice I.A., nombra en realidad una familia: sistemas basados en reglas, técnicas de búsqueda y optimización, que encuentran la mejor opción entre muchas, aprendizaje automático, procesamiento de lenguaje natural, que entiende y produce lenguaje humano, visión computacional, que interpreta imágenes y video, y sistemas generativos. Además, estas categorías se superponen: un asistente puede combinar un modelo que redacta, una búsqueda en el manual interno y reglas de seguridad. Cuando te digan que tienen una I.A., pregunta qué piezas lleva por dentro.", "c": false}, {"t": "Antes de hablar de modelos, define la tarea con un verbo y un resultado que se pueda comprobar: esa es tu pregunta de negocio. Los verbos típicos son predecir, clasificar, agrupar, recomendar, generar y detectar una anomalía. Mejorar la retención con I.A. es vago, porque nadie sabe cuándo se logró. Predecir qué afiliados tienen riesgo alto de traspasarse el próximo mes, para contactarlos antes, sí tiene verbo y resultado observable.", "c": false}, {"t": "Y ahora, reglas o modelos. Un sistema tradicional usa instrucciones explícitas: si ocurre A, haga B. Va perfecto cuando las reglas son conocidas, estables y fáciles de mantener. Si una política se escribe con tres reglas claras y auditables, un modelo solo agrega costo y opacidad. Auditable es que un tercero pueda comprobar que se aplicó bien; opacidad, que nadie pueda explicar por qué se decidió algo. El aprendizaje automático aporta cuando las relaciones son numerosas, variables o difíciles de programar, y hay datos pertinentes para aprenderlas.", "c": false}, {"t": "Capítulo 2. Cómo aprende un modelo", "c": true}, {"t": "Un modelo es lo que queda después de aprender: una representación matemática, construida con datos, que recibe una entrada y entrega una predicción, una clasificación o un contenido. Es un ejecutivo con experiencia metido en una caja. Los datos de entrenamiento son los ejemplos con que se le enseñó; si solo vio clientes de un tipo, solo sabrá opinar de ese tipo.", "c": false}, {"t": "Cada ejemplo tiene características, en inglés features, que se dice fíchers: los datos que el modelo mira, como la antigüedad del afiliado. A veces trae una etiqueta, en inglés label, que se dice léibel: el resultado ya conocido, como este afiliado se traspasó. Las características son las preguntas del examen; la etiqueta, la respuesta de la pauta.", "c": false}, {"t": "El aprendizaje tiene cinco pasos. Uno: los datos, en tablas, textos, imágenes, audio, video o sensores. Dos: la representación, o sea, decidir qué serán las entradas; en datos tabulares, filas y columnas como una planilla, son las características, y en una imagen, los píxeles, cada puntito de color. Tres: el entrenamiento, donde el modelo ajusta sus perillas internas, los parámetros, para reducir la diferencia entre lo que responde y lo que debía responder. Esa medida de cuánto se equivoca es la función de pérdida. Los hiperparámetros, como cuántas vueltas dará por los ejemplos, los fija el equipo antes de entrenar.", "c": false}, {"t": "Cuatro: la evaluación, con ejemplos que no usó para entrenarse, para estimar su generalización, la capacidad de funcionar bien con casos nuevos. Se separan un conjunto de validación, para ir ajustando, y un conjunto de prueba, la prueba final que el modelo no ha tocado. Cinco: la inferencia, el uso real con un caso nuevo. Medir a un ejecutivo solo con las llamadas con que lo capacitaste da nota perfecta y no dice nada.", "c": false}, {"t": "Ese riesgo se llama sobreajuste, en inglés overfitting, que se dice óverfiting: el modelo memoriza los ejemplos y falla con los nuevos. Y ojo, más datos no siempre es mejor: un conjunto numeroso es insuficiente si repite las mismas condiciones. Una cámara de bodega necesita haber visto ángulos, distancias, iluminación y fondos distintos. Eso es la diversidad de los datos; la representatividad es que reflejen el mundo real donde se usará el modelo. Muchos datos iguales no son muchos datos distintos.", "c": false}, {"t": "Ahora la idea más importante del capítulo. El desempeño estadístico es la nota técnica del modelo; la utilidad empresarial es si esa nota sirve para la decisión que importa. Puede tener buena precisión promedio y fallar en el segmento más relevante, dar demasiadas alertas falsas o cometer un error costoso. Si casi nadie se traspasa en un mes, un modelo perezoso que siempre diga este se queda acierta casi siempre, y es inútil, porque los pocos que se van eran los que querías detectar.", "c": false}, {"t": "Un detalle de lenguaje. El curso llama precisión promedio a esa nota global, pero técnicamente es la exactitud, en inglés accuracy, que se dice ákiurasi: aciertos sobre el total. La precisión como métrica es otra cosa: de los casos marcados como positivos, cuántos lo eran. Y la sensibilidad, en inglés recall, que se dice rikól, mide cuántos positivos reales encontró. Si un equipo te habla de precisión, pregunta a cuál se refiere.", "c": false}, {"t": "Hay dos errores distintos. La alerta falsa, o falso positivo: marca en riesgo a quien no pensaba irse, y un ejecutivo pierde una llamada. El caso perdido, o falso negativo: no marca a quien sí se iba, y la cartera se achica sin aviso; en retención suele ser el más caro. Por eso importa la métrica orientada al riesgo, elegida según el costo real de cada error en tu negocio. Frase para quedarte: no te dejes engañar por una nota alta que esconde fallas donde más duele.", "c": false}, {"t": "Capítulo 3. Tres maneras de aprender", "c": true}, {"t": "Para elegir bien hay que entender cómo aprende cada modelo. La primera manera es el aprendizaje supervisado: ejemplos con la respuesta conocida, de los que aprende la relación entre características y etiqueta, y se evalúa con resultados reales que no vio. Es estudiar con ejercicios resueltos y dar una prueba con ejercicios nuevos. Tiene dos tareas: la regresión, cuando la respuesta es un número, como la demanda de la semana, y la clasificación, cuando es una categoría, como fraude o no fraude. El modelo que clasifica se llama clasificador.", "c": false}, {"t": "El curso trae cuatro problemas típicos. Predecir las ventas de una sucursal es regresión. Detectar correos sospechosos y identificar defectos visuales son clasificación. Estimar el tiempo de despacho es regresión.", "c": false}, {"t": "El requisito principal son las etiquetas confiables. Si las respuestas históricas reflejan decisiones sesgadas, criterios inconsistentes o errores de registro, el modelo aprende esos problemas. Si cada ejecutivo llena el motivo de cierre a su manera, el sistema aprende el desorden.", "c": false}, {"t": "La segunda manera es el aprendizaje no supervisado: los datos no traen respuesta, y el modelo encuentra estructuras, parecidos o grupos. La técnica más frecuente es el agrupamiento, en inglés clustering, que se dice clásterin: reúne casos parecidos y deja a la vista segmentos que nadie había definido. Sirve para explorar patrones de compra, agrupar puntos de venta, encontrar temas en documentos y detectar casos atípicos, los que no se parecen a nadie.", "c": false}, {"t": "Pero el modelo no te dirá cómo se llama cada grupo ni qué hacer con él; eso lo hace quien conoce el negocio. Y los segmentos no son verdades de la naturaleza: dependen de las variables elegidas, de la calidad de los datos y del método. Si cambias las variables, cambian los grupos. Hay que validarlos con evidencia adicional y con gente que conozca el contexto.", "c": false}, {"t": "La tercera manera es el aprendizaje por refuerzo. Un agente realiza acciones en un entorno y recibe una recompensa o un castigo. Con la experiencia aprende una política: una estrategia que dice qué hacer en cada situación para lograr la mayor recompensa acumulada, es decir, el mejor resultado sumando toda la secuencia. Sirve para la optimización secuencial, donde cada decisión se encadena con la siguiente: juegos, robótica, control, o decidir paso a paso por qué canal y a qué hora contactar a cada afiliado.", "c": false}, {"t": "Lo delicado es definir bien el entorno, las acciones y la recompensa, porque una recompensa incompleta incentiva conductas inconvenientes. En un caso famoso de OpenAI, de dos mil dieciséis, un agente jugaba una carrera de botes y ganaba puntos por golpear objetivos. Aprendió a dar vueltas en una laguna donde reaparecían, y nunca terminó la carrera.", "c": false}, {"t": "Por su complejidad y costo, el refuerzo suele quedar fuera de los primeros pilotos. Necesita entorno seguro, recompensa bien definida y un simulador, donde el agente se equivoque millones de veces sin afectar a clientes reales. El curso dice que el refuerzo cobra gran protagonismo una vez en producción, pero eso no tiene respaldo en sus fuentes; responde que rara vez es el primer paso.", "c": false}, {"t": "Otra precisión: según el curso son tres tipos, y lo generativo va aparte. Google, la fuente que cita, los ordena en cuatro, sumando la I.A. generativa, y aclara que un sistema puede pertenecer a más de una. Y una pregunta del curso: ¿tienes los datos que un modelo necesita, o primero hay que replantear cómo registras la información?", "c": false}, {"t": "Capítulo 4. De predecir a generar", "c": true}, {"t": "Un modelo predictivo estima un valor o una categoría. Un modelo generativo aprende las regularidades de enormes colecciones de datos y produce contenido nuevo: texto, código, imágenes, audio y video, y además transforma contenidos de un formato a otro, como una grabación en un resumen escrito.", "c": false}, {"t": "Para producir lenguaje, muchos modelos usan la arquitectura Transformer, que se dice transfórmer, presentada en dos mil diecisiete por Vaswani y colaboradores en el trabajo Attention Is All You Need. Su invento es el mecanismo de atención: ponderar qué partes del contexto importan más en cada decisión. El contexto es todo el texto disponible. Como tu atención con un afiliado que habla de su miedo a cambiarse: no pesa cada palabra igual. Un matiz: se presentó pensando en traducción automática.", "c": false}, {"t": "Ahora la idea que más debes llevarte. Estos sistemas generan secuencias a partir de patrones estadísticos y del contexto con que fueron entrenados, y no consultan automáticamente una fuente verdadera. Infieren qué es lo más probable que corresponda responder. Trocean el texto en pedacitos llamados tokens, que se dice tóukens, y en cada paso predicen el siguiente token. Un modelo de lenguaje es justamente eso: un modelo entrenado para predecir el texto que sigue.", "c": false}, {"t": "El curso lo ilustra con el rey. Si ve el rey tiene sobre su cabeza una, lo más probable es corona; si ve el hijo del rey es el, príncipe. Y llevado más allá, podría concluir que el príncipe sucederá al rey. No sabe de monarquías, sabe qué palabras suelen ir juntas: es asociación estadística, no razonamiento garantizado. Por eso puede inventar una cifra con total seguridad. Eso se llama confabulación, o alucinación, y es consecuencia directa de cómo funcionan.", "c": false}, {"t": "Una precisión: esto vale para el modelo solo. Muchos asistentes lo combinan con una búsqueda documental, que va a buscar documentos o la web y se apoya en ellos. Eso reduce el problema, pero no lo elimina. Responde lo del curso, y si preguntan cómo mitigar, di que se conectan fuentes confiables y se verifica.", "c": false}, {"t": "La instrucción que le das al modelo se llama prompt, que se dice prómpt. Un buen prompt entrega una tarea, información y condiciones de la respuesta, como tono y largo. Es el briefing a un colega nuevo, y aun así siempre se revisa.", "c": false}, {"t": "Por último, la multimodalidad. Un modelo multimodal trabaja con distintas modalidades: texto, imagen, audio y video; puede recibir texto e imagen, o generar una salida en otra modalidad. Sirve para analizar la foto de un producto con su ficha técnica, convertir una reunión en transcripción con tareas o revisar un documento con tablas e imágenes. Pero el control debe considerar cada modalidad: una imagen convincente puede esconder un número mal escrito. Frase ancla: un modelo generativo no busca la verdad, busca lo más probable, y por eso se revisa.", "c": false}, {"t": "Capítulo 5. Qué tecnología para cada necesidad", "c": true}, {"t": "Llegamos al corazón práctico: vincular la tarea, la evidencia y el tipo de salida. Una política estable y explícita pide reglas o automatización convencional. Predecir un número o una categoría pide supervisado, con ejemplos etiquetados y representativos. Explorar grupos desconocidos pide no supervisado, con alguien que interprete. Optimizar decisiones sucesivas pide refuerzo, con entorno seguro y capacidad de simular. Y crear o sintetizar contenido pide I.A. generativa, con fuentes, validación humana y derechos de uso. Es orientación inicial, no reemplaza una evaluación técnica ni jurídica.", "c": false}, {"t": "La sexta fila es la arquitectura híbrida: una solución armada con varias piezas, como clasificar consultas, buscar en el manual, redactar y bloquear lo fuera de política. Lo difícil es cómo se conectan, quién las controla y quién responde si algo falla. Y a veces la I.A. es innecesaria. Comprueba cinco cosas: que el problema tenga frecuencia, costo o escala; que exista una línea base, o sea, cómo se hace hoy y cuánto cuesta, tarda y falla; que los datos estén disponibles; que el error pueda controlarse; y que la organización pueda mantener la solución tras el piloto. La I.A. es una herramienta que tiene que pagarse sola.", "c": false}, {"t": "Ahora la práctica: Teachable Machine, que se dice tíchabol mashín, una herramienta web gratuita de Google para crear modelos que clasifican imágenes, sonidos y poses sin escribir código. Es un laboratorio, no una fábrica. Por dentro usa aprendizaje por transferencia, en inglés transfer learning: parte de un modelo que ya aprendió mucho y solo lo ajusta con tus ejemplos.", "c": false}, {"t": "Los siete pasos, con clases como botella con tapa, botella sin tapa y fondo vacío. Uno: define clases claramente distinguibles. Dos: reúne ejemplos variando ángulo, distancia, iluminación y fondo. Tres: entrena y revisa cómo se repartieron las muestras entre entrenamiento y prueba. Cuatro: prueba con objetos y condiciones nuevas, lo que de verdad mide si aprendió o memorizó. Cinco: registra errores, confusiones y la confianza del modelo, cuán seguro está de su respuesta, porque puede estar muy seguro y equivocarse. Seis: agrega los casos difíciles y reentrena; se mejora con datos. Siete: explica qué podría salir mal en una operación real.", "c": false}, {"t": "La observación clave: el modelo aprende las correlaciones presentes en los ejemplos, no lo que tú piensas. Si todas las fotos de una clase tienen un fondo distinto, aprende el fondo y no el objeto. Eso se llama correlación espuria, o atajo. El caso clásico es un clasificador de huskies y lobos que decía lobo al ver nieve; los investigadores lo entrenaron a propósito con imágenes sesgadas, pero la lección vale. En tus datos, si todos los que cierran fueron contactados por el ejecutivo estrella, el modelo creerá que ese contacto predice el cierre, hasta que se vaya de vacaciones.", "c": false}, {"t": "Tres precisiones. La herramienta retiene el quince por ciento de los ejemplos de cada clase como validación, no como prueba independiente; por eso el paso cuatro es la verdadera prueba. Su panel avanzado ofrece épocas, tamaño del lote y tasa de aprendizaje, hiperparámetros. Y el video del profesor Rodrigo Pereira, solo online, clasifica expresiones faciales como ejercicio; no contradice el caso que viene, porque cambia el uso: probar con tu consentimiento es un ejercicio, vigilar sin consentimiento es otra cosa.", "c": false}, {"t": "Capítulo 6. Riesgos y uso responsable", "c": true}, {"t": "En una A F P esto pesa más, por los datos personales y el ahorro de las personas. Usar I.A. con criterio significa decidir a lo largo de todo el ciclo de vida del sistema, desde su diseño hasta su uso y evaluación. Dos guías. Los principios de la UNESCO, el organismo de la O N U para la educación: el curso nombra ocho, pero la Recomendación de dos mil veintiuno tiene diez; faltan sensibilización y educación, y gobernanza adaptativa.", "c": false}, {"t": "La segunda guía es el marco del N I S T, el instituto de estándares de Estados Unidos: gestionar riesgos desde el diseño, el desarrollo, el uso y la evaluación. Su estructura tiene cuatro funciones: gobernar, mapear, medir y gestionar, y su perfil para I.A. generativa, de dos mil veinticuatro, enumera doce riesgos. El curso reúne seis, con su control.", "c": false}, {"t": "El sesgo aparece cuando los datos no representan a todos o las etiquetas vienen de decisiones desiguales. Control: revisar cobertura, comparar el desempeño por segmentos y documentar límites. La confabulación es contenido falso presentado con seguridad; el N I S T explica que ocurre porque los modelos aproximan distribuciones estadísticas. Control: verificar fuentes y no usarla automáticamente en decisiones críticas. Nunca envíes una cifra generada sin comprobarla en la fuente oficial.", "c": false}, {"t": "La privacidad: exposición de datos personales, como pegar información de afiliados en una herramienta pública. Control: minimización de datos, usar solo los necesarios; anonimización, quitar lo que identifica a la persona; y entornos autorizados. La propiedad intelectual: uso de material protegido, marcas o secretos comerciales. Control: revisar licencias, procedencia, contratos y uso previsto. La O M P I, la organización mundial de propiedad intelectual, publicó en dos mil veinticuatro una guía, no una norma: identificar activos, revisar condiciones de uso, mantener trazabilidad y evaluar salvaguardas.", "c": false}, {"t": "Los deepfakes, que se dice dípféik, son audio, imagen o video fabricado por I.A. que hace creer que alguien dijo algo que no dijo. Amenazan la integridad de la información. Control: etiquetar el contenido sintético, mantener la trazabilidad, poder reconstruir de dónde vino y quién lo hizo, y verificar la procedencia. Con la clonación de voz, una llamada puede sonar como tu jefe y no serlo; verifica por otro canal.", "c": false}, {"t": "Y la sobreconfianza: aceptar resultados sin revisar. Control: asignar responsables, fijar umbrales de escalamiento, la regla que dice desde aquí decide un humano, y mantener la supervisión humana. Se potencia con la confabulación: un error dicho con seguridad, más alguien que dejó de mirar. Por eso la gestión debe ser proporcional al impacto. Un borrador de campaña se corrige y basta un revisor; una recomendación sobre el ahorro previsional, una decisión de crédito o laboral, exige datos verificados, responsable claro, revisión humana obligatoria y registro de quién decidió qué.", "c": false}, {"t": "Ahora Chile. Rige hoy la ley diecinueve mil seiscientos veintiocho, de mil novecientos noventa y nueve. La ley veintiún mil setecientos diecinueve, publicada en diciembre de dos mil veinticuatro, la moderniza: refuerza licitud, que el uso de datos tenga fundamento válido, finalidad, que se usen solo para lo dicho, seguridad y responsabilidad, y crea la Agencia de Protección de Datos Personales. El consentimiento, la autorización libre e informada de la persona, es central.", "c": false}, {"t": "El curso dice que entra en vigor el primero de diciembre de dos mil veintiséis, y eso dice la ley publicada. Pero el Gobierno ingresó al Senado un proyecto para postergarla al primero de diciembre de dos mil veintisiete, aún en trámite a fines de septiembre. Confirma con cumplimiento. También hay un proyecto de ley de I.A., que aún no es ley. Frase ancla: a mayor impacto, más control humano; la responsabilidad sigue siendo de una persona.", "c": false}, {"t": "Capítulo 7. Del piloto a la decisión", "c": true}, {"t": "Ahora, del entusiasmo a la disciplina. Una prueba piloto es una prueba pequeña, acotada y real, hecha para decidir si vale la pena seguir. Parte con un problema acotado, una línea base y un responsable de negocio, alguien del lado comercial que responde por el resultado. Se evita el piloto demostrativo, el que luce en la reunión y no deja evidencia. Siete preguntas: qué se busca mejorar; cuál es la línea base de hoy; qué datos hay y con qué permisos; qué error es tolerable y cuál inaceptable; quién revisa y responde, un nombre y no un área; cómo se medirá valor, desempeño y experiencia de usuarios; y qué pasa si falla. Un buen piloto es reversible: se apaga sin interrumpir la operación.", "c": false}, {"t": "Ahora el caso SurAndes Alimentos, ficticio, igual que su gerente Marcela Riquelme. Fabrica productos envasados, con una planta, dos centros de distribución y cuarenta y cinco comerciales. Hay presupuesto para un piloto de doce semanas y cinco propuestas. La A: inspección visual de envases, con seis mil fotos etiquetadas, casi todas del turno diurno y de dos productos. La B: segmentar clientes, pero los identificadores cambiaron tras una migración. La C: borradores de fichas con I.A. generativa, desde fichas técnicas aprobadas, sin flujo de revisión definido. La D: optimizar el despacho con refuerzo, sin simulador. Y la E: detectar el ánimo del personal con cámaras, sin consentimiento.", "c": false}, {"t": "Calidad puede dedicar cuatro horas semanales y Marketing tiene un aprobador de publicaciones. El comité descarta tres. La E, por ética y privacidad: vulnera derechos, y la ley de I.A. de la Unión Europea prohíbe reconocer emociones en el trabajo. La D, por seguridad operativa: sin simulador aprendería equivocándose con entregas reales. La B, por calidad de datos: antes necesita saneamiento, limpiar y reconciliar la información.", "c": false}, {"t": "Quedan A y C. La A exige ampliar los datos y mantener al operario en el circuito, en inglés human in the loop, que se dice jiúman in de lup: una persona que revisa y decide. Eso demandaba las cuatro horas de calidad que la gerente no quería pedir. La C es rápida, barata y totalmente reversible, con fuentes aprobadas y revisor. Se aprobó solo la C. Antes debía definir el flujo de revisión y la política de carga de documentos, análisis nuestro. En una A F P, el primer piloto rara vez es el más ambicioso: es el que tiene fuentes aprobadas, revisor, error controlable y se apaga sin dolor.", "c": false}, {"t": "Para evaluar cualquier idea, el curso trae la matriz de ocho dimensiones, que se completa antes de escoger herramienta; si no puedes responder, anotas el supuesto o la información que falta, las brechas de información. Las ocho: problema, línea base, tipo de salida, evidencia, personas, riesgo, piloto y decisión, los indicadores para escalar, ajustar o detener.", "c": false}, {"t": "El semáforo de factibilidad: verde, problema acotado, datos, error controlable y responsable; se diseña el piloto. Amarillo, hay brechas de datos, permisos o capacidades; se resuelven antes de probar. Rojo, alto impacto sin base ni controles; se detiene y reformula. En análisis propio, SurAndes sería A y B amarillo, C verde con su condición pendiente, D y E rojo. Para medir la C: tiempo de redacción antes y después, borradores aprobados sin cambios y errores de alérgenos, con meta de ninguno publicado.", "c": false}, {"t": "El curso cierra con veintiséis herramientas en cuatro áreas; recuerda categoría y rasgo, porque el listado envejece rápido, y revisa términos y licencias. En texto: Gemini, ChatGPT, Claude, Microsoft Copilot, Meta AI, DeepSeek y Blackbox AI, hoy con más de trescientos modelos. Manus es un agente de I.A., que encadena pasos con autonomía; su compra anunciada a fines de dos mil veinticinco se revirtió y hoy es independiente. Perplexity es un buscador con citas, útil para verificar.", "c": false}, {"t": "En imágenes: Nano Banana, ChatGPT Images, Leonardo.Ai, hoy de Canva, Grok, FLUX, un modelo abierto, o sea, descargable, y Adobe Firefly, con material licenciado. En sonido: Suno, Udio y Lyria para música, TurboScribe para transcribir y FakeYou, que clona voces. En video: Google Veo, Kling, Runway, Wan, VEED y HeyGen, con avatares y sincronización labial. Cuidado con clonar voces sin permiso o cargar datos de afiliados en herramientas no autorizadas.", "c": false}, {"t": "Si te quedas con tres cosas: primero el problema, después la tecnología, y a veces la mejor decisión es no usar I.A. Segundo: los modelos aprenden lo que les muestras y lo generativo busca lo probable, no lo verdadero, así que cuida los datos y revisa lo generado. Tercero: la responsabilidad es de una persona, en proporción al impacto. Si mañana te presentan una herramienta con I.A. para mejorar cierres, pregunta qué problema resuelve, con qué datos aprendió, y quién la revisa y cómo se detiene. Elige el problema, cuida los datos, deja a una persona responsable y mide contra lo que ya haces hoy.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
