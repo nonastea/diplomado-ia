@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ingeniería de prompts y modelos de lenguaje</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 3 &middot; voz del dispositivo</p>
+    <h1>Ingeniería de prompts y modelos de lenguaje</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "Si alguna vez le pediste algo a un asistente de inteligencia artificial y la respuesta sonó segura, pero un dato no tenía origen, ya conoces el problema. Casi nunca es mala suerte. Depende de cómo hiciste el encargo, y a esa habilidad el curso la llama ingeniería de prómpts.", "c": false}, {"t": "Hoy aprenderás a encargar bien, a probar lo que entrega, a trabajar con documentos con rastro y a elegir herramienta con criterio. Los escenarios de A F P son ilustraciones, no datos reales de ninguna institución. Y ojo: los códigos Q R del curso podrían dejar de estar disponibles desde el treinta de noviembre de dos mil veintiséis.", "c": false}, {"t": "Capítulo uno. Para qué sirve esta unidad y su vocabulario", "c": true}, {"t": "Esta unidad busca que pidas mejor, transformando un pedido general en un encargo claro, y que confíes con rastro. La tecnología se elige después de formular el problema, no antes.", "c": false}, {"t": "Piensa en un ejecutivo nuevo que recibe la orden de contactar a los afiliados que puedan interesarse. Cada uno entiende algo distinto, y con la I.A. pasa lo mismo, solo que más rápido.", "c": false}, {"t": "Ahora el vocabulario, veinte palabras clave. Un prompt es tu pedido al modelo, sea una tarea, una pregunta, un contexto o una instrucción. La ingeniería de prómpts es diseñar, probar y mejorar esos pedidos para obtener resultados evaluables.", "c": false}, {"t": "Dentro de un prompt conviven la instrucción, el verbo explícito como resume o clasifica, y el contexto, la información que adapta la respuesta a tu situación. La entrada es todo lo que entregas, y la salida es lo que el modelo devuelve.", "c": false}, {"t": "Así se ven las cuatro en una llamada de retención. Pedir los puntos es la instrucción, que el afiliado consultó por traspaso es el contexto, su historial es la entrada y la ficha de cinco puntos es la salida.", "c": false}, {"t": "El motor es el modelo de lenguaje, que se nombra con la sigla ele ele eme. Es un modelo entrenado para procesar y generar lenguaje a partir de patrones aprendidos.", "c": false}, {"t": "Un token, que se dice tóuken, es la unidad de texto que procesa el modelo, sea una palabra, un pedazo de palabra o un signo. La ventana de contexto es la cantidad de información que puede tener disponible en una interacción, como la superficie de tu escritorio.", "c": false}, {"t": "El mensaje de sistema, que en inglés se llama sístem prómpt, es la instrucción de mayor prioridad que fija el comportamiento del asistente. Esa prioridad no es un candado, y por eso existe la inyección de prómpts, que introduce instrucciones para alterar el comportamiento previsto de un sistema.", "c": false}, {"t": "Zero-shot, que se dice sírou shot, es pedir sin ningún ejemplo. Few-shot, que se dice fiu shot, es mostrar uno o más ejemplos del patrón, como darle a un ejecutivo nuevo dos correos tuyos que salieron muy bien.", "c": false}, {"t": "El formato de salida es la estructura exigida, como tabla, lista, yéison o texto ejecutivo. El criterio de éxito es una condición observable que indica si la respuesta cumplió su propósito. La evaluación es probar una instrucción frente a casos, medidas o una pauta.", "c": false}, {"t": "El grounding, que se dice gráunding, es anclar la respuesta a documentos o datos autorizados, para que responda con tus papeles delante. RAG, que se dice rag, es recuperar fragmentos pertinentes y ponerlos en el contexto antes de responder.", "c": false}, {"t": "La trazabilidad es poder identificar qué fuente, instrucción, versión y revisión sustentan un resultado. La versión de prompt es el registro de una instrucción con sus cambios y pruebas, como el control de versiones de un guion de ventas.", "c": false}, {"t": "Con el vocabulario listo, vamos a la pieza central: cómo armar el encargo. Así, cualquiera que lo reciba lo ejecuta igual.", "c": false}, {"t": "Capítulo dos. El encargo de ocho piezas", "c": true}, {"t": "Imagina que le encargas una tarea a un analista que no conoce tu organización. El resultado depende del encargo, de la evidencia y de tu revisión. Un pedido largo pero confuso sigue siendo confuso.", "c": false}, {"t": "Un prompt profesional es una especificación de trabajo: define qué producir, para quién, con qué información, bajo qué criterios y en qué formato. Las guías de los grandes proveedores coinciden en eso.", "c": false}, {"t": "Decirle a tu equipo que haga una campaña de retención genera debate. Entregar una pauta con público, mensaje, canal, plazo y forma de medir genera trabajo.", "c": false}, {"t": "Asignar un rol, como actúa como un experto en previsión, orienta el vocabulario, pero no reemplaza el encargo. Es como ponerle corbata al analista: se ve serio, pero no sabe más de tu cartera.", "c": false}, {"t": "Un buen encargo tiene ocho piezas, como una ficha para delegar. Uno, el resultado, o sea, el producto y la decisión que apoya. Dos, el contexto, los antecedentes que cambian la interpretación.", "c": false}, {"t": "Tres, los insumos, que son los documentos o datos utilizables. Cuatro, la operación, el verbo concreto, como resumir, clasificar o contrastar. Cinco, los criterios, que definen qué es una respuesta útil, correcta, suficiente y pertinente.", "c": false}, {"t": "Seis, las restricciones, que son límites de extensión, alcance, fuentes, tono o confidencialidad. Siete, el formato, con campos obligatorios. Y ocho, la política de incertidumbre, que dice cómo reportar vacíos, contradicciones y supuestos.", "c": false}, {"t": "Es la pieza que más se olvida y la que más protege. Es como decirle a un ejecutivo nuevo: si no está en la ficha, no lo inventes, anótalo y pregúntame.", "c": false}, {"t": "Los delimitadores son marcas, como etiquetas o encabezados, que separan instrucciones, fuentes y datos. Es una carpeta para el guion y otra para las fichas, en vez de una pila revuelta.", "c": false}, {"t": "El curso compara un pedido general, que pide analizar un informe y decir qué hacer, con uno profesional. Este último pide apoyar una decisión concreta, usar solo ese informe y citar la sección de cada hallazgo.", "c": false}, {"t": "El profesional además prioriza impacto, factibilidad, riesgo y tiempo, y separa hechos de inferencias. Una alucinación es una afirmación plausible sin sustento en las fuentes, y es justo lo que el encargo quiere evitar.", "c": false}, {"t": "Te leo el mismo salto en una A F P. Prepara una llamada de retención para el afiliado cuya ficha pego, usa solo esa ficha, entrégame cinco puntos, una objeción con su respuesta y los datos que faltan.", "c": false}, {"t": "Tono cercano y máximo una página. Si algo no está en la ficha, escribe dato no disponible y no lo supongas.", "c": false}, {"t": "Ya sabes qué poner en el encargo. Ahora veremos cómo conducir la conversación y cómo mejorar el pedido, como se mejora un guion de ventas.", "c": false}, {"t": "Capítulo tres. Seis técnicas y la mejora con método", "c": true}, {"t": "Las técnicas son la forma de conducir la conversación, y el curso presenta seis. Uno, la instrucción directa, que parte con un verbo observable y un objeto, como clasificar reclamos. Para tareas simples basta.", "c": false}, {"t": "Dos, los ejemplos. Pedir sin mostrar ningún modelo es zero-shot. Cuando el tono es difícil de describir, conviene few-shot, mostrando ejemplos del patrón, como hacerle escuchar dos llamadas bien llevadas.", "c": false}, {"t": "El curso agrega dos cuidados. Los ejemplos deben incluir casos borde, los difíciles. Y un ejemplo incorrecto puede fijar un comportamiento no deseado, porque el modelo imita lo que ve.", "c": false}, {"t": "Tres, la descomposición de tareas, que divide el trabajo en etapas revisables. Así detectas dónde aparece el error, igual que en tu embudo comercial, donde miras en qué etapa se cayó el proceso.", "c": false}, {"t": "Cuatro, la interacción por etapas: primero el modelo pregunta, después le entregas antecedentes, luego pides una propuesta y al final la revisas con tu pauta. Así no cargas decisiones que aún no se han tomado.", "c": false}, {"t": "Cinco, el formato estructurado, una tabla o esquema con campos obligatorios. Aparecen dos formatos. El yéison sirve para datos que leen las máquinas. El márkdaun es texto con marcas simples para ordenar un documento.", "c": false}, {"t": "Ambos se validan antes de usarse. El yéison se valida mecánicamente contra una estructura exigida, y el márkdaun se revisa leyendo que esté bien.", "c": false}, {"t": "Seis, la respuesta verificable, que muestra evidencia, supuestos, criterios, cálculos y fuentes. Es la diferencia entre decir que la retención mejoró y decir que mejoró según esta tabla, bajo este supuesto.", "c": false}, {"t": "Ahora la mejora. Un prompt no se da por bueno porque funcionó una vez. Primero se define el éxito y cómo probarlo, porque una instrucción que sirve en un caso puede fallar en otros.", "c": false}, {"t": "El ciclo tiene siete pasos. Uno, la línea base, el registro de cómo se hace hoy, cuánto demora y qué errores aparecen. Dos, los casos de prueba, frecuentes, ambiguos, extremos y riesgosos.", "c": false}, {"t": "Tres, una rúbrica, una pauta fija que evalúa exactitud, cobertura, fuentes, claridad, formato y seguridad. Cuatro, probar una versión con la misma configuración. Cinco, analizar las fallas: prompt, datos, modelo, herramienta o expectativa inviable.", "c": false}, {"t": "Seis, modificar una variable, cambiando una sola pieza, porque si cambias tres cosas no sabrás cuál ayudó. Siete, registrar la versión aprobada con fecha, responsable, casos y límites conocidos.", "c": false}, {"t": "Es como afinar un guion de ventas. Tu línea base son tus cierres de hoy, pruebas el guion nuevo con llamadas variadas, comparas con una pauta y recién lo oficializas.", "c": false}, {"t": "Una demo convincente no basta. El criterio de aprobación es buen desempeño en una muestra representativa, más un plan para los casos que no puede resolver.", "c": false}, {"t": "Dicho como vendedora: un guion que funcionó con tu mejor cliente no está aprobado, está probado en un caso. Mira tus últimos tres encargos a una I.A. y revisa cuál de las ocho piezas faltó.", "c": false}, {"t": "Llegó la parte de los documentos. Antes de pegar nada, hay que entender cuánto cabe en la mesa de trabajo de un modelo.", "c": false}, {"t": "Capítulo cuatro. Tokens, contexto y respuestas con fuentes", "c": true}, {"t": "Sin cuidado, las respuestas quedan en intuiciones generales y en alucinaciones, o sea, afirmaciones plausibles sin sustento. Para evitarlo hay que dominar la arquitectura del contexto.", "c": false}, {"t": "El modelo procesa tokens. En inglés, cien tokens alcanzan para unas setenta y cinco palabras, pero en español suelen hacer falta más. Todo cuenta, y el espacio es finito.", "c": false}, {"t": "La ventana de contexto incluye tus instrucciones, el historial, los documentos y la respuesta que el modelo va a escribir. Según las páginas oficiales de octubre de dos mil veintiséis, algunas familias hablan de un millón de tokens, pero no resuelve todo.", "c": false}, {"t": "Más espacio no es más precisión. Lo que queda en medio de un contexto muy largo se aprovecha peor que lo del inicio o el final. Con contexto sucio, con duplicados y versiones obsoletas, aparece la degradación por contexto largo.", "c": false}, {"t": "Por eso, antes de pegar, ordena y limpia. El protocolo de análisis documental tiene siete pasos. Uno, inventariar las fuentes, con el inventario de fuentes de nombre, fecha, versión, autoría y confidencialidad.", "c": false}, {"t": "Dos, definir la pregunta en términos documentales. Tres, establecer límites sobre lo que el modelo puede usar. Cuatro, pedir trazabilidad, con página o sección para cada afirmación.", "c": false}, {"t": "Cinco, separar capas, distinguiendo evidencia, inferencia, contradicción, vacío y recomendación. Seis, contrastar fechas, versiones y definiciones. Siete, validar con una persona responsable.", "c": false}, {"t": "Así se ve la separación de capas: el afiliado llamó dos veces, eso es evidencia. Probablemente compara opciones, eso es inferencia. La ficha y el sistema se contradicen, eso es contradicción.", "c": false}, {"t": "No hay registro de su último contacto, eso es vacío. Y sugiero llamarlo mañana, eso es recomendación. Si todo viene mezclado, no puedes revisar nada.", "c": false}, {"t": "La plantilla base tiene ocho campos: objetivo, fuentes, tarea, criterios, salida, trazabilidad, incertidumbre y revisión. La incertidumbre registra vacíos sin completarlos.", "c": false}, {"t": "El curso propone cuatro atajos de metaprompting, que es usar la I.A. para mejorar tus pedidos. Uno, pedir diez preguntas antes de responder. Dos, pedir que mejore tu prompt como ingeniero de prómpts senior.", "c": false}, {"t": "Tres, pedir un prompt de sistema con preguntas para afinarlo. Cuatro, el atajo de barras, una forma abreviada de pedir prompt de sistema, objetivo y formato. Es una plantilla, no un botón mágico.", "c": false}, {"t": "Ahora la razón por la que un modelo inventa. Sin el dato delante, responde con lo que aprendió, que puede estar desactualizado. El remedio es poner los papeles correctos en la mesa, y eso persiguen el grounding y el RAG.", "c": false}, {"t": "El grounding, o anclaje, es vincular la respuesta con documentos o datos autorizados. Cargar un archivo y preguntar sobre él ya es grounding documental.", "c": false}, {"t": "RAG, generación aumentada por recuperación, combina un modelo generador con un mecanismo que busca fragmentos pertinentes antes de responder. El curso atribuye la formalización del enfoque a Lewis y colaboradores, en dos mil veinte.", "c": false}, {"t": "Hay dos memorias. La memoria paramétrica es lo que el modelo aprendió y lleva dentro. La memoria no paramétrica es una biblioteca externa que se consulta al responder. Es la diferencia entre responder de memoria y buscar la normativa vigente en la intranet.", "c": false}, {"t": "RAG tiene siete etapas: preparación, segmentación, indexación, búsqueda, selección de fragmentos, generación y citas. La segmentación corta los documentos en fragmentos, como fichar un manual por capítulos, y la indexación los organiza como el índice de un libro.", "c": false}, {"t": "El recuperador elige fragmentos y aplica filtros de acceso, para que cada persona vea solo lo suyo. La búsqueda usa palabras exactas, similitud semántica, que busca por significado, y metadatos como fecha, autor, permisos y versión.", "c": false}, {"t": "Los seis pasos del RAG parten con una pregunta y una ampliación de la consulta. Luego viene la selección de fragmentos con filtros, la respuesta citando fuentes, y un control de calidad, permisos y consistencia.", "c": false}, {"t": "RAG mejora la actualidad y la trazabilidad, pero hereda riesgos de búsqueda, fuentes e inyección. N I S T, el organismo de estándares de Estados Unidos, recomienda reevaluar riesgos al incorporar recuperación.", "c": false}, {"t": "En simple, RAG no hace infalible al modelo. Si la búsqueda trae el documento equivocado o hay instrucciones escondidas, el sistema lo arrastra. Grounding ancla, RAG busca antes de responder, y ambos necesitan control.", "c": false}, {"t": "Hasta aquí, cómo darle papeles al modelo. Ahora, por qué falla por dentro, con lo justo para usarlo bien.", "c": false}, {"t": "Capítulo cinco. Por dentro de un modelo de lenguaje", "c": true}, {"t": "El pre-entrenamiento usa grandes volúmenes de datos filtrados por calidad y seguridad. El modelo aprende patrones para generar texto flexible, y eso implica un no determinismo: el mismo prompt puede dar respuestas distintas. No es una base de datos.", "c": false}, {"t": "El post-entrenamiento pule al modelo con S F T y R L H F. La S F T, o ajuste fino supervisado, entrena con ejemplos de alta calidad revisados por expertos.", "c": false}, {"t": "La R L H F, aprendizaje por refuerzo con retroalimentación humana, optimiza según preferencias de personas. Usa un modelo de recompensas que aprende a calificar respuestas como un supervisor que califica llamadas.", "c": false}, {"t": "La generación de respuestas produce varias versiones, puede usar fuentes externas y aplica filtros de seguridad. El curso menciona SynthID, que se dice sintáid, una marca de agua digital invisible de Google.", "c": false}, {"t": "La retroalimentación humana alimenta nuevas rondas de ajuste, con evaluadores que revisan errores, sesgos y calidad. Es como un ejecutivo nuevo que se entrena y es supervisado, y aun así, de vez en cuando, se equivoca.", "c": false}, {"t": "El transfórmer, que se dice transfórmer, es la arquitectura de los modelos actuales, con cuatro pasos. Uno, de palabras a números: cada palabra se vuelve un embéding, una lista de números que representa su significado. Si a rey le quitas lo masculino y le sumas lo femenino, te acercas a reina.", "c": false}, {"t": "Dos, el contexto es la prioridad: pista puede ser una canción o un camino. Tres, el mecanismo de atención calcula qué palabras importan más para dar sentido a las demás.", "c": false}, {"t": "Cuatro, la predicción del siguiente token, que es la continuación más probable, pedacito a pedacito. Con el equipo trabaja, la continuación probable es unidos. Y el modelo busca lo probable, no necesariamente lo verdadero.", "c": false}, {"t": "La tercera figura del curso agrupa las tareas en cinco ejes: redacción, formateo, traducción, creatividad y acompañamiento. Es un menú para detectar dónde te puede ayudar.", "c": false}, {"t": "La idea en una línea: el modelo aprende patrones, se pule con ejemplos y preferencias humanas, y responde prediciendo lo más probable. Por eso es potente, variable y necesita revisión.", "c": false}, {"t": "Ya entiendes qué hay dentro del modelo. Ahora llega la decisión práctica: con qué plataforma trabajar y cómo cuidar los datos.", "c": false}, {"t": "Capítulo seis. Elegir plataforma y cuidar los datos", "c": true}, {"t": "Elegir tecnología exige mirar más allá del rendimiento o de la popularidad. Hay que evaluar el ecosistema de la organización y su gobierno de datos, es decir, las reglas sobre quién puede usar qué, con qué datos y bajo qué controles.", "c": false}, {"t": "El curso distingue tres capas: modelo, aplicación y ecosistema. El modelo aporta capacidades, la aplicación agrega interfaz y herramientas, y el ecosistema define identidades, permisos, almacenamiento, auditoría e integración. Es como un auto: motor, carrocería y carretera.", "c": false}, {"t": "El curso presenta ocho familias de plataformas, en una fotografía al seis de septiembre de dos mil veintiséis. ChatGPT, de OpenAI, sirve para análisis y herramientas. Gemini, de Google, para lo multimodal. Claude, de Anthropic, para documentos y código.", "c": false}, {"t": "Microsoft Copilot se vincula con Word, Excel, Outlook y Teams, con datos autorizados mediante Microsoft Graph, que se dice graf. Grok, de xAI, trae búsqueda web. DeepSeek ofrece API y modelos para razonamiento.", "c": false}, {"t": "Kimi, de Moonshot AI, destaca por su contexto amplio. Llama, de Meta, tiene pesos disponibles, o open weights, que se dice óupen uéits, y permite desplegarlo en infraestructura propia o de terceros.", "c": false}, {"t": "Tres palabras de la tabla. La residencia de datos es el lugar geográfico y jurídico donde se guardan tus datos. La dependencia de proveedor ocurre cuando tu proceso queda atado a una versión, un precio o una función que puede cambiar.", "c": false}, {"t": "El caso chileno: Codelco informó el veinticuatro de septiembre de dos mil veintiséis que habilitó cinco mil quinientas licencias de Microsoft trescientos sesenta y cinco Copilot. La eligió porque solo accede a lo que cada persona ya tiene permitido.", "c": false}, {"t": "Para decidir, la matriz de selección tiene siete criterios, cada uno con una pregunta y una evidencia mínima. Tarea, calidad, contexto e integración se prueban con casos reales, rúbrica y mapa de aplicaciones.", "c": false}, {"t": "La gobernanza se revisa con contrato, retención, auditoría y residencia. La operación, con nivel de servicio y contingencia. El costo, con el total por uso, licencias, integración y revisión humana.", "c": false}, {"t": "Fíjate en que la rúbrica para mejorar un prompt sirve también para comparar plataformas: mismos casos, misma pauta. La idea en una línea: la popularidad no es un criterio.", "c": false}, {"t": "Ahora la seguridad. Primero, qué datos entran, en qué cuenta y bajo qué contrato. Los datos de afiliados van solo en herramientas aprobadas por tu empresa, nunca en tu cuenta personal.", "c": false}, {"t": "Un sistema con grounding puede recuperar información a la que la persona ya tenía acceso. Si una carpeta quedó abierta por error hace años, la I.A. puede sacarla a la luz en segundos.", "c": false}, {"t": "La inyección de prompts puede venir en la consulta, o escondida en un documento, un correo o una página. Eso es la inyección indirecta, como una orden en la letra chica de un correo que pide reenviar la lista de afiliados.", "c": false}, {"t": "Un ejecutivo humano lo ignoraría, pero un sistema mal diseñado podría obedecer. Por eso la regla es tratar las instrucciones de una fuente como datos, no como órdenes.", "c": false}, {"t": "Ningún método es infalible, por eso se combinan barreras. Entre ellas está el mínimo privilegio: solo los accesos necesarios, como entregar la llave de una sala y no la de toda la oficina.", "c": false}, {"t": "Cinco riesgos y su control. Exposición de datos, con datos clasificados y cuentas aprobadas. Respuesta sin sustento, con citas y separación de evidencia e inferencia.", "c": false}, {"t": "Inyección indirecta, tratando lo recuperado como dato. Permisos excesivos, con mínimo privilegio y registro de accesos. Dependencia de proveedor, con pruebas portables.", "c": false}, {"t": "Las técnicas reducen mucho las alucinaciones, pero no las eliminan. Por eso la verificación humana nunca se saca del proceso.", "c": false}, {"t": "Seis usos de negocio, cada uno con su control. Síntesis con citas, comparación con rúbrica previa y simulación declarando supuestos. Redacción con aprobación humana, hipótesis contrastadas con datos y apoyo a decisiones con responsable humano.", "c": false}, {"t": "Ensayar con la I.A. una conversación con un afiliado molesto es útil, mientras no lo tomes como predicción. Un borrador de correo ayuda, pero lo que llega al afiliado lo aprueba una persona.", "c": false}, {"t": "El protocolo operativo tiene siete pasos: formular el resultado, seleccionar fuentes, diseñar el prompt, escoger plataforma, probar, verificar y registrar. Probar incluye casos frecuentes, ambiguos, extremos y riesgosos.", "c": false}, {"t": "Cuanto más delicado el uso, más control. Si toca dinero, datos personales o una decisión irreversible, exige citas, verificación de cifras y una persona responsable.", "c": false}, {"t": "La idea en una línea: cuentas aprobadas, lo recuperado como dato y no como orden, mínimo privilegio, y una persona que asume la decisión final. Ese principio sirve para cualquier herramienta, aunque cambie la marca.", "c": false}, {"t": "Ya tienes todas las piezas. Ahora las juntamos en un caso del curso, y cerramos con lo que conviene llevarse.", "c": false}, {"t": "Capítulo siete. El caso Horizonte y para llevarte", "c": true}, {"t": "Horizonte Salud Laboral presta prevención, evaluaciones ocupacionales y capacitación a ciento veinte empresas. Quiere renovar un contrato, con insumos como la licitación, dieciocho informes mensuales y una planilla de incidentes.", "c": false}, {"t": "Tres analistas recibieron el mismo encargo con herramientas distintas y una solicitud general. El resultado fue una mezcla de coincidencias parciales, cifras incompatibles, recomendaciones sin fuente y servicios que la empresa nunca ofreció.", "c": false}, {"t": "El curso detecta cinco problemas. Nadie definió el resultado, no se separó hecho de inferencia y la colección estaba sucia, con duplicados y definiciones distintas de incidente.", "c": false}, {"t": "Además, la solicitud autorizaba conocimiento externo sin decirlo, y se cargaron datos personales en cuentas individuales sin autorización formal. Es como tres ejecutivos con tres versiones del contrato: nadie fijó las reglas.", "c": false}, {"t": "El camino correcto empieza por la decisión: una propuesta sustentada en la experiencia contractual. Se depura la colección, cada hallazgo cita su fuente y las recomendaciones se distinguen de la evidencia.", "c": false}, {"t": "Para elegir plataforma se usaron los mismos casos y una rúbrica común, en cuentas aprobadas. El prompt final pide usar solo documentos autorizados, identificar primero los requisitos y luego extraer problemas.", "c": false}, {"t": "Cada hallazgo indica documento, fecha y sección, y separa evidencia, inferencia y recomendación. La salida incluye un resumen ejecutivo, una matriz, cinco hallazgos, tres iniciativas y preguntas pendientes.", "c": false}, {"t": "Si las fuentes se contradicen o falta un dato, repórtalo y no completes el vacío. Es el ejercicio de las ocho piezas completo, y por eso cualquier analista puede ejecutar el mismo encargo.", "c": false}, {"t": "La dirección eligió la herramienta con controles corporativos de privacidad, residencia segura y mejor desempeño bajo la rúbrica. El prompt se aprobó como especificación estándar, con trazabilidad hasta página y sección.", "c": false}, {"t": "Ojo con el resultado. El curso afirma que la política de incertidumbre eliminó las alucinaciones en este caso, y esa es la respuesta del curso. Pero lo más prudente es decir que las técnicas las reducen mucho, sin garantizar su ausencia.", "c": false}, {"t": "Tres preguntas del caso. Uno, qué ayudó: resultado y decisión definidos, fuentes depuradas, citas, separación de capas y una política que reporta el vacío.", "c": false}, {"t": "Dos, qué controles mínimos: clasificar la sensibilidad, usar cuentas aprobadas, revisar permisos, probar sin datos personales y designar a quien verifica. Son los controles previos a cualquier documento real.", "c": false}, {"t": "Y tres, qué habría pasado sin rúbrica ni citas. La propuesta se habría apoyado en cifras incompatibles y servicios inexistentes, con datos personales expuestos, y habría sido imposible de auditar.", "c": false}, {"t": "Los recursos del curso incluyen el video desarrollando prompts para campañas, del profesor Rodrigo Pereira, y una biblioteca de más de trescientos comandos para ChatGPT. Hay lecturas de Anthropic, Google, Microsoft y OpenAI.", "c": false}, {"t": "Como descargas están el artículo de Lewis y colaboradores sobre RAG, y el informe del N I S T sobre aprendizaje automático adversarial, que describe ataques como la inyección de prompts. Lo que el PDF trae cortado está en la versión online.", "c": false}, {"t": "Para llevarte, tres ideas. Uno, un buen resultado empieza en un buen encargo, y lo largo no corrige lo ambiguo. Dos, un prompt se prueba, se mejora y se registra, y los documentos se trabajan con rastro.", "c": false}, {"t": "Tres, la plataforma se elige probando, y la responsabilidad sigue siendo tuya. Mira integración, gobierno y costo total, usa solo cuentas aprobadas y no delegues decisiones críticas.", "c": false}, {"t": "Si mañana alguien te muestra una herramienta que hace todo con I.A., ya tienes tus preguntas. Cuál es el encargo, de dónde saca los datos y qué pasa si se equivoca.", "c": false}, {"t": "El material termina con un glosario que puedes repasar con calma. Y si te llevas una sola frase, que sea esta: encarga con claridad, prueba con método, protege los datos y deja la decisión final en una persona.", "c": false}, {"t": "Repítela antes de tu próxima conversación con cualquier asistente. Encarga con claridad, prueba con método, protege los datos y deja la decisión final en una persona.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>
