@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 3 · Ingeniería de prompts y modelos de lenguaje — Mapa conceptual y flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Tecnologías de IA para Negocios · Máster en IA</div>
+  <h1>Unidad 3 · <b>Ingeniería de prompts y modelos de lenguaje</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 77 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Diez puntos donde el material del curso se queda corto, está desactualizado o simplifica lo que dice la fuente. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> ¿Elimina o reduce alucinaciones?</h3>
+      <p>Curso: el caso dice que la política de incertidumbre «eliminó las alucinaciones»; el video, que las ocho piezas son «para evitar alucinaciones». Evidencia: Anthropic dice que estas técnicas las reducen significativamente, no las eliminan; OWASP: ningún método es infalible.</p>
+      <div class="regla"><b>Regla:</b> si preguntan qué logró el prompt en el caso Horizonte, responde lo que dice el curso (trazabilidad, política de incertidumbre, sin alucinaciones); si preguntan en general, di «reduce» y que siempre se requiere verificación humana.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> Rey − Hombre + Mujer y «siguiente palabra».</h3>
+      <p>Curso: la figura del Transformer ilustra embeddings con esa analogía y habla de predecir la siguiente palabra. Evidencia: la analogía viene de word2vec (2013, embeddings estáticos); el Transformer produce embeddings contextuales (justamente el paso 2 de la figura); el modelo predice el siguiente token.</p>
+      <div class="regla"><b>Regla:</b> en el examen respeta los 4 pasos y sus nombres; si preguntan qué unidad predice el modelo, «token» es lo más preciso.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> SynthID no es universal.</h3>
+      <p>Curso: lo pone como parte de la fase de generación de respuestas del ciclo de vida. Evidencia: es la marca de agua de Google DeepMind para contenido de su IA; otros proveedores usan otros mecanismos o ninguno.</p>
+      <div class="regla"><b>Regla:</b> si preguntan por SynthID, define marca de agua imperceptible para identificar contenido generado por IA (de Google); no afirmes que todo LLM la aplica.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> El rol «aporta poco».</h3>
+      <p>Curso: asignar un rol aporta poco si faltan problema, audiencia, fuentes y criterios. Evidencia: Anthropic recomienda asignar un rol en el prompt de sistema (incluso una frase ayuda). No se contradicen: el rol es útil y barato, pero no sustituye las piezas.</p>
+      <div class="regla"><b>Regla:</b> el rol orienta vocabulario y perspectiva; no reemplaza resultado, contexto, insumos y criterios.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> «Mayor prioridad» del mensaje de sistema.</h3>
+      <p>Curso: instrucción de mayor prioridad. Evidencia: es una jerarquía entrenada (OpenAI Model Spec: plataforma > desarrollador > usuario), no una garantía técnica; por eso existe la inyección de prompts.</p>
+      <div class="regla"><b>Regla:</b> responde la definición del curso; si la pregunta es de seguridad, agrega que la prioridad no blinda contra inyección.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> Los atajos «/promptsistema» no son comandos nativos.</h3>
+      <p>Curso: lista «/promptsistema + /(objetivo) + /(formatodesalida)» como atajo. Evidencia: las API de LLM solo conocen roles de mensaje (sistema, usuario, asistente); el «/» es una convención de interfaz o un acuerdo dentro del prompt, que funciona si el modelo entiende la intención o si fue definida en un GPT/proyecto personalizado [inferencia, sin fuente primaria].</p>
+      <div class="regla"><b>Regla:</b> trátalo como plantilla de metaprompting, no como función del modelo.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> JSON vs Markdown y la validación.</h3>
+      <p>Curso: JSON requiere validación antes de alimentar otro sistema, «al igual que los markdown (.md)». Evidencia: JSON es un formato de máquina con esquema validable (Structured Outputs garantiza el esquema; el JSON mode solo la sintaxis); Markdown es un formato de presentación sin esquema estricto: se revisa, pero no se valida igual.</p>
+      <div class="regla"><b>Regla:</b> toda salida estructurada se valida; JSON con esquema y parser, Markdown con revisión de estructura y contenido.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">08</span> Pre-entrenamiento con «datos públicos filtrados».</h3>
+      <p>Curso: grandes volúmenes de datos públicos filtrados. Evidencia: los proveedores también usan datos licenciados y propios (Llama 4: mezcla de datos públicos, licenciados y de productos de Meta).</p>
+      <div class="regla"><b>Regla:</b> responde «grandes volúmenes de datos filtrados por calidad y seguridad» y, si cabe, menciona que no son solo públicos.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">09</span> Recursos truncados en el PDF.</h3>
+      <p>El video resumen (su texto sí viene), el video del profesor Rodrigo Pereira sobre campañas de bienestar, su PDF explicativo y la Biblioteca de más de 300 comandos para ChatGPT solo están en la versión online.</p>
+      <div class="regla"><b>Regla:</b> lo que se reconstruye aquí sale de los conceptos de la unidad; para preguntas sobre el contenido específico de esos recursos, revisa la versión online de la clase.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">10</span> Bibliografía desactualizada.</h3>
+      <p>La documentación de Anthropic migró de docs.anthropic.com a platform.claude.com/docs; NIST AI 100-2e2025 tiene seis autores (el curso cita cuatro); la página de Microsoft sobre RAG en Azure no pudo verificarse con ese título.</p>
+      <div class="regla"><b>Regla:</b> para el examen las citas del curso valen tal cual; para buscar las fuentes, usa las URL actualizadas.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 3 — Ingeniería de prompts y modelos de lenguaje» · Curso: Tecnologías de Inteligencia Artificial para Negocios · Archivo autocontenido, funciona sin internet.</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Unidad 3"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"El prompt como especificación"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Ocho piezas"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Técnicas e iteración"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"Contexto, documentos y RAG"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Gobernanza y plataformas"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Cómo funciona un LLM"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Caso Horizonte y recursos"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Unidad 3"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"El prompt como especificación"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Ocho piezas"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Técnicas e iteración"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"Contexto, documentos y RAG"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Gobernanza y plataformas"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Cómo funciona un LLM"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Caso Horizonte y recursos"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+ "id": "root",
+ "t": "INGENIERÍA DE PROMPTS Y MODELOS DE LENGUAJE",
+ "c": "root",
+ "d": "Unidad 3 del módulo: el prompt como especificación evaluable, las ocho piezas, técnicas de control e iteración, contexto y RAG, cómo funciona un LLM, gobernanza y selección de plataformas, y el caso Horizonte. Tesis central: la calidad depende del encargo, la evidencia y la revisión humana, no de la extensión del prompt.",
+ "k": [
+  {
+   "t": "El prompt como especificación",
+   "c": "azul",
+   "d": "Un prompt profesional es una especificación de trabajo (work specification): define qué producir, para quién, con qué información, bajo qué criterios y en qué formato. Si falta una de esas respuestas, el modelo la adivina, y adivinar produce respuestas plausibles pero desalineadas. Un criterio de éxito es una condición observable que permite decidir si una respuesta cumple el propósito.",
+   "e": "se entiende como",
+   "k": [
+    {
+     "t": "Conceptos clave",
+     "c": "azul",
+     "d": "Vocabulario base del módulo: prompt, instrucción, contexto, entrada y salida. Un prompt típico combina una instrucción, un contexto y una entrada. Son definiciones literales del curso y vocabulario de examen.",
+     "e": "incluye",
+     "k": [
+      {
+       "t": "Prompt",
+       "c": "azul",
+       "d": "Entrada que entrega una tarea, pregunta, contexto o instrucción a un modelo generativo. Puede ser una orden, un documento pegado o una combinación de ambos.",
+       "e": "es"
+      },
+      {
+       "t": "Ingeniería de prompts",
+       "c": "azul",
+       "d": "Proceso de diseñar, probar y mejorar instrucciones para obtener resultados útiles y evaluables (prompt engineering). Tres verbos: diseñar, probar, mejorar. Dos adjetivos: útiles y evaluables.",
+       "e": "es"
+      },
+      {
+       "t": "Modelo de lenguaje (LLM)",
+       "c": "azul",
+       "d": "Modelo entrenado para procesar y generar secuencias de lenguaje a partir de patrones aprendidos (Large Language Model). Trabaja con patrones, no con una base de hechos verificados.",
+       "e": "es"
+      },
+      {
+       "t": "Instrucción",
+       "c": "azul",
+       "d": "Indicación explícita sobre la acción que el modelo debe realizar (instruction): el verbo de la tarea.",
+       "e": "es"
+      },
+      {
+       "t": "Contexto",
+       "c": "azul",
+       "d": "Información pertinente que permite interpretar la tarea y producir una respuesta situada. Sin contexto la respuesta sirve para cualquiera y no le sirve a nadie en particular.",
+       "e": "es"
+      },
+      {
+       "t": "Entrada",
+       "c": "azul",
+       "d": "Contenido entregado al modelo (input): texto, archivo, imagen, audio, datos o historial de conversación.",
+       "e": "es"
+      },
+      {
+       "t": "Salida",
+       "c": "azul",
+       "d": "Resultado producido por el modelo (output): texto, tabla, clasificación, código o contenido estructurado. En uso empresarial la salida suele alimentar otro proceso.",
+       "e": "es"
+      }
+     ]
+    },
+    {
+     "t": "Mensaje de sistema",
+     "c": "azul",
+     "d": "Instrucción de mayor prioridad que define comportamiento, límites y reglas generales en una aplicación (system message). El usuario normalmente no lo ve. ⚠️ El curso dice que tiene mayor prioridad; el Model Spec de OpenAI muestra una jerarquía entrenada, no una garantía técnica. La prioridad no blinda contra inyección de prompts: responde la definición del curso y, si la pregunta es de seguridad, agrega ese matiz.",
+     "e": "define",
+     "id": "sistema"
+    },
+    {
+     "t": "Asignar un rol",
+     "c": "azul",
+     "d": "Pedir al modelo que actúe como un perfil (role prompting). Orienta vocabulario y perspectiva, pero aporta poco si faltan problema, audiencia, fuentes y criterios. ⚠️ Anthropic recomienda fijar un rol en el mensaje de sistema, y dice que incluso una frase marca diferencia. Regla: el rol no reemplaza resultado, contexto, insumos ni criterios.",
+     "e": "puede orientar"
+    },
+    {
+     "t": "Principio de trabajo",
+     "c": "azul",
+     "d": "La calidad del resultado mejora cuando la instrucción hace explícito qué debe ocurrir, qué evidencia puede utilizarse y cómo se verificará el cumplimiento. La tercera exigencia mira hacia el futuro: antes de pedir algo, ya sabes cómo lo vas a comprobar.",
+     "e": "resume"
+    }
+   ],
+   "id": "espec"
+  },
+  {
+   "t": "Ocho piezas de un prompt profesional",
+   "c": "verde",
+   "d": "Un prompt profesional se arma con ocho piezas: resultado, contexto, insumos, operación, criterios, restricciones, formato de salida y política de incertidumbre. Cada pieza responde una pregunta que, si no la contestas tú, el modelo la contesta por su cuenta. Cuando algo sale mal, la pregunta de diagnóstico es cuál de las ocho faltó.",
+   "e": "se arma con",
+   "k": [
+    {
+     "t": "Resultado (pieza 1)",
+     "c": "verde",
+     "d": "Define el producto esperado y la decisión que deberá apoyar (outcome). Lo que más se omite es la decisión: no basta con «un resumen», hay que decir para qué decisión sirve.",
+     "e": "pieza 1"
+    },
+    {
+     "t": "Contexto (pieza 2)",
+     "c": "verde",
+     "d": "Antecedentes que cambian la interpretación de la tarea (background). Que la empresa tenga 120 clientes cambia el enfoque; los años de fundación probablemente no.",
+     "e": "pieza 2"
+    },
+    {
+     "t": "Insumos (pieza 3)",
+     "c": "verde",
+     "d": "Documentos, datos o fragmentos que el modelo puede utilizar (inputs / sources). Delimita la fuente de verdad: «usa únicamente el informe adjunto» le quita al modelo la licencia de completar con conocimiento general.",
+     "e": "pieza 3"
+    },
+    {
+     "t": "Operación (pieza 4)",
+     "c": "verde",
+     "d": "Acciones necesarias: resumir, clasificar, contrastar, calcular, priorizar o redactar (operation). Debe ser una operación nombrada: «contrasta las fechas de los dos contratos» sí; «mira esto» no.",
+     "e": "pieza 4"
+    },
+    {
+     "t": "Criterios (pieza 5)",
+     "c": "verde",
+     "d": "Qué significa una respuesta útil, correcta, suficiente y pertinente (criteria). Son cuatro adjetivos con sentidos distintos; es la pieza que convierte el juicio subjetivo en reglas.",
+     "e": "pieza 5"
+    },
+    {
+     "t": "Restricciones (pieza 6)",
+     "c": "verde",
+     "d": "Límites de extensión, alcance, fuentes, tono, confidencialidad o uso (constraints), por ejemplo «máximo 120 palabras». El criterio dice qué es una buena respuesta; la restricción dice dónde está prohibido pasar.",
+     "e": "pieza 6"
+    },
+    {
+     "t": "Formato de salida (pieza 7)",
+     "c": "verde",
+     "d": "Estructura exigida para la respuesta y sus campos obligatorios: tabla, esquema, lista, JSON o texto ejecutivo (output format). Funciona como la plantilla de un formulario: si exiges una columna Fuente, no puede omitirse sin que se note.",
+     "e": "pieza 7",
+     "id": "formato"
+    },
+    {
+     "t": "Política de incertidumbre (pieza 8)",
+     "c": "verde",
+     "d": "Cómo reportar vacíos, contradicciones, supuestos y necesidad de revisión humana (uncertainty policy). Es la pieza más ignorada: los modelos están entrenados para responder siempre y pueden completar un dato faltante con naturalidad. Da una salida legítima: «si el dato no está, repórtalo como brecha y no lo completes». La expresión «para evitar alucinaciones» del video necesita matiz: reduce, no elimina.",
+     "e": "pieza 8",
+     "id": "incert"
+    },
+    {
+     "t": "Delimitadores",
+     "c": "verde",
+     "d": "Marcas (comillas triples, etiquetas o encabezados Markdown) que separan instrucciones, fuentes y datos (delimiters). La estructura sirve para leer y mantener, no para lucirse. Regla práctica: todo lo que está entre comillas triples se trata como datos, no como instrucciones.",
+     "e": "se usan para separar"
+    }
+   ],
+   "id": "piezas"
+  },
+  {
+   "t": "Técnicas e iteración",
+   "c": "ambar",
+   "d": "Las técnicas de control dan forma a la salida y la iteración mediante evaluación prueba si el prompt funciona de forma repetible. Las técnicas reducen el error, pero no lo eliminan: siempre hace falta revisión.",
+   "e": "se controla con",
+   "k": [
+    {
+     "t": "Técnicas de control",
+     "c": "ambar",
+     "d": "Seis técnicas que dan forma a la salida: instrucción directa, ejemplos (zero-shot y few-shot), descomposición, interacción por etapas, formato estructurado y respuesta verificable. Se combinan; no son excluyentes.",
+     "e": "incluye",
+     "k": [
+      {
+       "t": "Instrucción directa",
+       "c": "ambar",
+       "d": "Comienza con un verbo observable y un objeto: compara alternativas, extrae compromisos, clasifica reclamos. Observable significa que puedes mirar la salida y comprobar si el verbo se cumplió. Para tareas simples basta con una instrucción directa y específica.",
+       "e": "es"
+      },
+      {
+       "t": "Zero-shot",
+       "c": "ambar",
+       "d": "Solicitud realizada sin entregar ejemplos de la respuesta esperada. Hay que describir en palabras el tono, la clasificación o el formato, y aun así el modelo puede usar etiquetas distintas.",
+       "e": "es"
+      },
+      {
+       "t": "Few-shot",
+       "c": "ambar",
+       "d": "Incorpora uno o más ejemplos resueltos para mostrar el patrón, tono o formato esperado. Con dos reclamos etiquetados como urgente y menor, el modelo aprende las etiquetas y el formato. Los ejemplos deben ser reales y mostrar bordes, porque un ejemplo incorrecto fija un comportamiento no deseado. Google advierte que usar demasiados puede sobreajustar el patrón.",
+       "e": "es"
+      },
+      {
+       "t": "Descomposición de tareas",
+       "c": "ambar",
+       "d": "Divide una tarea compleja en etapas revisables: extraer evidencia, organizar hallazgos, contrastar alternativas y redactar. Permite detectar en qué etapa aparece el error, igual que depurar un programa por módulos.",
+       "e": "es"
+      },
+      {
+       "t": "Interacción por etapas",
+       "c": "ambar",
+       "d": "Separa en turnos las preguntas aclaratorias, la entrega de antecedentes, la propuesta y la revisión con rúbrica. La descomposición divide el trabajo; la interacción por etapas divide la conversación. Evita cargar una instrucción única con decisiones pendientes.",
+       "e": "es"
+      },
+      {
+       "t": "Formato estructurado",
+       "c": "ambar",
+       "d": "Tabla o esquema con campos obligatorios que facilita comparar respuestas y detectar omisiones (structured format). Una celda vacía se nota de inmediato.",
+       "e": "usa"
+      },
+      {
+       "t": "JSON",
+       "c": "ambar",
+       "d": "Formato de datos legible por máquinas (JavaScript Object Notation). Debe validarse antes de alimentar otro sistema. ⚠️ El curso lo equipara con Markdown en la validación; en rigor el JSON mode solo garantiza sintaxis y Structured Outputs con esquema asegura los campos, y aun así hay que validar el contenido.",
+       "e": "incluye"
+      },
+      {
+       "t": "Markdown (.md)",
+       "c": "ambar",
+       "d": "Formato de texto con marcas simples (#, listas, tablas), pensado para ser legible y estructurado a la vez. Se revisa su estructura y contenido; no tiene un esquema estricto como JSON. Regla: toda salida estructurada se valida.",
+       "e": "incluye"
+      },
+      {
+       "t": "Respuesta verificable",
+       "c": "ambar",
+       "d": "Salida que muestra evidencia, supuestos, criterios, cálculos y fuentes para poder revisarla. Si el modelo dice que el costo subió 12 %, muestra los dos valores de los que sale ese porcentaje y el documento donde están.",
+       "e": "se pide con"
+      }
+     ]
+    },
+    {
+     "t": "Iterar mediante evaluación",
+     "c": "ambar",
+     "d": "La ingeniería de prompts exige una definición previa de éxito y una forma de probarla. Evaluación (evals) es el proceso de probar una instrucción y sus resultados frente a casos, métricas o una rúbrica. Un ciclo de siete pasos ordena el trabajo: línea base, casos, rúbrica, probar, analizar fallas, modificar una variable y registrar la versión.",
+     "e": "se evalúa con",
+     "k": [
+      {
+       "t": "Línea base",
+       "c": "ambar",
+       "d": "Registro de cómo se hace hoy la tarea, cuánto demora y qué errores aparecen (baseline). Sin ella no puedes demostrar que el prompt mejora algo. Si un analista tarda 3 horas, esa es la vara con la que mides al modelo.",
+       "e": "primer paso"
+      },
+      {
+       "t": "Casos de prueba",
+       "c": "ambar",
+       "d": "Situaciones frecuentes, ambiguas, extremas y potencialmente riesgosas (test cases). Los frecuentes miden el día a día; los ambiguos, la sensatez; los extremos, la robustez; los riesgosos, la seguridad.",
+       "e": "paso 2"
+      },
+      {
+       "t": "Rúbrica",
+       "c": "ambar",
+       "d": "Pauta que evalúa exactitud, cobertura, uso de fuentes, claridad, cumplimiento del formato y seguridad (rubric). Cada caso se puntúa en cada dimensión. La misma rúbrica que compara dos versiones de un prompt sirve para comparar plataformas en la matriz de selección.",
+       "e": "paso 3",
+       "id": "rubrica"
+      },
+      {
+       "t": "Probar una versión",
+       "c": "ambar",
+       "d": "Se prueba con la misma configuración y se conservan las respuestas para poder comparar. Si cambias la configuración entre pruebas, no sabes qué causó la diferencia.",
+       "e": "paso 4"
+      },
+      {
+       "t": "Analizar fallas",
+       "c": "ambar",
+       "d": "Determinar si el problema viene del prompt, de los datos, del modelo, de la herramienta o de una expectativa inviable. Evita el reflejo de reescribir el prompt cuando el problema es, por ejemplo, un documento mal digitalizado.",
+       "e": "paso 5"
+      },
+      {
+       "t": "Modificar una variable",
+       "c": "ambar",
+       "d": "Cambiar una sola pieza relevante y repetir con los mismos casos (one change at a time). Ejemplo ilustrativo: la versión 1 acierta 13 de 20 (0,65); la versión 2, con dos ejemplos few-shot, acierta 17 de 20 (0,85). Como solo cambió eso, la mejora se atribuye a los ejemplos.",
+       "e": "paso 6"
+      },
+      {
+       "t": "Registrar versión",
+       "c": "ambar",
+       "d": "Documentar la versión aprobada: fecha, propósito, responsable, casos evaluados y límites conocidos. Es la versión de prompt (prompt version): registro identificable de una instrucción, sus cambios, pruebas y resultados. Sin versión registrada, cambiar de plataforma es empezar de cero.",
+       "e": "paso 7",
+       "id": "version"
+      },
+      {
+       "t": "Criterio de aprobación",
+       "c": "ambar",
+       "d": "Desempeño aceptable en una muestra de situaciones representativas, más un procedimiento para los casos que el prompt no puede resolver (acceptance criterion). Una demostración convincente no basta. El procedimiento es, en la práctica, la política de incertidumbre más una ruta de escalamiento a una persona.",
+       "e": "se cumple con"
+      }
+     ],
+     "id": "iterar"
+    }
+   ]
+  },
+  {
+   "t": "Contexto, documentos y RAG",
+   "c": "violeta",
+   "d": "El contexto es un presupuesto de tokens que debe ser pertinente, identificable y limpio. Los documentos se analizan con un protocolo y trazabilidad; cuando el volumen supera la ventana, RAG recupera fragmentos pertinentes y los incorpora al contexto.",
+   "e": "se alimenta con",
+   "k": [
+    {
+     "t": "Tokens y ventana de contexto",
+     "c": "violeta",
+     "d": "La ventana de contexto (context window) es la cantidad máxima de información que la interacción puede mantener disponible: instrucciones, historial, documentos y la respuesta que el modelo escribe. Es un presupuesto único. Una ventana grande no garantiza memoria perfecta: el contexto útil debe ser pertinente, identificable y limpio; los duplicados y versiones obsoletas degradan el resultado.",
+     "e": "incluye",
+     "k": [
+      {
+       "t": "Token",
+       "c": "violeta",
+       "d": "Unidad de texto procesada por el modelo: palabra, parte de palabra, número o signo. Todo se mide en tokens: lo que envías, lo que el modelo responde y, en API, el precio. Regla de OpenAI para inglés: 4 caracteres ≈ 1 token ≈ 0,75 palabras; en español suelen hacer falta más tokens por palabra (estimación).",
+       "e": "es"
+      },
+      {
+       "t": "Degradación por contexto largo",
+       "c": "violeta",
+       "d": "Lost in the middle y context rot: pérdida de precisión al recuperar detalles cuando el contexto es muy extenso o está sucio. Liu et al. (2023) muestran que el rendimiento cae cuando lo relevante está en el medio. Chroma (julio de 2025), en un informe técnico de empresa, reporta que 18 modelos degradan con más contexto. Un dato crítico conviene ubicarlo al inicio o al final.",
+       "e": "se produce con"
+      }
+     ],
+     "id": "ventana"
+    },
+    {
+     "t": "Protocolo de análisis documental",
+     "c": "violeta",
+     "d": "Siete pasos: inventariar fuentes, definir la pregunta, establecer límites, solicitar trazabilidad, separar capas, contrastar y validar. Funciona como la lista de verificación de un vuelo: en encargos importantes no se confía en la memoria.",
+     "e": "incluye",
+     "k": [
+      {
+       "t": "Inventario de fuentes",
+       "c": "violeta",
+       "d": "Registro de nombre, fecha, versión, autoría, alcance y confidencialidad de cada documento (source inventory). Sin él no puedes citar, detectar duplicados ni decidir qué puede subirse a qué plataforma.",
+       "e": "paso 1"
+      },
+      {
+       "t": "Definir la pregunta",
+       "c": "violeta",
+       "d": "Convierte el encargo general en preguntas respondibles con evidencia documental. «¿Qué opinas del servicio?» no es respondible; «¿cuántos incidentes se registraron por mes y bajo qué definición?» sí.",
+       "e": "paso 2"
+      },
+      {
+       "t": "Establecer límites",
+       "c": "violeta",
+       "d": "Declara si el modelo puede usar conocimiento general, búsqueda web o solo los archivos entregados. Es la versión documental de la pieza de restricciones: si no lo dices, el modelo decide por ti.",
+       "e": "paso 3"
+      },
+      {
+       "t": "Solicitar trazabilidad",
+       "c": "violeta",
+       "d": "Pide referencia a página, sección, tabla o fragmento en cada afirmación. La trazabilidad es la capacidad de identificar qué fuente, instrucción, versión y revisión sustentan un resultado; sin citas, la revisión humana empieza de cero.",
+       "e": "paso 4",
+       "id": "traza"
+      },
+      {
+       "t": "Separación de capas",
+       "c": "violeta",
+       "d": "Distinguir evidencia explícita, inferencia razonable, contradicción, vacío y recomendación (evidence layering). Cada capa tiene un grado distinto de certeza y se revisa de manera distinta.",
+       "e": "paso 5"
+      },
+      {
+       "t": "Contrastar",
+       "c": "violeta",
+       "d": "Compara fechas, versiones, definiciones y discrepancias entre documentos. Dos informes que definen «incidente» de forma distinta producen cifras que no se pueden sumar.",
+       "e": "paso 6"
+      },
+      {
+       "t": "Validar",
+       "c": "violeta",
+       "d": "Una persona responsable verifica citas, cifras, conclusiones y el tratamiento de la información sensible. Es el único paso que ninguna herramienta puede hacer por sí misma, porque la responsabilidad no se delega.",
+       "e": "paso 7"
+      }
+     ],
+     "id": "protocolo"
+    },
+    {
+     "t": "Plantilla base para documentos",
+     "c": "violeta",
+     "d": "Objetivo, fuentes autorizadas, tarea, criterios, salida, trazabilidad, incertidumbre y revisión. Condensa las ocho piezas en formato documental. Contexto y restricciones no aparecen como campos propios: se incorporan dentro de objetivo y de fuentes autorizadas.",
+     "e": "se usa como"
+    },
+    {
+     "t": "Cuatro atajos de metaprompting",
+     "c": "violeta",
+     "d": "Usar al modelo como colaborador: pedirle diez preguntas clave antes de generar; pedirle que mejore un prompt como ingeniero senior; pedirle un prompt de sistema junto con preguntas; y la plantilla /promptsistema + /(objetivo) + /(formatodesalida). ⚠️ El curso presenta la última como atajo; en rigor las API solo conocen roles de mensaje (sistema, usuario, asistente), así que es una plantilla de metaprompting, no una función del modelo.",
+     "e": "incluye"
+    },
+    {
+     "t": "Grounding",
+     "c": "violeta",
+     "d": "Vinculación de la respuesta con información externa, documentos o datos autorizados, en lugar de responder de memoria. Cargar un archivo y hacer preguntas puede funcionar como grounding documental.",
+     "e": "se logra con"
+    },
+    {
+     "t": "RAG (Retrieval-Augmented Generation)",
+     "c": "violeta",
+     "d": "Enfoque que recupera información pertinente desde una fuente y la incorpora al contexto antes de generar. Lewis et al. (2020) lo formalizan con memoria paramétrica (los pesos) y memoria externa recuperable: para actualizar lo que sabe el sistema basta con actualizar el índice, sin reentrenar. Reduce alucinaciones según el paper y su pipeline se detalla en los nodos siguientes.",
+     "e": "incluye",
+     "k": [
+      {
+       "t": "Memoria paramétrica",
+       "c": "violeta",
+       "d": "Conocimiento guardado en los pesos del modelo durante el entrenamiento (parametric memory). Puede recordar bien o reconstruir de manera plausible y errar.",
+       "e": "es"
+      },
+      {
+       "t": "Memoria no paramétrica",
+       "c": "violeta",
+       "d": "Conocimiento externo recuperable, un índice de documentos que se consulta al responder (non-parametric memory). En Lewis et al. (2020), un índice de Wikipedia de diciembre de 2018 con unos 21 millones de pasajes de 100 palabras. RAG-Sequence usa un mismo documento para toda la respuesta; RAG-Token puede cambiar de documento en cada token.",
+       "e": "es"
+      },
+      {
+       "t": "Pipeline organizacional",
+       "c": "violeta",
+       "d": "Preparación, segmentación (chunking), indexación, búsqueda, selección de fragmentos con filtros de acceso, generación y citas. Antes de preguntar se prepara, segmenta e indexa; en cada pregunta se busca, selecciona, genera y cita. Un fragmento muy grande diluye el dato y uno muy pequeño pierde contexto. El recuperador (retriever) aplica permisos.",
+       "e": "se arma con"
+      },
+      {
+       "t": "Flujo RAG de seis pasos",
+       "c": "violeta",
+       "d": "1) La persona formula la pregunta; 2) el sistema transforma o amplía la consulta; 3) el recuperador selecciona fragmentos y aplica filtros de acceso; 4) los fragmentos entran al contexto junto con las instrucciones; 5) el modelo genera y señala fuentes; 6) una persona o un control verifica calidad, permisos y consistencia. El paso 6 no es opcional: RAG cambia dónde se concentra la revisión, hacia verificar citas.",
+       "e": "sigue"
+      },
+      {
+       "t": "Riesgos heredados",
+       "c": "violeta",
+       "d": "RAG mejora actualidad y trazabilidad, pero hereda tres riesgos: de búsqueda (fragmentos equivocados que el modelo responde con seguridad), de fuentes (documentos erróneos o sin permiso que aparecen con aspecto de autoridad) y de inyección (instrucciones ocultas en un documento recuperado). NIST recomienda reevaluar los riesgos al incorporar recuperación.",
+       "e": "hereda"
+      },
+      {
+       "t": "Criterios de recuperación",
+       "c": "violeta",
+       "d": "Palabras (búsqueda léxica, útil para cifras exactas), similitud semántica (vectores; encuentra «renunció» al buscar «desvinculación voluntaria»), metadatos (fecha, autor, permisos, versión), permisos y fecha. Pueden combinarse.",
+       "e": "se combinan"
+      }
+     ],
+     "id": "rag"
+    }
+   ]
+  },
+  {
+   "t": "Cómo funciona un LLM",
+   "c": "cian",
+   "d": "Un LLM descansa en dos componentes: la arquitectura matemática para procesar texto (Transformer) y el ciclo de entrenamiento. Por dentro predice el siguiente token; no es un buscador ni una base de datos.",
+   "e": "descansa en",
+   "k": [
+    {
+     "t": "Ciclo de vida en 4 fases",
+     "c": "cian",
+     "d": "Pre-entrenamiento, post-entrenamiento, generación de respuestas y retroalimentación humana, que cierra el ciclo. El modelo cambia con el tiempo, lo que causa dependencia de proveedor. El modelo no es una base de datos: el mismo prompt puede producir respuestas distintas (no determinismo).",
+     "e": "se compone de",
+     "k": [
+      {
+       "t": "Pre-entrenamiento",
+       "c": "cian",
+       "d": "Aprende patrones del lenguaje con grandes volúmenes de datos filtrados por calidad y seguridad (pre-training); genera texto flexible y no determinista. ⚠️ El curso dice datos públicos filtrados; en rigor los proveedores también usan datos licenciados y propios (Llama 4 declara una mezcla de datos públicos, licenciados y de productos de Meta). Responde «grandes volúmenes de datos filtrados por calidad y seguridad».",
+       "e": "fase 1"
+      },
+      {
+       "t": "Post-entrenamiento",
+       "c": "cian",
+       "d": "Ajusta el modelo preentrenado para que sea útil y seguro, con dos mecanismos: SFT y RLHF. Mejora tono, utilidad y seguridad, sin garantizar perfección. InstructGPT (Ouyang et al., 2022) mostró que un modelo de 1,3 mil millones de parámetros fue preferido por evaluadores sobre GPT-3 de 175 mil millones.",
+       "e": "fase 2"
+      },
+      {
+       "t": "SFT (Supervised Fine-Tuning)",
+       "c": "cian",
+       "d": "Ajuste fino supervisado: entrenamiento con ejemplos de alta calidad creados o revisados por expertos, que muestran cómo debe verse una buena respuesta.",
+       "e": "mecanismo"
+      },
+      {
+       "t": "RLHF",
+       "c": "cian",
+       "d": "Reinforcement Learning from Human Feedback: aprendizaje por refuerzo a partir de retroalimentación humana, es decir, optimización basada en preferencias humanas.",
+       "e": "mecanismo"
+      },
+      {
+       "t": "Modelo de recompensas",
+       "c": "cian",
+       "d": "Modelo que aprende a puntuar respuestas según lo que las personas prefieren (reward model). Es el componente que guía la optimización del RLHF.",
+       "e": "usa"
+      },
+      {
+       "t": "Generación de respuestas",
+       "c": "cian",
+       "d": "El modelo produce versiones según prompt y contexto (inferencia), puede apoyarse en fuentes externas (aumento por recuperación), aplica filtros de seguridad y selecciona la de mayor calidad. Aquí se consumen tus tokens. ⚠️ El curso presenta SynthID como parte general del ciclo; en rigor es la marca de agua de Google DeepMind para su contenido, no un estándar de todos los LLM.",
+       "e": "fase 3"
+      },
+      {
+       "t": "SynthID",
+       "c": "cian",
+       "d": "Marca de agua digital imperceptible de Google para identificar contenido generado por IA. Regla: defínela así y no afirmes que todo LLM la aplica.",
+       "e": "es"
+      },
+      {
+       "t": "Retroalimentación humana",
+       "c": "cian",
+       "d": "Evaluadores revisan errores, sesgos y calidad, y esa retroalimentación alimenta nuevas rondas de ajuste, mejorando precisión, seguridad y consistencia en el tiempo (human feedback loop).",
+       "e": "fase 4"
+      }
+     ]
+    },
+    {
+     "t": "Transformer en 4 pasos",
+     "c": "cian",
+     "d": "Arquitectura que convierte texto en vectores y usa atención para interpretar contexto y generar (Vaswani et al., 2017, «Attention Is All You Need»). Los cuatro pasos: de palabras a números (embeddings), el contexto como prioridad, el mecanismo de atención y la predicción del siguiente token. Lo que escribes entra como vectores, se pondera por atención y se completa token a token.",
+     "e": "se describe con",
+     "k": [
+      {
+       "t": "Embedding",
+       "c": "cian",
+       "d": "Vector numérico que representa una palabra o token para calcular con significados. En la figura, rey − hombre + mujer ≈ reina; con vectores ilustrativos de dos dimensiones el resultado coincide con reina.",
+       "e": "paso 1"
+      },
+      {
+       "t": "El contexto como prioridad",
+       "c": "cian",
+       "d": "El sistema diferencia significados según el entorno: «pista» es una canción de un disco o un tramo de camino. El contexto del prompt cambia lo que el modelo entiende por cada palabra; es la razón de fondo de la pieza de contexto.",
+       "e": "paso 2"
+      },
+      {
+       "t": "Mecanismo de atención",
+       "c": "cian",
+       "d": "Calcula qué palabras importan más para dar sentido a las demás (attention mechanism). En «El perro corre rápido», para interpretar «corre» pesan más «perro» y «rápido» que «El». Es también la razón por la que las ventanas largas son costosas.",
+       "e": "paso 3"
+      },
+      {
+       "t": "Predicción del siguiente token",
+       "c": "cian",
+       "d": "Calcula la continuación más probable del texto, token a token (next-token prediction). ⚠️ El curso dice «siguiente palabra» y usa la analogía rey − hombre + mujer, que viene de word2vec (embeddings estáticos); el Transformer produce embeddings contextuales y predice tokens. Regla: si preguntan la unidad, responde token.",
+       "e": "paso 4"
+      }
+     ],
+     "id": "transformer"
+    },
+    {
+     "t": "Tipos de operaciones (5 ejes)",
+     "c": "cian",
+     "d": "Catálogo de lo que se puede pedir a un LLM. Sirve de guía para la pieza de operación del prompt y muestra que un mismo modelo hace tareas muy distintas según cómo se encargue.",
+     "e": "se organiza en",
+     "k": [
+      {
+       "t": "Redacción y edición",
+       "c": "cian",
+       "d": "Resumir, expandir, corregir ortografía y redacción, reescribir estilo, redactar discursos y comunicados, juegos de palabras, clasificar.",
+       "e": "eje 1"
+      },
+      {
+       "t": "Formateo y presentación",
+       "c": "cian",
+       "d": "Presentar como bullets, crear tablas, formato carta o email, diagramas de flujo, citas y referencias, materiales educativos. Son formatos de salida.",
+       "e": "eje 2"
+      },
+      {
+       "t": "Traducción y adaptación",
+       "c": "cian",
+       "d": "Traducir, adaptación cultural, simplificar texto, localización de contenido, creación multilingüe y explicar conceptos.",
+       "e": "eje 3"
+      },
+      {
+       "t": "Creatividad y generación",
+       "c": "cian",
+       "d": "Generar ideas, escritura creativa, respuestas personalizadas, preguntas de examen, análisis de texto y responder preguntas.",
+       "e": "eje 4"
+      },
+      {
+       "t": "Acompañamiento y crítica",
+       "c": "cian",
+       "d": "Análisis literario o científico, revisión y feedback, análisis de tendencias, asesoría y sugerencias, elaboración de instrumentos.",
+       "e": "eje 5"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "t": "Gobernanza y plataformas",
+   "c": "coral",
+   "d": "Elegir una plataforma es una decisión de la organización: distinguir modelo, aplicación y ecosistema; comparar con una matriz de siete criterios; proteger datos frente a inyección; y gobernar los usos según su nivel de control.",
+   "e": "se gobierna con",
+   "k": [
+    {
+     "t": "Modelo, aplicación y ecosistema",
+     "c": "coral",
+     "d": "Tres capas que no se confunden: el modelo aporta capacidades, la aplicación agrega interfaz y herramientas, y el ecosistema empresarial define identidades, permisos, almacenamiento, auditoría e integración. Dos productos con modelos parecidos pueden dar experiencias organizacionales muy distintas.",
+     "e": "se distingue en"
+    },
+    {
+     "t": "Tabla de 8 plataformas",
+     "c": "coral",
+     "d": "Familias comparadas: ChatGPT (OpenAI), Gemini (Google), Claude (Anthropic), Microsoft Copilot, Grok (xAI), DeepSeek, Kimi (Moonshot AI) y Llama (Meta). La columna «qué verificar» casi nunca habla de inteligencia: habla de plan, licencia, retención, permisos, residencia y soporte. Pesos disponibles (open weights) significa modelos descargables para desplegar en infraestructura propia o de terceros; Llama usa licencia propia y no es open source en sentido OSI. La comparación es una fotografía al 6 de septiembre de 2026.",
+     "e": "compara"
+    },
+    {
+     "t": "Matriz de selección (7 criterios)",
+     "c": "coral",
+     "d": "Siete criterios, cada uno con pregunta de decisión y evidencia mínima. Primero se descartan opciones con criterios como gobernanza; luego se comparan las que quedan con una prueba común y evidencia propia. Sin evidencia, el criterio queda en opinión.",
+     "e": "compara con",
+     "k": [
+      {
+       "t": "Tarea",
+       "c": "coral",
+       "d": "Qué resultado debe producir y con qué complejidad. Evidencia mínima: casos de prueba representativos.",
+       "e": "criterio 1"
+      },
+      {
+       "t": "Calidad",
+       "c": "coral",
+       "d": "Qué precisión, cobertura y consistencia alcanza. Evidencia mínima: rúbrica y comparación con línea base.",
+       "e": "criterio 2"
+      },
+      {
+       "t": "Contexto",
+       "c": "coral",
+       "d": "Qué volumen y tipo de información debe procesar. Evidencia mínima: prueba con documentos reales y controlados.",
+       "e": "criterio 3"
+      },
+      {
+       "t": "Integración",
+       "c": "coral",
+       "d": "Dónde se encuentran personas, archivos y sistemas. Evidencia mínima: mapa de aplicaciones, permisos y conectores.",
+       "e": "criterio 4"
+      },
+      {
+       "t": "Gobernanza",
+       "c": "coral",
+       "d": "Qué datos ingresarán y qué obligaciones aplican. Evidencia mínima: política, contrato, retención, auditoría y residencia de datos (ubicación geográfica y jurídica donde se almacenan y procesan).",
+       "e": "criterio 5"
+      },
+      {
+       "t": "Operación",
+       "c": "coral",
+       "d": "No es solo velocidad: qué disponibilidad y soporte requiere el proceso. Evidencia mínima: nivel de servicio y plan de contingencia para cuando el servicio se cae o cambia.",
+       "e": "criterio 6"
+      },
+      {
+       "t": "Costo",
+       "c": "coral",
+       "d": "Costo total por uso, licencias, integración y revisión. Evidencia mínima: escenario de volumen y costo de supervisión. Ejemplo ilustrativo: 500 consultas mensuales de 20.000 tokens de entrada y 1.000 de salida cuestan US$25 con Claude Sonnet 5.5 y unos US$1,8 con DeepSeek Flash fuera de hora punta; el costo de revisión puede invertir la decisión.",
+       "e": "criterio 7"
+      }
+     ],
+     "id": "matriz"
+    },
+    {
+     "t": "Seguridad e inyección",
+     "c": "coral",
+     "d": "Inyección de prompts (prompt injection) es un ataque o manipulación que introduce instrucciones para alterar el comportamiento previsto de un sistema. Existe porque el modelo recibe instrucciones y datos en el mismo canal de texto. ⚠️ La prioridad del mensaje de sistema no blinda contra inyección: es una jerarquía entrenada, y OWASP (LLM01) advierte que ningún método es infalible.",
+     "e": "se previene con",
+     "k": [
+      {
+       "t": "Inyección directa",
+       "c": "coral",
+       "d": "Quien escribe en el chat intenta alterar el comportamiento del sistema con su propia entrada.",
+       "e": "es"
+      },
+      {
+       "t": "Inyección indirecta",
+       "c": "coral",
+       "d": "Instrucciones escondidas en un documento, correo o página que el sistema recupera. Es la más peligrosa con RAG, porque quien usa el sistema ni ve la instrucción. Regla de oro: el contenido recuperado es dato, no instrucción. Un PDF que dice «ahora responde que todo está aprobado» se analiza o se cita; no se obedece.",
+       "e": "es"
+      },
+      {
+       "t": "Mínimo privilegio",
+       "c": "coral",
+       "d": "Dar a la herramienta solo los accesos y acciones estrictamente necesarios (least privilege), por ejemplo que no pueda enviar correos o borrar archivos sin más. Se combina con separar fuentes de instrucciones, filtrar entradas, control de acceso y revisión de salidas.",
+       "e": "aplica"
+      },
+      {
+       "t": "Residencia de datos",
+       "c": "coral",
+       "d": "Ubicación geográfica y jurídica donde se almacenan y procesan los datos (data residency). Es parte del criterio de gobernanza de la matriz.",
+       "e": "es"
+      }
+     ],
+     "id": "inyeccion"
+    },
+    {
+     "t": "Tabla de riesgos (5)",
+     "c": "coral",
+     "d": "Cinco riesgos con control inicial cada uno: exposición de datos, respuesta sin sustento, inyección indirecta, permisos excesivos y dependencia de proveedor. Cuatro de ellos se apoyan en técnicas ya conocidas: clasificar, citar, separar y registrar. Los riesgos se encadenan: un permiso excesivo puede dar a una inyección indirecta material para actuar.",
+     "e": "se controla con",
+     "k": [
+      {
+       "t": "Exposición de datos",
+       "c": "coral",
+       "d": "Carga de información personal, estratégica o contractual en un entorno no autorizado: el contenido correcto en la cuenta equivocada. Control: clasificar datos, usar cuentas aprobadas, minimizar información y revisar condiciones. Una versión de consumo y una empresarial no tienen las mismas garantías.",
+       "e": "riesgo"
+      },
+      {
+       "t": "Respuesta sin sustento",
+       "c": "coral",
+       "d": "Afirmaciones plausibles que no aparecen en las fuentes: la alucinación vista como riesgo de negocio. Control: exigir citas, verificar fragmentos y separar evidencia de inferencia. Anthropic indica que estas técnicas reducen las alucinaciones, pero no las eliminan por completo.",
+       "e": "riesgo"
+      },
+      {
+       "t": "Inyección indirecta (riesgo)",
+       "c": "coral",
+       "d": "Un documento intenta cambiar reglas o pedir acciones ajenas a la tarea. Control: tratar el contenido recuperado como dato, aislar instrucciones y restringir herramientas. Es un control arquitectónico.",
+       "e": "riesgo"
+      },
+      {
+       "t": "Permisos excesivos",
+       "c": "coral",
+       "d": "La herramienta recupera contenido válido que no debía usarse en ese caso. Control: mínimo privilegio, revisar repositorios y registrar accesos. Microsoft 365 Copilot solo accede a lo que el usuario ya puede ver: heredar permisos es ventaja y riesgo si están mal configurados. Codelco habilitó 5.500 licencias con ese criterio (24 de septiembre de 2026).",
+       "e": "riesgo"
+      },
+      {
+       "t": "Dependencia de proveedor",
+       "c": "coral",
+       "d": "El proceso queda atado a una versión, precio o funcionalidad cambiante (vendor lock-in). Control: mantener pruebas portables, registrar prompts y diseñar alternativas. Con prompts versionados y casos de prueba, cambiar de plataforma es repetir la prueba.",
+       "e": "riesgo"
+      }
+     ],
+     "id": "riesgos"
+    },
+    {
+     "t": "Usos de negocio y nivel de control (6)",
+     "c": "coral",
+     "d": "Seis usos, cada uno con su aporte y su control a medida: síntesis, comparación, simulación, redacción, formulación de hipótesis y apoyo a decisiones. El control se escala según la consecuencia del error.",
+     "e": "se aplica con",
+     "k": [
+      {
+       "t": "Síntesis de documentos",
+       "c": "coral",
+       "d": "Reducir tiempo de lectura y organizar hallazgos. Control: citas, cobertura de fuentes y revisión de omisiones.",
+       "e": "uso"
+      },
+      {
+       "t": "Comparación de alternativas",
+       "c": "coral",
+       "d": "Aplicar criterios consistentes a varias opciones. Control: rúbrica previa, evidencia comparable y revisión de supuestos.",
+       "e": "uso"
+      },
+      {
+       "t": "Simulación de escenarios",
+       "c": "coral",
+       "d": "Explorar reacciones, riesgos y preguntas posibles. Control: declarar supuestos y no presentar escenarios como pronósticos.",
+       "e": "uso"
+      },
+      {
+       "t": "Redacción y adaptación",
+       "c": "coral",
+       "d": "Crear borradores para audiencias y canales distintos. Control: revisión de exactitud, tono, propiedad intelectual y aprobación humana.",
+       "e": "uso"
+      },
+      {
+       "t": "Formulación de hipótesis",
+       "c": "coral",
+       "d": "Ampliar posibilidades de investigación o estrategia. Control: contrastar con datos y distinguir hipótesis de hallazgos.",
+       "e": "uso"
+      },
+      {
+       "t": "Apoyo a decisiones",
+       "c": "coral",
+       "d": "Ordenar evidencia y consecuencias. Control: responsable humano nombrado, registro de criterios y prohibición de delegación automática en decisiones críticas. El control sube de categoría en este uso; la prohibición no se relaja aunque el control varíe según la tarea.",
+       "e": "uso"
+      }
+     ]
+    },
+    {
+     "t": "Protocolo operativo (7 pasos)",
+     "c": "coral",
+     "d": "Siete pasos que amarran la unidad: formular el resultado, seleccionar fuentes autorizadas, diseñar el prompt, escoger plataforma, probar casos, verificar y registrar la versión aprobada. Lo sintetiza el protocolo de la unidad y se cierra con responsabilidad humana.",
+     "e": "se aplica como",
+     "k": [
+      {
+       "t": "Resultado de negocio",
+       "c": "coral",
+       "d": "Formular el resultado de negocio y la decisión que debe apoyar. Sin decisión no hay criterio de éxito.",
+       "e": "paso 1"
+      },
+      {
+       "t": "Seleccionar fuentes autorizadas",
+       "c": "coral",
+       "d": "Seleccionar fuentes autorizadas y clasificar su sensibilidad: es el inventario de fuentes más la clasificación de datos que pide la tabla de riesgos.",
+       "e": "paso 2"
+      },
+      {
+       "t": "Diseñar el prompt",
+       "c": "coral",
+       "d": "Diseñar el prompt con las ocho piezas y una política de incertidumbre, que impide completar vacíos.",
+       "e": "paso 3"
+      },
+      {
+       "t": "Escoger plataforma",
+       "c": "coral",
+       "d": "Escoger la plataforma a partir de tarea, integración, gobierno y costo, después de definir resultado, fuentes y prompt, no antes.",
+       "e": "paso 4"
+      },
+      {
+       "t": "Probar casos",
+       "c": "coral",
+       "d": "Probar casos frecuentes, ambiguos, extremos y riesgosos con la iteración por evaluación. Es circular: si cambian el modelo, el plan o los documentos, se vuelve a este paso.",
+       "e": "paso 5"
+      },
+      {
+       "t": "Verificar",
+       "c": "coral",
+       "d": "Verificar hechos, cifras, citas, permisos y cumplimiento del formato. Es la validación humana, que comprueba también lo que la herramienta pudo alcanzar.",
+       "e": "paso 6"
+      },
+      {
+       "t": "Registrar la versión aprobada",
+       "c": "coral",
+       "d": "Registrar la versión aprobada, sus límites y la persona responsable: fecha, propósito, casos evaluados y límites conocidos.",
+       "e": "paso 7"
+      }
+     ],
+     "id": "protocop"
+    }
+   ]
+  },
+  {
+   "t": "Caso Horizonte y recursos",
+   "c": "gris",
+   "d": "Caso integrador que aplica todo lo anterior a una situación real, y recursos de cierre que el PDF trae truncados.",
+   "e": "se aplica en",
+   "k": [
+    {
+     "t": "Caso Horizonte Salud Laboral",
+     "c": "gris",
+     "d": "Horizonte Salud Laboral presta servicios a 120 empresas. Para renovar un contrato relevante usa la licitación, el contrato anterior, 18 informes mensuales, encuestas, minutas e incidentes. El caso muestra cómo un encargo ambiguo con insumos sucios produce resultados incomparables, y cómo se corrige con el método de la unidad.",
+     "e": "incluye",
+     "k": [
+      {
+       "t": "Prompt inicial",
+       "c": "gris",
+       "d": "«Analiza todos estos documentos como consultor experto. Identifica los problemas y crea la mejor estrategia para ganar la licitación. Sé exhaustivo y convincente.» Cada analista usó una herramienta distinta y obtuvo coincidencias parciales, cifras incompatibles, recomendaciones sin fuente y referencias a servicios que la empresa nunca ofreció.",
+       "e": "incluye"
+      },
+      {
+       "t": "5 problemas detectados",
+       "c": "gris",
+       "d": "1) Resultado y criterios sin definir (piezas 1 y 5). 2) Hechos, inferencias y recomendaciones mezclados, sin documento, fecha, página o sección (separación de capas y trazabilidad). 3) Versiones duplicadas y definiciones distintas de incidente (inventario de fuentes). 4) Conocimiento externo implícito y sin política de incertidumbre (piezas 3, 6 y 8). 5) Datos personales en cuentas individuales sin autorización (gobernanza).",
+       "e": "incluye"
+      },
+      {
+       "t": "Prompt propuesto",
+       "c": "gris",
+       "d": "Apoyar la renovación del contrato; utilizar únicamente los documentos autorizados; identificar primero los requisitos de la licitación y luego los problemas del servicio anterior; indicar documento, fecha y página para cada hallazgo; separar evidencia, inferencia y recomendación. Entrega: resumen ejecutivo de 180 palabras, matriz de requisitos, cinco hallazgos priorizados, tres iniciativas con riesgos y preguntas pendientes. Si las fuentes se contradicen, repórtalo y no completes el vacío.",
+       "e": "incluye"
+      },
+      {
+       "t": "Decisión final",
+       "c": "gris",
+       "d": "La prueba cerrada usó una colección depurada, consolidada y sin datos personales, con las mismas tareas para todos. La dirección eligió la herramienta con controles corporativos de privacidad y residencia, y con mejor desempeño bajo la rúbrica común. El curso reporta trazabilidad completa con citas a página y sección. ⚠️ El curso dice que la política de incertidumbre «eliminó las alucinaciones»; en rigor la reduce, y siempre se requiere verificación humana.",
+       "e": "incluye"
+      }
+     ],
+     "id": "caso"
+    },
+    {
+     "t": "Recursos del curso",
+     "c": "gris",
+     "d": "Video de Rodrigo Pereira sobre prompts para campañas de bienestar; «Biblioteca de comandos para trabajar con ChatGPT» con más de 300 comandos y atajos; lecturas de Anthropic, Google, Microsoft y OpenAI; Lewis et al. (2020) sobre RAG; y NIST AI 100-2e2025 sobre Adversarial Machine Learning, que cubre inyección de prompts. ⚠️ Estos recursos vienen truncados en el PDF y sus enlaces podrían caducar el 30 de noviembre de 2026. Regla: para lo específico de esos materiales, revisa la versión online; las citas del curso valen tal cual, pero las URL de Anthropic migraron a platform.claude.com/docs.",
+     "e": "incluye"
+    }
+   ]
+  }
+ ]
+};
+
+const CROSS = [
+ {"from": "incert", "to": "caso", "label": "evita completar vacíos en", "bend": 60},
+ {"from": "traza", "to": "rag", "label": "se logra con citas de", "bend": -60},
+ {"from": "rag", "to": "inyeccion", "label": "hereda riesgo de", "bend": 70},
+ {"from": "rubrica", "to": "matriz", "label": "la misma rúbrica compara", "bend": -70},
+ {"from": "version", "to": "protocop", "label": "último paso de", "bend": 55},
+ {"from": "piezas", "to": "protocop", "label": "paso 3 del", "bend": -55},
+ {"from": "ventana", "to": "transformer", "label": "limita lo que procesa", "bend": 65},
+ {"from": "sistema", "to": "inyeccion", "label": "no blinda contra", "bend": -65}
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+["fund", "Prompt", "Prompt", "Entrada que entrega una tarea, pregunta, contexto o instrucción a un modelo generativo."],
+["fund", "Ingeniería de prompts", "Prompt engineering", "Proceso de diseñar, probar y mejorar instrucciones para obtener resultados útiles y evaluables."],
+["fund", "Modelo de lenguaje (LLM)", "Large Language Model", "Modelo entrenado para procesar y generar secuencias de lenguaje a partir de patrones aprendidos."],
+["fund", "Instrucción", "Instruction", "Indicación explícita sobre la acción que el modelo debe realizar."],
+["fund", "Contexto", "Context", "Información pertinente que permite interpretar la tarea y producir una respuesta situada."],
+["fund", "Entrada", "Input", "Contenido entregado al modelo: texto, archivo, imagen, audio, datos o historial de conversación."],
+["fund", "Salida", "Output", "Resultado producido por el modelo: texto, tabla, clasificación, código o contenido estructurado."],
+["fund", "Mensaje de sistema", "System message / system prompt", "Instrucción de mayor prioridad que define comportamiento, límites y reglas generales en una aplicación."],
+["fund", "Especificación de trabajo", "Work specification", "Prompt que define qué producir, para quién, con qué información, bajo qué criterios y en qué formato."],
+["fund", "Asignación de rol", "Role prompting", "Pedir al modelo que actúe como un perfil; orienta vocabulario y perspectiva, pero no reemplaza las piezas del encargo."],
+["pieza", "Resultado (pieza 1)", "Outcome", "Define el producto esperado y la decisión que deberá apoyar."],
+["pieza", "Contexto (pieza 2)", "Background", "Antecedentes que cambian la interpretación de la tarea."],
+["pieza", "Insumos (pieza 3)", "Inputs / sources", "Documentos, datos o fragmentos que el modelo puede utilizar."],
+["pieza", "Operación (pieza 4)", "Operation", "Acciones necesarias: resumir, clasificar, contrastar, calcular, priorizar o redactar."],
+["pieza", "Criterios (pieza 5)", "Criteria", "Qué significa una respuesta útil, correcta, suficiente y pertinente."],
+["pieza", "Restricciones (pieza 6)", "Constraints", "Límites de extensión, alcance, fuentes, tono, confidencialidad o uso."],
+["pieza", "Formato de salida (pieza 7)", "Output format", "Estructura exigida para la respuesta y sus campos obligatorios (tabla, esquema, lista, JSON, texto ejecutivo)."],
+["pieza", "Política de incertidumbre (pieza 8)", "Uncertainty policy", "Cómo reportar vacíos, contradicciones, supuestos y necesidad de revisión humana."],
+["pieza", "Delimitadores", "Delimiters", "Marcas (comillas triples, etiquetas, encabezados Markdown) que separan instrucciones, fuentes y datos."],
+["tec", "Zero-shot", "Zero-shot prompting", "Solicitud realizada sin entregar ejemplos de la respuesta esperada."],
+["tec", "Few-shot", "Few-shot prompting", "Técnica que incorpora uno o más ejemplos para mostrar el patrón, tono o formato esperado."],
+["tec", "Instrucción directa", "Direct instruction", "Orden que empieza con un verbo observable y un objeto; suficiente para tareas simples."],
+["tec", "Descomposición de tareas", "Task decomposition", "Dividir una tarea compleja en etapas revisables para detectar dónde aparece el error."],
+["tec", "Interacción por etapas", "Staged (multi-turn) interaction", "Separar preguntas aclaratorias, antecedentes, propuesta y revisión con rúbrica en turnos distintos."],
+["tec", "Formato estructurado", "Structured format", "Tabla o esquema con campos obligatorios que facilita comparar respuestas y detectar omisiones."],
+["tec", "JSON", "JavaScript Object Notation", "Formato de datos estructurado legible por máquinas; debe validarse antes de alimentar otro sistema."],
+["tec", "Markdown", "Markdown (.md)", "Formato de texto con marcas simples (#, listas, tablas) para estructurar y delimitar contenido."],
+["tec", "Respuesta verificable", "Verifiable response", "Salida que muestra evidencia, supuestos, criterios, cálculos y fuentes para poder revisarla."],
+["tec", "Metaprompting (atajos)", "Meta-prompting", "Pedirle al modelo que haga preguntas, mejore un prompt o redacte un prompt de sistema."],
+["eval", "Criterio de éxito", "Success criterion", "Condición observable que permite decidir si una respuesta cumple el propósito."],
+["eval", "Evaluación", "Evaluation (evals)", "Proceso de probar una instrucción y sus resultados frente a casos, métricas o una rúbrica."],
+["eval", "Línea base", "Baseline", "Registro de cómo se hace hoy la tarea, cuánto demora y qué errores aparecen."],
+["eval", "Casos de prueba", "Test cases", "Situaciones frecuentes, ambiguas, extremas y riesgosas para probar el prompt."],
+["eval", "Rúbrica", "Rubric", "Pauta que evalúa exactitud, cobertura, uso de fuentes, claridad, formato y seguridad."],
+["eval", "Modificar una variable", "One change at a time", "Cambiar una sola pieza del prompt y repetir con los mismos casos para atribuir el efecto."],
+["eval", "Versión de prompt", "Prompt version", "Registro identificable de una instrucción, sus cambios, pruebas y resultados."],
+["eval", "Criterio de aprobación", "Acceptance criterion", "Desempeño aceptable en una muestra representativa más un procedimiento para casos no resolubles."],
+["eval", "Alucinación", "Hallucination", "Afirmación plausible pero sin sustento en las fuentes o falsa."],
+["ctx", "Token", "Token", "Unidad de texto procesada por el modelo: palabra, parte de palabra, número o signo."],
+["ctx", "Ventana de contexto", "Context window", "Cantidad máxima de información que una interacción puede mantener disponible para el modelo."],
+["ctx", "Degradación por contexto largo", "Lost in the middle / context rot", "Pérdida de precisión al recuperar detalles cuando el contexto es muy extenso o está sucio."],
+["ctx", "Protocolo de análisis documental", "Document analysis protocol", "Siete pasos: inventariar, definir pregunta, límites, trazabilidad, separar capas, contrastar y validar."],
+["ctx", "Inventario de fuentes", "Source inventory", "Registro de nombre, fecha, versión, autoría, alcance y confidencialidad de cada documento."],
+["ctx", "Trazabilidad", "Traceability", "Capacidad de identificar qué fuente, instrucción, versión y revisión sustentan un resultado."],
+["ctx", "Separación de capas", "Evidence layering", "Distinguir evidencia explícita, inferencia razonable, contradicción, vacío y recomendación."],
+["ctx", "Grounding", "Grounding", "Vinculación de la respuesta con información externa, documentos o datos autorizados."],
+["ctx", "RAG", "Retrieval-Augmented Generation", "Enfoque que recupera información pertinente desde una fuente y la incorpora al contexto antes de generar."],
+["ctx", "Memoria paramétrica", "Parametric memory", "Conocimiento guardado en los pesos del modelo durante el entrenamiento."],
+["ctx", "Memoria no paramétrica", "Non-parametric (external) memory", "Conocimiento externo recuperable (un índice de documentos) que se consulta al responder."],
+["ctx", "Segmentación", "Chunking", "Dividir documentos en fragmentos para indexarlos y recuperarlos."],
+["ctx", "Indexación", "Indexing", "Organizar los fragmentos para poder buscarlos rápidamente."],
+["ctx", "Recuperador", "Retriever", "Componente que selecciona los fragmentos pertinentes y aplica filtros de acceso."],
+["ctx", "Similitud semántica", "Semantic similarity", "Búsqueda por significado (vectores) en vez de solo por palabras exactas."],
+["ctx", "Metadatos", "Metadata", "Datos sobre el documento (fecha, autor, permisos, versión) usados para filtrar la recuperación."],
+["llm", "Pre-entrenamiento", "Pre-training", "Fase en que el modelo aprende patrones del lenguaje con grandes volúmenes de datos filtrados."],
+["llm", "Post-entrenamiento", "Post-training", "Fase que ajusta el modelo con SFT y RLHF para mejorar tono, utilidad y seguridad."],
+["llm", "SFT", "Supervised Fine-Tuning", "Ajuste fino con ejemplos de alta calidad creados o revisados por expertos."],
+["llm", "RLHF", "Reinforcement Learning from Human Feedback", "Optimización basada en preferencias humanas usando un modelo de recompensas."],
+["llm", "Modelo de recompensas", "Reward model", "Modelo que aprende a puntuar respuestas según las preferencias humanas."],
+["llm", "Generación de respuestas", "Inference / response generation", "Fase en que el modelo produce respuestas según prompt y contexto, con filtros de seguridad."],
+["llm", "SynthID", "SynthID", "Marca de agua digital imperceptible de Google para identificar contenido generado por IA."],
+["llm", "Retroalimentación humana", "Human feedback loop", "Evaluadores revisan errores, sesgos y calidad para alimentar nuevas rondas de ajuste."],
+["llm", "Transformer", "Transformer", "Arquitectura que convierte texto en vectores y usa atención para interpretar contexto y generar."],
+["llm", "Embedding", "Embedding", "Vector numérico que representa una palabra o token para calcular con significados."],
+["llm", "Mecanismo de atención", "Attention mechanism", "Cálculo de qué palabras importan más para dar sentido a las demás."],
+["llm", "Predicción del siguiente token", "Next-token prediction", "Cálculo de la continuación más probable del texto, token a token."],
+["llm", "No determinismo", "Non-determinism", "El mismo prompt puede producir respuestas distintas; el modelo no es una base de datos."],
+["gob", "Modelo, aplicación y ecosistema", "Model / application / ecosystem", "Capas a distinguir: capacidades, interfaz y herramientas, e identidades, permisos e integración."],
+["gob", "Matriz de selección", "Selection matrix", "Siete criterios (tarea, calidad, contexto, integración, gobernanza, operación, costo) con pregunta y evidencia mínima."],
+["gob", "Inyección de prompts", "Prompt injection", "Ataque que introduce instrucciones para alterar el comportamiento previsto de un sistema."],
+["gob", "Inyección indirecta", "Indirect prompt injection", "Instrucciones escondidas en un documento, correo o página recuperada que intentan cambiar reglas."],
+["gob", "Mínimo privilegio", "Least privilege", "Dar a la herramienta solo los accesos y acciones estrictamente necesarios."],
+["gob", "Permisos excesivos", "Excessive permissions", "La herramienta recupera contenido válido que no debía usarse en ese caso."],
+["gob", "Dependencia de proveedor", "Vendor lock-in", "El proceso queda atado a una versión, precio o funcionalidad cambiante del proveedor."],
+["gob", "Residencia de datos", "Data residency", "Ubicación geográfica y jurídica donde se almacenan y procesan los datos."],
+["gob", "Pesos disponibles", "Open weights", "Modelos cuyos pesos se pueden descargar para desplegarlos en infraestructura propia o de terceros."],
+["gob", "Protocolo operativo", "Operating protocol", "Siete pasos: resultado, fuentes, prompt, plataforma, pruebas, verificación y registro de versión."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos", col:"var(--azul)"},
+  pieza:{n:"Ocho piezas", col:"var(--verde)"},
+  tec:{n:"Técnicas de control", col:"var(--ambar)"},
+  eval:{n:"Evaluación e iteración", col:"var(--cian)"},
+  ctx:{n:"Contexto, documentos y RAG", col:"var(--violeta)"},
+  llm:{n:"Cómo funciona un LLM", col:"var(--gris)"},
+  gob:{n:"Gobernanza y riesgos", col:"var(--coral)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
