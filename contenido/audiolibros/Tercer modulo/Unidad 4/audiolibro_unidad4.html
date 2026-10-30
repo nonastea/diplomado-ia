@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ecosistemas de IA y asistentes personalizados</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 4 &middot; voz del dispositivo</p>
+    <h1>Ecosistemas de IA y asistentes personalizados</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "En este rato vas a entender cómo convertir una tarea que repites cada semana en una solución de inteligencia artificial consistente, medible y segura. Y lo mejor: ya lo haces en ventas sin darte cuenta, cada vez que armas un buen guion de retención.", "c": false}, {"t": "La idea central cabe en una frase: automatizar bien no es dejar que la I.A. haga todo. Es decidir qué se repite, qué información entra, qué se delega y quién responde por el resultado. Esa última parte no se negocia nunca.", "c": false}, {"t": "La unidad responde tres preguntas. Para qué estamos aquí: para que una tarea repetida se vuelva reutilizable, medible y segura, sin que una persona deje de responder por ella. Qué haremos: distinguir asistentes, espacios documentales, miniaplicaciones y automatizaciones, y configurar una Gem, que es un asistente propio. Y para qué te servirá: para pasar de pedidos sueltos a soluciones probadas, y para demostrar con números si una herramienta de verdad te ahorra tiempo.", "c": false}, {"t": "Capítulo 1. El vocabulario que hay que dominar", "c": true}, {"t": "Veinte palabras clave, agrupadas por afinidad. Empecemos por asistente, agente y automatización. Un asistente personalizado es un modelo de inteligencia artificial configurado una sola vez, con sus instrucciones, fuentes y comportamiento para una tarea, y que luego reutilizas. Es como un ejecutivo al que ya le entregaste el manual.", "c": false}, {"t": "Un agente va un paso más allá: es un sistema que puede planificar o ejecutar acciones con herramientas, dentro de un alcance y unos permisos definidos. La diferencia clave: el asistente conversa, y el agente además actúa. La automatización es ejecutar una tarea total o parcialmente con reglas, software o modelos, con la intervención humana que tú defines. Casi nunca es todo o nada.", "c": false}, {"t": "Una tarea recurrente es una actividad que se repite con un propósito y una estructura estables. Es la materia prima de cualquier automatización: si cambia cada vez, no hay nada que automatizar. Por ejemplo, preparar la ficha de una llamada a un afiliado que consultó por un traspaso. Un agente podría además agendar la llamada, pero solo si le diste ese permiso.", "c": false}, {"t": "Un flujo de trabajo es la secuencia de actividades, decisiones y traspasos que transforma entradas en un resultado. Tiene un disparador, el evento que lo inicia; recibe entradas, la información que ingresa a un paso; aplica transformaciones, que modifican, clasifican, resumen, generan, combinan o validan datos; y entrega una salida, como una alerta, un borrador o una ficha. La orquestación es coordinar todo eso, como el director de una orquesta.", "c": false}, {"t": "Cuando algo sale del camino normal aparecen tres conceptos. Una excepción es una situación que no se puede resolver de forma segura por el recorrido normal, porque faltan datos, hay una contradicción o el caso es raro. La puerta humana es el punto donde una persona revisa, corrige, aprueba, rechaza o escala antes de que el flujo siga. Y el registro operativo es la bitácora de cada ejecución: versión, entradas, salida, fecha, responsable, aprobación y fallas.", "c": false}, {"t": "Sobre las fuentes: una fuente de conocimiento es un documento o repositorio autorizado que sustenta las respuestas. El grounding, o anclaje, es vincular una respuesta con información identificable y autorizada, o sea, que responda con tus papeles delante. La instrucción de sistema es el reglamento interno del asistente: propósito, alcance, método, límites y formato, válidos en cada conversación.", "c": false}, {"t": "Una Gem clásica es una versión personalizada de Gemini, el asistente de Google, para conversaciones repetibles, con instrucciones y conocimiento que aportas tú. Una miniaplicación es una interfaz ligera que empaqueta un flujo para que otras personas lo ejecuten con entradas definidas. Un prototipo es una versión acotada para comprobar utilidad, riesgos y factibilidad antes de invertir más.", "c": false}, {"t": "Y el mínimo privilegio: darle a cada persona o herramienta solo los accesos estrictamente necesarios, como entregar la llave de una oficina y no la del edificio. Todo cabe en una línea: un flujo tiene disparador, entradas, transformaciones y salidas; las excepciones se resuelven con una puerta humana; y todo queda registrado.", "c": false}, {"t": "Capítulo 2. Cinco niveles y el arte de elegir", "c": true}, {"t": "El primer módulo parte con una frase para memorizar: un prompt resuelve una interacción, un asistente conserva instrucciones para usos similares, y un flujo organiza varias operaciones alrededor de una tarea. La repetición se resuelve por niveles, y cada uno exige más prueba, permisos, monitoreo y recuperación ante fallas.", "c": false}, {"t": "Uno: el prompt reutilizable, una plantilla con versión aprobada y pauta de revisión. Dos: el asistente personalizado, que conserva propósito, método, límites y conocimiento, con casos de prueba y un responsable. Tres: el espacio sustentado en fuentes, que analiza una colección documental con citas, inventario y permisos.", "c": false}, {"t": "Cuatro: la miniaplicación, que entrega una interfaz y encadena operaciones, con manejo de errores. Cinco: el flujo organizacional, que actúa frente a eventos y conecta aplicaciones o personas, con aprobaciones, registro y contingencia.", "c": false}, {"t": "Con la misma tarea, responder a un afiliado que pide información: en el nivel uno copias un texto guardado; en el dos, un asistente conoce tu tono; en el tres, un cuaderno con el reglamento responde citando cada dato; en el cuatro, un formulario entrega la respuesta lista; y en el cinco, el sistema clasifica el correo, prepara el borrador y avisa a un supervisor. Cada escalón es más potente y más difícil de controlar.", "c": false}, {"t": "La regla del curso: usa el nivel más simple que entregue el resultado requerido. Subir de nivel antes de estabilizar la tarea amplifica errores, accesos innecesarios y costos de supervisión. No armes un sistema de once pasos para algo que resuelve una plantilla bien hecha.", "c": false}, {"t": "Para elegir qué automatizar, una buena candidata se repite, consume tiempo, usa entradas identificables y produce una salida evaluable. La variabilidad no impide usar I.A., pero obliga a definir excepciones. Y el impacto del error determina cuánto puede avanzar el flujo sin aprobación humana. El curso propone siete criterios: frecuencia, estabilidad, entradas, evaluabilidad, reversibilidad, juicio y datos.", "c": false}, {"t": "Frecuencia: cuántas veces se hace. Estabilidad: si la salida cambia poco. Entradas: si la información existe y puede autorizarse.", "c": false}, {"t": "Evaluabilidad: si se distingue una salida buena de una mala. Reversibilidad: si un error se corrige antes de causar daño. Juicio: qué decisiones requieren contexto o responsabilidad profesional. Y datos: qué sensibilidad y permisos involucra.", "c": false}, {"t": "Con esos criterios se arma un semáforo inicial según el daño que puede causar un error. Verde: clasificar consultas, resumir documentos aprobados o preparar borradores; se automatiza por etapas. Amarillo: priorizar casos, interpretar evidencia ambigua o tratar información sensible; hay puerta humana y permisos limitados. Rojo: enviar comunicaciones críticas, aprobar pagos o ejecutar acciones irreversibles; queda fuera del piloto autónomo.", "c": false}, {"t": "Un borrador de mensaje para un afiliado es verde, porque tú lo lees antes de enviarlo. Priorizar a quién llamar es amarillo, porque la I.A. propone y tú decides.", "c": false}, {"t": "Enviar automáticamente una comunicación crítica es rojo. Cuanto más caro sea el error, más cerca debe estar una persona.", "c": false}, {"t": "Capítulo 3. Por dentro del flujo y de la Gem", "c": true}, {"t": "Un flujo es un contrato operativo: cada paso declara qué recibe, qué hace, qué entrega y qué ocurre si falta información. Así se separa lo que razona el modelo, que es probabilístico, de las reglas que deben cumplirse siempre. Un flujo tiene nueve etapas.", "c": false}, {"t": "Disparador, que define el evento de inicio. Entrada, con los campos y documentos necesarios. Preparación, que limpia, anonimiza o clasifica antes de dársela al modelo.", "c": false}, {"t": "Instrucción, con propósito, criterios, fuentes, límites y salida esperada. Transformación, que resume, extrae, clasifica, redacta o compara. Decisión, que continúa, repite, pide antecedentes o escala.", "c": false}, {"t": "Puerta humana, la revisión antes de una acción sensible. Acción y salida, que guarda, notifica o entrega lo aprobado. Y registro y monitoreo.", "c": false}, {"t": "", "c": false}, {"t": "Hay dos tipos de pasos. Un paso determinístico tiene regla fija y siempre da el mismo resultado, como validar un campo o comprobar una fecha. Es como el timbre de una caja registradora.", "c": false}, {"t": "Un paso probabilístico es una operación del modelo que puede variar, como resumir una minuta o proponer una respuesta. Es como la opinión de un colega.", "c": false}, {"t": "La regla de operación: si algo debe cumplirse siempre, no dependas de que el modelo lo recuerde. Pedirle que recuerde no responder si el afiliado no está validado es frágil. Un flujo que no deja avanzar si el campo afiliado validado está vacío sí lo garantiza.", "c": false}, {"t": "Eso es una validación, un permiso, una lista autorizada o una aprobación separada. Lo que debe cumplirse siempre se resuelve con reglas fijas.", "c": false}, {"t": "Ahora, el segundo módulo: diseñar una Gem básica. Google define las Gems como versiones personalizadas de Gemini que reutilizan instrucciones para necesidades específicas. Una Gem clásica es una conversación repetible con un experto configurado, que puede usar archivos o contenido de Drive como conocimiento, según los permisos disponibles. Su calidad depende de la especificación, de los documentos y de la evaluación posterior.", "c": false}, {"t": "Son útiles por tres razones: guardan lo que más repites, reflejan tus archivos y tu estilo, y tienen una ventana de contexto grande. La ventana de contexto es lo que el modelo tiene a la vista a la vez, como la superficie de tu escritorio.", "c": false}, {"t": "El curso destaca que Gemini en su versión Pro tiene una ventana de un millón de tokens, que equivale a unas mil quinientas páginas de texto o treinta mil líneas de código. Memoriza esas tres cifras. Ojo con una nota de honestidad: el curso dice que analiza más que cualquier otro chatbot. Las cifras sí están confirmadas por Google, pero esa comparación es publicidad y depende de la fecha.", "c": false}, {"t": "Antes de escribir instrucciones hay que elegir el tipo de agente, porque cada uno pide un prompt distinto. El analítico analiza datos y sintetiza, con reglas estrictas y formatos estructurados. El creativo genera ideas, campañas o textos, con un prompt flexible y límites de tono.", "c": false}, {"t": "El operador de flujos transforma y resume en etapas claras con salidas estándar. Y el tutor explica conceptos, ajusta la complejidad y verifica la comprensión.", "c": false}, {"t": "Capítulo 4. Cómo se arma y se prueba una Gem", "c": true}, {"t": "Una Gem se arma con seis componentes. Imagina que contratas a alguien nuevo. El prompt maestro es la descripción de cargo: rol, objetivos y restricciones.", "c": false}, {"t": "Los archivos de referencia son su carpeta de trabajo. Las instrucciones de comportamiento son el manual de atención, con tono y reglas de interacción.", "c": false}, {"t": "Las herramientas asociadas son sus llaves de acceso, como APIs, búsqueda web u hojas de cálculo. La persistencia del estado es su memoria a lo largo de varias interacciones. Y los parámetros, como la temperatura y el grounding, son las perillas de ajuste fino.", "c": false}, {"t": "Ojo: el curso incluye herramientas, persistencia y parámetros, pero la documentación de Google describe como base de una Gem clásica las instrucciones y los archivos de conocimiento. Para el examen, responde con la lista del curso; en la práctica, cuenta con instrucciones y conocimiento.", "c": false}, {"t": "Crear una Gem tiene seis pasos: crear la Gem nueva, definir nombre y objetivo, insertar el prompt maestro, añadir documentos base, configurar herramientas si corresponde, y testear de forma iterativa, probando, ajustando y repitiendo.", "c": false}, {"t": "Cuatro buenas prácticas. Escribir como contrato operacional, con obligaciones y límites precisos. Aprovechar plantillas probadas y refinar según resultados.", "c": false}, {"t": "Dar instrucciones explícitas y de pensamiento, guiando cómo razonar y cómo interactuar, no solo qué hacer. Y un protocolo de confirmación de seguridad, que obliga al agente a pedir validación explícita antes de cualquier acción crítica.", "c": false}, {"t": "Para ordenar las instrucciones, el curso sugiere una plantilla en Markdown, un formato de texto con títulos simples, de diez encabezados: propósito, alcance, entradas requeridas, fuentes autorizadas, método, criterios de calidad, formato de salida, incertidumbre y excepciones, seguridad, y preguntas iniciales.", "c": false}, {"t": "Un ejemplo: una Gem de preparación de llamadas de retención. Su propósito es preparar cinco puntos de conversación. Su alcance excluye la asesoría de inversión.", "c": false}, {"t": "Sus fuentes son tu guion vigente y la ficha que pegas. Ante la incertidumbre responde dato no disponible, sin inventar. Y su última línea de contrato es: antes de proponer cualquier acción hacia un afiliado, pide mi confirmación.", "c": false}, {"t": "Antes de compartir una Gem, pasa la prueba mínima con cinco escenarios. Uno: el caso frecuente, con todos los datos, que debe responder preciso y en formato. Dos: el caso incompleto, donde no debe inventar sino pedir lo que falta. Tres: el caso contradictorio, con dos fuentes que dicen cosas distintas, que debe señalar o priorizar según sus reglas.", "c": false}, {"t": "Cuatro: el caso sensible, con una instrucción ajena al propósito. Aquí se prueba la inyección de prompts, en inglés prompt injection, un texto que intenta hacer saltar las reglas del asistente. Debe proteger datos confidenciales y negarse. Cinco: el caso extremo, de alto riesgo o fuera de su área, donde debe reconocer sus límites y derivar a un responsable humano, lo que se llama escalamiento.", "c": false}, {"t": "Dos términos más. Una alucinación es una respuesta que suena razonable pero que el modelo inventó o supuso sin respaldo. El escalamiento es derivar los casos graves a una persona responsable.", "c": false}, {"t": "Tu Gem de retención se prueba con una ficha completa, una ficha sin el motivo de la consulta, dos documentos que contradicen un plazo, un texto que dice ignora tus reglas, y un reclamo grave. Si falla en una, no se comparte todavía.", "c": false}, {"t": "La clave, según el curso, es combinar una estructura rigurosa con una validación exhaustiva de límites. Una Gem se prueba cuando le falta información, cuando la contradicen, cuando la engañan y cuando el caso es grave, no cuando todo sale perfecto.", "c": false}, {"t": "Capítulo 5. Fuentes, evidencia y las herramientas de Google", "c": true}, {"t": "Este módulo combina Consensus para evidencia académica, NotebookLM para analizar fuentes con citas, y las Gems para el trabajo. NotebookLM, que el curso también llama Gemini Notebook, es un asistente de investigación donde cargas documentos, sitios, videos, audios y archivos de Workspace. Responde solo desde las fuentes que seleccionas y entrega citas en línea que te llevan al fragmento exacto.", "c": false}, {"t": "Una nota de nombres: una fuente secundaria ubica el cambio de marca en julio de 2026. Es el mismo producto; si preguntan por el nombre actual, responde Gemini Notebook, antes NotebookLM. Sus cuatro funciones clave son estas.", "c": false}, {"t": "El anclaje en fuentes, o source grounding, que solo responde con tus documentos. Las citas interactivas, que te llevan al párrafo original para comprobarlo. Los Deep Dives, resúmenes en formato podcast con dos voces. Y los resúmenes automáticos, con glosarios y guías de estudio.", "c": false}, {"t": "Ojo: el curso afirma que el anclaje elimina alucinaciones, pero también pide verificar citas y mantener revisión humana. El marco de riesgos N I S T, que el curso usa como referencia, trata el error como un riesgo inherente a generar texto. El anclaje lo reduce y lo hace verificable, pero no lo elimina.", "c": false}, {"t": "Si preguntan qué hace, responde: ancla, reduce y hace verificable. Cero errores garantizados es falso.", "c": false}, {"t": "Cuatro ventajas. Privacidad: tus datos no entrenan los modelos públicos de Google. Capacidad multimodal: conecta hasta cincuenta fuentes por cuaderno; el límite es del curso y puede variar según el plan.", "c": false}, {"t": "Pensamiento conectivo: detecta patrones o contradicciones entre archivos que no parecen relacionados. Y una interfaz centrada en notas, para armar tu propio borrador.", "c": false}, {"t": "Cuatro usos prácticos: gestión de proyectos, educación, análisis legal y técnico de contratos y manuales, y preparación de reuniones con resúmenes de acuerdos y pendientes. La sección Studio convierte tus fuentes en nueve salidas: resumen en audio, resumen en video, mapa mental, informe, tarjetas didácticas, cuestionario, infografía, presentación y tabla de datos.", "c": false}, {"t": "Hay que cuidar las fuentes. Los archivos de Drive pueden sincronizarse solos, pero tú debes mantener un inventario: propietario, fecha, vigencia y confidencialidad de cada documento. Revisa vigencias, permisos y citas. En cuentas de trabajo, el acceso depende de la institución.", "c": false}, {"t": "Consensus busca literatura científica y sintetiza resultados con referencias a los trabajos. Su aporte es localizar y organizar evidencia. La revisión sigue siendo tuya: pertinencia, diseño del estudio, población, fecha, acceso al texto completo, y que lo afirmado corresponda a la fuente.", "c": false}, {"t": "Para combinarlos: formula la búsqueda en Consensus, revisa y conserva las referencias permitidas, incorpora al notebook solo fuentes verificadas, usa NotebookLM para sintetizar y citar, y transfiere la síntesis revisada a la Gem o al flujo. Esto es un traspaso que hace una persona, no una conexión nativa entre las herramientas. Quien decide qué evidencia pasa de una capa a otra eres tú. Nada se traspasa solo.", "c": false}, {"t": "Capítulo 6. Dónde corre cada cosa y cómo se gobierna", "c": true}, {"t": "Las herramientas cumplen funciones distintas, y su disponibilidad depende de la cuenta, la región, el idioma y la licencia. El curso da una fotografía al seis de septiembre de 2026, así que se responde por función y por qué verificar, no por disponibilidad fija.", "c": false}, {"t": "Gem clásica: conversación reutilizable, a verificar permisos y modelo. Gemini en Workspace: apoyo dentro de Gmail, Docs, Sheets, Slides, Drive y Chat. NotebookLM: análisis con citas, a verificar sincronización y cobertura.", "c": false}, {"t": "Consensus: literatura científica, a verificar diseño y pertinencia. Pomelli: activos de marketing con identidad de marca, a verificar idioma, derechos y aprobación.", "c": false}, {"t": "Opal, o Gems from Google Labs: miniaplicaciones que encadenan texto, imagen y video, experimentales, a verificar cuenta y privacidad. Y Workspace Studio: agentes y automatizaciones conectados a Workspace y activados por eventos, a verificar licencia, permisos y registro. Pomelli funciona hoy en inglés aunque aparece en Chile, y Opal puede cometer errores, así que hay que probar todo el recorrido.", "c": false}, {"t": "Es como el catálogo de productos de la A F P: cada uno sirve para algo y no aplica a todos los perfiles. Para combinar herramientas sin inventar conexiones, la arquitectura debe explicar qué objeto se traspasa, quién lo revisa y dónde queda la versión oficial. Cinco patrones: handoff humano, que es una persona que lleva el producto al siguiente entorno; archivo aprobado; repositorio común con permisos y vigencia; conector administrado y aprobado; y exportación estructurada con campos definidos.", "c": false}, {"t": "La pregunta obligatoria: qué información cruza de una herramienta a otra, con qué autorización, y quién responde si el traspaso sale incompleto, desactualizado o equivocado.", "c": false}, {"t": "Para no hacerse daño, el curso usa el marco N I S T, el organismo de estándares de Estados Unidos, con cuatro funciones: gobernar, mapear, medir y gestionar. Para un flujo, significa asignar responsabilidades, entender el contexto, probar, tratar riesgos y seguir monitoreando.", "c": false}, {"t": "Seis riesgos y su control. Datos inapropiados: información que no se necesita; se controla con minimización, es decir, reducir, anonimizar o excluir antes de procesar. Inyección indirecta: instrucciones escondidas en un correo o archivo; se trata todo lo leído como dato, nunca como orden. Acción excesiva: enviar o borrar sin autorización; se controla con mínimo privilegio, puertas humanas y acciones reversibles.", "c": false}, {"t": "Fuente obsoleta: un documento vencido, como una circular derogada; se controla con propietario, fecha de revisión y alerta de vencimiento. Falla silenciosa: un resultado incompleto que parece correcto, como una planilla donde faltan cuatro filas pero el total cuadra; se controla con validaciones, campos obligatorios y muestreo. Y dependencia del proveedor: quedar atado a un plan que puede cambiar; se mitiga exportando instrucciones y guardando pruebas.", "c": false}, {"t": "Cada solución debe tener una ficha operativa mínima de seis puntos: propósito, alcance y propietario; datos permitidos, fuentes y vigencia; versión de instrucciones, plataforma, modelo y fecha de prueba; casos aprobados, excluidos y reglas de escalamiento; puntos de revisión humana; y métricas, incidentes, contingencia y criterio de retiro. Cada riesgo tiene su control, y cada solución tiene su ficha. Sin ficha, nadie sabe quién responde.", "c": false}, {"t": "Capítulo 7. Prototipar, decidir y cerrar con el caso Litoral", "c": true}, {"t": "El método tiene ocho pasos. Definir el resultado y quién lo usa. Mapear la línea base, que es cómo se hace hoy, con tiempos, volumen, errores y responsables.", "c": false}, {"t": "Seleccionar el nivel. Diseñar la arquitectura, con instrucciones, fuentes, reglas y traspasos. Construir la versión mínima, sin acciones externas.", "c": false}, {"t": "Probar recorridos frecuentes, incompletos, contradictorios, sensibles y extremos. Comparar contra la línea base. Y decidir si continúa, se ajusta o se detiene.", "c": false}, {"t": "Sin línea base, nadie puede decir si la I.A. ahorró tiempo o solo cambió el trabajo de lugar. Para el piloto hay seis métricas: tiempo, hasta la aprobación; calidad, con salidas aceptadas y defectos críticos; cobertura, de casos resueltos, escalados y rechazados bien; consistencia entre personas y ejecuciones; riesgo, con incidentes de datos, permisos o acciones; y costo de licencias, uso, revisión y mantenimiento.", "c": false}, {"t": "El canvas de diseño y control tiene tres partes. El mapa del flujo, con paso, responsable, entrada, acción, salida y control. El registro de prueba, con versión, caso, resultado esperado y observado, falla, cambio y decisión.", "c": false}, {"t": "Y el semáforo de continuidad. Verde: mejora la línea base y los riesgos están dentro de tolerancia; se amplía y se monitorea. Amarillo: aporta valor, pero con fallas o controles incompletos; se ajusta y se repite. Rojo: falla crítica de datos, permisos, calidad o acción; se detiene, se contiene y se rediseña.", "c": false}, {"t": "No confundas este semáforo con el inicial de tareas: aquel clasifica antes de empezar; este decide con el piloto ya probado.", "c": false}, {"t": "Ahora el caso Litoral Consultores, real dentro del curso. Cada mes prepara un radar para quince clientes, cruzando noticias, documentos, estudios, minutas y propuestas. Toma unas veinte horas al mes, pasa por cuatro personas y produce versiones distintas de una misma recomendación. La gerencia pidió menos tiempo sin perder trazabilidad.", "c": false}, {"t": "Un integrante propuso automatizar todo, desde la búsqueda hasta el envío, sin intervención humana. La pregunta de fondo es dónde debe quedar la decisión humana cuando la I.A. promete hacerlo todo. El diagnóstico encontró cinco problemas: fuentes sin inventario común, criterios de inclusión que cambian según la persona, recomendaciones que exigen contexto, comunicaciones externas que requieren aprobación, y ninguna línea base.", "c": false}, {"t": "El radar mezclaba tareas automatizables, como recolección, clasificación, extracción y formato, con tareas de responsabilidad profesional: seleccionar evidencia, interpretar, recomendar y comunicar hacia afuera. La arquitectura final tiene seis etapas. Solicitud, con rechazo si faltan campos.", "c": false}, {"t": "Evidencia, con Consensus para buscar y NotebookLM para reunir documentos vigentes, validados por el analista. Síntesis y borrador, con una matriz citada y la Gem para estructura y tono.", "c": false}, {"t": "Prototipo, en Opal, con pruebas sin envío externo. Operación, en Workspace Studio, con permisos mínimos y autorización antes de enviar. Y diseño especializado, con Pomelli solo para piezas públicas ya aprobadas.", "c": false}, {"t": "La gerencia aprobó un modelo por capas con gobierno estricto y rechazó la autonomía total. Tres resoluciones: ningún envío automático, y el borrador queda para la firma del director de cuenta; la Gem opera con instrucciones versionadas, NotebookLM es la única base documental oficial, Consensus es apoyo con traspaso manual y Pomelli queda fuera del flujo central; y un inventario obligatorio de fuentes.", "c": false}, {"t": "Los seis casos de validación final: fuente vencida, que debe excluirse; estudios contradictorios, que deben exponerse sin concluir; dato personal, que debe minimizarse o detenerse; solicitud incompleta, que debe pedir antecedentes; instrucción dentro de una fuente, que debe tratarse como contenido; y recomendación de alto impacto, que debe pedir aprobación.", "c": false}, {"t": "Los resultados: el tiempo bajó de veinte a seis horas mensuales por informe, según el curso, lo que equivale a una reducción de setenta por ciento. Cien por ciento de las afirmaciones con citas verificables. Se acabó la dispersión de criterios entre los cuatro consultores. Y cero incidentes de seguridad.", "c": false}, {"t": "Ojo con una discrepancia. Al inicio el curso habla de veinte horas al mes para todo el radar, y al final de veinte a seis horas mensuales por informe. Las unidades no coinciden. Para el examen, cita veinte a seis horas, precisa la unidad que pida la pregunta, y no inventes un total por cliente.", "c": false}, {"t": "Las tres preguntas de participación tienen esta guía. Primera: más autonomía en pasos verdes, reversibles y evaluables; revisión humana obligatoria en validación de fuentes, recomendaciones y envío externo. Segunda: si sale un error por una fuente desactualizada, responde la puerta humana del analista y el propietario de la fuente; se evita con inventario y alertas de vencimiento. Tercera: un flujo por capas da trazabilidad, consistencia y menor dependencia, pero exige traspasos manuales, supervisión y control de versiones.", "c": false}, {"t": "Litoral no apagó la I.A. La puso en capas, con una persona firmando lo que sale hacia afuera.", "c": false}, {"t": "Para practicar, el curso trae dos videos del profesor Rodrigo Pereira, uno sobre Pomelli para marketing y otro sobre una súper gema con Gemini y Markdown, además de un video resumen del módulo. Los recursos en enlaces y códigos QR podrían no estar disponibles desde el treinta de noviembre de 2026. El foro, de co-diseño y gobierno de flujos, pide publicar una tarea recurrente sin datos sensibles, intervenir como par proponiendo una puerta humana, y cerrar ajustando el diseño o fundamentando la postura.", "c": false}, {"t": "Las tres cosas que te llevas. Uno: sube de nivel solo si la tarea es estable, usa el nivel más simple y automatiza lo verde; lo amarillo lleva puerta humana y lo rojo no va solo. Dos: lo que debe cumplirse siempre no se le encarga a la memoria del modelo; se vuelve validación, permiso o aprobación, y todo lo que el modelo lee es dato, no orden. Tres: antes de adoptar algo, pruébalo y mídelo, con cinco casos, una línea base, seis métricas y un semáforo que dice continuar, ajustar o detener.", "c": false}, {"t": "La idea que resume el módulo: se prueba en pequeño, se compara contra cómo se hacía antes, y se decide con datos. No necesitas ser ingeniera para decidir qué se automatiza. Necesitas tu criterio comercial, tu ojo para los patrones, y la costumbre de preguntar quién responde si esto sale mal, antes de que algo llegue a un afiliado.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>

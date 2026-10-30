@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 4 · Ecosistemas de IA y asistentes personalizados — Mapa conceptual y flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Fundamentos de Inteligencia Artificial para negocios · Máster en IA</div>
+  <h1>Unidad 4 · <b>Ecosistemas de IA y asistentes personalizados</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 68 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Siete puntos donde el material del curso se queda corto, está desactualizado o simplifica lo que dice la fuente. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> ¿NotebookLM o Gemini Notebook?</h3>
+      <p>Curso: el PDF usa ambos nombres de forma alterna (título de sección «Gemini Notebook (ex Notebook LM)», bibliografía «Learn about Gemini Notebook» y el resto del texto «NotebookLM»). Evidencia: un blog secundario fecha el cambio de marca en julio de 2026; es el mismo producto.</p>
+      <div class="regla"><b>Regla:</b> NotebookLM = Gemini Notebook. Acepta ambos nombres en el examen y, si la pregunta pide el nombre actual, responde «Gemini Notebook (antes NotebookLM)».</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> «Eliminando alucinaciones» (p. 21)</h3>
+      <p>Curso: el anclaje en fuentes hace que NotebookLM solo responda con los documentos subidos, «eliminando alucinaciones». Pero el propio curso exige verificar las citas y mantener puerta humana. Evidencia: el perfil NIST AI 600-1 describe la confabulación como riesgo inherente a la generación estadística; el grounding la reduce y la hace verificable, no la elimina.</p>
+      <div class="regla"><b>Regla:</b> Si preguntan qué hace el grounding, responde «ancla y reduce, hace verificable». Si una alternativa dice «garantiza cero errores», es falsa. Siempre queda la revisión humana de las citas.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> «Más información que cualquier otro chatbot» (p. 14)</h3>
+      <p>Curso: Gemini en Pro «puede analizar más información que cualquier otro chatbot», con 1 millón de tokens, 1.500 páginas y 30.000 líneas de código. Evidencia: la página oficial de Google confirma las tres cifras; el superlativo comparativo es una afirmación de marketing que depende de la fecha.</p>
+      <div class="regla"><b>Regla:</b> Memoriza las tres cifras y trata «más que cualquier otro» como afirmación comercial, no como dato.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> «Hasta 50 fuentes por cuaderno» (p. 22)</h3>
+      <p>Curso: 50 fuentes por notebook. Evidencia: una fuente secundaria de julio de 2026 indica 50 en la cuenta gratuita y más en los planes de pago (100, 300 y 600 según el plan).</p>
+      <div class="regla"><b>Regla:</b> Responde 50 si la pregunta es sobre el curso, y reconoce que el límite real depende del plan contratado.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> «Agentes de IA a tu medida» y componentes de una Gem (pp. 13 y 16)</h3>
+      <p>Curso: titula «Gems: Agentes de IA a tu medida», lista como componentes herramientas asociadas (APIs, web, sheets), persistencia del estado y parámetros (temperatura, grounding), pero define la Gem clásica como conversación repetible y al agente como sistema que actúa con herramientas. Evidencia: la documentación pública de Google sobre Gems describe instrucciones y archivos de conocimiento; no se encontró documentación de APIs, persistencia ni temperatura configurables para Gems clásicas.</p>
+      <div class="regla"><b>Regla:</b> Usa las definiciones del curso (Gem clásica = conversación repetible; agente = actúa con herramientas) y lista los seis componentes tal como los da el curso, sabiendo que la base documentada son las instrucciones y el conocimiento.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> Caso Litoral: «veinte horas al mes» (p. 32) frente a «20 a 6 horas mensuales por informe» (p. 36)</h3>
+      <p>Curso: el problema inicial es de unas veinte horas al mes para el radar de quince clientes; el resultado habla de «20 a 6 horas mensuales por informe». La unidad de medida no coincide entre ambos pasajes.</p>
+      <div class="regla"><b>Regla:</b> Cita «20 a 6 horas» (reducción de 70%, cálculo derivado), precisa la unidad según lo que pida la pregunta y no inventes un total por cliente.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> «Fotografía al 6 de septiembre de 2026» (p. 25) y disponibilidad</h3>
+      <p>Curso: presenta la comparación de entornos como una fotografía a esa fecha y pide repetir la verificación regional en cada edición. Evidencia al 28-oct-2026: Pomelli en inglés, con Chile listado; Gems from Labs solo con cuenta personal, en inglés, en escritorio, para mayores de 18 años y en modo experimental; Workspace Studio en ediciones Business, Enterprise y Education.</p>
+      <div class="regla"><b>Regla:</b> Responde la tabla de entornos por función y por «qué verificar», no por disponibilidad fija. Ante «¿se puede usar siempre?», la respuesta es «depende de cuenta, región, idioma y licencia».</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 4 — Ecosistemas de IA y asistentes personalizados» · Curso: Tecnologías de Inteligencia Artificial para Negocios · Archivo autocontenido, funciona sin internet.</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Unidad 4"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Niveles de automatización"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Selección y flujo"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Gem y ecosistema"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"Fuentes y evidencia"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Gobierno y riesgos"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Prototipo y piloto"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Caso Litoral y actividades"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Unidad 4"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Niveles de automatización"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Selección y flujo"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Gem y ecosistema"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"Fuentes y evidencia"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Gobierno y riesgos"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Prototipo y piloto"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Caso Litoral y actividades"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+ "id": "root",
+ "t": "ECOSISTEMAS DE IA Y ASISTENTES PERSONALIZADOS",
+ "c": "root",
+ "d": "Unidad 4 del módulo: convertir tareas repetitivas en soluciones de IA generativa consistentes y controladas. Recorre la escala de cinco niveles de automatización, la selección de tareas, la anatomía de un flujo, la Gem, las fuentes y la evidencia, las herramientas del ecosistema, el gobierno con NIST, el piloto y el caso Litoral Consultores. Tesis central: la autonomía del sistema crece solo a la par de sus controles y de la supervisión humana.",
+ "k": [
+  {
+   "t": "Escala de 5 niveles",
+   "c": "azul",
+   "d": "La automatización se resuelve en cinco niveles, del prompt reutilizable al flujo organizacional. Cada nivel agrega capacidad y también exige más prueba, permisos, monitoreo y recuperación ante fallas. Memorízala como secuencia: es la base de varias preguntas del examen.",
+   "e": "se organiza en",
+   "k": [
+    {
+     "t": "1 Prompt reutilizable",
+     "c": "azul",
+     "d": "Estandariza una solicitud frecuente. Control mínimo: versión aprobada y pauta de revisión, porque una persona mira el resultado.",
+     "e": "parte con"
+    },
+    {
+     "id": "n2",
+     "t": "2 Asistente personalizado",
+     "c": "azul",
+     "d": "Conserva propósito, método, límites y conocimiento. Control mínimo: casos de prueba, responsable y revisión de fuentes. Corresponde a las Gems.",
+     "e": "sube a"
+    },
+    {
+     "id": "n3",
+     "t": "3 Espacio sustentado en fuentes",
+     "c": "azul",
+     "d": "Analiza una colección documental con trazabilidad. Control mínimo: inventario, permisos, citas y actualización. Corresponde a NotebookLM.",
+     "e": "sube a"
+    },
+    {
+     "id": "n4",
+     "t": "4 Miniaplicación",
+     "c": "azul",
+     "d": "Entrega una interfaz y encadena varias operaciones. Control mínimo: entradas válidas, manejo de errores y pruebas de recorrido. Corresponde a Opal.",
+     "e": "sube a"
+    },
+    {
+     "id": "n5",
+     "t": "5 Flujo organizacional",
+     "c": "azul",
+     "d": "Actúa frente a eventos y conecta aplicaciones o personas. Control mínimo: mínimo privilegio, aprobaciones, registro y contingencia. Corresponde a Workspace Studio.",
+     "e": "culmina en"
+    },
+    {
+     "t": "Criterio: nivel más simple",
+     "c": "azul",
+     "d": "Usa el nivel más simple que entregue el resultado requerido. Aumentar autonomía antes de estabilizar la tarea amplifica errores, accesos innecesarios y costos de supervisión. Si una plantilla resuelve el correo semanal, no se construye un flujo que envíe correos.",
+     "e": "se rige por"
+    }
+   ]
+  },
+  {
+   "t": "Elegir qué automatizar",
+   "c": "verde",
+   "d": "Una tarea es buena candidata cuando se repite, consume tiempo, usa entradas identificables y produce una salida evaluable. La variabilidad no impide usar IA, pero exige definir excepciones. El impacto del error determina cuánto puede avanzar el flujo sin aprobación humana.",
+   "e": "comienza con",
+   "k": [
+    {
+     "t": "7 criterios de selección",
+     "c": "verde",
+     "d": "Frecuencia, estabilidad, entradas, evaluabilidad, reversibilidad, juicio y datos. Los tres primeros miran si la tarea merece y permite automatizarse; evaluabilidad y reversibilidad, si el error es detectable y corregible; juicio y datos, si hay algo que no debe delegarse o exponerse.",
+     "e": "se evalúa con"
+    },
+    {
+     "id": "sem",
+     "t": "Semáforo inicial",
+     "c": "verde",
+     "d": "Clasifica la tarea según la gravedad y reversibilidad del error, no según su dificultad. Verde se automatiza por etapas, amarillo mantiene puerta humana y rojo se excluye del piloto autónomo o exige autorización previa.",
+     "e": "se clasifica con",
+     "k": [
+      {
+       "id": "sv",
+       "t": "Verde: automatizar por etapas",
+       "c": "verde",
+       "d": "Ejemplos: clasificar consultas, resumir documentos aprobados, convertir formatos o preparar borradores. Tratamiento: automatizar por etapas y revisar muestras.",
+       "e": "verde →"
+      },
+      {
+       "id": "sa",
+       "t": "Amarillo: puerta humana",
+       "c": "verde",
+       "d": "Ejemplos: priorizar casos, interpretar evidencia ambigua, elaborar recomendaciones o tratar información sensible. Tratamiento: mantener puerta humana, permisos limitados y trazabilidad.",
+       "e": "amarillo →"
+      },
+      {
+       "id": "sr",
+       "t": "Rojo: excluir o autorizar",
+       "c": "verde",
+       "d": "Ejemplos: enviar comunicaciones críticas, aprobar pagos, decidir contratación o ejecutar acciones irreversibles sin revisión. Tratamiento: excluir del piloto autónomo o exigir autorización previa.",
+       "e": "rojo →"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "t": "Anatomía del flujo (contrato operativo)",
+   "c": "verde",
+   "d": "Un flujo es un contrato operativo: cada paso declara qué recibe, qué hace, qué entrega y qué ocurre si la información es insuficiente. Esta representación separa el razonamiento probabilístico del modelo de las reglas que deben cumplirse siempre.",
+   "e": "se diseña como",
+   "k": [
+    {
+     "t": "9 etapas (disparador → registro)",
+     "c": "verde",
+     "d": "Disparador, entrada, preparación, instrucción, transformación, decisión, puerta humana, acción y salida, y registro y monitoreo. La preparación ocurre antes de que el modelo vea nada, y el registro hace el flujo auditable. En el ejemplo del reclamo, solo la transformación es propiamente IA; el resto es diseño de proceso.",
+     "e": "se compone de"
+    },
+    {
+     "id": "det",
+     "t": "Pasos determinísticos",
+     "c": "verde",
+     "d": "Operaciones de regla fija: dada la misma entrada, producen siempre la misma salida y son verificables. Ejemplos del curso: validar que un campo exista, comprobar una fecha o restringir un permiso.",
+     "e": "reglas fijas en"
+    },
+    {
+     "t": "Pasos probabilísticos",
+     "c": "verde",
+     "d": "Operaciones del modelo cuyo resultado puede variar, como resumir una minuta, interpretar un reclamo o proponer una respuesta. Su corrección se verifica con revisión humana o rúbrica, no con una regla fija, porque el modelo elige palabras según distribuciones de probabilidad.",
+     "e": "razonamiento del modelo en"
+    },
+    {
+     "id": "rop",
+     "t": "Regla de operación",
+     "c": "verde",
+     "d": "Si una condición debe cumplirse siempre, no depender solo de que el modelo la recuerde: se convierte en validación, permiso, lista autorizada o aprobación separada. Ejemplo: un límite de descuento se valida en el sistema que emite la cotización.",
+     "e": "separa ambos mediante"
+    },
+    {
+     "id": "ph",
+     "t": "Puerta humana",
+     "c": "verde",
+     "d": "Punto en que una persona revisa, corrige, aprueba, rechaza o escala un resultado antes de continuar. Va antes de una acción sensible o externa. La puerta tiene poder real de corregir o rechazar; no es un simple visto bueno.",
+     "e": "controla con"
+    }
+   ]
+  },
+  {
+   "id": "gem",
+   "t": "Gem clásica",
+   "c": "ambar",
+   "d": "Versión personalizada de Gemini para conversaciones repetibles, con instrucciones y conocimiento aportados por la persona usuaria. Es una conversación repetible con un experto configurado, no un programa que corre solo. Su calidad depende de la especificación, de los documentos, del modelo y de la evaluación posterior.",
+   "e": "se configura en",
+   "k": [
+    {
+     "t": "4 tipos de agente",
+     "c": "ambar",
+     "d": "Analítico (reglas estrictas y formatos estructurados), creativo (prompt flexible con límites de tono y estilo), operador de flujos (etapas, entradas y salidas claras) y tutor o instructor (complejidad graduada y verificación de comprensión). Usar un mismo prompt para los cuatro es un error de diseño típico.",
+     "e": "se clasifica en"
+    },
+    {
+     "t": "6 componentes",
+     "c": "ambar",
+     "d": "Prompt maestro (rol, objetivos y restricciones), archivos de referencia, instrucciones de comportamiento, herramientas asociadas (APIs, web, sheets), persistencia del estado y parámetros como temperatura y grounding. En el examen se responden tal como los lista el curso; ver la discrepancia 5.",
+     "e": "contiene"
+    },
+    {
+     "t": "Crear en 6 pasos",
+     "c": "ambar",
+     "d": "Crear un Nuevo Gem; definir nombre y objetivo; insertar el prompt maestro; añadir documentos base; configurar herramientas externas; y testear iterativamente. El último paso separa una Gem de juguete de una Gem de trabajo, porque cada cambio puede alterar el comportamiento.",
+     "e": "se construye en"
+    },
+    {
+     "t": "4 buenas prácticas",
+     "c": "ambar",
+     "d": "Escribir como contrato operacional, aprovechar atajos e iterar continuamente, dar instrucciones explícitas y de pensamiento (cómo razonar, no solo qué hacer) y añadir un protocolo de confirmación de seguridad antes de cualquier acción crítica.",
+     "e": "se mejora con"
+    },
+    {
+     "id": "pm",
+     "t": "Prueba mínima (5 casos)",
+     "c": "ambar",
+     "d": "Cinco escenarios antes de compartir: caso frecuente con toda la información; caso incompleto que debe activar preguntas o rechazo; caso contradictorio entre dos fuentes; caso sensible o instrucción ajena al propósito (prompt injection); y caso extremo que debe derivarse a una persona responsable.",
+     "e": "se valida con"
+    },
+    {
+     "id": "ctx",
+     "t": "Ventana de 1 millón de tokens",
+     "c": "ambar",
+     "d": "Según el curso, Gemini en Pro procesa hasta 1.500 páginas de texto o 30.000 líneas de código de forma simultánea. Como cálculo de orden de magnitud, 1.000.000 ÷ 1.500 ≈ 667 tokens por página. El superlativo «más que cualquier otro chatbot» es una afirmación comercial (discrepancia 3).",
+     "e": "se apoya en"
+    }
+   ]
+  },
+  {
+   "id": "fev",
+   "t": "Fuentes y evidencia",
+   "c": "violeta",
+   "d": "Esta rama responde cuándo el trabajo consiste en leer, comparar y citar mucho material. NotebookLM analiza una colección que tú reúnes; Consensus busca literatura científica que todavía no tienes. En ambos casos la revisión humana sigue siendo obligatoria.",
+   "e": "se sustenta en",
+   "k": [
+    {
+     "id": "nlm",
+     "t": "NotebookLM / Gemini Notebook",
+     "c": "violeta",
+     "d": "Asistente de investigación que admite documentos, sitios, videos, audios y archivos de Workspace. Responde a partir de las fuentes seleccionadas, con citas en línea que llevan al fragmento usado. Es el producto que el curso llama Gemini Notebook (ex Notebook LM).",
+     "e": "analiza fuentes con",
+     "k": [
+      {
+       "t": "Source grounding y citas",
+       "c": "violeta",
+       "d": "Grounding es la vinculación de una respuesta con información identificable y autorizada. El curso dice que elimina alucinaciones; la evidencia indica que las reduce y las hace verificables, así que las citas deben revisarse (discrepancia 2).",
+       "e": "responde con"
+      },
+      {
+       "t": "Studio (9 salidas)",
+       "c": "violeta",
+       "d": "Desde las fuentes cargadas genera resumen en audio (Deep Dive), resumen en video, mapa mental, informe, tarjetas didácticas, cuestionario, infografía, presentación y tabla de datos. Todas parten de las mismas fuentes: un error en una minuta se replica en todas.",
+       "e": "genera"
+      },
+      {
+       "t": "Ventajas (privacidad, 50 fuentes…)",
+       "c": "violeta",
+       "d": "El curso destaca la privacidad (los datos no se usan para entrenar modelos públicos de Google), hasta 50 fuentes por cuaderno, el pensamiento conectivo entre archivos y las notas que guardan respuestas para un proyecto. El límite de 50 varía según el plan (discrepancia 4).",
+       "e": "destaca por"
+      },
+      {
+       "t": "Utilidad práctica (4 usos)",
+       "c": "violeta",
+       "d": "Gestión de proyectos (reportes de mercado, encuestas, planes estratégicos), educación (programas y libros convertidos en repaso o audio), análisis legal y técnico (cláusulas, normativas, manuales) y preparación de reuniones (acuerdos y pendientes a partir de minutas).",
+       "e": "se aplica en"
+      }
+     ]
+    },
+    {
+     "t": "Consensus",
+     "c": "violeta",
+     "d": "Buscador de literatura científica que usa modelos para sintetizar resultados con referencias a los trabajos recuperados. Localiza y organiza evidencia académica, pero no reemplaza leer el estudio. Antes de usar una afirmación hay que revisar pertinencia, diseño, población, fecha, acceso al texto completo y correspondencia con la fuente.",
+     "e": "busca evidencia en"
+    },
+    {
+     "id": "comb",
+     "t": "Cómo combinarlos (5 pasos)",
+     "c": "violeta",
+     "d": "Formular la pregunta en Consensus; revisar los estudios y conservar las referencias permitidas; incorporar al notebook solo fuentes verificadas y autorizadas; usar NotebookLM para comparar, sintetizar y citar; y transferir la síntesis revisada a la Gem o al flujo.",
+     "e": "se encadena mediante"
+    },
+    {
+     "id": "lim",
+     "t": "Límite: sin conexión nativa",
+     "c": "violeta",
+     "d": "La secuencia describe un traspaso de trabajo y no presupone una conexión nativa entre Consensus, NotebookLM y una Gem clásica. La persona mantiene el control sobre qué evidencia pasa de una capa a otra.",
+     "e": "advierte"
+    }
+   ]
+  },
+  {
+   "t": "Dónde se ejecuta (tabla de 7 entornos)",
+   "c": "ambar",
+   "d": "Tabla de entornos con función, uso adecuado y qué verificar: Gem clásica, Gemini en Workspace, NotebookLM, Consensus, Pomelli, Opal o Gems from Labs y Workspace Studio. Se responde por función y por qué verificar, porque la disponibilidad cambia con cuentas, regiones, idiomas y licencias.",
+   "e": "se ubica en",
+   "k": [
+    {
+     "id": "opal",
+     "t": "Opal / Gems from Labs",
+     "c": "ambar",
+     "d": "Opal encadena prompts y herramientas para crear miniaplicaciones y advierte que puede cometer errores, por lo que exige probar el recorrido completo. Las Gems from Google Labs son experimentales, con restricciones de cuenta e idioma. Al 28-oct-2026 quedan limitadas a cuenta personal, inglés, escritorio y mayores de 18 años.",
+     "e": "prototipa con"
+    },
+    {
+     "t": "Pomelli",
+     "c": "ambar",
+     "d": "Analiza un sitio para construir identidad de negocio y generar campañas, piezas visuales, libros de marca y sitios. Es una utilidad especializada, hoy en inglés, aunque aparece disponible en Chile. En el caso Litoral queda fuera del flujo central y se usa solo para encargos puntuales.",
+     "e": "marketing con"
+    },
+    {
+     "id": "wss",
+     "t": "Workspace Studio",
+     "c": "ambar",
+     "d": "Entorno para crear agentes y automatizaciones conectados con aplicaciones de Workspace, para procesos activados por eventos. Corresponde al nivel 5 de la escala. Es la herramienta con más poder para actuar, por eso el mínimo privilegio y las puertas humanas pesan más aquí.",
+     "e": "opera con"
+    },
+    {
+     "t": "Gemini en Workspace",
+     "c": "ambar",
+     "d": "Apoyo contextual de Gemini dentro de Gmail, Docs, Sheets, Slides, Drive y Chat, para redacción, síntesis, análisis y acciones puntuales. No es un escalón de la escala de cinco niveles, sino una herramienta de apoyo.",
+     "e": "apoya en"
+    },
+    {
+     "id": "pat",
+     "t": "5 patrones de combinación",
+     "c": "ambar",
+     "d": "Formas de traspasar trabajo entre herramientas sin inventar integraciones: handoff humano, archivo aprobado, repositorio común, conector administrado y exportación estructurada. A medida que el traspaso se automatiza, crecen las exigencias de validación.",
+     "e": "integra mediante",
+     "k": [
+      {
+       "id": "hh",
+       "t": "Handoff humano",
+       "c": "ambar",
+       "d": "Una persona valida un producto y lo incorpora al siguiente entorno. Por ejemplo, un analista revisa los papers de Consensus y sube al notebook solo los aprobados.",
+       "e": "patrón"
+      },
+      {
+       "t": "Archivo aprobado",
+       "c": "ambar",
+       "d": "Un documento versionado actúa como contrato entre etapas, por ejemplo una matriz de evidencia en Markdown con número de versión que la Gem usa como entrada.",
+       "e": "patrón"
+      },
+      {
+       "t": "Repositorio común",
+       "c": "ambar",
+       "d": "Varias herramientas consultan archivos autorizados, respetando permisos y vigencia, como una carpeta de Drive que alimenta tanto el notebook como la Gem.",
+       "e": "patrón"
+      },
+      {
+       "t": "Conector administrado",
+       "c": "ambar",
+       "d": "Una plataforma ejecuta una integración disponible y aprobada por la organización, como una conexión de Workspace Studio con Gmail habilitada por el administrador.",
+       "e": "patrón"
+      },
+      {
+       "t": "Exportación estructurada",
+       "c": "ambar",
+       "d": "Una salida con campos definidos, validada antes de alimentar otro paso, como una tabla de datos con columnas fijas.",
+       "e": "patrón"
+      }
+     ]
+    },
+    {
+     "t": "Pregunta obligatoria",
+     "c": "ambar",
+     "d": "¿Qué información cruza de una herramienta a otra, con qué autorización y quién responde si el traspaso está incompleto, desactualizado o equivocado? Si no se pueden responder las tres partes para cada flecha del diagrama, el flujo todavía no está listo.",
+     "e": "se pregunta"
+    }
+   ]
+  },
+  {
+   "t": "Gobierno y seguridad",
+   "c": "coral",
+   "d": "El marco de gobierno aplica NIST para que el flujo no se salga de control: responsabilidades, contexto, pruebas, tratamiento de riesgos y monitoreo después del piloto. Cubre seis riesgos, cada uno con un control inicial de diseño, no solo una advertencia.",
+   "e": "se protege con",
+   "k": [
+    {
+     "id": "nist",
+     "t": "NIST: gobernar, mapear, medir, gestionar",
+     "c": "coral",
+     "d": "El marco NIST AI RMF organiza la gestión de riesgos en cuatro funciones: gobernar (asignar responsabilidades), mapear (comprender el contexto y el impacto del error), medir (probar el desempeño con casos y métricas) y gestionar (tratar riesgos y monitorear el uso). El curso cita NIST 2023 (AI RMF 1.0) y NIST 2024 (perfil de IA generativa).",
+     "e": "se alinea con"
+    },
+    {
+     "t": "6 riesgos",
+     "c": "coral",
+     "d": "Datos inapropiados, inyección indirecta, acción excesiva, fuente obsoleta, falla silenciosa y dependencia del proveedor. Para cada uno el curso fija una manifestación y un control inicial.",
+     "e": "mitiga",
+     "k": [
+      {
+       "t": "Datos inapropiados",
+       "c": "coral",
+       "d": "El flujo recibe información personal, contractual o estratégica que no necesita. Control: minimizar, anonimizar, clasificar y usar cuentas autorizadas. Lo que no entra no puede filtrarse.",
+       "e": "riesgo"
+      },
+      {
+       "id": "r2",
+       "t": "Inyección indirecta",
+       "c": "coral",
+       "d": "Un correo, archivo o sitio contiene instrucciones que intentan desviar el flujo. Control: tratar las fuentes como datos, separar instrucciones y limitar herramientas. Es el caso 4 de la prueba mínima.",
+       "e": "riesgo"
+      },
+      {
+       "id": "r3",
+       "t": "Acción excesiva",
+       "c": "coral",
+       "d": "El sistema envía, publica, modifica o elimina sin una autorización acorde con el impacto. Control: puertas humanas, mínimo privilegio y acciones reversibles.",
+       "e": "riesgo"
+      },
+      {
+       "id": "r4",
+       "t": "Fuente obsoleta",
+       "c": "coral",
+       "d": "La respuesta usa políticas, precios o versiones ya no vigentes. Un RAG perfecto sobre un documento vencido produce errores bien citados. Control: propietario, fecha de revisión y alerta de vencimiento.",
+       "e": "riesgo"
+      },
+      {
+       "t": "Falla silenciosa",
+       "c": "coral",
+       "d": "El flujo entrega un resultado incompleto que parece correcto, por ejemplo un informe que omite tres de quince clientes. Control: validaciones, campos obligatorios, muestreo y métricas de defecto.",
+       "e": "riesgo"
+      },
+      {
+       "t": "Dependencia del proveedor",
+       "c": "coral",
+       "d": "Un cambio de plan, modelo o función interrumpe el proceso. Control: exportar instrucciones, conservar pruebas y preparar un procedimiento alternativo.",
+       "e": "riesgo"
+      }
+     ]
+    },
+    {
+     "id": "mp",
+     "t": "Mínimo privilegio",
+     "c": "coral",
+     "d": "Principio que limita a cada persona o herramienta a los accesos estrictamente necesarios para la tarea. Es la llave que no se da a la recepcionista «por si acaso» y limita el daño posible por diseño.",
+     "e": "limita con"
+    },
+    {
+     "id": "fic",
+     "t": "Ficha operativa mínima",
+     "c": "coral",
+     "d": "Documento con seis contenidos: propósito, alcance, propietario y personas autorizadas; datos permitidos, fuentes oficiales y vigencia; versión de instrucciones, plataforma, modelo y fecha de prueba; casos aprobados, excluidos y reglas de escalamiento; puntos de revisión humana; y métricas, incidentes, contingencia y criterio de retiro.",
+     "e": "se documenta en"
+    }
+   ]
+  },
+  {
+   "t": "Método de prototipado y piloto",
+   "c": "cian",
+   "d": "Un prototipo es una versión acotada que sirve para comprobar utilidad, riesgos y factibilidad antes de una implementación mayor. El método tiene ocho pasos y se evalúa con línea base, métricas y un semáforo de continuidad.",
+   "e": "se valida con",
+   "k": [
+    {
+     "t": "8 pasos del método",
+     "c": "cian",
+     "d": "Definir el resultado; mapear la línea base; seleccionar el nivel; diseñar la arquitectura; construir la versión mínima; probar recorridos; comparar con la línea base; y decidir (continuar, ajustar o detener). El paso 2 es el más saltado y el que más importa.",
+     "e": "sigue"
+    },
+    {
+     "t": "Línea base",
+     "c": "cian",
+     "d": "Registro de cómo se hace el trabajo hoy: pasos, tiempo, volumen, errores, responsables y herramientas. Sin ella, cualquier mejora es una impresión. Es el punto contra el que se compara el piloto.",
+     "e": "se compara con"
+    },
+    {
+     "t": "6 métricas de piloto",
+     "c": "cian",
+     "d": "Tiempo, calidad, cobertura, consistencia, riesgo y costo. Cada dimensión trae una pregunta de interpretación; por ejemplo, ¿el flujo reduce trabajo o desplaza esfuerzo hacia la corrección? El costo incluye la supervisión humana.",
+     "e": "se mide con"
+    },
+    {
+     "id": "sc",
+     "t": "Semáforo de continuidad",
+     "c": "cian",
+     "d": "Verde: mejora la línea base, supera las pruebas y mantiene riesgos en tolerancia, así que se amplía y monitorea. Amarillo: aporta valor pero conserva fallas, así que se ajusta y se repite el piloto. Rojo: no mejora o produce una falla crítica, así que se detiene, contiene y rediseña. No confundir con el semáforo inicial de tareas.",
+     "e": "se decide con"
+    },
+    {
+     "t": "Canvas (mapa, registro, semáforo)",
+     "c": "cian",
+     "d": "Herramienta práctica con tres piezas: el Mapa del flujo (paso, responsable, entrada, acción, salida y control), el Registro de prueba (versión, caso, resultado esperado y observado, falla, cambio y decisión) y el Semáforo de continuidad.",
+     "e": "se documenta en"
+    },
+    {
+     "t": "Plantilla Markdown de instrucciones",
+     "c": "cian",
+     "d": "Diez encabezados: propósito, alcance, entradas requeridas, fuentes autorizadas, método, criterios de calidad, formato de salida, incertidumbre y excepciones, seguridad y preguntas iniciales. Cada sección debe contener reglas observables.",
+     "e": "se estandariza con"
+    }
+   ]
+  },
+  {
+   "t": "Caso Litoral Consultores",
+   "c": "gris",
+   "d": "Caso evaluado de la unidad: un radar mensual para quince clientes que consume unas veinte horas al mes. Integra niveles, semáforo, anatomía del flujo, puerta humana y controles de riesgo. La gerencia aprobó el modelo por capas con gobierno estricto y rechazó la automatización 100% autónoma.",
+   "e": "se ilustra con",
+   "k": [
+    {
+     "t": "Diagnóstico: automatizable vs humano",
+     "c": "gris",
+     "d": "El radar mezcla operaciones automatizables (recolección, clasificación inicial, extracción y formato) con operaciones de responsabilidad profesional (seleccionar evidencia, interpretar el contexto, recomendar y comunicar hacia afuera). La propuesta inicial mezclaba herramientas sin especificar integraciones reales.",
+     "e": "parte del"
+    },
+    {
+     "id": "carq",
+     "t": "Arquitectura de 6 etapas",
+     "c": "gris",
+     "d": "Solicitud (formulario que rechaza campos faltantes); evidencia (Consensus y NotebookLM, con validación del analista); síntesis y borrador (matriz citada y Gem); prototipo (Opal, sin envío externo); operación (Workspace Studio, con autorización antes de enviar); y diseño especializado (Pomelli, solo para piezas aprobadas).",
+     "e": "se resuelve con"
+    },
+    {
+     "t": "Resoluciones (envío cerrado, stack, inventario)",
+     "c": "gris",
+     "d": "Protocolo de envío cerrado: ningún envío automático; el borrador queda listo para la firma del director de cuenta. Definición del stack: Gem con instrucciones fijas y versionadas, NotebookLM como única base documental oficial, Consensus con traspaso manual y Pomelli fuera del flujo central. Inventario corporativo obligatorio de fuentes.",
+     "e": "decide"
+    },
+    {
+     "id": "cval",
+     "t": "6 casos de validación final",
+     "c": "gris",
+     "d": "Fuente vencida, estudios contradictorios, dato personal, solicitud incompleta, instrucción dentro de una fuente y recomendación de alto impacto. Cada caso describe el comportamiento esperado y la falla crítica que debe evitarse.",
+     "e": "se prueba con"
+    },
+    {
+     "t": "Resultados: 20→6 h, 100% citas",
+     "c": "gris",
+     "d": "Según el PDF: tiempo total de 20 a 6 horas mensuales por informe, 100% de afirmaciones con citas verificables, homogeneidad entre los cuatro consultores y cero incidentes de seguridad. La unidad de medida varía entre el problema y el resultado (discrepancia 6).",
+     "e": "logra"
+    },
+    {
+     "t": "Foro colaborativo y comentarios",
+     "c": "gris",
+     "d": "Foro de co-diseño en tres pasos: publicar una tarea recurrente con resultado, entradas y riesgo; revisar a un compañero proponiendo una excepción no contemplada y una puerta humana; y ajustar el diseño o fundamentar la postura. Los dos videos del módulo (Pomelli y la súper gema con Gemini y Markdown) complementan el material.",
+     "e": "se practica en"
+    }
+   ]
+  }
+ ]
+};
+
+const CROSS = [
+ {
+  "from": "n2",
+  "to": "gem",
+  "label": "se implementa como",
+  "bend": 60
+ },
+ {
+  "from": "n3",
+  "to": "nlm",
+  "label": "se implementa con",
+  "bend": -60
+ },
+ {
+  "from": "n4",
+  "to": "opal",
+  "label": "se implementa con",
+  "bend": 70
+ },
+ {
+  "from": "n5",
+  "to": "wss",
+  "label": "se implementa con",
+  "bend": -70
+ },
+ {
+  "from": "sr",
+  "to": "ph",
+  "label": "exige",
+  "bend": 55
+ },
+ {
+  "from": "sa",
+  "to": "ph",
+  "label": "exige",
+  "bend": -55
+ },
+ {
+  "from": "rop",
+  "to": "det",
+  "label": "convierte reglas críticas en",
+  "bend": 65
+ },
+ {
+  "from": "r2",
+  "to": "pm",
+  "label": "se prueba en caso sensible",
+  "bend": -65
+ },
+ {
+  "from": "r4",
+  "to": "fev",
+  "label": "se previene con inventario de",
+  "bend": 60
+ },
+ {
+  "from": "pat",
+  "to": "lim",
+  "label": "respeta",
+  "bend": -60
+ },
+ {
+  "from": "comb",
+  "to": "hh",
+  "label": "usa",
+  "bend": 70
+ },
+ {
+  "from": "mp",
+  "to": "r3",
+  "label": "contiene",
+  "bend": -70
+ },
+ {
+  "from": "sem",
+  "to": "sc",
+  "label": "análogo a",
+  "bend": 55
+ },
+ {
+  "from": "carq",
+  "to": "pat",
+  "label": "aplica",
+  "bend": -55
+ },
+ {
+  "from": "cval",
+  "to": "pm",
+  "label": "amplía",
+  "bend": 65
+ },
+ {
+  "from": "ph",
+  "to": "carq",
+  "label": "se ubica en cada etapa de",
+  "bend": -65
+ },
+ {
+  "from": "ctx",
+  "to": "nlm",
+  "label": "contrasta con límite de 50 fuentes de",
+  "bend": 60
+ },
+ {
+  "from": "fic",
+  "to": "ph",
+  "label": "registra puntos de",
+  "bend": -60
+ }
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+  ["fund", "Agente", "Agent", "Sistema que puede planificar o ejecutar acciones mediante herramientas dentro de un alcance y permisos establecidos."],
+  ["fund", "Asistente personalizado", "Custom assistant", "Configuración reutilizable de un modelo con instrucciones, fuentes y comportamiento definidos para una tarea."],
+  ["fund", "Automatización", "Automation", "Ejecución total o parcial de una tarea mediante reglas, software o modelos, con un grado definido de intervención humana."],
+  ["fund", "Tarea recurrente", "Recurring task", "Actividad que se repite con un propósito y una estructura suficientemente estables."],
+  ["fund", "Prompt reutilizable", "Reusable prompt", "Nivel 1 de la escala: plantilla que estandariza una solicitud frecuente, con versión aprobada y pauta de revisión."],
+  ["fund", "Instrucción de sistema", "System instruction", "Conjunto de reglas persistentes que define propósito, alcance, método, límites y formato del asistente."],
+  ["fund", "Cinco niveles de automatización", "Five automation levels", "Escala gradual: prompt reutilizable, asistente, espacio sustentado en fuentes, miniaplicación y flujo organizacional; cada nivel exige más prueba y control."],
+  ["fund", "Criterio de diseño (nivel más simple)", "Simplest-level design criterion", "Usar el nivel más simple que entregue el resultado; subir la autonomía antes de estabilizar la tarea amplifica errores, accesos y costos."],
+  ["fund", "Criterios de selección de tareas", "Task selection criteria", "Siete criterios (frecuencia, estabilidad, entradas, evaluabilidad, reversibilidad, juicio, datos) para decidir qué automatizar."],
+  ["fund", "Semáforo inicial de tareas", "Initial task traffic light", "Clasificación verde/amarillo/rojo según impacto del error: automatizar por etapas, mantener puerta humana o excluir del piloto autónomo."],
+  ["flu", "Flujo de trabajo", "Workflow", "Secuencia de actividades, decisiones y traspasos que transforma entradas en un resultado."],
+  ["flu", "Contrato operativo", "Operating contract", "Representación del flujo donde cada paso declara qué recibe, hace, entrega y qué ocurre si la información es insuficiente."],
+  ["flu", "Disparador", "Trigger", "Evento que inicia un flujo, como un correo, un formulario o una fecha programada."],
+  ["flu", "Entrada", "Input", "Información que recibe un paso del flujo: documento, registro, consulta o conjunto de datos."],
+  ["flu", "Preparación", "Preparation", "Etapa que limpia, anonimiza, clasifica o convierte información antes de usar el modelo."],
+  ["flu", "Transformación", "Transformation", "Acción que modifica, clasifica, resume, genera, combina o valida información."],
+  ["flu", "Decisión", "Decision step", "Paso que aplica una regla o evaluación para continuar, repetir, solicitar antecedentes o escalar."],
+  ["flu", "Salida", "Output", "Producto que entrega un paso o el flujo completo: alerta, borrador, ficha, reporte o archivo."],
+  ["flu", "Excepción", "Exception", "Situación que no puede resolverse de forma segura mediante el recorrido normal del flujo."],
+  ["flu", "Puerta humana", "Human gate (human-in-the-loop)", "Punto en que una persona revisa, corrige, aprueba, rechaza o escala un resultado antes de continuar."],
+  ["flu", "Registro operativo", "Operational log", "Evidencia sobre versión, entradas, salida, fecha, responsable, aprobación y fallas de una ejecución."],
+  ["flu", "Orquestación", "Orchestration", "Coordinación de pasos, herramientas, datos y decisiones dentro de un flujo."],
+  ["flu", "Paso determinístico", "Deterministic step", "Operación de regla fija y verificable, como validar un campo, comprobar una fecha o restringir un permiso."],
+  ["flu", "Paso probabilístico", "Probabilistic step", "Operación del modelo cuyo resultado varía, como resumir una minuta, interpretar un reclamo o proponer una respuesta."],
+  ["flu", "Regla de operación", "Operating rule", "Si una condición debe cumplirse siempre, convertirla en validación, permiso, lista autorizada o aprobación separada, no depender de que el modelo la recuerde."],
+  ["eco", "Gem clásica", "Classic Gem", "Versión personalizada de Gemini para conversaciones repetibles, con instrucciones y conocimiento aportado por la persona usuaria."],
+  ["eco", "Prompt maestro", "Master prompt", "Prompt inicial de una Gem que define rol principal, objetivos y restricciones fundamentales del agente."],
+  ["eco", "Ventana de contexto", "Context window", "Cantidad de información que el modelo procesa a la vez; el curso cita 1 millón de tokens (1.500 páginas o 30.000 líneas de código) en Gemini en Pro."],
+  ["eco", "Miniaplicación", "Mini-app", "Interfaz ligera que empaqueta un flujo de IA para que otras personas lo ejecuten con entradas definidas."],
+  ["eco", "Opal / Gems from Google Labs", "Opal / Gems from Google Labs", "Herramienta de Google que encadena prompts y herramientas en miniaplicaciones; experimental y con restricciones de cuenta e idioma."],
+  ["eco", "NotebookLM (Gemini Notebook)", "NotebookLM (Gemini Notebook)", "Asistente de investigación que responde desde las fuentes cargadas y entrega citas en línea."],
+  ["eco", "Studio de NotebookLM", "NotebookLM Studio", "Sección que transforma las fuentes en audio, video, mapa mental, informe, tarjetas, cuestionario, infografía, presentación y tabla de datos."],
+  ["eco", "Deep Dive (resumen en audio)", "Deep Dive audio overview", "Resumen en formato podcast con dos voces que discuten el material."],
+  ["eco", "Consensus", "Consensus", "Buscador de literatura científica que sintetiza resultados con referencias a los trabajos recuperados."],
+  ["eco", "Pomelli", "Pomelli", "Herramienta que analiza un sitio para construir identidad de negocio y generar campañas, piezas visuales, libros de marca y sitios; funciona en inglés."],
+  ["eco", "Workspace Studio", "Workspace Studio", "Entorno de agentes y automatizaciones conectados con aplicaciones de Workspace, para procesos activados por eventos."],
+  ["eco", "Gemini en Workspace", "Gemini in Workspace", "Apoyo contextual de Gemini dentro de Gmail, Docs, Sheets, Slides, Drive y Chat."],
+  ["eco", "Tipos de agente (Gem)", "Agent types", "Analítico, creativo, operador de flujos y tutor/instructor; cada uno exige un estilo de prompt distinto."],
+  ["eco", "Componentes de una Gem", "Gem components", "Prompt maestro, archivos de referencia, instrucciones de comportamiento, herramientas asociadas, persistencia del estado y parámetros."],
+  ["fuen", "Fuente de conocimiento", "Knowledge source", "Documento o repositorio autorizado que sustenta las respuestas de un asistente o espacio de análisis."],
+  ["fuen", "Grounding (anclaje en fuentes)", "Source grounding", "Vinculación de una respuesta con información identificable y autorizada."],
+  ["fuen", "Citas en línea", "Inline citations", "Referencias interactivas que llevan al fragmento exacto de la fuente usada."],
+  ["fuen", "Inventario de fuentes", "Source inventory", "Registro de propietario, fecha, vigencia y confidencialidad de cada fuente antes de cargarla."],
+  ["fuen", "Alucinación", "Hallucination", "Respuesta inventada o con supuestos no respaldados por datos; el agente debe pedir aclaración o declinar."],
+  ["fuen", "Pensamiento conectivo", "Connective thinking", "Capacidad de encontrar patrones o contradicciones entre archivos aparentemente no relacionados."],
+  ["fuen", "Fuente obsoleta", "Stale source", "Fuente con políticas, precios o versiones ya no vigentes; se controla con propietario, fecha de revisión y alerta de vencimiento."],
+  ["fuen", "Patrones de combinación", "Combination patterns", "Cinco formas de traspasar trabajo entre herramientas: handoff humano, archivo aprobado, repositorio común, conector administrado, exportación estructurada."],
+  ["fuen", "Handoff humano", "Human handoff", "Una persona valida un producto y lo incorpora al siguiente entorno."],
+  ["gob", "Mínimo privilegio", "Least privilege", "Principio que limita a cada persona o herramienta a los accesos estrictamente necesarios para la tarea."],
+  ["gob", "Marco NIST (AI RMF)", "NIST AI RMF", "Gestión de riesgos de IA en cuatro funciones: gobernar, mapear, medir y gestionar."],
+  ["gob", "Inyección indirecta", "Indirect prompt injection", "Riesgo en que un correo, archivo o sitio contiene instrucciones que intentan desviar el flujo; se trata la fuente como dato."],
+  ["gob", "Datos inapropiados", "Inappropriate data", "Riesgo de que el flujo reciba información personal, contractual o estratégica que no necesita."],
+  ["gob", "Acción excesiva", "Excessive action", "Riesgo de que el sistema envíe, publique, modifique o elimine sin autorización acorde con el impacto."],
+  ["gob", "Falla silenciosa", "Silent failure", "Resultado incompleto que parece correcto; se controla con validaciones, campos obligatorios y muestreo."],
+  ["gob", "Dependencia del proveedor", "Vendor dependence", "Riesgo de que un cambio de plan, modelo o función interrumpa el proceso."],
+  ["gob", "Minimización de datos", "Data minimization", "Reducir, anonimizar o excluir datos personales o confidenciales no indispensables antes de procesar."],
+  ["gob", "Ficha operativa mínima", "Minimum operating sheet", "Documento con propósito, propietario, datos, versión, casos, puntos de revisión, métricas, contingencia y criterio de retiro."],
+  ["gob", "Escalamiento", "Escalation", "Derivar a una persona responsable los casos graves, fuera de área o de alto riesgo."],
+  ["pil", "Prototipo", "Prototype", "Versión acotada usada para comprobar utilidad, riesgos y factibilidad antes de una implementación mayor."],
+  ["pil", "Línea base", "Baseline", "Registro de pasos, tiempo, volumen, errores, responsables y herramientas actuales contra el cual se compara el piloto."],
+  ["pil", "Prueba mínima antes de compartir", "Minimum pre-release test", "Cinco escenarios: caso frecuente completo, incompleto, contradictorio, sensible o ajeno al propósito, y extremo."],
+  ["pil", "Protocolo de confirmación de seguridad", "Safety confirmation protocol", "Instrucción final para que el agente pida validación explícita antes de cualquier acción crítica o compleja."],
+  ["pil", "Métricas de un piloto", "Pilot metrics", "Seis dimensiones: tiempo, calidad, cobertura, consistencia, riesgo y costo."],
+  ["pil", "Método para prototipar y decidir", "Prototype-and-decide method", "Ocho pasos, desde definir el resultado hasta decidir continuar, ajustar o detener."],
+  ["pil", "Registro de prueba", "Test log", "Tabla con versión, caso, resultado esperado y observado, falla, cambio y decisión."],
+  ["pil", "Semáforo de continuidad", "Continuity traffic light", "Verde amplía y monitorea; amarillo ajusta y repite el piloto; rojo detiene, contiene y rediseña."],
+  ["pil", "Canvas de diseño y control de flujos", "Flow design and control canvas", "Herramienta práctica con Mapa del flujo, Registro de prueba y Semáforo de continuidad."],
+  ["pil", "Plantilla de instrucciones en Markdown", "Markdown instruction template", "Diez encabezados: propósito, alcance, entradas, fuentes, método, calidad, formato, incertidumbre, seguridad, preguntas iniciales."]
+];
+
+const CATS = {
+  fund:{n:"Fundamentos y niveles", col:"var(--azul)"},
+  flu:{n:"Flujo y diseño", col:"var(--verde)"},
+  eco:{n:"Herramientas del ecosistema", col:"var(--ambar)"},
+  fuen:{n:"Fuentes y evidencia", col:"var(--violeta)"},
+  gob:{n:"Gobierno y riesgos", col:"var(--coral)"},
+  pil:{n:"Prototipo y piloto", col:"var(--cian)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
