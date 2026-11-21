@@ -1,6 +1,6 @@
 // Generado automaticamente por Actualizar.command - no editar a mano
 window.CONTENIDO = {
-  "generado": "2026-10-28 21:17",
+  "generado": "2026-11-21 18:25",
   "diplomado": "IA aplicada a los negocios",
   "modulos": {
     "1": {
@@ -83,40 +83,52 @@ window.CONTENIDO = {
         "1":"Introduccion a la IA en el entorno empresarial",
         "2":"Tecnologias clave para la IA generativa",
         "3":"Ingenieria de prompts y modelos de lenguaje",
-        "4":"Ecosistemas de IA y asistentes personalizados"
+        "4":"Ecosistemas de IA y asistentes personalizados",
+        "5":"Roadmap de IA y factores de exito",
+        "6":"Perspectivas futuras y aplicaciones emergentes"
       },
       "archivos": {
         "josue": {
           "1":{"explicacion":"contenido/josue/Tercer modulo/Unidad 1/Explicacion_Unidad1_Introduccion_a_la_IA_en_el_entorno_empresarial.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 1/Unidad1_Mapa_Conceptual_y_Flashcards.html"},
           "2":{"explicacion":"contenido/josue/Tercer modulo/Unidad 2/Explicacion_Unidad2_Tecnologias_clave_para_la_IA_generativa.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 2/Unidad2_Mapa_Conceptual_y_Flashcards.html"},
           "3":{"explicacion":"contenido/josue/Tercer modulo/Unidad 3/Explicacion_Unidad3_Ingenieria_de_prompts_y_modelos_de_lenguaje.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 3/Unidad3_Mapa_Conceptual_y_Flashcards.html"},
-          "4":{"explicacion":"contenido/josue/Tercer modulo/Unidad 4/Explicacion_Unidad4_Ecosistemas_de_IA_y_asistentes_personalizados.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 4/Unidad4_Mapa_Conceptual_y_Flashcards.html"}
+          "4":{"explicacion":"contenido/josue/Tercer modulo/Unidad 4/Explicacion_Unidad4_Ecosistemas_de_IA_y_asistentes_personalizados.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 4/Unidad4_Mapa_Conceptual_y_Flashcards.html"},
+          "5":{"explicacion":"contenido/josue/Tercer modulo/Unidad 5/Explicacion_Unidad5_Roadmap_de_IA_y_factores_de_exito.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 5/Unidad5_Mapa_Conceptual_y_Flashcards.html"},
+          "6":{"explicacion":"contenido/josue/Tercer modulo/Unidad 6/Explicacion_Unidad6_Perspectivas_futuras_y_aplicaciones_emergentes.pdf","mapa":"contenido/josue/Tercer modulo/Unidad 6/Unidad6_Mapa_Conceptual_y_Flashcards.html"}
         },
         "jeanette": {
           "1":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 1/IA_explicada_para_ventas_Unidad1.html"},
           "2":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 2/IA_explicada_para_ventas_Unidad2.html"},
           "3":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 3/IA_explicada_para_ventas_Unidad3.html"},
-          "4":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 4/IA_explicada_para_ventas_Unidad4.html"}
+          "4":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 4/IA_explicada_para_ventas_Unidad4.html"},
+          "5":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 5/IA_explicada_para_ventas_Unidad5.html"},
+          "6":{"explicacion_simple":"contenido/jeanette/Tercer modulo/Unidad 6/IA_explicada_para_ventas_Unidad6.html"}
         }
       },
       "audiolibros": {
         "1":"contenido/audiolibros/Tercer modulo/Unidad 1/audiolibro_unidad1.html",
         "2":"contenido/audiolibros/Tercer modulo/Unidad 2/audiolibro_unidad2.html",
         "3":"contenido/audiolibros/Tercer modulo/Unidad 3/audiolibro_unidad3.html",
-        "4":"contenido/audiolibros/Tercer modulo/Unidad 4/audiolibro_unidad4.html"
+        "4":"contenido/audiolibros/Tercer modulo/Unidad 4/audiolibro_unidad4.html",
+        "5":"contenido/audiolibros/Tercer modulo/Unidad 5/audiolibro_unidad5.html",
+        "6":"contenido/audiolibros/Tercer modulo/Unidad 6/audiolibro_unidad6.html"
       }
     },
     "4": {
       "nombre": "IA y automatizacion de procesos empresariales",
       "titulos": {
+        "0":"Punto de partida"
       },
       "archivos": {
         "josue": {
+          "0":{"explicacion":"contenido/josue/Cuarto modulo/Unidad 0/Explicacion_Unidad0_Punto_de_partida.pdf","mapa":"contenido/josue/Cuarto modulo/Unidad 0/Unidad0_Mapa_Conceptual_y_Flashcards.html"}
         },
         "jeanette": {
+          "0":{"explicacion_simple":"contenido/jeanette/Cuarto modulo/Unidad 0/IA_explicada_para_ventas_Unidad0.html"}
         }
       },
       "audiolibros": {
+        "0":"contenido/audiolibros/Cuarto modulo/Unidad 0/audiolibro_unidad0.html"
       }
     }
   }
