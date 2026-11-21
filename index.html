@@ -339,7 +339,10 @@ svg{display:block}
     var t=modData(m).titulos; if(t&&t[u]) return t[u];
     return "Unidad "+u;
   }
-  function unidadesDe(m){ var a=[],u; for(u=1;u<=NUM_UNIDADES;u++) a.push({n:u,t:tituloUnidad(m,u)}); return a; }
+  function tieneU0(m){ var d=modData(m),a=d.archivos||{},p; if(d.titulos&&d.titulos[0]) return true; if(d.audiolibros&&d.audiolibros[0]) return true; for(p in a){ if(a.hasOwnProperty(p)&&a[p]&&a[p][0]) return true; } return false; }
+  function numsDe(m){ var a=[],u; if(tieneU0(m)) a.push(0); for(u=1;u<=NUM_UNIDADES;u++) a.push(u); return a; }
+  function totalU(m){ return numsDe(m).length; }
+  function unidadesDe(m){ var a=[],n=numsDe(m),i; for(i=0;i<n.length;i++) a.push({n:n[i],t:tituloUnidad(m,n[i])}); return a; }
 
   function rawHas(m,p,u,t){ var a=archivosDe(m,p); return !!(a[u]&&a[u][t]); }
   function has(m,p,u,t){ if(t==="audio") return !!(rawHas(m,p,u,"audio")||audiolibrosDe(m)[u]); return rawHas(m,p,u,t); }
@@ -356,7 +359,7 @@ svg{display:block}
     var best=1,m,p,u,found;
     for(m=1;m<=MODULOS.length;m++){ found=false;
       for(p in PERFIL){ if(!PERFIL.hasOwnProperty(p)) continue;
-        for(u=1;u<=NUM_UNIDADES;u++){ if(has(m,p,u,"explicacion")||has(m,p,u,"mapa")||has(m,p,u,"explicacion_simple")||has(m,p,u,"audio")){found=true;break;} }
+        for(u=0;u<=NUM_UNIDADES;u++){ if(has(m,p,u,"explicacion")||has(m,p,u,"mapa")||has(m,p,u,"explicacion_simple")||has(m,p,u,"audio")){found=true;break;} }
         if(found) break;
       }
       if(found) best=m;
@@ -374,7 +377,7 @@ svg{display:block}
     if(have===piezas.length) return {k:"completa",have:have,tot:piezas.length};
     return {k:"parcial",have:have,tot:piezas.length};
   }
-  function moduloProg(m,p){ var done=0,u; for(u=1;u<=NUM_UNIDADES;u++){ if(statusOf(m,p,u).k!=="pendiente") done++; } return done; }
+  function moduloProg(m,p){ var done=0,n=numsDe(m),i; for(i=0;i<n.length;i++){ if(statusOf(m,p,n[i]).k!=="pendiente") done++; } return done; }
   function totalProg(p){ var done=0,m; for(m=1;m<=MODULOS.length;m++) done+=moduloProg(m,p); return done; }
 
   function pbar(pct){ return '<div class="pbar"><span style="width:'+pct+'%"></span></div>'; }
@@ -382,7 +385,7 @@ svg{display:block}
   function showScreen(id){ var s=["v-doors","v-app"],i;for(i=0;i<s.length;i++)$(s[i]).classList.toggle("active",s[i]===id); window.scrollTo(0,0); }
 
   function paintDoorBars(){
-    var ds=document.querySelectorAll(".prog[data-door]"),i,total=MODULOS.length*NUM_UNIDADES;
+    var ds=document.querySelectorAll(".prog[data-door]"),i,total=0,mm; for(mm=1;mm<=MODULOS.length;mm++) total+=totalU(mm);
     for(i=0;i<ds.length;i++){
       var p=ds[i].getAttribute("data-door"),done=totalProg(p);
       ds[i].setAttribute("style",accent(p));
@@ -419,7 +422,7 @@ svg{display:block}
       h+='<button class="modchip'+cls+'" data-mod="'+def.n+'">'+
          '<span class="mk">Módulo '+def.n+'</span>'+
          '<span class="mn">'+def.corto+'</span>'+
-         '<span class="mmeta">'+(done>0?done+' / '+NUM_UNIDADES+' unidades':'Sin material aún')+'</span>'+
+         '<span class="mmeta">'+(done>0?done+' / '+totalU(def.n)+' unidades':'Sin material aún')+'</span>'+
          '</button>';
     }
     h+='</div>';
@@ -473,7 +476,7 @@ svg{display:block}
     h+='<div class="mod-title"><span class="mt-k">Módulo '+def.n+'</span><h3 class="serif">'+def.nombre+'</h3></div>';
     if(sec==="inicio"||sec==="explicaciones"){
       var done=moduloProg(state.m,p);
-      h+='<div><div class="sec-h"><h3 class="serif">Unidades del módulo</h3><span class="cnt">'+done+' / '+NUM_UNIDADES+' con material</span></div><div class="rows" id="rows">'+rowsHtml(p)+'</div></div>';
+      h+='<div><div class="sec-h"><h3 class="serif">Unidades del módulo</h3><span class="cnt">'+done+' / '+totalU(state.m)+' con material</span></div><div class="rows" id="rows">'+rowsHtml(p)+'</div></div>';
     }
     if(sec==="inicio"||sec==="audiolibros"){
       h+='<div><div class="sec-h"><h3 class="serif">Audiolibros</h3></div><div class="audio-row">'+audioHtml(p,sec==="audiolibros")+'</div></div>';
