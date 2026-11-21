@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Roadmap de IA y factores de éxito</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 5 &middot; voz del dispositivo</p>
+    <h1>Roadmap de IA y factores de éxito</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t":"En este rato vas a entender cómo se arma un plan de inteligencia artificial que de verdad llega a resultados, y no se queda en una reunión entusiasta. Y lo mejor: es algo que ya haces en ventas cada vez que una campaña pasa de la idea a los números. Así que ponte cómoda, que esto va como conversación.","c":false},{"t":"Partamos por una verdad incómoda. Según el curso, solo el veintiséis por ciento de las empresas logra superar la etapa de prueba y generar valor real. Y el cuarenta y dos por ciento abandona la mayoría de sus proyectos de I.A. antes de tiempo. Muchísimos proyectos nacen con aplausos y mueren a medio camino.","c":false},{"t":"Esta unidad trata de ese camino, entre decir deberíamos usar I.A. y poder decir estamos logrando esto con I.A. Veremos el diagnóstico, el diseño de la hoja de ruta, la medición, los errores que matan proyectos y un caso completo. Como ejemplo usaremos una A F P imaginaria que quiere anticipar traspasos.","c":false},{"t":"Capítulo 1. Del entusiasmo a la ejecución","c":true},{"t":"Piensa en la reunión donde la gerencia dice que hay que usar I.A. para retener afiliados. Todos asienten y se entusiasman. Pero después vienen las preguntas que nadie hizo en la sala: qué traspasos queremos evitar, con qué datos, quién llama a quién, y cómo sabremos en tres meses que sirvió. Quien hace esas preguntas es la persona que convierte el entusiasmo en resultados.","c":false},{"t":"Para eso sirve esta unidad. Su objetivo es trazar un roadmap de I.A., que se dice rodmap, es decir, una hoja de ruta: un plan que lleve una idea hasta resultados concretos. Evita el piloto que se cae y la promesa que nunca se cumple, y alinea la tecnología con lo que el negocio necesita.","c":false},{"t":"Vamos a diagnosticar el punto de partida, luego diseñar la hoja de ruta, priorizando casos de uso y armando pilotos y cronogramas realistas. Todo para esquivar las trampas del cuarenta y dos por ciento.","c":false},{"t":"La meta es pasar de decir deberíamos usar I.A. a decir estamos logrando tal resultado, atado a objetivos como aumentar ingresos, reducir costos o mejorar la experiencia del cliente.","c":false},{"t":"Capítulo 2. El vocabulario que sostiene la unidad","c":true},{"t":"Hay muchas palabras, agrupadas por familias. Empecemos por el plan y sus etapas. El roadmap de I.A. es el plan estratégico de implementación: las fases, los hitos y los recursos para integrar I.A. de a poco. Responde qué proyectos se hacen, en qué orden y con qué objetivos. Es la hoja de ruta que mantiene a todos mirando hacia el mismo lado.","c":false},{"t":"Después viene la prueba de concepto, que en la sigla se llama PoC y se pronuncia pi-o-ci. Es un experimento inicial, de alcance muy limitado, para comprobar que la idea es técnicamente viable. Por ejemplo, entrenar un modelo con una parte de los datos para ver si logra predecir, aunque sea de forma aproximada.","c":false},{"t":"Si la prueba sale bien, viene el proyecto piloto. Es una implementación pequeña, pero en el mundo real, con usuarios reales y datos reales en un área reducida. Sirve para probar el valor de negocio en miniatura. Un chatbot en una sola sucursal antes de lanzarlo a todo el país es un buen ejemplo.","c":false},{"t":"Luego está el MVP, que se pronuncia eme-ve-pe y significa producto mínimo viable. Es la versión más simple que ya entrega valor al usuario, con lo mínimo de funciones, para recibir opiniones rápido y mejorar. Un recomendador que use solo las compras más recientes sería un MVP. Sirve para validar supuestos gastando poco.","c":false},{"t":"Ahora, cómo se mide y cómo se crece. Los KPI son métricas específicas y cuantificables ligadas a un objetivo, que se pronuncian ka-pe-i. Pueden ser financieras, operativas o de experiencia. El curso da un ejemplo: reducir en treinta por ciento el tiempo promedio de resolución de consultas. Sin KPI, nadie sabe si seguir o escalar.","c":false},{"t":"El ROI, que se pronuncia ar-o-ái, es el retorno de la inversión: compara lo que ganaste o ahorraste con lo que invertiste. Puede ser directo, como más ventas, o indirecto, como tiempo ahorrado. En el ejemplo del curso, algo que costó cien mil y ahorró trescientos mil tiene un ROI de doscientos por ciento.","c":false},{"t":"Ojo con ese número. La ganancia neta es el doble de lo invertido, pero la razón entre beneficio y costo da otra cifra. No mezcles las dos formas de decirlo. Calcular el ROI esperado ayuda a priorizar y a justificar el proyecto.","c":false},{"t":"La escalabilidad es la capacidad de extender la solución a más usuarios, datos o procesos, sin perder desempeño y con costos razonables. El error típico es que funciona en pequeño y no aguanta crecer. Para evitarlo se planifica con la nube, con prácticas de MLOps, que significa mantener los modelos funcionando en producción, y con diseño modular.","c":false},{"t":"La arquitectura en la nube es la infraestructura flexible de cómputo y almacenamiento que facilita crecer. Y la gobernanza de datos son las políticas, procesos y controles sobre la disponibilidad, la calidad, la seguridad y el uso de los datos, para que sean confiables, estén al día, cumplan la regulación de privacidad y estén protegidos. Incluye dueños de datos, estándares y accesos. Los datos separados en islas y sin limpiar son una causa clásica de fracaso.","c":false},{"t":"Por último, el AI Implementation Canvas, que en español es el lienzo de implementación de I.A. Es una plantilla visual de una sola página, inspirada en el Business Model Canvas, o lienzo de modelo de negocio. Resume el problema y la propuesta de valor, los ingredientes como datos, habilidades y tecnología, cómo se integra a los procesos y con quién, y las finanzas.","c":false},{"t":"El curso promete profundizar el lienzo paso a paso, pero en el material solo aparece su definición. Para el examen quédate con sus bloques: problema y valor, ingredientes, procesos y personas, y finanzas.","c":false},{"t":"Traslademos esto a la A F P imaginaria. Un KPI sería bajar los traspasos de tu cartera. El ROI compararía lo que cuesta la herramienta con los afiliados que dejas de perder. Y la gobernanza es saber quién cuida los datos de los afiliados.","c":false},{"t":"Capítulo 3. Diagnóstico: entender antes de actuar","c":true},{"t":"El diagnóstico es la fase inicial que examina el problema, los datos, los recursos y las personas antes de planificar. El sentido común que tiene detrás es simple: para resolver algo, primero hay que comprenderlo. El objetivo es pasar de decir usemos I.A. a algo concreto, como implementar un sistema que prediga la demanda semanal y reduzca en cincuenta por ciento las roturas de stock.","c":false},{"t":"Primer paso: identificar el problema u oportunidad. Se revisan procesos, puntos de dolor, objetivos y métricas actuales. Los puntos de dolor son las fricciones que cuestan plata o molestan al cliente. Cada caso de uso es un problema concreto que la I.A. va a abordar. El error clásico es usar I.A. porque sí, o porque la competencia lo hace.","c":false},{"t":"Un buen enunciado, según el curso, sería reducir en veinte por ciento las devoluciones mejorando la detección de defectos. Fíjate que tiene número, tiene causa y tiene un objetivo de negocio.","c":false},{"t":"Segundo paso: disponibilidad y calidad de datos. La calidad de datos mide qué tan completos, correctos, actualizados y consistentes están. La mala calidad es la causa principal de fracaso, y el curso pone el ejemplo de un algoritmo de ventas con inventario desactualizado. Si faltan datos, se integran sistemas o se crean procesos de recolección.","c":false},{"t":"También puede ser necesario limpiar y unificar formatos, armar un pipeline de datos, que es un flujo automático que mantiene la información al día, o incluso posponer el proyecto. Y ojo con los silos de datos: son datos aislados por área, que nadie más puede usar.","c":false},{"t":"Tercer paso: infraestructura y talento. Eso se llama evaluación de preparación para I.A., en inglés AI readiness assessment. Si falta experiencia técnica, se refuerza el equipo, se asocia con un proveedor o se usa AutoML, que automatiza gran parte de la construcción de modelos.","c":false},{"t":"Cuarto paso: alineación estratégica y stakeholders. La alineación estratégica significa que el proyecto calce con los objetivos de la empresa. Si la estrategia es ser más eficientes, una automatización tendrá apoyo. Los stakeholders son las personas o áreas con interés o impacto en el proyecto. Entre ellos destaca el sponsor ejecutivo, el directivo que lo patrocina y consigue recursos.","c":false},{"t":"También se mapean las áreas afectadas, como tecnología, legal, operaciones o recursos humanos, y quién se entusiasma y quién teme. Ahí empieza la gestión del cambio.","c":false},{"t":"En la A F P imaginaria, el punto de dolor sería el traspaso de afiliados a la competencia. Los datos, el historial de contactos y traspasos, quizás están repartidos en silos entre el call center y el área comercial. Documentar eso deja el punto de partida para medir después.","c":false},{"t":"El curso deja una pregunta para pensar: ¿es peor partir con un problema poco relevante pero con muchos datos, o con uno crítico pero sin datos? La respuesta es equilibrar relevancia con disponibilidad.","c":false},{"t":"Antes de tocar la herramienta, responde: qué problema, con qué datos, qué tan preparados estamos y quién está a bordo.","c":false},{"t":"Capítulo 4. Diseño del roadmap: por dónde partir","c":true},{"t":"No se puede hacer todo a la vez. Por eso existe la priorización de casos de uso, que es ordenar las iniciativas para elegir por dónde partir. Se usan dos criterios. El valor potencial, es decir, cuánto ganas en ingresos, ahorros o diferenciación. Y la factibilidad, o sea, qué tan difícil es: madurez de los datos, complejidad técnica, costo, tiempo y dependencias.","c":false},{"t":"La herramienta para ordenarlo es la matriz valor frente a factibilidad, un cuadro de dos ejes. Se parte por lo de alto valor y factibilidad razonable: la victoria rápida, en inglés quick win o low hanging fruit, muestra resultados en meses y sube la confianza.","c":false},{"t":"El curso compara dos casos. Personalizar ofertas tiene valor alto, pero es complejo. Un chatbot de preguntas frecuentes tiene valor medio, pero es muy factible. Es como decidir a qué clientes llamar primero un lunes: los que valen mucho y son fáciles de contactar van arriba.","c":false},{"t":"En la A F P, un asistente que responda consultas frecuentes de afiliados es fácil y de valor medio. Un sistema que anticipe traspasos vale más, pero es más complejo.","c":false},{"t":"Ahora, los hitos. Un hito es un entregable verificable que marca el paso de una fase a la siguiente. El curso describe seis, y los recorremos en orden. Primero, la prueba de concepto, cuyo hito es que la predicción alcance una precisión mínima acordada. Segundo, el piloto: en un departamento, por ejemplo tres meses, recogiendo opiniones de los usuarios.","c":false},{"t":"Tercero, iteración y mejora: una versión dos con lo aprendido en el piloto, con una mejora de diez por ciento. Cuarto, despliegue escalonado: extender la solución en oleadas, como cinco sucursales más, capacitando al personal local. Quinto, escala completa, es decir, el cien por ciento de la operación. Y sexto, seguimiento y optimización continua, que nunca termina del todo.","c":false},{"t":"El despliegue escalonado es justamente ese avance en oleadas. Los plazos tentativos del curso son prueba de concepto en dos meses, piloto en seis y despliegue completo en doce, siempre con responsables asignados.","c":false},{"t":"Entre fase y fase hay puntos de decisión go o no go: criterios definidos para escalar, iterar o abortar si no se alcanza el KPI. Cuando todo funciona, viene el roll out, el lanzamiento a la operación completa.","c":false},{"t":"Sobre el equipo. Un equipo multidisciplinario junta ciencia de datos, tecnología, negocio, usuarios que validan y legal. Alguien coordina de punta a punta: el líder de I.A., también llamado Product Owner. Al final el proyecto se traspasa al área usuaria.","c":false},{"t":"La gestión del cambio es la comunicación, capacitación y retroalimentación que logran que las personas adopten la herramienta. Sesiones para despejar temores, como que el chatbot ayuda y no reemplaza a nadie, antes, durante y después del piloto.","c":false},{"t":"Un programa de embajadores, en inglés champion program, suma voluntarios que prueban la herramienta primero y la recomiendan a sus pares. Los proyectos fallan por resistencia humana, no técnica.","c":false},{"t":"Por último, el plan de contingencia prevé qué hacer ante cada riesgo: precisión insuficiente, sesgo, sistemas que no se conectan, sobrecostos. Si faltan datos, se usan datos externos o un modelo más sencillo.","c":false},{"t":"Una nota de discrepancia: el curso cita el reglamento europeo, que se llama GDPR y se dice ge-de-pe-erre. En Chile rige además la normativa local de protección de datos personales, así que conviene revisar cuál aplica.","c":false},{"t":"En la A F P, un piloto podría partir con un equipo de ejecutivos y una parte de la cartera. Y ustedes serían las embajadoras: las primeras en probarlo y las que calman a las dudosas. Y un riesgo claro: usar datos de afiliados sin autorización.","c":false},{"t":"El curso deja otra pregunta: ¿conviene empezar por algo de bajo valor pero fácil, para romper el hielo, o por algo de alto valor pero complejo? La respuesta pasa por equilibrar ganar confianza rápido con no perder el rumbo.","c":false},{"t":"Un buen roadmap parte por una victoria rápida, avanza por hitos con puntos de decisión, y cuenta con un equipo que adopta el cambio.","c":false},{"t":"Capítulo 5. Medir el éxito: cómo saber si funcionó","c":true},{"t":"Medir empieza por traducir los objetivos en pocos KPI reveladores. Para un detector de fraude, la pregunta es qué proporción de fraudes se detecta antes del pago. Para un chatbot: tiempo de resolución, satisfacción y proporción resuelta sin una persona.","c":false},{"t":"El curso recoge una idea de Andrew Ng, figura muy conocida de la I.A.: la métrica única principal. Es un indicador que resume el éxito y enfoca al equipo, y se complementa con algunas métricas de apoyo, siempre en lenguaje de negocio.","c":false},{"t":"Decir que el modelo acierta mucho no sirve. Sirve decir cuántos casos se evitan y cuánto dinero se ahorra. Ojo con la nota del curso: traduce noventa y cinco por ciento de acierto a evitar nueve de cada diez fraudes, pero si casi nadie comete fraude, un modelo puede acertar casi siempre sin detectar ninguno. Quédate con la idea: traducir lo técnico a lenguaje de negocio.","c":false},{"t":"Ahora el antes y el después. La línea base es el valor del KPI antes de usar la I.A., el punto contra el cual comparas. Si un trámite tomaba treinta minutos y ahora toma quince, ese ahorro solo se ve porque alguien anotó los treinta minutos al inicio.","c":false},{"t":"Las metas SMART son metas específicas, medibles, alcanzables, relevantes y con plazo, y se pronuncian esmart. El ejemplo del curso: reducir el inventario ocioso en veinte por ciento en seis meses.","c":false},{"t":"Después viene el monitoreo continuo: medir cada cierto tiempo para detectar desvíos a tiempo. Se apoya en un cuadro de mando, en inglés dashboard, un panel que muestra mes a mes el porcentaje de predicciones correctas frente a la meta.","c":false},{"t":"El ROI se explica en palabras: restas lo que costó a lo que se ganó o ahorró, y comparas eso con lo que costó. El curso da un ejemplo. Una logística ahorra quinientos mil al año y gasta doscientos mil en licencias, personal y equipos. La ganancia neta son trescientos mil, que frente a los doscientos mil invertidos da un retorno de ciento cincuenta por ciento al año.","c":false},{"t":"Existen también los beneficios intangibles, como la satisfacción o la lealtad, que se estiman por aproximación. Y un indicador muy usado es el NPS, que se dice ene-pe-ese, y mide cuánto te recomiendan tus clientes.","c":false},{"t":"En la A F P, la línea base sería cuántos afiliados de tu cartera se traspasaron el último semestre. La meta SMART sería bajar esa cifra en un porcentaje claro dentro de un plazo claro. Y el cuadro de mando sería tu panel semanal.","c":false},{"t":"Los resultados se cuentan por hitos, con un informe ejecutivo que muestre los KPI antes y después. Y con honestidad si algo falla: el curso sugiere decir que el modelo se quedó en ochenta por ciento cuando la meta era noventa, y que se reentrenará en dos meses.","c":false},{"t":"A eso se le llama fracaso controlado: un resultado bajo la meta que deja un aprendizaje útil y una corrección concreta. Los líderes miden. Los proyectos que fracasan, en cambio, no definen indicadores ni seguimiento.","c":false},{"t":"Anota cómo estabas antes, define una meta con plazo, mide seguido y cuenta los resultados con honestidad, incluso cuando no son buenos.","c":false},{"t":"Capítulo 6. Los nueve errores comunes","c":true},{"t":"El curso reúne nueve trampas, cada una con su salida. Conocerlas es la mejor forma de no caer en ellas. Las vamos a recorrer en tres grupos de tres.","c":false},{"t":"Primer grupo. Uno, objetivos difusos o cambiantes. Sin meta clara, el proyecto crece sin control, y eso es el scope creep, que significa expansión descontrolada del alcance. La salida: objetivos claros y estables, como reducir la fuga de clientes en cinco por ciento.","c":false},{"t":"Dos, falta de apoyo interno. El buy-in es el compromiso real de las áreas y la dirección. Si el proyecto es cosa de tecnología y no tiene sponsor, se cae. La salida es sumar stakeholders desde el comienzo y un patrocinador de alto nivel.","c":false},{"t":"Tres, datos de mala calidad o en silos. Aquí rige la regla garbage in, garbage out: si entra basura, sale basura, por bueno que sea el modelo. La salida es preparación de datos, gobernanza, acuerdos entre áreas y un ETL, que significa extraer, transformar y cargar los datos entre sistemas. Y partir con un proyecto chico para ordenar la casa.","c":false},{"t":"Segundo grupo. Cuatro, sobreestimar lo que puede hacer la I.A. Es el hype, o exceso de expectativas, que consiste en querer automatizar todo de la noche a la mañana. La salida: expectativas realistas, como un chatbot que responda las cincuenta preguntas más frecuentes. Prometer menos y entregar más.","c":false},{"t":"Cinco, subestimar la integración. Si las personas deben pasar los resultados a mano, la I.A. queda aislada. La salida es conectarla desde el inicio mediante una API, que se dice a-pi-i y es una conexión entre sistemas, con el ERP, que son los recursos de la empresa, y el CRM, que es la gestión de clientes.","c":false},{"t":"Seis, no planificar la escalabilidad desde el piloto. Lo que sirve con pocos datos puede no aguantar con muchos, ni con más sedes. La salida: tecnologías para gran volumen, diseño modular y documentar el piloto. La frase del curso lo resume: piensa en grande, empieza en pequeño, pero planifica para crecer.","c":false},{"t":"Tercer grupo. Siete, ignorar el cambio y la capacitación. Si las personas no confían, siguen con el método de siempre o incluso lo sabotean. La salida: comunicar beneficios, capacitar, escuchar y apoyarse en embajadores. Una tecnología sin adopción humana es un gasto perdido.","c":false},{"t":"Ocho, no dar continuidad después de implementar. Los modelos se degradan por la deriva de datos, en inglés data drift, que se dice deita draft: los datos que llegan cambian respecto de los de entrenamiento. La salida: soporte continuo, monitoreo, reentrenamiento y revisiones periódicas.","c":false},{"t":"Ojo con una nota: existe también la deriva de concepto, que pasa cuando cambia la relación entre los datos y el resultado. Pero para el examen, la causa que nombra el curso es la deriva de datos.","c":false},{"t":"Nueve, descuidar la ética y el cumplimiento. Un sistema que discrimina, o datos usados sin autorización, generan problemas graves. La salida es la I.A. responsable: ética, auditada y transparente. Hay que auditar el sesgo algorítmico, usar I.A. explicable, en inglés XAI, que dice por qué decidió algo, cumplir las leyes y avisar al usuario de que habla con un asistente virtual.","c":false},{"t":"Hay dos alarmas típicas. El error de arranque: entusiasmo sin plan, objetivos difusos y sin patrocinador. Y el error de después: se logró el piloto, pero nadie se hizo dueño del seguimiento y el modelo se degrada.","c":false},{"t":"En la A F P, una base de afiliados desactualizada es garbage in, garbage out. Si los ejecutivos siguen llamando por intuición, eso es cambio. Si nadie revisa que siga acertando, eso es continuidad. Y si no se conecta con sus pantallas, eso es integración.","c":false},{"t":"Esas trampas explican la curva de la desilusión: el bache posterior al entusiasmo en que muchas iniciativas se abandonan antes de madurar. Quien llega al otro lado es quien tenía plan, datos y gente a bordo.","c":false},{"t":"Una implementación tecnológica sin adopción humana es un gasto perdido.","c":false},{"t":"Capítulo 7. Un caso completo y las tres cosas que te llevas","c":true},{"t":"Vamos a verlo todo junto con AutoPartes123, un caso del curso. Es una empresa mediana que vende piezas automotrices. Su CEO se entusiasmó porque la competencia usa modelos predictivos de inventario. El problema real son piezas y materias primas que se agotan, con envíos urgentes y paradas de la línea de producción. Cada falta es un quiebre de stock. El CEO pide una I.A. que avise antes de quedarse sin stock.","c":false},{"t":"Primero, el diagnóstico. Hoy usan promedios mensuales y ajustes manuales, sin considerar cambios de demanda ni estacionalidad. Lo que falta es visibilidad de la demanda futura y del nivel óptimo de stock. Hay datos de ventas diarias, inventario, tiempos de entrega de proveedores y calendario de promociones.","c":false},{"t":"El jefe de logística es el sponsor, el área de tecnología extrae los datos y producción es la usuaria. La cultura es receptiva y los datos están en silos, pero se pueden integrar. Ojo con una nota: el curso dice que tecnología saca los datos del CRM, pero normalmente el inventario vive en el ERP. Sigue el caso tal como está, y recuerda esa diferencia.","c":false},{"t":"Segundo, el roadmap. Se elige un piloto con las cincuenta piezas más vendidas, que combinan valor y factibilidad. Etapa A: una prueba de concepto de dos meses, con dos años de datos, usando series de tiempo, que son datos ordenados por fecha para pronosticar, y aprendizaje automático, para predecir cuatro semanas.","c":false},{"t":"Etapa B: un piloto de tres meses, en paralelo al sistema actual, con pronósticos semanales que se comparan con lo que se habría hecho. Etapa C: evaluar los KPI, como cantidad de quiebres, inventario medio y satisfacción de producción, y ajustar, por ejemplo sumando el clima.","c":false},{"t":"Tercero, la ejecución. Faltaba un año de datos de una planta que cambió de sistema, así que se estimó con reportes financieros mensuales. Se anticipó un pico de agosto. En el piloto, cada lunes se entregaban las predicciones de cincuenta productos a cuatro semanas.","c":false},{"t":"Los planificadores eran escépticos. Uno siguió su instinto con los tornillos, y en la semana dos faltaron tornillos, lo que ganó confianza. Terminaron combinando el modelo con la experiencia humana, por ejemplo en un pedido especial. Los KPI del piloto: quiebres treinta por ciento menos e inventario promedio quince por ciento menos.","c":false},{"t":"Pero el modelo no predijo una caída fuerte en noviembre, por un paro de transporte. Eso enseña que hacen falta alertas externas y flexibilidad ante eventos que no están en la historia.","c":false},{"t":"Cuarto, el cierre. El piloto evitó ocho paradas de línea y ahorró unos cincuenta mil en costos urgentes, así que el ROI ya es positivo y se recomienda escalar. Cada producto es un SKU, que se dice ese-ka-u, el código único de un producto en inventario. El área de tecnología automatiza las integraciones.","c":false},{"t":"Al cabo de un año: quiebres cuarenta por ciento menos e inventario veinte por ciento menos. Eso además libera capital de trabajo, que es la plata inmovilizada en inventario. Las lecciones son tres: siempre hay factores que no se consideraron, las personas dudan de la máquina, y el primer éxito abre la puerta a la inversión.","c":false},{"t":"El mismo tipo de predicción sirve para el mantenimiento predictivo, que consiste en anticipar las fallas de una máquina antes de que ocurran. Es otro caso donde la I.A. avisa antes de que el problema llegue.","c":false},{"t":"En la A F P, el caso se traspasa igual: diagnóstico, piloto con una parte de la cartera, escépticos que mezclan su olfato con la herramienta, y números claros de afiliados retenidos.","c":false},{"t":"Ahora, si te quedas con tres cosas. Primera: empieza chico, con una victoria rápida. Diagnóstico primero, luego un caso de alto valor y factibilidad razonable, y avanza por PoC, piloto, mejora y escala, con puntos de decisión claros entre cada etapa.","c":false},{"t":"Segunda: las personas deciden el éxito, no solo la tecnología. Apoyo de un sponsor, equipo variado, gestión del cambio, embajadores y datos bien cuidados. Los proyectos fallan por resistencia y por datos, rara vez por el modelo.","c":false},{"t":"Tercera: mide desde el primer día. Anota la línea base, fija metas SMART, sigue un cuadro de mando, calcula el ROI y cuenta los resultados con honestidad. Lo que no se mide, no se mejora.","c":false},{"t":"Cerremos con las ideas clave. Pocas empresas pasan de la prueba a los resultados. Todo parte con un diagnóstico. Se prioriza por valor y factibilidad, y se empieza con una victoria rápida. El roadmap avanza por hitos con puntos go o no go. La I.A. se adopta con personas. Se mide con línea base, metas SMART, cuadro de mando y ROI. Y nueve errores matan proyectos.","c":false},{"t":"Y el caso AutoPartes123 lo muestra completo. Para cerrar, no necesitas ser ingeniera para liderar una idea de I.A. Necesitas lo que ya tienes: pensar en resultados, ojo para los patrones y la costumbre de preguntar cómo vamos a saber que esto funcionó.","c":false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>

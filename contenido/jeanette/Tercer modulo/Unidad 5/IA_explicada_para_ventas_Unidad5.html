@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA explicada para ventas · Unidad 5 · Roadmap de IA y factores de éxito</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial · Unidad 5</p>
+    <h1>De la idea entusiasta a resultados medibles: cómo se arma un plan de IA que de verdad funciona</h1>
+    <p class="lead">Seguro has visto cómo nace una campaña estupenda: todos aplauden en la reunión, se parte con ganas y a los dos meses nadie recuerda cómo iba. Con la inteligencia artificial pasa lo mismo, y con cifras: según el curso, solo el 26% de las empresas logra superar la etapa de prueba y generar valor real. Esta unidad trata de ese camino entre «deberíamos usar IA» y «estamos logrando esto con IA».</p>
+    <p class="lead">Vas a ver cómo se parte con un diagnóstico, cómo se diseña una hoja de ruta, cómo se mide el éxito, qué errores matan los proyectos y cómo se vio todo junto en un caso del curso. Para tenerlo a mano, usaremos un ejemplo hilo: una AFP que quiere una IA para anticipar quiénes se van a traspasar. Es un ejemplo ilustrativo, no una institución real.</p>
+    <span class="nota">No necesitas saber de tecnología ni de matemáticas. Aquí no hay fórmulas: solo criterio comercial aplicado a la IA. Los escenarios de AFP son ejemplos para ilustrar, no datos reales de ninguna institución. El caso de AutoPartes123 sí es el del curso.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>Antes de comenzar: del entusiasmo a la ejecución</a></li>
+      <li><a href="#p2"><span class="n">2</span>Los conceptos clave del curso</a></li>
+      <li><a href="#p3"><span class="n">3</span>Diagnóstico: entender antes de actuar</a></li>
+      <li><a href="#p4"><span class="n">4</span>Diseño del roadmap: por dónde partir y cómo avanzar</a></li>
+      <li><a href="#p5"><span class="n">5</span>Medición de éxito: cómo saber si funcionó</a></li>
+      <li><a href="#p6"><span class="n">6</span>Los nueve errores comunes</a></li>
+      <li><a href="#p7"><span class="n">7</span>Simulación: el caso AutoPartes123</a></li>
+      <li><a href="#p8"><span class="n">8</span>Si te quedas con tres cosas</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- PARTE 1 -->
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">Antes de comenzar</span></div>
+    <h2 class="titulo">Antes de comenzar: del entusiasmo a la ejecución</h2>
+
+    <p>La unidad parte con dos cifras que conviene tener presentes. La primera: <strong>solo el 26%</strong> de las empresas logra superar la etapa de <span class="term">prueba de concepto</span> (el primer experimento, chico y controlado) y generar valor tangible. La segunda: <strong>el 42%</strong> de las empresas abandona la mayoría de sus proyectos de IA antes de tiempo. Dicho simple: muchísimos proyectos nacen con aplausos y mueren a medio camino.</p>
+
+    <h3>¿Para qué estamos aquí?</h3>
+    <p>Para aprender a trazar un <span class="term">roadmap</span> (una hoja de ruta) que lleve una idea hasta resultados concretos, evitando el piloto fallido o la promesa incumplida, y alineando la tecnología con los objetivos del negocio.</p>
+
+    <h3>¿Qué haremos?</h3>
+    <p>Diagnosticar el punto de partida (procesos, datos y cultura) para saber si la organización está lista. Y diseñar la hoja de ruta: elegir casos de uso, priorizarlos por impacto y facilidad, definir pilotos, planificar el escalamiento y armar cronogramas realistas.</p>
+
+    <h3>¿Para qué te servirá?</h3>
+    <p>Para liderar con enfoque estratégico, conocer los factores críticos (técnicos, de organización y de negocio) y esquivar las trampas del 42%. Y sobre todo, para pasar de decir «deberíamos usar IA» a decir «estamos logrando tal resultado con IA», atado a objetivos como aumentar ingresos, reducir costos, mejorar la experiencia del cliente u ordenar la operación.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en la reunión donde la gerencia dice «tenemos que usar IA para retener afiliados». Todos asienten. Pero ¿qué traspasos queremos evitar?, ¿con qué datos?, ¿quién llama a quién?, ¿cómo sabremos en tres meses que sirvió? Quien sabe hacer esas preguntas es la persona que convierte el entusiasmo en resultados. Eso es lo que enseña esta unidad.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">El problema casi nunca es la tecnología: es no tener un plan que lleve la idea hasta el resultado.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 2 -->
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">El vocabulario</span></div>
+    <h2 class="titulo">Los conceptos clave del curso</h2>
+
+    <p>Nueve palabras sostienen toda la unidad. Cada una va dicha en simple y anclada en tu trabajo, usando nuestra AFP imaginaria que quiere anticipar traspasos.</p>
+
+    <h3>El plan y sus etapas</h3>
+    <p>El <span class="term">roadmap de IA</span> es el plan estratégico de implementación: las fases, los hitos y los recursos para integrar IA de a poco. Responde qué proyectos se hacen, en qué orden y con qué objetivos, desde los pilotos hasta el despliegue a gran escala. Es la hoja de ruta que mantiene a todos mirando hacia el mismo lado.</p>
+    <p>La <span class="term">prueba de concepto</span> (PoC, por Proof of Concept) es un experimento inicial, de alcance muy limitado, para comprobar que la idea es técnicamente viable. Por ejemplo, entrenar un modelo con una parte de los datos para ver si logra predecir, aunque sea aproximadamente. El <span class="term">proyecto piloto</span> viene después, si la PoC salió bien: es una implementación pequeña pero en el mundo real, con usuarios reales y datos reales en un área reducida, para probar el valor de negocio en miniatura. Un chatbot en una sola sucursal antes de lanzarlo a todo el país.</p>
+    <p>El <span class="term">MVP</span> (producto mínimo viable) es la versión más simple que ya entrega valor al usuario, con lo mínimo de funciones, para recibir opiniones rápido y mejorar. Un recomendador que, por ejemplo, usa solo las compras más recientes. Sirve para validar supuestos gastando poco.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      La PoC es probar, con datos de un tiempo pasado, si un modelo habría detectado a los afiliados que se traspasaron. El piloto es usarlo de verdad con un equipo chico de ejecutivos y una parte de la cartera. El MVP sería la versión más simple: una lista semanal de afiliados con riesgo, sin nada más. Y el roadmap es el plan que dice cuándo pasar de una etapa a la otra. (Ejemplo ilustrativo.)
+    </div>
+
+    <h3>Cómo se mide y cómo se crece</h3>
+    <p>Los <span class="term">KPI</span> son métricas específicas y cuantificables ligadas a un objetivo: financieras (ingresos, ahorro), operativas (tiempo de respuesta, tasa de error) o de experiencia (satisfacción, uso). El curso da un ejemplo: reducir en un 30% el tiempo promedio de resolución de consultas. Sin KPI, nadie sabe si seguir o escalar.</p>
+    <p>El <span class="term">ROI</span> (retorno de la inversión) compara lo que ganaste o ahorraste con lo que invertiste. Se puede expresar como porcentaje o como una razón entre beneficio y costo, y puede ser directo (más ventas, menos gasto) o indirecto (tiempo ahorrado, riesgos evitados). En el ejemplo del curso, algo que costó 100 mil y ahorró 300 mil tiene un ROI de 200%: la ganancia neta es el doble de lo invertido. Ojo con no mezclar las dos formas de decirlo, porque la razón entre beneficio y costo daría otro número. Calcular el ROI esperado ayuda a priorizar y a justificar.</p>
+    <p>La <span class="term">escalabilidad</span> es la capacidad de extender la solución a más usuarios, datos o procesos sin perder desempeño y con costos razonables. El error típico: funciona en pequeño y no aguanta crecer. Para evitarlo se planifica con nube, prácticas de <span class="term">MLOps</span> (mantener modelos funcionando en producción) y diseño modular.</p>
+    <p>La <span class="term">gobernanza de datos</span> son las políticas, procesos y controles sobre la disponibilidad, calidad, seguridad y uso de los datos: que sean confiables, estén al día, cumplan la regulación de privacidad y estén protegidos. Incluye dueños de datos, estándares y accesos. Los datos separados en islas y sin limpiar son una causa clásica de fracaso.</p>
+    <p>Por último, el <span class="term">AI Implementation Canvas</span> (lienzo de implementación de IA) es una plantilla visual de una sola página, inspirada en el <span class="term">Business Model Canvas</span>. Resume el problema y la propuesta de valor, los ingredientes (datos, habilidades, tecnología), cómo se integra a los procesos y con quién (stakeholders y usuarios) y las finanzas (costos y beneficios). Sirve para detectar puntos débiles antes de partir y para comunicar el proyecto. ⚠️ Nota: el curso promete profundizarlo paso a paso, pero en el material descargable solo aparece su definición; para el examen, quédate con esos bloques.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un KPI sería «bajar los traspasos de la cartera asignada». El ROI sería comparar lo que cuesta la herramienta contra las comisiones y afiliados que dejas de perder. La escalabilidad pregunta si lo que funcionó con un equipo servirá con todo el call center. Y la gobernanza es saber quién cuida los datos de los afiliados y quién autoriza usarlos.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Primero se prueba chico (PoC, piloto, MVP), se mide con KPI y ROI, y desde el comienzo se piensa en crecer y en cuidar los datos.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 3 -->
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">Primer paso</span></div>
+    <h2 class="titulo">Diagnóstico: entender antes de actuar</h2>
+
+    <p>El curso dice algo de sentido común: para resolver algo, primero hay que comprenderlo. Por eso el <span class="term">diagnóstico</span> es la fase inicial que examina el problema, los datos, los recursos y las personas antes de planificar. Y lo importante: pasar de «usemos IA» a algo concreto, como «implementar un sistema que prediga la demanda semanal y reduzca en un 50% las roturas de stock».</p>
+
+    <h3>Paso 1: identificar el problema u oportunidad</h3>
+    <p>Se revisan procesos, <span class="term">puntos de dolor</span> (pain points: las fricciones que cuestan plata o molestan al cliente), objetivos y métricas actuales. Cada <span class="term">caso de uso</span> es un problema concreto que la IA va a abordar. El error clásico es usar IA «porque sí» o porque la competencia lo hace; las empresas que se quedan atrás suelen no tener objetivos comerciales definidos. Un buen enunciado, según el curso: reducir en un 20% las devoluciones mejorando la detección de defectos.</p>
+
+    <h3>Paso 2: disponibilidad y calidad de datos</h3>
+    <p>La <span class="term">calidad de datos</span> es qué tan completos, correctos, actualizados y consistentes están. La mala calidad es la causa principal de fracaso: el curso pone el ejemplo de un algoritmo de ventas con inventario desactualizado. Si faltan datos, se pueden integrar sistemas o crear procesos de recolección; también puede ser necesario limpiar, unificar formatos, armar <span class="term">pipelines de datos</span> (un flujo automático que mantiene la información al día) o incluso posponer el proyecto. Los <span class="term">silos de datos</span> son datos aislados por área, que nadie más puede usar.</p>
+
+    <h3>Paso 3: infraestructura y recursos</h3>
+    <p>Aquí se mira si hay servidores o nube y, sobre todo, talento. Eso se llama <span class="term">evaluación de preparación para IA</span> (AI readiness assessment): medir qué tan lista está la organización. Si falta experiencia técnica, se refuerza el equipo, se asocia con un proveedor o se usa <span class="term">AutoML</span> (herramientas que automatizan gran parte de la construcción de modelos). Si la cultura es tradicional, conviene sensibilizar y capacitar temprano.</p>
+
+    <h3>Paso 4: alineación estratégica y stakeholders</h3>
+    <p>La <span class="term">alineación estratégica</span> es que el proyecto calce con los objetivos de la empresa: si la estrategia es ser más eficientes, una automatización tendrá apoyo. Los <span class="term">stakeholders</span> son las personas o áreas con interés o impacto en el proyecto, y entre ellas destaca el <span class="term">sponsor ejecutivo</span>, el directivo que lo patrocina y consigue recursos. También se mapean las áreas afectadas (TI, legal, operaciones, recursos humanos) y quién se entusiasma o teme, porque ahí empieza la gestión del cambio.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      En la AFP imaginaria, el diagnóstico respondería: el punto de dolor es el traspaso de afiliados a la competencia; los datos son el historial de contactos, cotizaciones y traspasos anteriores; quizá están repartidos entre el call center y el área comercial (silos); la sponsor sería la gerencia comercial; y habría que ver si el equipo confía en una herramienta así. Documentar todo eso deja el punto de partida para medir después. (Ejemplo ilustrativo.)
+    </div>
+
+    <p>El curso plantea una pregunta para pensar: ¿es peor partir con un problema poco relevante pero con muchos datos, o con uno crítico pero sin datos? La respuesta es equilibrar relevancia con disponibilidad.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Antes de tocar la herramienta, responde: qué problema, con qué datos, qué tan preparados estamos y quién está a bordo.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 4 -->
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">El plan</span></div>
+    <h2 class="titulo">Diseño del roadmap: por dónde partir y cómo avanzar</h2>
+
+    <p>No se puede hacer todo a la vez. La <span class="term">priorización de casos de uso</span> es ordenar las iniciativas para elegir por dónde partir, usando dos criterios: el <span class="term">valor potencial</span> (cuánto ganas en ingresos, ahorros o diferenciación) y la <span class="term">factibilidad</span> (qué tan difícil es: madurez de los datos, complejidad técnica, costo, tiempo, dependencias).</p>
+
+    <h3>La matriz y la victoria rápida</h3>
+    <p>La <span class="term">matriz valor vs. factibilidad</span> es un cuadro de dos ejes donde ubicas cada idea según su beneficio y su dificultad. Se parte por lo de alto valor y factibilidad razonable: la <span class="term">victoria rápida</span> (quick win o low hanging fruit), una «batalla inicial ganadora» que muestra resultados en meses, no en años, y sube la confianza. El curso compara: personalizar ofertas tiene valor alto pero es complejo; un chatbot de preguntas frecuentes tiene valor medio pero es muy factible.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Es como decidir a qué clientes llamar primero un lunes. Los que valen mucho y son fáciles de contactar van arriba. Los que valen mucho pero son difícilísimos de ubicar, para después. Así también se elige entre un asistente que responda consultas frecuentes de afiliados (fácil, valor medio) y un sistema que anticipe traspasos (más valioso, más complejo). (Ejemplo ilustrativo.)
+    </div>
+
+    <h3>Los hitos y los plazos</h3>
+    <p>Un <span class="term">hito</span> es un entregable verificable que marca el paso de una fase a la siguiente. El curso describe seis:</p>
+    <ol class="pasos">
+      <li><b>Prueba de concepto.</b> El hito es que la predicción alcance una precisión mínima acordada.</li>
+      <li><b>Piloto.</b> En un departamento, por ejemplo tres meses, recogiendo opiniones de los usuarios.</li>
+      <li><b>Iteración y mejora.</b> Una versión 2.0 con lo aprendido en el piloto, con una mejora de por ejemplo un 10%.</li>
+      <li><b>Despliegue escalonado.</b> Extender la solución en oleadas, como cinco sucursales más, capacitando al personal local.</li>
+      <li><b>Escala completa.</b> El cien por ciento de la operación.</li>
+      <li><b>Seguimiento y optimización continua.</b> Nunca termina del todo.</li>
+    </ol>
+    <p>El <span class="term">despliegue escalonado</span> es justamente ese avance en oleadas. Los plazos tentativos del curso: PoC en dos meses, piloto en seis, despliegue completo en doce, siempre con responsables. Y entre fases hay <span class="term">puntos de decisión go o no-go</span>: momentos con criterios definidos para escalar, iterar o abortar si no se alcanza el KPI. Cuando todo funciona, viene el <span class="term">roll-out</span>, el lanzamiento a la operación completa.</p>
+
+    <h3>El equipo y el cambio</h3>
+    <p>Un <span class="term">equipo multidisciplinario</span> junta ciencia de datos (el modelo), TI (la integración), negocio y usuarios finales (que validan) y legal o seguridad. Alguien debe coordinar todo de punta a punta: el <span class="term">líder de IA</span> o Product Owner. A veces se suman socios externos, y al final el proyecto se traspasa de innovación a TI o al área usuaria, entrenando al equipo que lo recibe.</p>
+    <p>La <span class="term">gestión del cambio</span> es la comunicación, capacitación y retroalimentación que logran que las personas realmente adopten la herramienta: sesiones para despejar temores (el chatbot ayuda, no reemplaza), capacitación y un canal de opiniones, antes del piloto, durante y antes de escalar. Un <span class="term">programa de embajadores</span> (champion program) suma voluntarios que prueban la herramienta primero y la recomiendan a sus pares. El curso insiste: los proyectos fallan por resistencia humana, no técnica. Un roadmap de IA es también un roadmap de cambio cultural.</p>
+    <p>Por último, el <span class="term">plan de contingencia</span> prevé qué hacer ante cada riesgo: precisión insuficiente, problemas éticos o regulatorios como el sesgo, sistemas antiguos que no se conectan, sobrecostos. Por ejemplo, si faltan datos, se usan datos externos o un modelo más sencillo; si los usuarios rechazan la herramienta, se les involucra temprano; si hay riesgo legal, legal revisa la normativa. ⚠️ Nota: el curso cita el reglamento europeo GDPR; en Chile rige además la normativa local de protección de datos personales, así que conviene revisar cuál aplica.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Un piloto de anticipación de traspasos podría partir con un equipo de ejecutivos y una parte de la cartera. Si resulta, se amplía por oleadas a otros equipos. En el camino, ustedes serían las embajadoras: las primeras en probarlo, contar qué funciona y calmar a las dudosas del equipo. Y un riesgo claro: usar datos de afiliados sin la autorización correspondiente. (Ejemplo ilustrativo.)
+    </div>
+
+    <p>Una pregunta del curso para reflexionar: ¿conviene empezar por algo de bajo valor pero fácil, para «romper el hielo», o por algo de alto valor pero complejo? La respuesta pasa por equilibrar el ganar confianza rápido con no perder el rumbo.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Un buen roadmap parte por una victoria rápida, avanza por hitos con puntos de decisión y cuenta con un equipo que adopta el cambio.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 5 -->
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Resultados</span></div>
+    <h2 class="titulo">Medición de éxito: cómo saber si funcionó</h2>
+
+    <p>Hay una frase del curso que vale oro: lo que no se mide, no se mejora. Medir empieza por traducir los objetivos en pocos <span class="term">KPI</span>, pero reveladores. Para un detector de fraude: qué porcentaje de transacciones fraudulentas se detecta antes del pago. Para un chatbot: tiempo promedio de resolución, satisfacción después del chat y porcentaje resuelto sin pasar a una persona.</p>
+
+    <h3>Una métrica principal, con apoyo</h3>
+    <p>El curso recoge la idea de Andrew Ng de una <span class="term">métrica única principal</span>: un indicador que resume el éxito y enfoca al equipo. En la práctica de negocios se usa un conjunto balanceado: la principal más algunas complementarias. Y siempre en lenguaje de negocio. Decir «el modelo acierta mucho» no sirve; sirve decir cuántos casos se evitan y cuánto dinero se ahorra. ⚠️ Nota: el curso traduce «95% de acierto» a «evitar 9 de cada 10 fraudes», pero técnicamente no es lo mismo: si casi nadie comete fraude, un modelo puede acertar casi siempre sin detectar ninguno. Para el examen, quédate con la idea del curso: traducir lo técnico a lenguaje de negocio.</p>
+
+    <h3>El antes y el después</h3>
+    <p>La <span class="term">línea base</span> es el valor del KPI antes de usar la IA, el punto contra el cual comparas. Si un trámite tomaba 30 minutos sin IA y ahora toma 15, ese ahorro solo se ve porque alguien anotó los 30 minutos al inicio, durante el diagnóstico o justo antes. Las <span class="term">metas SMART</span> son metas específicas, medibles, alcanzables, relevantes y con plazo. El ejemplo del curso: reducir el inventario ocioso en un 20% en seis meses.</p>
+
+    <h3>Seguimiento y dinero</h3>
+    <p>El <span class="term">monitoreo continuo</span> es medir cada cierto tiempo para detectar desvíos a tiempo, y se apoya en un <span class="term">cuadro de mando</span> (dashboard): un panel que muestra mes a mes, por ejemplo, el porcentaje de predicciones correctas frente a la meta. Se define quién recoge los datos, con qué frecuencia y quién los recibe, y se automatiza la medición cuando se puede.</p>
+    <p>El ROI se explica en palabras: restas lo que costó a lo que se ganó o ahorró, y eso lo comparas con lo que costó. El ejemplo del curso: una logística ahorra 500 mil al año y gasta 200 mil en licencias, personal y equipos; la ganancia neta son 300 mil, que frente a los 200 mil invertidos da un retorno de 150% al año. También existen los <span class="term">beneficios intangibles</span>, como la satisfacción o la lealtad, que se estiman por aproximación: cuánto sube la retención por cada punto de satisfacción y cuánto vale eso. Y se compara el ROI real contra el esperado. Un indicador de negocio muy usado es el <span class="term">NPS</span>, que mide cuánto te recomiendan tus clientes.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Antes de lanzar la herramienta de anticipación de traspasos, anotarías cuántos afiliados de tu cartera se traspasaron el último semestre: esa es la línea base. La meta SMART sería bajar esa cifra en un porcentaje claro dentro de un plazo claro. El ROI compararía lo que cuesta la herramienta con el valor de los afiliados retenidos. Y el cuadro de mando sería el panel semanal que te muestra cómo vas. (Ejemplo ilustrativo.)
+    </div>
+
+    <h3>Comunicar logros y ajustes</h3>
+    <p>Los resultados se comunican en hitos, con un informe ejecutivo que muestre los KPI antes y después, y testimonios de usuarios. Y con honestidad si algo falla: el curso sugiere decir, por ejemplo, que el modelo se quedó en 80% cuando la meta era 90%, y que se integrarán más datos y se reentrenará en dos meses. A eso se le llama <span class="term">fracaso controlado</span>: un resultado bajo la meta que deja un aprendizaje útil y una corrección concreta. Los líderes miden; los proyectos que fracasan no definen indicadores ni seguimiento.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Anota cómo estabas antes, define una meta con plazo, mide seguido y cuenta los resultados con honestidad, incluso cuando no son buenos.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 6 -->
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Qué evitar</span></div>
+    <h2 class="titulo">Los nueve errores comunes</h2>
+
+    <p>El curso reúne nueve trampas, cada una con su salida. Conocerlas es la mejor forma de no caer.</p>
+
+    <h3>Del uno al tres</h3>
+    <ol class="pasos">
+      <li><b>Objetivos difusos o cambiantes.</b> Sin meta clara, el proyecto crece sin control: eso es el <span class="term">scope creep</span> (expansión descontrolada del alcance). Solución: objetivos claros y estables, como reducir la fuga de clientes en un 5%.</li>
+      <li><b>Falta de apoyo interno.</b> El <span class="term">buy-in</span> es el compromiso real de las áreas y la dirección. Si el proyecto es «cosa de TI» y no tiene sponsor, se cae. Solución: sumar stakeholders desde el comienzo y un patrocinador de alto nivel.</li>
+      <li><b>Datos de mala calidad o en silos.</b> Rige la regla <span class="term">garbage in, garbage out</span>: si entra basura, sale basura, por bueno que sea el modelo. Solución: <span class="term">preparación de datos</span>, gobernanza, acuerdos entre áreas y un <span class="term">ETL</span> (extraer, transformar y cargar los datos entre sistemas), partiendo con un proyecto chico para ordenar la casa.</li>
+    </ol>
+
+    <h3>Del cuatro al seis</h3>
+    <ol class="pasos" start="4">
+      <li><b>Sobreestimar lo que puede hacer la IA.</b> Es el <span class="term">hype</span>, o exceso de expectativas: querer automatizar todo de la noche a la mañana. Solución: expectativas realistas, como un chatbot que responde las 50 preguntas más frecuentes. Prometer menos y entregar más.</li>
+      <li><b>Subestimar la integración.</b> Si las personas deben pasar los resultados a mano, la IA queda aislada. Solución: conectarla desde el inicio mediante una <span class="term">API</span> (una conexión entre sistemas) con los sistemas de gestión como el <span class="term">ERP</span> (recursos de la empresa) y el <span class="term">CRM</span> (clientes).</li>
+      <li><b>No planificar la escalabilidad desde el piloto.</b> Lo que sirve con pocos datos puede no aguantar con muchos, ni con más sedes. Solución: tecnologías para gran volumen, diseño modular y documentar el piloto. «Piensa en grande, empieza en pequeño, pero planifica para crecer.»</li>
+    </ol>
+
+    <h3>Del siete al nueve</h3>
+    <ol class="pasos" start="7">
+      <li><b>Ignorar el cambio y la capacitación.</b> Si las personas no confían, siguen con el método de siempre o incluso lo sabotean. Solución: comunicar beneficios, capacitar, escuchar y apoyarse en embajadores. Una tecnología sin adopción humana es un gasto perdido.</li>
+      <li><b>No dar continuidad después de implementar.</b> Los modelos se degradan, por ejemplo por la <span class="term">deriva de datos</span> (data drift): los datos que llegan cambian respecto de los que se usaron para entrenar. Sin un dueño, se abandona. Solución: soporte continuo, monitoreo de la precisión, reentrenamiento y revisiones periódicas. ⚠️ Nota: existe también la <span class="term">deriva de concepto</span>, cuando cambia la relación entre los datos y el resultado. Para el examen, la causa que nombra el curso es la deriva de datos.</li>
+      <li><b>Descuidar la ética y el cumplimiento.</b> Un sistema de selección que discrimina o datos usados sin autorización generan problemas graves. Solución: <span class="term">IA responsable</span> (ética, auditada y transparente), auditar el <span class="term">sesgo algorítmico</span> (resultados injustos para un grupo), usar <span class="term">IA explicable</span> (XAI, que dice por qué decidió algo), cumplir las leyes y avisar al usuario, por ejemplo, que lo atiende un asistente virtual.</li>
+    </ol>
+
+    <div class="alarma">
+      <div class="a fa">
+        <div class="h">Error típico de arranque</div>
+        <p>Entusiasmo sin plan: objetivos difusos, datos sin revisar y sin patrocinador. Todo se ve bien hasta que aparecen los primeros problemas.</p>
+      </div>
+      <div class="a fn">
+        <div class="h">Error típico de después</div>
+        <p>Se logró el piloto, pero nadie se hizo dueño del seguimiento: el modelo se degrada y las personas vuelven a lo de siempre.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Si la herramienta de traspasos usa una base de afiliados desactualizada (garbage in, garbage out), si los ejecutivos no confían y siguen llamando por intuición (cambio), o si nadie revisa que siga acertando cuando cambian las condiciones del mercado (continuidad), el proyecto fracasa aunque la idea fuera buena. Y si no sirve a nadie en el call center porque no se conecta con sus pantallas (integración), tampoco. (Ejemplo ilustrativo.)
+    </div>
+
+    <p>Esas trampas explican la <span class="term">curva de la desilusión</span>: el bache posterior al entusiasmo en que muchas iniciativas se abandonan antes de madurar. Quien llega al otro lado es quien tenía plan, datos y gente a bordo.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Una implementación tecnológica sin adopción humana es un gasto perdido.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 7 -->
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">Un caso completo</span></div>
+    <h2 class="titulo">Simulación: el caso AutoPartes123</h2>
+
+    <p>AutoPartes123 es una empresa mediana que vende piezas automotrices. Su CEO se entusiasmó porque la competencia usa modelos predictivos de inventario. El problema real: piezas y materias primas que se agotan, con envíos urgentes y paradas de la línea de producción. Cada falta es un <span class="term">quiebre de stock</span>. El CEO pide: una IA que avise cuándo nos vamos a quedar sin stock, antes de que pase.</p>
+
+    <h3>1. Diagnóstico</h3>
+    <p>Hoy usan promedios mensuales y ajustes manuales, sin considerar cambios de demanda ni estacionalidad. Lo que falta es visibilidad de la demanda futura y del nivel óptimo de stock; el objetivo es minimizar los quiebres y los sobrecostos. Hay datos de ventas diarias, inventario, tiempos de entrega de proveedores y calendario de promociones. El jefe de logística es el sponsor, TI extrae los datos y producción es la usuaria. La cultura es receptiva y los datos están en silos, pero se pueden integrar. (⚠️ Nota: el curso dice que TI saca los datos del CRM; normalmente el inventario vive en el ERP. Sigue el caso tal como está, y recuerda esa diferencia.)</p>
+
+    <h3>2. El roadmap</h3>
+    <p>Se elige un piloto con las 50 piezas más vendidas, que combinan valor y factibilidad. Etapa A: una PoC de dos meses con dos años de datos, usando <span class="term">series de tiempo</span> (datos ordenados por fecha, para pronosticar) y aprendizaje automático, para predecir cuatro semanas. Etapa B: un piloto de tres meses, en paralelo al sistema actual, con pronósticos semanales que se comparan con lo que se habría hecho. Etapa C: evaluar KPI (cantidad de quiebres, inventario medio y satisfacción de producción) y ajustar, por ejemplo sumando el clima. Etapa D: extender a todos los productos y automatizar con el sistema de compras en seis meses, con roles claros, sesiones quincenales con planificación y una presentación final al CEO con el ROI. Horizonte total: un año.</p>
+
+    <h3>3. La ejecución</h3>
+    <p>Faltaba un año de datos de una planta que cambió de sistema, y se estimó con reportes financieros mensuales. Se anticipó un pico de agosto. En el piloto, cada lunes se entregaban las predicciones de 50 productos a cuatro semanas. Los planificadores eran escépticos: uno siguió su instinto con los tornillos y en la semana dos faltaron tornillos, lo que ganó confianza. Terminaron combinando el modelo con la experiencia humana, por ejemplo en un pedido especial. Los KPI del piloto: quiebres 30% menos e inventario promedio 15% menos. Pero el modelo no predijo una caída fuerte en noviembre por un paro de transporte: hacen falta alertas externas y flexibilidad ante eventos que no están en la historia.</p>
+
+    <h3>4. El cierre</h3>
+    <p>El piloto evitó 8 paradas de línea y ahorró unos 50 mil en costos urgentes, de modo que el ROI del piloto ya es positivo, y se recomienda escalar. TI automatiza las integraciones en cuatro a seis meses, se contrata un científico de datos junior y se prepara manual y capacitación para todos los productos (cada uno es un <span class="term">SKU</span>, el código único de un producto en inventario). Al cabo de un año: quiebres 40% menos e inventario 20% menos, lo que además libera <span class="term">capital de trabajo</span>, la plata inmovilizada en inventario. Lecciones: siempre hay factores que no se consideraron, las personas dudan de la máquina, y el primer éxito abre la puerta a la inversión.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Traspasa el caso a la AFP imaginaria: diagnóstico del dolor y de los datos; piloto con una parte de la cartera; escépticos que mezclan su olfato con la herramienta (y a veces tienen razón); una sorpresa que el modelo no vio, como un cambio de reglas o una campaña de la competencia; y un cierre con números claros de afiliados retenidos y costo. (Ejemplo ilustrativo.)
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La máquina y la experiencia humana se complementan: el primer éxito, bien medido, abre la puerta al siguiente.</div>
+    </div>
+  </section>
+
+  <!-- PARTE 8 -->
+  <section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">Para llevarte</span></div>
+    <h2 class="titulo">Si te quedas con tres cosas</h2>
+
+    <ol class="pasos">
+      <li><b>Empieza chico, con una victoria rápida.</b> Primero el diagnóstico, luego un caso de alto valor y factibilidad razonable, y avanza por PoC, piloto, mejora y escala, con puntos de decisión claros entre cada etapa.</li>
+      <li><b>Las personas deciden el éxito, no solo la tecnología.</b> Apoyo de un sponsor, equipo variado, gestión del cambio, embajadores y datos bien cuidados. Los proyectos fallan por resistencia y por datos, rara vez por el modelo.</li>
+      <li><b>Mide desde el primer día.</b> Anota la línea base, fija metas SMART, sigue un cuadro de mando, calcula el ROI y cuenta los resultados con honestidad. Lo que no se mide, no se mejora.</li>
+    </ol>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section class="parte reveal" id="glosario">
+    <div class="kicker"><span class="num">★</span><span class="tag">Glosario</span></div>
+    <h2 class="titulo">Las palabras clave, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Roadmap de IA</dt><dd>El plan por fases, hitos y recursos para incorporar IA de a poco, desde pilotos hasta escala.</dd>
+        <dt>Prueba de concepto (PoC)</dt><dd>Un experimento chico y acotado para comprobar que la idea es técnicamente posible.</dd>
+        <dt>Proyecto piloto</dt><dd>La prueba a pequeña escala en el mundo real, con usuarios y datos reales, para ver el valor de negocio en miniatura.</dd>
+        <dt>Producto mínimo viable (MVP)</dt><dd>La versión más simple que ya entrega valor y sirve para mejorar con opiniones reales.</dd>
+        <dt>KPI</dt><dd>Una medida concreta y cuantificable ligada a un objetivo del negocio.</dd>
+        <dt>ROI</dt><dd>Lo que ganaste o ahorraste comparado con lo que invertiste, una vez restado el costo.</dd>
+        <dt>Escalabilidad</dt><dd>Poder crecer en usuarios, datos o procesos sin perder rendimiento y con costos razonables.</dd>
+        <dt>Gobernanza de datos</dt><dd>Las reglas, roles y controles sobre disponibilidad, calidad, seguridad y uso de los datos.</dd>
+        <dt>Lienzo de implementación de IA</dt><dd>Una plantilla de una página que resume problema, valor, ingredientes, integración, stakeholders y finanzas.</dd>
+        <dt>Business Model Canvas</dt><dd>El lienzo de modelo de negocio en que se inspira el lienzo de IA.</dd>
+        <dt>MLOps</dt><dd>Las prácticas para poner en marcha, vigilar y mantener modelos funcionando en la operación.</dd>
+        <dt>Arquitectura en la nube</dt><dd>La infraestructura flexible de cómputo y almacenamiento que facilita crecer.</dd>
+        <dt>Diagnóstico</dt><dd>La fase inicial que examina problema, datos, recursos y personas antes de planificar.</dd>
+        <dt>Caso de uso</dt><dd>El problema u oportunidad concreta de negocio que la IA va a abordar.</dd>
+        <dt>Punto de dolor</dt><dd>Una fricción de un proceso que cuesta plata o molesta al cliente.</dd>
+        <dt>Calidad de datos</dt><dd>Qué tan completos, correctos, actualizados y consistentes están los datos.</dd>
+        <dt>Silos de datos</dt><dd>Datos aislados por área o sistema, que otros no pueden usar.</dd>
+        <dt>Pipeline de datos</dt><dd>El flujo automático que trae, procesa y mantiene al día los datos.</dd>
+        <dt>Evaluación de preparación para IA</dt><dd>Medir qué tan lista está la organización en datos, tecnología, talento y cultura.</dd>
+        <dt>AutoML</dt><dd>Herramientas que automatizan gran parte de la construcción de modelos.</dd>
+        <dt>Stakeholder</dt><dd>Persona o área con interés o impacto en el proyecto.</dd>
+        <dt>Sponsor ejecutivo</dt><dd>El directivo que patrocina el proyecto, lo defiende y consigue recursos.</dd>
+        <dt>Alineación estratégica</dt><dd>Que el proyecto calce con los objetivos del plan de la empresa.</dd>
+        <dt>Priorización de casos de uso</dt><dd>Ordenar las ideas según valor y factibilidad para elegir por dónde partir.</dd>
+        <dt>Matriz valor vs. factibilidad</dt><dd>Un cuadro de dos ejes que ubica cada idea según beneficio y dificultad.</dd>
+        <dt>Valor potencial</dt><dd>El beneficio esperado si el caso funciona: ingresos, ahorros o diferenciación.</dd>
+        <dt>Factibilidad</dt><dd>Qué tan difícil es hacerlo funcionar: datos, complejidad, costo, tiempo y dependencias.</dd>
+        <dt>Victoria rápida</dt><dd>Un caso de alto valor y dificultad razonable que muestra resultados en meses.</dd>
+        <dt>Hito</dt><dd>Un entregable verificable que marca el paso de una fase a otra.</dd>
+        <dt>Despliegue escalonado</dt><dd>Extender la solución en oleadas a más unidades, sucursales o casos.</dd>
+        <dt>Punto de decisión go o no-go</dt><dd>El momento con criterios definidos para escalar, iterar o abortar.</dd>
+        <dt>Equipo multidisciplinario</dt><dd>Datos, TI, negocio y legal trabajando juntos con roles claros.</dd>
+        <dt>Líder de IA (Product Owner)</dt><dd>Quien coordina el proyecto de punta a punta.</dd>
+        <dt>Gestión del cambio</dt><dd>Comunicación, capacitación y opiniones para lograr que las personas adopten la herramienta.</dd>
+        <dt>Programa de embajadores</dt><dd>Voluntarios que prueban primero la herramienta y la recomiendan a sus pares.</dd>
+        <dt>Plan de contingencia</dt><dd>Lo que se hará frente a cada riesgo previsto.</dd>
+        <dt>Roll-out</dt><dd>El lanzamiento de la solución a toda la operación después del piloto.</dd>
+        <dt>Métrica única principal</dt><dd>Un indicador que resume el éxito y enfoca al equipo.</dd>
+        <dt>Línea base</dt><dd>El valor del KPI antes de la IA, para comparar después.</dd>
+        <dt>Metas SMART</dt><dd>Metas específicas, medibles, alcanzables, relevantes y con plazo.</dd>
+        <dt>Cuadro de mando</dt><dd>El panel donde se siguen los KPI del proyecto.</dd>
+        <dt>Monitoreo continuo</dt><dd>Medir cada cierto tiempo para detectar desvíos y corregir a tiempo.</dd>
+        <dt>Beneficios intangibles</dt><dd>Mejoras indirectas, como satisfacción o lealtad, que se estiman por aproximación.</dd>
+        <dt>NPS</dt><dd>Un indicador de cuánto te recomiendan tus clientes.</dd>
+        <dt>Fracaso controlado</dt><dd>Un resultado bajo la meta que deja un aprendizaje útil y una corrección concreta.</dd>
+        <dt>Scope creep</dt><dd>El alcance que crece sin control y desdibuja el objetivo.</dd>
+        <dt>Buy-in</dt><dd>El compromiso real de las áreas y la dirección con el proyecto.</dd>
+        <dt>Garbage in, garbage out</dt><dd>Si entran datos malos, salen resultados malos, por bueno que sea el modelo.</dd>
+        <dt>Preparación de datos</dt><dd>Limpiar, unificar y transformar los datos antes de modelar.</dd>
+        <dt>ETL</dt><dd>El proceso de extraer, transformar y cargar datos entre sistemas.</dd>
+        <dt>Hype</dt><dd>Sobreestimar lo que la IA puede hacer y lo rápido que lo hace.</dd>
+        <dt>API</dt><dd>Una conexión entre sistemas que evita pasos manuales.</dd>
+        <dt>ERP y CRM</dt><dd>Los sistemas de gestión de la empresa y de clientes, donde debe integrarse la IA.</dd>
+        <dt>Deriva de datos</dt><dd>Cuando los datos que llegan cambian y el modelo empieza a fallar.</dd>
+        <dt>Deriva de concepto</dt><dd>Cuando cambia la relación entre los datos y el resultado y el modelo queda obsoleto.</dd>
+        <dt>IA responsable</dt><dd>Usar la IA de forma ética, auditada, transparente y legal.</dd>
+        <dt>IA explicable (XAI)</dt><dd>Técnicas para entender por qué el modelo tomó una decisión.</dd>
+        <dt>Sesgo algorítmico</dt><dd>Resultados sistemáticamente injustos para un grupo, heredados de los datos o del diseño.</dd>
+        <dt>GDPR</dt><dd>El reglamento europeo de protección de datos personales que cita el curso.</dd>
+        <dt>Quiebre de stock</dt><dd>Quedarse sin un producto o insumo cuando se necesita.</dd>
+        <dt>Mantenimiento predictivo</dt><dd>Anticipar las fallas de una máquina antes de que ocurran.</dd>
+        <dt>Series de tiempo</dt><dd>Datos ordenados por fecha que sirven para pronosticar.</dd>
+        <dt>SKU</dt><dd>El código único de cada producto en inventario.</dd>
+        <dt>Capital de trabajo</dt><dd>La plata inmovilizada en la operación, como el inventario, que se libera al reducirlo.</dd>
+        <dt>Curva de la desilusión</dt><dd>El bache posterior al entusiasmo en que muchas iniciativas se abandonan antes de madurar.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="cierre reveal">
+    <h2>Las ideas clave de la unidad</h2>
+    <ol>
+      <li><strong>Pocas empresas pasan de la prueba a los resultados:</strong> el 26% supera la PoC y el 42% abandona la mayoría de sus proyectos de IA.</li>
+      <li><strong>Todo parte con un diagnóstico:</strong> problema claro, datos de calidad, recursos, talento y stakeholders alineados.</li>
+      <li><strong>Se prioriza por valor y factibilidad,</strong> y se comienza con una victoria rápida.</li>
+      <li><strong>El roadmap avanza por hitos:</strong> PoC, piloto, mejora, despliegue escalonado, escala y seguimiento, con puntos de decisión go o no-go.</li>
+      <li><strong>La IA se adopta con personas:</strong> equipo variado, un líder, gestión del cambio y embajadores.</li>
+      <li><strong>Se mide con línea base, metas SMART, un cuadro de mando y ROI,</strong> y se cuenta con honestidad lo que salió bien y lo que no.</li>
+      <li><strong>Nueve errores matan proyectos:</strong> objetivos difusos, falta de apoyo, datos malos, hype, mala integración, escala olvidada, cambio ignorado, falta de continuidad y descuido ético.</li>
+      <li><strong>El caso AutoPartes123 lo muestra completo,</strong> del diagnóstico al ROI, incluida la lección de combinar modelo y experiencia humana.</li>
+    </ol>
+    <p class="remate">No necesitas ser ingeniera para liderar una idea de IA. Necesitas lo que ya tienes: pensar en resultados, ojo para los patrones y la costumbre de preguntar «¿cómo vamos a saber que esto funcionó?» antes de empezar.</p>
+  </section>
+
+</main>
+
+<footer>
+  Una guía para llevar una idea de IA hasta resultados medibles, paso a paso. Unidad 5 · Tercer módulo.
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>

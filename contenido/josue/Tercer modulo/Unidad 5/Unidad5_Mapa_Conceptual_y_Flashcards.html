@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 5 · Roadmap de IA y factores de éxito — Mapa conceptual y flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Tecnologías de Inteligencia Artificial para Negocios · Máster en IA</div>
+  <h1>Unidad 5 · <b>Roadmap de IA y factores de éxito</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 65 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">Ocho puntos donde el material del curso se queda corto, está desactualizado o simplifica lo que dice la fuente. Dominar ambas versiones te cubre cualquier variante de pregunta en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> Recursos truncados (canvas, RetailMax, video)</h3>
+      <p>Curso: promete profundizar el AI Implementation Canvas «paso a paso», trae hitos interactivos, el caso RetailMax con actividad y guía, el video del profesor y su PDF. Evidencia: ninguno de esos contenidos viene en el PDF descargable; el canvas solo se define.</p>
+      <div class="regla"><b>Regla:</b> Para el canvas responde con los bloques de la definición del curso (problema y propuesta de valor, ingredientes, integración y stakeholders, finanzas); para RetailMax, entra a la versión online.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> «95% de acierto = evitar 9 de cada 10 fraudes»</h3>
+      <p>Curso: traduce el accuracy a fraudes evitados. Evidencia: con clases desbalanceadas (fraude ≈ 1%), un modelo que nunca marca fraude tiene 99% de accuracy y evita 0 fraudes; lo que indica cuántos fraudes se atrapan es el recall (sensibilidad).</p>
+      <div class="regla"><b>Regla:</b> Si preguntan por la idea del curso, responde «traducir métricas técnicas a lenguaje de negocio». Si preguntan técnicamente, accuracy no es fraudes detectados.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> Data drift vs. concept drift</h3>
+      <p>Curso: «cambios en patrones de datos, concepto de data drift». Evidencia: data drift = cambia la distribución de las entradas; concept drift = cambia la relación entrada→salida. El paro de transporte es más bien un evento fuera de distribución.</p>
+      <div class="regla"><b>Regla:</b> En el examen, la causa de degradación que nombra el curso es data drift; si distinguen, usa ambos términos.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> GDPR como normativa de referencia</h3>
+      <p>Curso: cita el GDPR como normativa a cumplir. Evidencia: el GDPR es el reglamento europeo; en Chile rigen la Ley 19.628 y la Ley 21.719 (publicada en dic-2024, con vigencia programada para el 1-dic-2026 y propuestas de postergación en discusión; verificar antes de citar la fecha).</p>
+      <div class="regla"><b>Regla:</b> Responde «revisar cumplimiento de GDPR u otras normativas» y, si el caso es chileno, menciona la Ley 21.719.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> Las cifras de fracaso</h3>
+      <p>Curso: «solo el 26% logra superar la PoC», «42% abandona la mayoría», «80% fracasan». Evidencia: BCG (oct-2024) mide que 26% tiene capacidades para pasar de PoC a valor tangible; S&amp;P Global (2025) reporta 42% (vs. 17% en 2024) y 46% de PoC desechadas; el 80% proviene de RAND (2024).</p>
+      <div class="regla"><b>Regla:</b> Usa las cifras del curso tal cual y atribúyelas a BCG, S&amp;P Global y RAND si piden fuente.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> ROI: porcentaje vs. razón beneficio/costo</h3>
+      <p>Curso: ROI «en porcentaje o en una razón beneficio/costo», con el ejemplo $100K → $300K = 200%. Evidencia: 200% es el ROI neto (300−100)/100; la razón beneficio/costo da 3,0, no 2,0. Mezclar ambas induce error.</p>
+      <div class="regla"><b>Regla:</b> ROI = (beneficio − costo) / costo; si piden la razón beneficio/costo, calcula beneficio/costo.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> Andrew Ng: playbook y métrica única</h3>
+      <p>Curso: cinco pasos «ejecutar pilotos, construir equipos, desarrollar estrategia de datos». Evidencia: los cinco pasos del playbook de Ng (2018) son ejecutar pilotos, construir un equipo interno, capacitación amplia, desarrollar una estrategia de IA (la de datos va dentro) y comunicaciones. La métrica única viene de Machine Learning Yearning.</p>
+      <div class="regla"><b>Regla:</b> Cita los cinco pasos reales si los piden enumerados.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">08</span> CRM vs. ERP en AutoPartes123</h3>
+      <p>Curso: TI «extrae datos del CRM» para el inventario. Evidencia: ventas, inventario y compras viven normalmente en el ERP; el CRM gestiona clientes.</p>
+      <div class="regla"><b>Regla:</b> Sigue el caso como está; si te preguntan dónde viven los datos de inventario, responde ERP.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 5 — Roadmap de IA y factores de éxito» · Curso: Tecnologías de Inteligencia Artificial para Negocios · Archivo autocontenido, funciona sin internet</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u3theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Unidad 5"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"Conceptos clave"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Diagnóstico"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Diseño del roadmap"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"Medición de éxito"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"Errores comunes"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Simulación AutoPartes123"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Contexto y recursos"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Unidad 5"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"Conceptos clave"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Diagnóstico"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Diseño del roadmap"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"Medición de éxito"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"Errores comunes"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Simulación AutoPartes123"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Contexto y recursos"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+ "id": "root",
+ "t": "ROADMAP DE IA Y FACTORES DE ÉXITO",
+ "c": "root",
+ "d": "Unidad 5 del tercer módulo: trazar un roadmap de IA que vaya de la idea a resultados medibles, evitando pilotos fallidos y promesas incumplidas. Recorre los conceptos clave, el diagnóstico previo, el diseño del roadmap, la medición de éxito, los errores comunes, la simulación AutoPartes123 y los recursos. La idea central es pasar de «deberíamos usar IA» a «estamos logrando X con IA».",
+ "k": [
+  {
+   "t": "Conceptos clave",
+   "c": "azul",
+   "d": "Definiciones base del roadmap: qué es un roadmap de IA, la diferencia entre PoC y piloto, MVP, KPIs, ROI, escalabilidad, gobernanza de datos y el AI Implementation Canvas. Son el vocabulario que se usa en todo el resto de la unidad.",
+   "e": "se organiza en",
+   "k": [
+    {
+     "id": "roadmap",
+     "t": "Roadmap de IA",
+     "c": "azul",
+     "d": "Plan estratégico de implementación con fases, hitos y recursos para integrar la IA de forma incremental: qué proyectos, en qué orden y con qué objetivos. Va de pilotos a despliegues a escala y sirve como hoja de ruta para alinear y mantener el rumbo. Es la idea que organiza toda la unidad.",
+     "e": "define"
+    },
+    {
+     "id": "poc",
+     "t": "PoC",
+     "c": "azul",
+     "d": "Experimento inicial de alcance limitado que valida la viabilidad técnica en un caso muy acotado, por ejemplo entrenar un modelo con un subconjunto de datos para ver si predice aproximadamente. Es el primer hito del roadmap. El curso cita que solo el 26% logra superar esta etapa y generar valor tangible.",
+     "e": "valida con"
+    },
+    {
+     "id": "piloto",
+     "t": "Proyecto piloto",
+     "c": "azul",
+     "d": "Implementación a pequeña escala en entorno real, con usuarios reales o datos en producción en un área reducida, para evaluar el desempeño en condiciones operativas. Sigue a una PoC exitosa. Prueba el valor de negocio en miniatura, por ejemplo un chatbot en una sola sucursal o región, antes del lanzamiento global.",
+     "e": "sigue a la PoC"
+    },
+    {
+     "t": "MVP",
+     "c": "azul",
+     "d": "Producto mínimo viable: la versión más simple y funcional que ya entrega valor al usuario, con el mínimo de funciones y feedback rápido. Ejemplo del curso: un recomendador que usa solo las compras más recientes. Valida supuestos con mínima inversión y sirve de base para iterar.",
+     "e": "es la base de"
+    },
+    {
+     "id": "kpis",
+     "t": "KPIs",
+     "c": "azul",
+     "d": "Métricas específicas y cuantificables: financieras (ingresos, ahorro), operativas (tiempo de respuesta, tasa de error) y de experiencia (satisfacción, uso). Ejemplo del curso: «reducción del tiempo promedio de resolución de consultas en un 30%». Sin KPIs no se sabe si continuar o escalar; el curso lo atribuye a ORSYS.",
+     "e": "se miden con"
+    },
+    {
+     "id": "roi",
+     "t": "ROI",
+     "c": "azul",
+     "d": "Compara beneficios o ahorros contra la inversión, en porcentaje o como razón beneficio/costo. Fórmula: ROI = (Beneficio − Costo) / Costo × 100. Ejemplo del curso: costó $100K y los ahorros fueron $300K, lo que da ROI 200%. Puede ser directo (ventas, gastos) o indirecto (tiempo ahorrado, mitigación de riesgos), y el ROI proyectado sirve para priorizar y justificar.",
+     "e": "se calcula con"
+    },
+    {
+     "id": "escala",
+     "t": "Escalabilidad",
+     "c": "azul",
+     "d": "Capacidad de extender la solución a más usuarios, datos o procesos sin perder performance ni eficacia y con incrementos razonables de costo. Error común: funciona en pequeño y no se sostiene. Se planifica con nube, prácticas MLOps y diseño modular.",
+     "e": "exige planificar"
+    },
+    {
+     "id": "gobernanza",
+     "t": "Gobernanza de datos",
+     "c": "azul",
+     "d": "Políticas, procesos y controles sobre disponibilidad, calidad, seguridad y uso de los datos, para que sean confiables, actualizados, cumplan la regulación de privacidad y estén protegidos. Incluye roles (dueños de datos), estándares, accesos y corrección de sesgos e inconsistencias. Silos y falta de limpieza llevan al fracaso, según Plain Concepts; es un pilar fundamental.",
+     "e": "es un pilar"
+    },
+    {
+     "t": "AI Implementation Canvas",
+     "c": "azul",
+     "d": "Plantilla visual de una página, inspirada en el Business Model Canvas, que resume el problema y la propuesta de valor, los ingredientes (datos, habilidades, tecnología), la integración en procesos y con quiénes (stakeholders y usuarios), y las finanzas (costos y beneficios). Detecta puntos débiles antes de iniciar y facilita comunicar el proyecto. El curso promete profundizarlo paso a paso, pero el PDF solo lo define (ver discrepancia 01).",
+     "e": "se usa para"
+    }
+   ]
+  },
+  {
+   "t": "Diagnóstico",
+   "c": "verde",
+   "d": "Antes de planear hay que comprender el punto de partida: el problema, los datos, la infraestructura y talento, y los stakeholders. Esta fase se hace antes de planificar y termina en una línea de partida documentada.",
+   "e": "empieza por",
+   "k": [
+    {
+     "t": "Identificar el problema",
+     "c": "verde",
+     "d": "Revisar procesos, pain points, objetivos y métricas actuales para definir qué problema u oportunidad abordará la IA. Ejemplo de valor: «reducir en 20% las devoluciones mejorando la detección de defectos en fábrica». Error: aplicar IA «porque sí» o porque lo hace la competencia; los rezagados suelen carecer de objetivos comerciales definidos.",
+     "e": "se parte por"
+    },
+    {
+     "id": "datos",
+     "t": "Datos: disponibilidad y calidad",
+     "c": "verde",
+     "d": "Verifica si existen los datos y si son suficientes y confiables. Si hay lagunas, se integran sistemas, se compran datasets externos o se crean procesos de recolección. La mala calidad es la causa principal de fracaso; por ejemplo, un algoritmo de ventas con inventario desactualizado. Puede requerir limpiar, unificar formatos, montar pipelines de actualización o posponer el proyecto.",
+     "e": "exige revisar"
+    },
+    {
+     "t": "Infraestructura y talento",
+     "c": "verde",
+     "d": "Evaluación de preparación para IA (AI readiness assessment): servidores, nube y talento. Un terreno fértil tiene infraestructura y perfiles técnicos; los silos sin perfil técnico exigen reforzar o asociarse con un proveedor. Si falta experiencia se recurre a consultoría o AutoML; si la cultura es tradicional, sensibilización y capacitación temprana.",
+     "e": "se mide con"
+    },
+    {
+     "id": "stake",
+     "t": "Alineación y stakeholders",
+     "c": "verde",
+     "d": "Mapear a los actores: el sponsor ejecutivo, que patrocina y asegura recursos, y las áreas impactadas como TI, legal, operaciones y RR.HH., con su apertura o su temor. Una estrategia de eficiencia operativa, por ejemplo, da apoyo a la automatización. Las áreas temerosas indican dónde hará falta gestión del cambio.",
+     "e": "requiere"
+    },
+    {
+     "t": "Resultado del diagnóstico",
+     "c": "verde",
+     "d": "Documento que responde qué problema se resuelve, con qué datos, qué tan preparada está la organización y quién está a bordo. Queda registrado como línea de partida para medir el progreso después.",
+     "e": "entrega"
+    }
+   ]
+  },
+  {
+   "t": "Diseño del roadmap",
+   "c": "ambar",
+   "d": "Cómo se traduce el diagnóstico en un plan: priorizar casos de uso con la matriz valor vs factibilidad, definir hitos y puntos de decisión, conformar el equipo, gestionar el cambio y prever riesgos.",
+   "e": "se traduce en",
+   "k": [
+    {
+     "id": "matriz",
+     "t": "Priorizar: matriz valor vs factibilidad",
+     "c": "ambar",
+     "d": "Ordena los casos de uso con dos criterios: valor potencial (ingresos, ahorros, diferenciación) y factibilidad (madurez de datos, complejidad técnica, costo, tiempo, dependencias). Conviene empezar por alto valor con factibilidad razonable. Ejemplo: personalizar ofertas tiene valor alto y complejidad alta, mientras un chatbot de FAQ tiene valor medio y es muy factible.",
+     "e": "se decide con"
+    },
+    {
+     "t": "Victoria rápida",
+     "c": "ambar",
+     "d": "Caso de alto valor y factibilidad razonable (low hanging fruit o quick win) que muestra resultados en meses, no en años. Es la batalla inicial ganadora y aumenta la confianza en el proyecto.",
+     "e": "da"
+    },
+    {
+     "id": "hitos",
+     "t": "Hitos",
+     "c": "ambar",
+     "d": "Entregables verificables que marcan el paso de una fase a otra. El curso propone seis: PoC, piloto, iteración 2.0, despliegue escalonado, escala completa y seguimiento. Cada hito permite que la alta gerencia vea avance concreto en lugar de promesas.",
+     "e": "marca el paso entre fases",
+     "k": [
+      {
+       "t": "1 PoC",
+       "c": "ambar",
+       "d": "Hito: la predicción alcanza una precisión mínima definida. Plazo tentativo de la PoC: 2 meses.",
+       "e": "primer hito"
+      },
+      {
+       "t": "2 Piloto",
+       "c": "ambar",
+       "d": "Piloto en un departamento durante 3 meses, con feedback. El curso también da un plazo tentativo de 6 meses para el piloto.",
+       "e": "luego"
+      },
+      {
+       "t": "3 Iteración 2.0",
+       "c": "ambar",
+       "d": "Versión 2.0 construida con los datos del piloto. El ejemplo del curso habla de una mejora de 10%.",
+       "e": "luego"
+      },
+      {
+       "t": "4 Despliegue escalonado",
+       "c": "ambar",
+       "d": "Extensión en oleadas, por ejemplo 5 sucursales adicionales, capacitando al personal local en cada una. Es el roll-out por etapas.",
+       "e": "luego"
+      },
+      {
+       "t": "5 Escala completa",
+       "c": "ambar",
+       "d": "Llegada al 100% de la operación.",
+       "e": "luego"
+      },
+      {
+       "t": "6 Seguimiento",
+       "c": "ambar",
+       "d": "Seguimiento y optimización continua tras el despliegue.",
+       "e": "al final"
+      }
+     ]
+    },
+    {
+     "t": "Plazos y decisiones go/no-go",
+     "c": "ambar",
+     "d": "Plazos tentativos: PoC 2 meses, piloto 6 meses y despliegue completo 12 meses, con responsables asignados. En cada punto de decisión se definen los criterios de éxito para escalar; si no se alcanza el KPI, se decide entre iterar o abortar. Es el punto de decisión go/no-go.",
+     "e": "con criterios para"
+    },
+    {
+     "t": "Equipo multidisciplinario y AI Lead",
+     "c": "ambar",
+     "d": "Data Science (modelo), TI (integración), negocio y usuarios finales (dominio y validación), y legal o seguridad. Un Líder o Product Owner de IA (AI Lead) coordina el proyecto de punta a punta, con socios externos cuando hagan falta. Al terminar, el proyecto se transfiere de innovación a TI o a la unidad usuaria.",
+     "e": "se conforma con"
+    },
+    {
+     "id": "cambio",
+     "t": "Gestión del cambio y champions",
+     "c": "ambar",
+     "d": "Sesiones para despejar temores (el chatbot ayuda, no reemplaza), capacitación y un canal de feedback, en tres momentos: antes del piloto, durante y antes de escalar. Los proyectos fallan por resistencia humana, no técnica. El champion program reúne voluntarios que prueban la herramienta y la promueven entre sus pares.",
+     "e": "se gestiona con"
+    },
+    {
+     "t": "Riesgos y contingencia",
+     "c": "ambar",
+     "d": "Riesgos típicos: precisión insuficiente, riesgo ético o regulatorio (sesgo), sistema legado y sobrecostos. Mitigación: si faltan datos, usar datos externos o un modelo más sencillo; si los usuarios rechazan, involucrarlos temprano; si hay incumplimiento legal, que legal revise el GDPR u otras normativas.",
+     "e": "se mitiga con"
+    }
+   ]
+  },
+  {
+   "id": "medicion",
+   "t": "Medición de éxito",
+   "c": "violeta",
+   "d": "Cómo se valida el proyecto: KPIs de negocio y una métrica única, línea base, metas SMART, monitoreo con dashboard, cálculo de ROI y beneficios intangibles, y comunicación honesta de logros y fracasos.",
+   "e": "se valida con",
+   "k": [
+    {
+     "t": "KPIs de negocio y métrica única",
+     "c": "violeta",
+     "d": "Traducir objetivos en pocos KPIs reveladores, por ejemplo el % de transacciones fraudulentas detectadas antes del pago o el tiempo promedio de resolución en un chatbot. Andrew Ng recomienda una métrica única principal (precisión del modelo o ahorro neto), complementada en negocios por un conjunto balanceado. La métrica única viene de Machine Learning Yearning.",
+     "e": "se concentra en"
+    },
+    {
+     "t": "Línea base",
+     "c": "violeta",
+     "d": "Valor del KPI antes de la IA, contra el que se mide el impacto. Ejemplo del curso: tickets que tomaban 30 minutos sin IA y ahora toman 15. Se documenta durante el diagnóstico o justo antes de empezar.",
+     "e": "se mide contra"
+    },
+    {
+     "t": "Metas SMART",
+     "c": "violeta",
+     "d": "Metas específicas, medibles, alcanzables, relevantes y con plazo (Specific, Measurable, Achievable, Relevant, Time-bound). Ejemplo del curso: reducir el inventario ocioso en un 20% en los próximos 6 meses gracias a las predicciones de demanda.",
+     "e": "se definen como"
+    },
+    {
+     "t": "Monitoreo y dashboard",
+     "c": "violeta",
+     "d": "Un cuadro de mando (dashboard) actualiza y sigue los KPIs. Se define quién recolecta, con qué frecuencia (diaria, semanal o mensual) y quién recibe. Conviene automatizar la medición, por ejemplo contar cuántas veces el chatbot deriva a un humano, para detectar desvíos a tiempo.",
+     "e": "se sigue en"
+    },
+    {
+     "t": "ROI y beneficios intangibles",
+     "c": "violeta",
+     "d": "Ejemplo logístico del curso: ahorro de $500.000 al año y costo de $200.000 (licencias, personal, hardware), lo que da ROI anual de 150%. Los beneficios intangibles, como satisfacción que lleva a lealtad, se cuantifican por aproximación. Conviene comparar el ROI real con el esperado.",
+     "e": "se calcula con"
+    },
+    {
+     "t": "Comunicar logros y fracasos",
+     "c": "violeta",
+     "d": "Informe ejecutivo con KPI antes y después, testimonios y honestidad si algo falla. Ejemplo: si el modelo no alcanza la precisión objetivo de 90% y queda en 80%, se explica el plan (integrar datos del canal minorista y reentrenar en 2 meses). Lo que no se mide no se mejora; los que fracasan no definen indicadores ni seguimiento.",
+     "e": "se comunica con"
+    }
+   ]
+  },
+  {
+   "t": "Errores comunes",
+   "c": "coral",
+   "d": "Las nueve trampas más frecuentes que amenazan un proyecto de IA, cada una con su solución: alcance difuso, falta de respaldo interno, datos deficientes, hype, integración, escalabilidad, cambio, continuidad y ética.",
+   "e": "se amenaza por",
+   "k": [
+    {
+     "t": "Objetivos difusos y scope creep",
+     "c": "coral",
+     "d": "Objetivos cambiantes o poco claros, y una expansión descontrolada del alcance (scope creep) que desdibuja el objetivo. Solución: objetivos claros y estables, por ejemplo «reducir churn un 5%».",
+     "e": "se evita con"
+    },
+    {
+     "t": "Falta de buy-in",
+     "c": "coral",
+     "d": "Sin apoyo interno (solo TI, sin sponsor) el proyecto no avanza. Buy-in es el compromiso activo de las áreas de negocio y la dirección. Solución: involucrar a los stakeholders desde la concepción, contar con un patrocinador de alto nivel e informar avances; es un proyecto de la empresa, no solo del equipo de datos.",
+     "e": "se evita con"
+    },
+    {
+     "t": "Datos deficientes y silos (GIGO, ETL)",
+     "c": "coral",
+     "d": "Garbage in, garbage out: datos malos producen resultados malos, por bueno que sea el modelo. Se subestima la preparación de datos (data preparation) y las incongruencias aparecen tarde. Soluciones: gobernanza, acuerdos entre áreas, estándares y procesos ETL (extraer, transformar, cargar), y empezar con un proyecto pequeño para limpiar y unificar.",
+     "e": "se evita con"
+    },
+    {
+     "t": "Hype",
+     "c": "coral",
+     "d": "Sobreestimar lo que la IA puede hacer y en cuánto tiempo, como automatizar el 100% de la noche a la mañana o reemplazar un call center en meses. Solución: expectativas realistas que reconozcan limitaciones y sesgos. La consigna del curso es prometer menos y entregar más.",
+     "e": "se evita con"
+    },
+    {
+     "t": "Integración y APIs",
+     "c": "coral",
+     "d": "Subestimar la integración: si los planners exportan los pronósticos a mano, la IA aislada no genera valor. Solución: integrar desde el inicio con TI y usuarios, conectando vía API con el ERP o el CRM.",
+     "e": "se evita con"
+    },
+    {
+     "id": "errescala",
+     "t": "Escalabilidad no planificada",
+     "c": "coral",
+     "d": "No planificar la escala desde el piloto: pasar de 1 millón a 100 millones de datos, el costo de cómputo o el personal para 10 sedes. Solución: tecnologías de volumen, diseño modular y documentar el piloto. Lema del curso: piensa en grande, empieza en pequeño, pero planifica para crecer.",
+     "e": "se evita con"
+    },
+    {
+     "id": "errcambio",
+     "t": "Ignorar la gestión del cambio",
+     "c": "coral",
+     "d": "Los empleados no confían y siguen el método tradicional, o se sienten amenazados y sabotean. Solución: comunicar beneficios, potenciar en lugar de reemplazar (cuando aplique), entrenar, recoger feedback y usar embajadores. Una implementación sin adopción humana es un gasto perdido.",
+     "e": "se evita con"
+    },
+    {
+     "id": "drift",
+     "t": "Continuidad y drift",
+     "c": "coral",
+     "d": "Los modelos se degradan con el data drift (cambio en la distribución de las entradas) y los procesos vuelven a viejas costumbres. Sin dueño, el proyecto se abandona. Solución: soporte continuo, un data scientist que monitoree la precisión y reentrene, soporte a usuarios y revisiones periódicas.",
+     "e": "se evita con"
+    },
+    {
+     "t": "Ética y cumplimiento",
+     "c": "coral",
+     "d": "Descuidar la ética: selección de personal discriminatoria o datos usados sin autorización. Solución: IA responsable, con auditoría de sesgos, IA explicable (XAI), cumplimiento de leyes de privacidad y de IA, y transparencia, por ejemplo avisar que el chat lo atiende un asistente virtual.",
+     "e": "se evita con"
+    }
+   ]
+  },
+  {
+   "t": "Simulación AutoPartes123",
+   "c": "cian",
+   "d": "Caso práctico de una empresa mediana de piezas automotrices que recorre las cuatro etapas: diagnóstico, roadmap top-50, ejecución con sus imprevistos y cierre con resultados.",
+   "e": "se practica en",
+   "k": [
+    {
+     "t": "Diagnóstico del caso",
+     "c": "cian",
+     "d": "Empresa mediana de piezas automotrices cuyo CEO quiere una IA que avise cuándo se quedará sin stock. Hoy hay promedios mensuales y ajuste manual, que no consideran cambios de demanda ni estacionalidad. Objetivo: minimizar quiebres y sobrecostos. Datos: ventas diarias por producto, inventario, tiempos de entrega de proveedores y calendario de promociones; el jefe de logística es sponsor.",
+     "e": "primer paso"
+    },
+    {
+     "t": "Roadmap top-50",
+     "c": "cian",
+     "d": "Piloto con las 50 piezas más vendidas, elegidas por valor y factibilidad. PoC de 2 meses con 2 años de datos y predicción a 4 semanas; piloto de 3 meses en paralelo con pronósticos semanales; luego evaluación de KPIs y despliegue a todos los productos con automatización en 6 meses. Horizonte: un año.",
+     "e": "sigue con"
+    },
+    {
+     "t": "Ejecución (tornillo y paro)",
+     "c": "cian",
+     "d": "Faltó un año de datos de una planta que cambió de sistema, así que se estimó con reportes financieros mensuales. En la semana 2 faltaron tornillos porque un planificador siguió su instinto, lo que dio confianza al modelo; luego se combinó modelo y experticia. El paro de transporte de noviembre no fue predicho, y eso enseña a estar atentos a eventos sin precedente en los datos.",
+     "e": "se enfrenta a"
+    },
+    {
+     "id": "cierre",
+     "t": "Cierre",
+     "c": "cian",
+     "d": "Se evitaron 8 paradas de línea, ahorrando aproximadamente $50K en costos urgentes; el ROI del piloto ya es positivo y se recomienda escalar. Resultado proyectado a un año: quiebres de stock −40% e inventario −20%, liberando capital de trabajo. Un primer éxito abre la inversión.",
+     "e": "termina con"
+    }
+   ]
+  },
+  {
+   "t": "Contexto y recursos",
+   "c": "gris",
+   "d": "Cifras de referencia sobre el fracaso de los proyectos de IA, el caso RetailMax, las lecturas del curso y la curva de la desilusión.",
+   "e": "se apoya en",
+   "k": [
+    {
+     "t": "Cifras de fracaso",
+     "c": "gris",
+     "d": "El curso cita que solo 26% logra superar la PoC y generar valor (BCG 2024, que mide capacidades para generar valor), y que 42% de las empresas abandonó la mayoría de sus iniciativas de IA (S&P Global 2025, frente a 17% en 2024). El 80% de fracasos proviene del informe RAND 2024.",
+     "e": "se citan"
+    },
+    {
+     "t": "RetailMax",
+     "c": "gris",
+     "d": "Caso del piloto al escalamiento que incluye recurso interactivo, PDF de actividad y guía de resolución. Ninguno viene en el PDF descargable; para verlo hay que entrar a la versión online (ver discrepancia 01).",
+     "e": "se resuelve en"
+    },
+    {
+     "t": "Lecturas",
+     "c": "gris",
+     "d": "Obligatorias: Rodríguez (Telefónica, 2024) con cinco factores: conocimiento del negocio, base de conocimiento, viabilidad técnica, validación continua, cultura y ética; y Canorea (Plain Concepts, 2024) con cuatro razones: objetivos poco claros, mala calidad de datos, falta de colaboración y falta de talento. Complementarias: Deloitte (2023), ORSYS (2025), Zawadzki (2019) y Ng (2018).",
+     "e": "incluye"
+    },
+    {
+     "t": "Curva de la desilusión",
+     "c": "gris",
+     "d": "Bache posterior al hype en el que muchas iniciativas se abandonan antes de madurar (trough of disillusionment, del Hype Cycle de Gartner). El resumen final del curso lo plantea como el reto que hay que superar con gobernanza, medición y liderazgo en gestión del cambio.",
+     "e": "es el bache de"
+    }
+   ]
+  }
+ ]
+};
+
+const CROSS = [
+ {
+  "from": "poc",
+  "to": "hitos",
+  "label": "es el primer",
+  "bend": 60
+ },
+ {
+  "from": "kpis",
+  "to": "medicion",
+  "label": "se detallan en",
+  "bend": -60
+ },
+ {
+  "from": "gobernanza",
+  "to": "datos",
+  "label": "resuelve",
+  "bend": 60
+ },
+ {
+  "from": "escala",
+  "to": "errescala",
+  "label": "si se ignora",
+  "bend": -60
+ },
+ {
+  "from": "cambio",
+  "to": "errcambio",
+  "label": "previene",
+  "bend": 60
+ },
+ {
+  "from": "roi",
+  "to": "cierre",
+  "label": "se demuestra en",
+  "bend": -60
+ },
+ {
+  "from": "drift",
+  "to": "gobernanza",
+  "label": "exige",
+  "bend": 60
+ }
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u3theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+  ["fund", "Roadmap de IA", "AI roadmap", "Plan estratégico por fases, hitos y recursos para integrar IA de forma incremental, de pilotos a escala."],
+  ["fund", "Prueba de concepto (PoC)", "Proof of Concept", "Experimento acotado que valida la viabilidad técnica de una idea de IA en entorno controlado."],
+  ["fund", "Proyecto piloto", "Pilot project", "Implementación a pequeña escala en entorno real que prueba el valor de negocio en miniatura."],
+  ["fund", "Producto mínimo viable (MVP)", "Minimum Viable Product", "Versión más simple y funcional que ya entrega valor al usuario y sirve para iterar."],
+  ["fund", "KPI", "Key Performance Indicator", "Métrica específica y cuantificable ligada a un objetivo de negocio (financiera, operativa o de experiencia)."],
+  ["fund", "ROI", "Return on Investment", "(Beneficio − Costo) / Costo; compara lo ganado o ahorrado contra lo invertido."],
+  ["fund", "Escalabilidad", "Scalability", "Capacidad de crecer en usuarios, datos o procesos sin perder desempeño y con costo razonable."],
+  ["fund", "Gobernanza de datos", "Data governance", "Políticas, roles y controles sobre disponibilidad, calidad, seguridad y uso de los datos."],
+  ["fund", "Lienzo de implementación de IA", "AI Implementation Canvas", "Plantilla de una página que resume problema, valor, ingredientes, integración, stakeholders y finanzas."],
+  ["fund", "Business Model Canvas", "Business Model Canvas", "Lienzo de modelo de negocio de nueve bloques en que se inspira el canvas de IA."],
+  ["fund", "MLOps", "Machine Learning Operations", "Prácticas para desplegar, monitorear y mantener modelos en producción de forma repetible."],
+  ["fund", "Arquitectura en la nube", "Cloud architecture", "Infraestructura elástica de cómputo y almacenamiento que facilita escalar."],
+  ["diag", "Diagnóstico", "Assessment", "Fase inicial que examina problema, datos, infraestructura, talento y stakeholders antes de planificar."],
+  ["diag", "Caso de uso", "Use case", "Problema u oportunidad concreta de negocio que la IA va a abordar."],
+  ["diag", "Punto de dolor", "Pain point", "Debilidad o fricción de un proceso que genera costo o insatisfacción."],
+  ["diag", "Calidad de datos", "Data quality", "Grado en que los datos son completos, correctos, actualizados y consistentes."],
+  ["diag", "Silos de datos", "Data silos", "Datos aislados por área o sistema, sin integración ni acceso compartido."],
+  ["diag", "Pipeline de datos", "Data pipeline", "Flujo automatizado que extrae, procesa y actualiza datos para el modelo."],
+  ["diag", "Evaluación de preparación para IA", "AI readiness assessment", "Medición de qué tan lista está la organización (datos, tecnología, talento, cultura)."],
+  ["diag", "AutoML", "Automated Machine Learning", "Herramientas que automatizan la construcción de modelos y bajan la barrera técnica."],
+  ["diag", "Stakeholder", "Stakeholder", "Persona o área con interés o impacto en el proyecto."],
+  ["diag", "Sponsor ejecutivo", "Executive sponsor", "Directivo que patrocina, defiende y asegura recursos al proyecto."],
+  ["diag", "Alineación estratégica", "Strategic alignment", "Coherencia entre el proyecto de IA y los objetivos del plan estratégico."],
+  ["road", "Priorización de casos de uso", "Use case prioritization", "Ordenar iniciativas según valor y factibilidad para elegir por dónde partir."],
+  ["road", "Matriz valor vs. factibilidad", "Value vs. feasibility matrix", "Gráfico de dos ejes que clasifica casos de uso por beneficio y dificultad."],
+  ["road", "Valor potencial", "Potential value", "Beneficio esperado si el caso funciona: ingresos, ahorros, diferenciación."],
+  ["road", "Factibilidad", "Feasibility", "Dificultad de hacerlo funcionar: madurez de datos, complejidad, costo, tiempo, dependencias."],
+  ["road", "Victoria rápida", "Low-hanging fruit / quick win", "Caso de alto valor y factibilidad razonable que muestra resultados en meses."],
+  ["road", "Hito", "Milestone", "Entregable verificable que marca el paso de una fase a otra."],
+  ["road", "Despliegue escalonado", "Phased rollout", "Extensión de la solución en oleadas a más unidades, regiones o casos."],
+  ["road", "Punto de decisión go/no-go", "Go/no-go decision", "Momento con criterios definidos para escalar, iterar o abortar."],
+  ["road", "Equipo multidisciplinario", "Cross-functional team", "Datos, TI, negocio y legal trabajando juntos con roles claros."],
+  ["road", "Líder de IA (Product Owner)", "AI Lead / Product Owner", "Responsable de coordinar el proyecto de punta a punta."],
+  ["road", "Gestión del cambio", "Change management", "Comunicación, capacitación y feedback para lograr la adopción humana."],
+  ["road", "Programa de embajadores", "Champion program", "Voluntarios que prueban la herramienta antes y la promueven entre sus pares."],
+  ["road", "Plan de contingencia", "Contingency / mitigation plan", "Acciones previstas para cada riesgo identificado por etapa."],
+  ["road", "Roll-out", "Roll-out", "Lanzamiento de la solución a la operación después del piloto."],
+  ["kpi", "Métrica única principal", "Single-number evaluation metric", "Un indicador que sintetiza el éxito y enfoca al equipo."],
+  ["kpi", "Línea base", "Baseline", "Valor del KPI antes de la IA, contra el que se mide el impacto."],
+  ["kpi", "Metas SMART", "SMART goals", "Metas específicas, medibles, alcanzables, relevantes y con plazo."],
+  ["kpi", "Cuadro de mando", "Dashboard", "Panel donde se actualizan y siguen los KPIs del proyecto."],
+  ["kpi", "Monitoreo continuo", "Continuous monitoring", "Medición periódica de KPIs para detectar desvíos y corregir a tiempo."],
+  ["kpi", "Beneficios intangibles", "Intangible benefits", "Mejoras indirectas, como satisfacción o lealtad, que se cuantifican por aproximación."],
+  ["kpi", "NPS", "Net Promoter Score", "Indicador de recomendación del cliente usado como KPI de negocio."],
+  ["kpi", "Fracaso controlado", "Controlled failure", "Resultado bajo la meta que deja aprendizaje útil y una corrección concreta."],
+  ["err", "Expansión descontrolada del alcance", "Scope creep", "Crecimiento del alcance sin control que desdibuja el objetivo."],
+  ["err", "Respaldo interno", "Buy-in", "Compromiso activo de las áreas de negocio y la dirección con el proyecto."],
+  ["err", "Basura entra, basura sale", "Garbage in, garbage out", "Datos malos producen resultados malos, por bueno que sea el modelo."],
+  ["err", "Preparación de datos", "Data preparation", "Limpieza, unificación y transformación de los datos antes de modelar."],
+  ["err", "ETL", "Extract, Transform, Load", "Proceso de extraer, transformar y cargar datos entre sistemas."],
+  ["err", "Exceso de expectativas", "Hype", "Sobreestimar lo que la IA puede hacer y en cuánto tiempo."],
+  ["err", "API", "Application Programming Interface", "Interfaz que conecta la IA con otros sistemas sin pasos manuales."],
+  ["err", "ERP / CRM", "Enterprise Resource Planning / Customer Relationship Management", "Sistemas de gestión de recursos y de clientes donde debe integrarse la IA."],
+  ["err", "Deriva de datos", "Data drift", "Cambio en la distribución de los datos de entrada que degrada el modelo."],
+  ["err", "Deriva de concepto", "Concept drift", "Cambio en la relación entre entradas y resultado que vuelve obsoleto el modelo."],
+  ["err", "IA responsable", "Responsible AI", "Principios para usar IA de forma ética, auditada, transparente y legal."],
+  ["err", "IA explicable (XAI)", "Explainable AI", "Técnicas para explicar por qué el modelo tomó una decisión."],
+  ["err", "Sesgo algorítmico", "Algorithmic bias", "Resultados sistemáticamente injustos para un grupo, heredados de datos o diseño."],
+  ["err", "GDPR", "General Data Protection Regulation", "Reglamento europeo de protección de datos personales citado como normativa a cumplir."],
+  ["caso", "Quiebre de stock", "Stockout", "Falta de un producto o insumo cuando se necesita."],
+  ["caso", "Mantenimiento predictivo", "Predictive maintenance", "Predecir fallas de maquinaria antes de que ocurran."],
+  ["caso", "Series de tiempo", "Time series", "Datos ordenados en el tiempo usados para pronosticar demanda."],
+  ["caso", "SKU", "Stock Keeping Unit", "Código único de cada producto en inventario."],
+  ["caso", "Capital de trabajo", "Working capital", "Recursos inmovilizados en la operación, como el inventario, que se liberan al reducirlo."],
+  ["caso", "Curva de la desilusión", "Trough of disillusionment", "Bache posterior al hype en que muchas iniciativas se abandonan antes de madurar."],
+];
+
+const CATS = {
+  fund:{n:"Fundamentos", col:"var(--azul)"},
+  diag:{n:"Diagnóstico", col:"var(--verde)"},
+  road:{n:"Diseño del roadmap", col:"var(--ambar)"},
+  kpi:{n:"Medición y ROI", col:"var(--violeta)"},
+  err:{n:"Errores comunes", col:"var(--coral)"},
+  caso:{n:"Caso y contexto", col:"var(--cian)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>

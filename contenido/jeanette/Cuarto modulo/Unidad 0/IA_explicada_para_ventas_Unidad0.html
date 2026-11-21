@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA explicada para ventas · Unidad 0 · Punto de partida</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<div class="eyebrow">Unidad introductoria · IA agéntica y automatización inteligente de procesos</div>
+<h1>La inteligencia artificial, contada desde la venta</h1>
+<p class="lead">Todos los días tú haces algo que una máquina recién está aprendiendo: miras a un afiliado y presientes si se va a ir a la competencia, a quién llamar primero o qué argumento lo va a convencer. Esta unidad explica cómo la inteligencia artificial intenta hacer eso mismo con datos, y dónde se equivoca.</p>
+<p class="lead">Es la unidad de partida del diplomado: el vocabulario básico para entender todo lo que viene después.</p>
+<span class="nota">No necesitas saber de tecnología. Si sabes vender, ya entiendes la mitad.</span>
+</header>
+
+<nav class="indice"><h2>El recorrido</h2><ol>
+<li><a href="#p1"><span class="n">1</span>Qué es la IA y cómo aprende</a></li>
+<li><a href="#p2"><span class="n">2</span>Las tres formas de aprender</a></li>
+<li><a href="#p3"><span class="n">3</span>Un poco de historia</a></li>
+<li><a href="#p4"><span class="n">4</span>La IA que escribe: generativa y LLM</a></li>
+<li><a href="#p5"><span class="n">5</span>Cómo pedirle bien las cosas</a></li>
+<li><a href="#p6"><span class="n">6</span>Dónde se equivoca</a></li>
+<li><a href="#p7"><span class="n">7</span>Lo que está pasando en 2026</a></li>
+<li><a href="#p8"><span class="n">8</span>De la herramienta al resultado</a></li>
+<li><a href="#p9"><span class="n">9</span>Ética y riesgos</a></li>
+<li><a href="#p10"><span class="n">10</span>Las reglas de la casa: gobernanza</a></li>
+<li><a href="#p11"><span class="n">11</span>El caso Unimarc (SMU)</a></li>
+<li><a href="#p12"><span class="n">12</span>La práctica: enseñarle a una máquina</a></li>
+</ol></nav>
+
+<section class="parte reveal" id="p1">
+<div class="kicker"><span class="num">01</span><span class="tag">Lo básico</span></div>
+<h2 class="titulo">Qué es la IA y cómo aprende</h2>
+<p>La <span class="term">inteligencia artificial</span> (IA) es el conjunto de tecnologías que hacen tareas que normalmente necesitan a una persona: poner atención, razonar, reconocer patrones, entender lenguaje, apoyar decisiones. La definición que usa el curso es la de la <span class="term">OCDE</span>: un sistema de IA mira la información que recibe y, a partir de ella, deduce qué predicción, contenido, recomendación o decisión entregar. Algunos sistemas solo sugieren; otros actúan solos.</p>
+<p>La idea más importante de toda la unidad: la IA <b>no es un programa suelto</b>. Es un <span class="term">sistema sociotécnico</span>, o sea, una mezcla de tecnología, personas, procesos y reglas. Si una de esas piezas falla, el resultado falla, aunque la tecnología sea buenísima.</p>
+<h3>La cadena de cinco eslabones</h3>
+<ol class="pasos">
+<li><b>Datos</b>: la materia prima. Registros, textos, fotos, interacciones. Sin datos buenos y parecidos a la realidad, no hay nada que aprender.</li>
+<li><b>Algoritmo</b>: la receta para buscar patrones. Por sí solo no sabe nada.</li>
+<li><b>Entrenamiento</b>: el algoritmo prueba, se equivoca y se corrige miles de veces hasta que sus predicciones se parecen a lo que pasó de verdad.</li>
+<li><b>Modelo</b>: lo que queda al final, una especie de fórmula afinada que puede aplicarse a casos nuevos.</li>
+<li><b>Inferencia</b>: el momento de uso. El modelo recibe un caso real y entrega su respuesta.</li>
+</ol>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Piensa en una vendedora nueva. Los <b>datos</b> son las fichas de cientos de afiliados que se fueron o se quedaron. El <b>algoritmo</b> es su método para estudiarlas. El <b>entrenamiento</b> son sus primeros meses, equivocándose y aprendiendo. El <b>modelo</b> es el olfato que le queda. La <b>inferencia</b> es cuando le pasan un afiliado nuevo y ella dice: este se va.</p></div>
+<h3>El ejemplo del curso: quién se va a ir</h3>
+<p>Una empresa quiere anticipar qué clientes van a abandonar el servicio, lo que se llama <span class="term">churn</span> o fuga. Junta el historial de uso, reclamos, pagos y antigüedad, y marca quiénes efectivamente se fueron. Entrena el modelo con una parte de esos casos y lo prueba con otra parte que el modelo nunca vio, para saber si de verdad aprendió o solo memorizó. Después, con los clientes actuales, el modelo le pone a cada uno una probabilidad de irse.</p>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Si el modelo dice que un afiliado tiene treinta por ciento de probabilidad de traspasarse y su fondo es grande, vale la pena llamarlo. Si tiene cinco por ciento y retenerlo cuesta caro, quizás no. El modelo te da la probabilidad; <b>la decisión sigue siendo tuya</b>, pesando costos y el riesgo de que el modelo se equivoque.</p></div>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">La IA no decide: estima. Decidir sigue siendo trabajo de personas.</div></div>
+</section>
+
+<section class="parte reveal" id="p2">
+<div class="kicker"><span class="num">02</span><span class="tag">Aprendizaje automático</span></div>
+<h2 class="titulo">Las tres formas de aprender</h2>
+<p>El <span class="term">aprendizaje automático</span> o <span class="term">machine learning</span> es la parte de la IA en que el sistema aprende de ejemplos en vez de que alguien le escriba cada regla. Hay tres maneras principales.</p>
+<div class="duo">
+<div><h3>Supervisado</h3><p>Los ejemplos vienen <b>con la respuesta correcta</b>. El modelo aprende la relación entre los datos y esa respuesta, que se llama <span class="term">etiqueta</span>. Sirve para detectar fraude, estimar ventas futuras o predecir quién no va a pagar.</p></div>
+<div><h3>No supervisado</h3><p>Los ejemplos vienen <b>sin respuesta</b>. El modelo busca solo grupos parecidos, asociaciones o casos raros. El ejemplo típico es la <span class="term">segmentación de clientes</span>.</p></div>
+</div>
+<h3>Por refuerzo</h3>
+<p>El <span class="term">aprendizaje por refuerzo</span> funciona con premios y castigos: el sistema prueba acciones y recibe una señal positiva cuando le va bien. Se usa en problemas de muchos pasos, como encontrar la mejor ruta de despacho.</p>
+<div class="mundo"><div class="lab">En tu mundo</div><p><b>Supervisado</b> es aprender con el historial de traspasos: sabes quién se fue y quién se quedó. <b>No supervisado</b> es ordenar la cartera en grupos sin saber de antemano cuáles hay; la máquina te dice estos se parecen, pero tú decides si ese grupo es el de los jóvenes independientes que conviene llamar. <b>Por refuerzo</b> es tu propia ruta de visitas: pruebas un orden, ves cuál te deja más cierres y vas ajustando.</p></div>
+<h3>Y el famoso deep learning</h3>
+<p>El <span class="term">aprendizaje profundo</span> o <span class="term">deep learning</span> <b>no es una cuarta forma de aprender</b>: es una técnica que se puede usar dentro de cualquiera de las tres. Usa <span class="term">redes neuronales</span> de muchas capas. Las primeras capas ven cosas simples, como bordes en una foto; las del medio arman formas; las últimas reconocen el objeto completo. Profundo se refiere a la cantidad de capas, no a que la máquina entienda profundamente. En 2012 una red llamada <span class="term">AlexNet</span> demostró lo poderoso que era, y hoy es la base del reconocimiento facial, los asistentes de voz y los chatbots.</p>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">Con respuestas, sin respuestas o con premios: así aprende una máquina.</div></div>
+</section>
+
+<section class="parte reveal" id="p3">
+<div class="kicker"><span class="num">03</span><span class="tag">Historia</span></div>
+<h2 class="titulo">Un poco de historia: subidas y caídas</h2>
+<p>La IA no avanzó en línea recta: tuvo épocas de entusiasmo y épocas de desencanto, llamadas <span class="term">inviernos de la IA</span>, cuando la plata se fue porque las promesas no se cumplían.</p>
+<ol class="pasos">
+<li><b>1950, Alan Turing</b> propone el <span class="term">juego de imitación</span>: si una persona conversa a ciegas con una máquina y con un humano y no logra distinguirlos, la máquina pasa la prueba. Cambió la pregunta filosófica de si una máquina puede pensar por una prueba que se puede observar.</li>
+<li><b>1955 y 1956, Dartmouth</b>: cuatro investigadores, McCarthy, Minsky, Rochester y Shannon, inventan el nombre inteligencia artificial en una propuesta de 1955, y en 1956 hacen el taller que funda la disciplina.</li>
+<li><b>Años 50 a 70, IA simbólica</b>: el conocimiento se escribía a mano en reglas. Los <span class="term">sistemas expertos</span> copiaban las reglas de un especialista. Ventaja: siempre podías explicar por qué decidió algo. Problema: en situaciones nuevas o ambiguas no había regla.</li>
+<li><b>Años 80 y 90, métodos estadísticos</b>: en vez de escribir reglas, las máquinas empiezan a sacarlas de los ejemplos. Aquí nace el machine learning moderno.</li>
+<li><b>Años 2010, deep learning</b>: con más datos y computadores más potentes, todo se acelera. <span class="term">AlphaGo</span>, de DeepMind, le gana a campeones del juego Go, mucho más complejo que el ajedrez.</li>
+<li><b>2017, el transformer</b>: un diseño nuevo que permite que la máquina mire todas las palabras de una frase a la vez y decida cuáles importan más entre sí. Eso se llama <span class="term">mecanismo de atención</span> y es la base de ChatGPT, Claude y Gemini.</li>
+<li><b>Hoy, modelos fundacionales</b>: modelos gigantes, entrenados con muchísima información, que sirven para muchas tareas distintas sin entrenarlos de nuevo.</li>
+</ol>
+<div class="mundo"><div class="lab">En tu mundo</div><p>La IA simbólica es el manual de ventas con un guion para cada objeción: claro y explicable, pero se queda corto cuando el cliente sale con algo que no está en el manual. El machine learning es la vendedora con experiencia que aprendió viendo miles de casos.</p></div>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">Primero le escribimos las reglas a la máquina; ahora la máquina las aprende sola.</div></div>
+</section>
+
+<section class="parte reveal" id="p4">
+<div class="kicker"><span class="num">04</span><span class="tag">IA generativa</span></div>
+<h2 class="titulo">La IA que escribe: generativa y LLM</h2>
+<p>La <span class="term">IA generativa</span> no solo analiza: <b>crea</b> textos, imágenes, audio, video y código. No copia un registro de una base de datos; arma una respuesta nueva que suena bien. Y aquí está la frase clave de la unidad: <b>que algo suene creíble no significa que sea verdad</b>.</p>
+<p>Los <span class="term">LLM</span>, modelos de lenguaje de gran tamaño, son la IA generativa especializada en texto. Funcionan prediciendo cuál es el pedacito de texto más probable que viene después. Ese pedacito se llama <span class="term">token</span>, que puede ser una palabra o parte de una palabra. Repitiendo eso cientos de veces, escriben, resumen, traducen y responden.</p>
+<p>Por eso algunos críticos los llaman <span class="term">loros estadísticos</span>: hablan con fluidez combinando patrones, pero eso no prueba que entiendan.</p>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Es como el vendedor que tiene el discurso tan aprendido que lo dice perfecto aunque no sepa la respuesta. Suena seguro, convence, y a veces está inventando. Tú lo detectas porque conoces el producto; con la IA tienes que hacer lo mismo.</p></div>
+<h3>El motor y el auto</h3>
+<p>No hay que confundir el <b>modelo</b> con la <b>aplicación</b>. Un <span class="term">modelo fundacional</span> es el motor. Un <span class="term">asistente conversacional</span> como ChatGPT, Claude, Gemini o Copilot es el auto completo construido sobre ese motor, con seguridad, memoria, búsqueda y herramientas. A un modelo se le puede especializar con instrucciones, con ejemplos, conectándolo a información de la empresa o con <span class="term">ajuste fino</span> (<i>fine-tuning</i>), que el curso compara con un médico general que se especializa en cardiología.</p>
+<h3>Imágenes, audio y agentes</h3>
+<p>La <span class="term">multimodalidad</span> es que la IA entiende y produce varios formatos a la vez: lee la foto de una factura, resume una reunión grabada, analiza un gráfico. Y los <span class="term">agentes de IA</span> son el paso siguiente: no responden una pregunta, sino que reciben un objetivo, planifican los pasos, usan herramientas y los ejecutan. En 2026 todavía se usan poco en las empresas.</p>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Preguntarle a la IA cuál es la comisión de tu AFP es usar un modelo. Decirle revisa mi lista de afiliados, encuentra a los que no han actualizado datos, redacta un correo para cada uno y déjamelos listos para enviar, eso es un agente.</p></div>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">La IA generativa suena convincente siempre; tener razón es otra cosa.</div></div>
+</section>
+
+<section class="parte reveal" id="p5">
+<div class="kicker"><span class="num">05</span><span class="tag">Prompting</span></div>
+<h2 class="titulo">Cómo pedirle bien las cosas</h2>
+<p>El <span class="term">prompt</span> es lo que le escribes a la IA: la instrucción, el contexto y los detalles. Un buen encargo profesional dice seis cosas: el <b>objetivo</b>, el <b>contexto</b>, a <b>quién va dirigido</b>, qué es un <b>buen resultado</b>, las <b>restricciones</b> y el <b>formato</b>.</p>
+<div class="vs">
+<div class="box mal"><b>Así no</b><p>Escríbeme un correo para un cliente.</p></div>
+<div class="box bien"><b>Así sí</b><p>Quiero que un afiliado de 45 años que pidió información de otra AFP se quede. Tiene 12 años con nosotros. Tono cercano, sin presionar, sin prometer rentabilidades. Máximo 100 palabras y que termine ofreciendo una reunión.</p></div>
+</div>
+<h3>El ciclo: pedir, revisar, corregir, mejorar</h3>
+<ol class="pasos">
+<li><b>Formulación</b>: defines lo que quieres y das la primera instrucción.</li>
+<li><b>Evaluación</b>: revisas la respuesta y buscas errores o vacíos.</li>
+<li><b>Retroalimentación</b>: le das el contexto que le falta, lo que solo tú sabes del negocio.</li>
+<li><b>Refinamiento</b>: la IA ajusta, y das otra vuelta.</li>
+</ol>
+<p>Ni el mejor prompt hace que la IA no se equivoque. Siempre hay que verificar, sobre todo cifras, fuentes, normas y decisiones sobre personas. La responsabilidad final es tuya y de la empresa, no de la máquina.</p>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">Pedirle a la IA es como hacer un buen traspaso de cartera: mientras más contexto, menos errores.</div></div>
+</section>
+
+<section class="parte reveal" id="p6">
+<div class="kicker"><span class="num">06</span><span class="tag">Límites</span></div>
+<h2 class="titulo">Dónde se equivoca</h2>
+<p>Hay estudios que muestran beneficios reales: profesionales que escribían con ayuda de IA terminaron más rápido y con mejor calidad, y en atención al cliente la productividad subió, sobre todo en los trabajadores <b>con menos experiencia</b>. Pero tiene límites claros.</p>
+<h3>Las alucinaciones</h3>
+<p>Una <span class="term">alucinación</span> es cuando la IA inventa algo con total seguridad: una fuente que no existe, una cita que nadie dijo, un dato mezclado. No miente a propósito: está hecha para dar una respuesta convincente antes que una precisa.</p>
+<div class="alarma">
+<div class="a fa"><b>Lo que puede pasar</b><p>Le preguntas por una norma de la Superintendencia y te da un número de circular con formato perfecto que no existe.</p></div>
+<div class="a fn"><b>Cómo cuidarte</b><p>Toda cifra, norma o fuente que vayas a usar con un cliente se verifica en la fuente oficial antes de decirla.</p></div>
+</div>
+<h3>Otros límites del día a día</h3>
+<p>Cambia la respuesta si cambias una palabra del prompt; da respuestas distintas a la misma pregunta; puede tener información vieja; a veces razona mal; y puede repetir prejuicios de los datos. El <span class="term">NIST</span>, el organismo de estándares de Estados Unidos, agrega riesgos para la empresa: información falsa o dañina, filtración de datos, uso de material con derechos de autor y la <span class="term">dependencia excesiva</span>, que es dejar de pensar por confiar ciegamente.</p>
+<h3>Cómo trabajar seguro</h3>
+<ol class="pasos">
+<li>Pedir bien, con objetivo, contexto y formato.</li>
+<li>Darle información real y verificada para que se apoye en ella.</li>
+<li>Revisar siempre antes de decidir o publicar.</li>
+<li>Entender que la IA ayuda, pero la responsable eres tú.</li>
+</ol>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">La IA no avisa cuando se equivoca: por eso revisas tú.</div></div>
+</section>
+
+<section class="parte reveal" id="p7">
+<div class="kicker"><span class="num">07</span><span class="tag">Estado del arte</span></div>
+<h2 class="titulo">Lo que está pasando en 2026</h2>
+<p>El <span class="term">estado del arte</span> es lo más avanzado que existe en un momento dado, y en IA cambia cada pocos meses. Hoy la pregunta ya no es si usar IA, sino cuál elegir, cómo conectarla a los sistemas de la empresa y cómo medir si sirve. El curso destaca cinco tendencias:</p>
+<ol class="pasos">
+<li><b>Multimodalidad nativa</b>: un mismo modelo trabaja texto, audio, imagen, video y datos a la vez.</li>
+<li><b>Integración en el trabajo</b>: la IA metida dentro del correo, los documentos y las reuniones, sin salir de tus herramientas.</li>
+<li><b>Agentes</b>: IA que ejecuta tareas completas de varios pasos.</li>
+<li><b>Modelos pequeños</b>: modelos más livianos, baratos y rápidos para tareas específicas.</li>
+<li><b>RAG</b>, que significa <span class="term">generación aumentada por recuperación</span>: antes de responder, la IA busca en los documentos reales de la empresa y se apoya en ellos.</li>
+</ol>
+<div class="mundo"><div class="lab">En tu mundo</div><p>RAG es como responder a un afiliado con el reglamento abierto al lado en vez de responder de memoria. La IA sin RAG contesta lo que recuerda; con RAG primero consulta el documento oficial de la AFP y después contesta.</p></div>
+<h3>La paradoja en números</h3>
+<p>Según el informe de Stanford de 2026, el <b>88 por ciento</b> de las empresas usa IA en alguna área y el <b>70 por ciento</b> usa IA generativa, pero los agentes se usan en <b>menos del 10 por ciento</b> de las funciones. Mucha presencia, poca madurez: cuesta escalar, medir el retorno y controlar lo que actúa solo.</p>
+<h3>Los modelos que compiten</h3>
+<p>Los principales son GPT de OpenAI (el que usa ChatGPT), Gemini de Google, Claude de Anthropic, Llama de Meta (de <span class="term">pesos abiertos</span>, es decir, que la empresa puede descargar y usar en sus propios computadores), Grok de xAI, y otros nuevos como DeepSeek y MiniMax. Se diferencian en razonamiento, redacción, programación, manejo de imágenes y audio, la cantidad de texto que pueden leer de una vez (la <span class="term">ventana de contexto</span>), velocidad y precio. Además hay productos como Copilot, metido en Office y Teams; Meta AI, en las apps de Meta; y Perplexity, que busca y cita fuentes. <b>No hay un modelo mejor para todo</b>: se elige según el problema, la calidad, la privacidad, la integración y el costo.</p>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">No gana el modelo más famoso, gana el que calza con tu problema.</div></div>
+</section>
+
+<section class="parte reveal" id="p8">
+<div class="kicker"><span class="num">08</span><span class="tag">Valor</span></div>
+<h2 class="titulo">De la herramienta al resultado</h2>
+<p>La IA sirve en todas las áreas: para <b>productividad personal</b> (resumir, preparar reuniones, redactar), en <b>marketing y ventas</b> (segmentar, crear variantes de mensajes, analizar la <span class="term">voz del cliente</span>, preparar propuestas), en <b>servicio al cliente</b> (apoyar a los ejecutivos en tiempo real, clasificar consultas), en <b>operaciones</b> (pronosticar demanda, detectar anomalías) y en <b>finanzas</b> (extraer datos, explicar variaciones), siempre con controles.</p>
+<p>Pero el valor real aparece solo cuando la IA se conecta a un proceso concreto y a un <span class="term">KPI</span>, un indicador de negocio claro, medido antes y después. Hay que distinguir <span class="term">productividad</span>, que es cuánto sacas por cada hora o peso invertido, de <span class="term">eficiencia organizacional</span>, que es lograr mejores resultados aprovechando mejor el tiempo, la información y las personas.</p>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Usar IA porque está de moda no es un proyecto. Bajar de cinco a dos días el tiempo para contactar a un afiliado que pidió traspaso, y medir cuántos se retuvieron, sí lo es. Sin el número de antes, nunca vas a poder demostrar que mejoró.</p></div>
+<h3>Las personas primero</h3>
+<p>La <span class="term">adopción tecnológica</span> exige capacitar, rediseñar roles, dar soporte, alinear incentivos y dejar claro qué se puede y qué no. La <span class="term">gestión del cambio</span> acompaña los miedos y resistencias. Y la ventaja de verdad no es tener ChatGPT, que lo tiene cualquiera, sino combinarlo con los datos propios, el conocimiento del equipo y la confianza de los clientes.</p>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">Sin meta medible, la IA es solo entusiasmo.</div></div>
+</section>
+
+<section class="parte reveal" id="p9">
+<div class="kicker"><span class="num">09</span><span class="tag">Ética y riesgos</span></div>
+<h2 class="titulo">Ética y riesgos</h2>
+<p>El curso parte con un caso: una empresa usó IA para filtrar postulantes y, meses después, descubrió que descartaba sistemáticamente a mujeres para cargos técnicos. El modelo hacía exactamente lo que aprendió del historial. El problema no era solo la máquina, sino todo lo que la rodeaba. Por eso la UNESCO pide respetar los derechos humanos, la dignidad, la equidad, la transparencia y la supervisión humana.</p>
+<p>Seis riesgos que toda empresa debe vigilar:</p>
+<ol class="pasos">
+<li><b>Privacidad</b>: meter datos de afiliados en una herramienta pública los expone. Hay que definir qué datos, dónde y con qué contrato, y aplicar la <span class="term">minimización de datos</span>: usar solo lo necesario.</li>
+<li><b>Sesgo y discriminación</b>: el <span class="term">sesgo algorítmico</span> repite desigualdades del pasado. Aunque quites la edad, otras variables la delatan; se llaman <span class="term">variables sustitutas</span>. Hay que medir cómo le va al modelo con cada grupo, no solo el promedio.</li>
+<li><b>Exactitud y dependencia</b>: si la revisión humana se vuelve un timbre automático, no sirve. Quien revisa necesita tiempo, información y poder para decir no.</li>
+<li><b>Transparencia</b>: la persona debe saber cuándo habla con una IA y, en decisiones importantes, por qué se decidió y cómo reclamar.</li>
+<li><b>Propiedad intelectual</b>: lo que genera la IA puede parecerse a material protegido. Revisar antes de publicar y registrar qué se hizo con IA.</li>
+<li><b>Seguridad</b>: la <span class="term">inyección de prompt</span> es esconder órdenes maliciosas en un correo o archivo para que la IA las obedezca. Se combate dando a la IA solo los permisos mínimos, separando pruebas de producción, guardando registros, pidiendo aprobación humana en lo crítico y teniendo un botón de parada.</li>
+</ol>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Si un modelo prioriza a quién ofrecer un producto y le va bien en promedio, pero ignora a los afiliados mayores, eso es sesgo aunque nadie lo haya programado. El promedio bonito esconde al grupo que queda fuera.</p></div>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">El promedio puede verse perfecto mientras alguien queda fuera.</div></div>
+</section>
+
+<section class="parte reveal" id="p10">
+<div class="kicker"><span class="num">10</span><span class="tag">Gobernanza</span></div>
+<h2 class="titulo">Las reglas de la casa: gobernanza</h2>
+<p>La <span class="term">gobernanza de IA</span> son las reglas, responsables y controles con que una empresa decide cómo se desarrolla, se compra y se usa la IA. No es un freno: es lo que permite avanzar rápido sin chocar. Se apoya en marcos como el del <span class="term">NIST</span>, con cuatro funciones, gobernar, mapear, medir y gestionar, y la norma <span class="term">ISO 42001</span>, que lo vuelve un sistema de mejora continua.</p>
+<h3>Cuatro pilares</h3>
+<ol class="pasos">
+<li><b>Roles claros</b>: la gerencia define cuánto riesgo se acepta; el área de negocio es dueña del caso; tecnología revisa datos e integración; legal y seguridad revisan controles; los usuarios aportan la realidad del día a día.</li>
+<li><b>Inventario y clasificación</b>: una lista de todos los usos de IA con su propósito, proveedor, datos y a quién afecta. Una IA para lluvia de ideas es riesgo bajo; una que decide créditos o contrataciones es riesgo alto.</li>
+<li><b>Prueba antes de lanzar</b>: medir exactitud, errores, impacto en distintos grupos, ahorro y costo, y en la IA generativa, si inventa o si se deja manipular.</li>
+<li><b>Decisión formal</b>: alguien firma qué beneficios se esperan, qué riesgos quedan y quién se hace responsable.</li>
+</ol>
+<h3>El mínimo indispensable: siete controles</h3>
+<p>La <span class="term">gobernanza mínima viable</span> exige que cada uso de IA tenga: un propósito y un dueño; datos y herramientas autorizados; una evaluación de riesgo proporcional; <span class="term">revisión humana significativa</span>; indicadores de desempeño; <span class="term">trazabilidad</span>, es decir, poder reconstruir cómo se llegó a un resultado; y un mecanismo para reportar errores o detener el sistema.</p>
+<h3>La ley es el piso, no el techo</h3>
+<p>Europa tiene el <span class="term">Reglamento de IA</span>, que pone más exigencias mientras más daño pueda causar un uso, y prohíbe algunos. En Chile, la <span class="term">Ley 21.719</span> moderniza la protección de datos personales, crea una Agencia de Protección de Datos y exige finalidad, proporcionalidad, seguridad, transparencia y responsabilidad. Sus cambios principales rigen desde el <b>1 de diciembre de 2026</b>.</p>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Para una AFP, que maneja datos personales y de salud previsional, esta ley es directa: si un dato se pidió para tramitar una pensión, no se puede usar para una campaña sin una base legal. El principio de finalidad dice que el dato sirve para lo que se pidió.</p></div>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">Las reglas no frenan la IA: le dan permiso para acelerar.</div></div>
+</section>
+
+<section class="parte reveal" id="p11">
+<div class="kicker"><span class="num">11</span><span class="tag">Caso real</span></div>
+<h2 class="titulo">El caso Unimarc (SMU)</h2>
+<p><b>SMU</b>, dueña de Unimarc, tiene que decidir cada día cuánto mandar de cada producto a cada tienda. En 2025 sus ingresos bajaron 2,4 por ciento, a unos 2,8 billones de pesos, pero su utilidad subió 29,5 por ciento, en parte por eficiencia y productividad.</p>
+<div class="duo">
+<div><h3>Capa que predice</h3><p>Su sistema maneja más de nueve millones de combinaciones de producto y tienda. La precisión del <span class="term">pronóstico de demanda</span> subió de 60 a 85 por ciento. Es aprendizaje supervisado: aprende de las ventas pasadas. Menos productos agotados, menos sobrestock, menos pérdida. Pero hay que vigilar la <span class="term">deriva</span>: cuando el mundo cambia y el modelo sigue prediciendo como antes.</p></div>
+<div><h3>Capa que genera</h3><p>Anunció 80 mil millones de pesos de inversión entre 2026 y 2028, con un marco de IA basado en Gemini Enterprise de Google. Sirve para resumir, responder y redactar, pero trae riesgos de alucinaciones, filtración y dependencia del proveedor.</p></div>
+</div>
+<h3>Cuatro tensiones</h3>
+<p>Velocidad contra control; buen promedio contra errores en tiendas específicas; casarse con un proveedor contra quedar libre; y automatizar contra mantener responsables humanos.</p>
+<h3>Cómo respondió</h3>
+<p>En mayo de 2026 su directorio aprobó una Política Corporativa de IA: solo herramientas autorizadas, un Comité de IA que reporta cada tres meses, clasificación por riesgo, registro de sistemas, monitoreo de sesgos, capacitación y prohibición a los proveedores de usar sus datos para entrenar. Además ataca el <span class="term">Shadow AI</span>: el uso de herramientas de IA por fuera del control de la empresa.</p>
+<div class="mundo"><div class="lab">En tu mundo</div><p>El Shadow AI es el ejecutivo que copia la planilla de afiliados en un chatbot gratuito para que le ayude a priorizar llamadas. Lo hace con buena intención y, sin querer, saca datos personales de la empresa.</p></div>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">Predecir mejor no basta: hay que decidir quién revisa la predicción.</div></div>
+</section>
+
+<section class="parte reveal" id="p12">
+<div class="kicker"><span class="num">12</span><span class="tag">Práctica</span></div>
+<h2 class="titulo">La práctica: enseñarle a una máquina</h2>
+<p>El ejercicio usa <span class="term">Teachable Machine</span>, una herramienta gratuita de Google para entrenar un modelo sin programar. La idea es que una cafetería reconozca tres bebidas: latte, cappuccino y jugo de naranja.</p>
+<ol class="pasos">
+<li>Crear un proyecto de imágenes con tres clases y al menos 20 fotos por clase, variando ángulos, luz y fondos.</li>
+<li>Entrenar, que toma uno o dos minutos, y probar con una foto nueva que el modelo no haya visto.</li>
+<li>Si la confianza es menor a 80 por ciento, agregar 5 fotos más por clase, reentrenar y comparar.</li>
+<li>Comentar en la plataforma con una captura y una reflexión corta sobre la importancia de los datos.</li>
+</ol>
+<div class="mundo"><div class="lab">En tu mundo</div><p>Si todas tus fotos de latte salen en taza blanca y las de cappuccino en taza azul, la máquina aprende a reconocer tazas, no bebidas. Igual que si solo entrenas a un vendedor con clientes fáciles: cuando llega uno difícil, no sabe qué hacer.</p></div>
+<div class="idea"><div class="lab">La idea en una línea</div><div class="frase">La máquina aprende lo que le muestras, también lo que no querías enseñarle.</div></div>
+</section>
+
+<section class="parte reveal glos">
+<h2 class="titulo">Glosario</h2>
+<dl>
+<dt>Inteligencia Artificial (IA)</dt><dd>Conjunto de tecnologías que realizan tareas que normalmente requieren habilidades humanas: atención, cognición, razonamiento y percepción.</dd>
+<dt>Sistema de IA (definición OCDE)</dt><dd>Sistema que infiere, a partir de entradas y objetivos explícitos o implícitos, cómo generar predicciones, contenidos, recomendaciones o decisiones que influyen en entornos físicos o virtuales; varía en autonomía y adaptación.</dd>
+<dt>Sistema sociotécnico</dt><dd>Visión de la IA como conjunto que integra datos, infraestructura, procesos, personas y gobernanza, no solo un algoritmo.</dd>
+<dt>Datos</dt><dd>Hechos, registros, textos, imágenes, sonidos o interacciones relevantes para una tarea; punto de partida de la cadena de la IA.</dd>
+<dt>Algoritmo</dt><dd>Conjunto de instrucciones que define cómo buscar patrones en los datos; por sí solo no &#x27;sabe&#x27; nada.</dd>
+<dt>Entrenamiento</dt><dd>Proceso en que el algoritmo ajusta muchos parámetros internos por prueba y error hasta que sus predicciones se acercan a lo observado.</dd>
+<dt>Parámetros</dt><dd>Números internos del modelo (pesos) que se ajustan durante el entrenamiento y guardan lo aprendido.</dd>
+<dt>Modelo</dt><dd>Representación matemática resultante del entrenamiento, capaz de aplicar lo aprendido a casos nuevos.</dd>
+<dt>Inferencia</dt><dd>Etapa en que un modelo ya entrenado recibe una consulta real y produce una predicción, clasificación o contenido.</dd>
+<dt>Variable objetivo / etiqueta</dt><dd>La respuesta correcta conocida en los datos históricos (ej.: si el cliente abandonó o no) que el modelo supervisado aprende a predecir.</dd>
+<dt>Datos de prueba</dt><dd>Casos que el modelo no vio en el entrenamiento y que sirven para evaluar si generaliza.</dd>
+<dt>Aprendizaje automático</dt><dd>Rama de la IA en que los sistemas mejoran su desempeño a partir de datos sin que cada regla se programe explícitamente.</dd>
+<dt>Aprendizaje supervisado</dt><dd>Enfoque en que los ejemplos incluyen la respuesta correcta y el modelo aprende la relación entre entradas y etiqueta.</dd>
+<dt>Aprendizaje no supervisado</dt><dd>Enfoque sin etiquetas que descubre estructura: grupos, asociaciones o comportamientos atípicos.</dd>
+<dt>Segmentación de clientes</dt><dd>Caso típico no supervisado: agrupar clientes por patrones de compra; los grupos requieren interpretación humana.</dd>
+<dt>Aprendizaje por refuerzo</dt><dd>Enfoque en que un agente aprende interactuando con un entorno y recibiendo recompensas o penalizaciones; útil en problemas secuenciales.</dd>
+<dt>Aprendizaje profundo</dt><dd>Familia de técnicas (no un cuarto enfoque) que usa redes neuronales de muchas capas que extraen patrones cada vez más complejos.</dd>
+<dt>Red neuronal</dt><dd>Arquitectura de capas de unidades que transforman la información recibida de la capa anterior.</dd>
+<dt>AlexNet</dt><dd>Red neuronal profunda que en 2012 superó ampliamente a técnicas previas en reconocimiento de imágenes (Krizhevsky, Sutskever y Hinton).</dd>
+<dt>Prueba de Turing / juego de imitación</dt><dd>Propuesta de Turing (1950): si un evaluador no distingue de forma consistente a la máquina de una persona conversando a ciegas, la máquina supera la prueba.</dd>
+<dt>Encuentro de Dartmouth</dt><dd>Taller de 1956 (propuesta de 1955 de McCarthy, Minsky, Rochester y Shannon) que acuñó &#x27;artificial intelligence&#x27; y formalizó la disciplina.</dd>
+<dt>IA simbólica</dt><dd>Enfoque dominante 1950s–1970s: conocimiento representado con símbolos y reglas explícitas; trazable pero frágil ante ambigüedad.</dd>
+<dt>Sistema experto</dt><dd>Programa que captura reglas de especialistas para apoyar decisiones en dominios acotados (ej.: diagnóstico de una enfermedad).</dd>
+<dt>Invierno de la IA</dt><dd>Período de baja inversión causado por la distancia entre expectativas y resultados.</dd>
+<dt>Métodos estadísticos</dt><dd>Enfoque 1980s–1990s que aprende patrones desde ejemplos en vez de programar reglas; base del machine learning actual.</dd>
+<dt>AlphaGo</dt><dd>Sistema de DeepMind que derrotó a campeones humanos de Go (Silver et al., 2016).</dd>
+<dt>Arquitectura transformer</dt><dd>Diseño de red neuronal de 2017 (&#x27;Attention is all you need&#x27;) basado en atención; procesa secuencias en paralelo y es la base de los LLM.</dd>
+<dt>Mecanismo de atención</dt><dd>Cálculo que pondera qué tan relevante es cada palabra respecto de las demás, sin importar la distancia entre ellas.</dd>
+<dt>Modelo fundacional</dt><dd>Modelo de gran escala entrenado con datos masivos que se adapta a múltiples tareas (ej.: GPT, Gemini, Claude).</dd>
+<dt>IA generativa</dt><dd>Sistemas que producen texto, imágenes, audio, video y código combinando regularidades estadísticas aprendidas; plausible no es veraz.</dd>
+<dt>Modelo de lenguaje de gran tamaño</dt><dd>Modelo generativo especializado en texto y código, entrenado para predecir la secuencia más probable de tokens.</dd>
+<dt>Token</dt><dd>Unidad mínima de lenguaje que procesa un LLM (palabra o fragmento de palabra).</dd>
+<dt>Loro estocástico</dt><dd>Crítica (Bender et al., 2021): los LLM combinan patrones sin comprender su significado; fluidez no es comprensión.</dd>
+<dt>Ajuste fino</dt><dd>Entrenamiento adicional de un modelo fundacional con datos específicos para especializarlo (como un médico general que se hace cardiólogo).</dd>
+<dt>Asistente conversacional</dt><dd>Producto (ChatGPT, Claude, Gemini, Copilot) construido sobre uno o más modelos con capas de seguridad, búsqueda, memoria, herramientas y UX.</dd>
+<dt>Prompt</dt><dd>Instrucción, pregunta, contexto y parámetros que una persona entrega a un sistema de IA generativa para orientar su respuesta.</dd>
+<dt>Ciclo iterativo de prompting</dt><dd>Formulación → evaluación → retroalimentación → refinamiento, repetido hasta lograr el resultado.</dd>
+<dt>Alucinación</dt><dd>Información incorrecta o inventada que el sistema entrega con apariencia de veracidad.</dd>
+<dt>Confabulación</dt><dd>Término del NIST para la generación de información errónea presentada con confianza; sinónimo técnico de alucinación.</dd>
+<dt>Dependencia excesiva</dt><dd>Riesgo de perder sentido crítico al confiar a ciegas en las salidas del sistema.</dd>
+<dt>Multimodalidad</dt><dd>Capacidad de procesar y relacionar a la vez texto, imágenes, audio, video y datos; &#x27;nativa&#x27; si ocurre en un mismo modelo e interacción.</dd>
+<dt>Agente de IA</dt><dd>Sistema que comprende un objetivo, planifica, usa herramientas y ejecuta tareas con relativa autonomía, ajustándose según resultados.</dd>
+<dt>Agentividad</dt><dd>Tendencia 2026: agentes que ejecutan flujos completos de múltiples pasos; su uso empresarial aún es de un dígito.</dd>
+<dt>Modelos pequeños especializados</dt><dd>Modelos ligeros y eficientes para tareas corporativas específicas, con menor costo y latencia.</dd>
+<dt>Generación Aumentada por Recuperación</dt><dd>Técnica en que el modelo consulta documentos y bases reales de la empresa antes de responder.</dd>
+<dt>Ventana de contexto</dt><dd>Cantidad máxima de tokens que un modelo puede considerar en una sola interacción.</dd>
+<dt>Pesos abiertos</dt><dd>Modelos cuyos parámetros se publican para descargarlos y ejecutarlos (ej.: Llama de Meta).</dd>
+<dt>Estado del arte</dt><dd>Nivel más avanzado alcanzado por una tecnología en un momento dado; frontera móvil.</dd>
+<dt>KPI</dt><dd>Métrica de negocio clara que un proyecto de IA debe impactar, medida contra una línea base.</dd>
+<dt>Productividad</dt><dd>Relación directa entre resultados obtenidos y recursos invertidos.</dd>
+<dt>Eficiencia organizacional</dt><dd>Lograr mejores resultados optimizando tiempo, información y capacidades humanas.</dd>
+<dt>Adopción tecnológica</dt><dd>Proceso por el que una organización incorpora una tecnología y logra que sus integrantes la usen efectivamente.</dd>
+<dt>Gestión del cambio</dt><dd>Acompañar la transición cultural, identificar temores y resistencias y convertir una herramienta en capacidad real.</dd>
+<dt>Sesgo algorítmico</dt><dd>Distorsión en los resultados de un sistema de IA producida por los datos, las decisiones de diseño o el contexto de uso.</dd>
+<dt>Variable sustituta</dt><dd>Variable aparentemente neutra que correlaciona con un atributo sensible (ej.: comuna como sustituto de nivel socioeconómico).</dd>
+<dt>Minimización de datos</dt><dd>Usar solo los datos estrictamente necesarios para reducir la exposición.</dd>
+<dt>Explicabilidad</dt><dd>Capacidad de explicar factores, fuentes y criterios de una decisión, adaptada al público (técnico o afectado).</dd>
+<dt>Inyección de prompt</dt><dd>Manipulación mediante instrucciones maliciosas ocultas en entradas o archivos para desviar al modelo o agente.</dd>
+<dt>Privilegios mínimos</dt><dd>Dar a un sistema o agente solo los permisos imprescindibles para su tarea.</dd>
+<dt>Shadow AI</dt><dd>Uso informal de herramientas de IA fuera del control de la organización.</dd>
+<dt>Gobernanza de IA</dt><dd>Políticas, responsabilidades, criterios y mecanismos con que una organización dirige y supervisa el desarrollo, compra y uso de IA.</dd>
+<dt>IA responsable</dt><dd>Enfoque para desarrollar y usar IA de forma segura, ética, transparente y alineada con objetivos y valores de la organización.</dd>
+<dt>Principios UNESCO</dt><dd>Derechos humanos, dignidad, proporcionalidad, seguridad, equidad, transparencia, supervisión humana y responsabilidad (2021).</dd>
+<dt>NIST AI RMF</dt><dd>Marco (NIST, 2023) que organiza la gestión de riesgos en cuatro funciones: gobernar, mapear, medir y gestionar.</dd>
+<dt>Perfil NIST de IA generativa</dt><dd>Documento de 2024 que lista riesgos propios de la IA generativa (confabulación, privacidad, PI, dependencia, etc.).</dd>
+<dt>ISO/IEC 42001:2023</dt><dd>Norma de sistema de gestión de IA basada en mejora continua.</dd>
+<dt>Inventario de sistemas de IA</dt><dd>Registro centralizado de casos de uso con propósito, proveedor, usuarios, datos, autonomía y población afectada.</dd>
+<dt>Riesgo residual</dt><dd>Riesgo que permanece tras aplicar controles; alguien debe aceptarlo formalmente al pasar a producción.</dd>
+<dt>System prompt</dt><dd>Instrucciones base que configura quien despliega el sistema; se prueba su resistencia a instrucciones maliciosas.</dd>
+<dt>Gobernanza mínima viable</dt><dd>Checklist de siete controles mínimos: propósito y dueño, datos autorizados, evaluación proporcional, revisión humana, métricas, trazabilidad y mecanismo de respuesta.</dd>
+<dt>Revisión humana significativa</dt><dd>Supervisión con tiempo, contexto y autoridad real para intervenir; no una aprobación automática.</dd>
+<dt>Trazabilidad</dt><dd>Registro que permite auditar cómo y por qué se generó un resultado.</dd>
+<dt>Enfoque basado en riesgos</dt><dd>Regulación que impone obligaciones según el potencial de daño; la ley es piso, no techo.</dd>
+<dt>Reglamento de IA de la UE</dt><dd>Norma europea con reglas para usos prohibidos, alto riesgo, transparencia y modelos de propósito general.</dd>
+<dt>Ley N.º 21.719</dt><dd>Moderniza la protección de datos en Chile, crea la Agencia de Protección de Datos Personales; vigencia principal 1-dic-2026.</dd>
+<dt>Deriva del modelo</dt><dd>Pérdida de desempeño cuando los datos reales cambian respecto de los de entrenamiento; exige monitoreo (caso SMU).</dd>
+<dt>Pronóstico de demanda</dt><dd>Problema supervisado de estimar ventas futuras desde datos históricos; núcleo de la capa predictiva de SMU.</dd>
+<dt>Teachable Machine</dt><dd>Herramienta web de Google para entrenar clasificadores de imágenes sin código; usada en la práctica de bebidas.</dd>
+</dl>
+</section>
+
+<section class="cierre reveal">
+<h2>Si te quedas con siete cosas</h2>
+<ol>
+<li>La IA es un sistema de datos, tecnología, personas y reglas, no un programa suelto.</li>
+<li>Aprende con respuestas, sin respuestas o con premios; el deep learning es una técnica, no una cuarta forma.</li>
+<li>La IA generativa predice texto: suena convincente aunque se equivoque.</li>
+<li>Un buen prompt tiene objetivo, contexto, público, calidad, restricciones y formato.</li>
+<li>Sin un KPI medido antes y después, no hay forma de saber si la IA sirvió.</li>
+<li>Los riesgos son privacidad, sesgo, exactitud, transparencia, propiedad intelectual y seguridad.</li>
+<li>La gobernanza y la ley son el piso para innovar sin perder el control.</li>
+</ol>
+<p class="remate">La IA estima; tú decides, y tú respondes.</p>
+</section>
+</div>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+</body></html>

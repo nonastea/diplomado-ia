@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Punto de partida: conceptos básicos de la I.A.</title>
+<style>
+  :root{
+    --bg:#FBFAF6; --card:#FFFFFF; --card2:#F1EEE5;
+    --ink:#1C2723; --soft:#5C645E; --green:#0F8A6E; --green-deep:#0B6A55;
+    --amber:#C2772C; --line:#E5E1D6; --hl:#DEF1EA; --done:#AEB6AF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:18px;line-height:1.62;overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{display:flex;flex-direction:column;height:100dvh;max-width:760px;margin:0 auto;background:var(--bg);}
+
+  /* HEADER */
+  header{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green);margin:0 0 4px;}
+  header h1{font-size:1.12rem;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.2px;color:var(--ink);}
+
+  /* TEXTO */
+  #reader{flex:1 1 auto;overflow-y:auto;padding:18px 20px 210px;-webkit-overflow-scrolling:touch;}
+  .seg{margin:0 0 14px;color:var(--soft);transition:color .25s,background .25s;padding:3px 10px;border-radius:9px;cursor:pointer;scroll-margin-top:20px;}
+  .seg.chap{color:var(--ink);font-weight:800;font-size:1.2rem;margin:26px 0 12px;line-height:1.28;}
+  .seg.active{color:var(--ink);background:var(--hl);}
+  .seg.chap.active{background:var(--hl);}
+  .seg.done{color:var(--done);}
+
+  /* CONTROLES */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;
+    background:linear-gradient(180deg,rgba(251,250,246,0) 0%,var(--bg) 24%);
+    padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  }
+  .progress{height:5px;background:var(--card2);border-radius:4px;overflow:hidden;margin:0 2px 12px;}
+  .progress i{display:block;height:100%;width:0;background:var(--green);transition:width .3s;}
+  .ctrls{display:flex;align-items:center;justify-content:center;gap:14px;}
+  button{font-family:inherit;color:var(--ink);border:none;background:var(--card);border-radius:14px;cursor:pointer;}
+  .btn-skip{width:56px;height:56px;font-size:.78rem;font-weight:700;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--line);color:var(--soft);}
+  .btn-skip span{font-size:1.15rem;color:var(--ink);}
+  .btn-play{width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(15,138,110,.30);border:none;}
+  .btn-play:active{transform:scale(.94);}
+  .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;}
+  .pill{background:var(--card);border-radius:12px;padding:9px 12px;font-size:.86rem;color:var(--soft);display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);}
+  .pill b{color:var(--ink);}
+  select{font-family:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:600;max-width:46vw;}
+  .spd{display:flex;gap:6px;}
+  .spd button{padding:8px 11px;font-size:.82rem;font-weight:700;background:var(--card);color:var(--soft);border-radius:10px;border:1px solid var(--line);}
+  .spd button.on{background:var(--green);color:#fff;border-color:var(--green);}
+
+  /* SHEET capitulos */
+  #chapBtn{background:var(--card);border-radius:12px;padding:9px 14px;font-size:.86rem;font-weight:700;color:var(--ink);border:1px solid var(--line);}
+  .sheet{position:fixed;inset:0;background:rgba(28,39,35,.45);display:none;z-index:20;}
+  .sheet.open{display:block;}
+  .sheet-inner{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:0 auto;background:var(--card);border-radius:20px 20px 0 0;max-height:72dvh;overflow-y:auto;padding:10px 0 24px;box-shadow:0 -8px 30px rgba(28,39,35,.14);}
+  .sheet-inner h3{margin:14px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);}
+  .chap-item{padding:14px 22px;font-weight:600;border-top:1px solid var(--line);cursor:pointer;color:var(--ink);}
+  .chap-item:active{background:var(--hl);}
+  .chap-item .cn{color:var(--green);font-weight:800;margin-right:10px;}
+
+  /* TOAST (aviso de "retomando") */
+  .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-12px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .35s,transform .35s;z-index:40;box-shadow:0 6px 20px rgba(28,39,35,.25);pointer-events:none;max-width:86vw;text-align:center;}
+  .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <p class="eyebrow">Audiolibro &middot; Unidad 0 &middot; voz del dispositivo</p>
+    <h1>Punto de partida: conceptos básicos de la I.A.</h1>
+  </header>
+  <div id="reader"></div>
+</div>
+
+<div class="bar">
+  <div class="progress"><i id="pfill"></i></div>
+  <div class="ctrls">
+    <button class="btn-skip" id="prev"><span>&#9664;</span>Anterior</button>
+    <button class="btn-play" id="play">&#9658;</button>
+    <button class="btn-skip" id="next">Siguiente<span>&#9654;</span></button>
+  </div>
+  <div class="row2">
+    <button id="chapBtn">&#9776; Capitulos</button>
+    <div class="spd">
+      <button data-r="0.9">0.9&times;</button>
+      <button data-r="1" class="on">1&times;</button>
+      <button data-r="1.25">1.25&times;</button>
+      <button data-r="1.5">1.5&times;</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="pill">Voz</div>
+    <select id="voice"></select>
+  </div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <h3>Capitulos</h3>
+    <div id="chapList"></div>
+  </div>
+</div>
+
+<script>
+const SEGS = [{"t": "En este rato vas a entender qué es de verdad la inteligencia artificial, cómo aprende, dónde se equivoca y cómo la están usando las empresas en Chile. Y te adelanto algo: muchas de estas ideas ya las aplicas en ventas todos los días, solo que nadie les había puesto nombre.", "c": false}, {"t": "Es la unidad de partida del diplomado, así que la idea es que salgas con el vocabulario básico. Ponte cómoda, que vamos de a poco.", "c": false}, {"t": "Capítulo 1. Qué es la I.A. y cómo aprende", "c": true}, {"t": "Partamos por lo más simple. La inteligencia artificial, que de aquí en adelante voy a llamar I.A., es el conjunto de tecnologías que hacen tareas que normalmente necesitan a una persona. Reconocer patrones, entender lo que alguien escribe, razonar, apoyar una decisión.", "c": false}, {"t": "El curso usa la definición de la O C D E, la organización de países desarrollados. Dice, más o menos, que un sistema de I.A. mira la información que recibe y, a partir de ella, deduce qué entregar: una predicción, un contenido, una recomendación o una decisión. Algunos solo sugieren. Otros actúan solos.", "c": false}, {"t": "Y aquí viene la idea más importante de toda la unidad, así que guárdala. La I.A. no es un programa suelto. Es un sistema sociotécnico. Suena raro, pero quiere decir algo muy simple: es una mezcla de tecnología, personas, procesos y reglas. Si una de esas piezas falla, el resultado falla, aunque la tecnología sea buenísima.", "c": false}, {"t": "Ahora, ¿cómo funciona por dentro? El curso lo explica como una cadena de cinco eslabones. Te los voy a contar con un ejemplo que conoces bien: una vendedora nueva que llega a la A F P.", "c": false}, {"t": "Uno, los datos. Son la materia prima. En nuestro ejemplo, las fichas de cientos de afiliados que se fueron o se quedaron. Sin datos buenos, y parecidos a la realidad, no hay nada que aprender.", "c": false}, {"t": "Dos, el algoritmo. Es la receta, el método para buscar patrones en esas fichas. Ojo con esto: el algoritmo por sí solo no sabe nada. Es como el método de estudio de la vendedora, no lo que ella sabe.", "c": false}, {"t": "Tres, el entrenamiento. Es cuando el algoritmo prueba, se equivoca y se corrige, miles de veces, hasta que sus predicciones se parecen a lo que pasó de verdad. Como los primeros meses de la vendedora, aprendiendo a punta de aciertos y errores.", "c": false}, {"t": "Cuatro, el modelo. Es lo que queda después del entrenamiento: el olfato afinado. Cinco, la inferencia. Es el momento de usarlo. Le pasan un afiliado nuevo y ella dice: este se va. Datos, algoritmo, entrenamiento, modelo, inferencia. Esa es la cadena.", "c": false}, {"t": "El curso da justo un ejemplo de tu mundo: predecir la fuga de clientes, lo que en inglés se llama churn, que se dice chern. La empresa junta el historial de uso, reclamos, pagos y antigüedad, y marca quiénes se fueron. Entrena el modelo con una parte de esos casos y lo prueba con otra parte que el modelo nunca vio, para saber si aprendió de verdad o solo memorizó.", "c": false}, {"t": "Al final, el modelo le pone a cada cliente actual una probabilidad de irse. Y fíjate en el detalle que el curso subraya: esa probabilidad orienta, pero no decide. Si un afiliado tiene treinta por ciento de probabilidad de traspasarse y un fondo grande, vale la pena llamarlo. Si tiene cinco por ciento y retenerlo cuesta caro, quizás no. En una frase: la I.A. no decide, estima. Decidir sigue siendo trabajo de personas.", "c": false}, {"t": "Antes de seguir, un repaso rápido, porque esto es la base de todo. La cadena tiene cinco eslabones: los datos son la materia prima, el algoritmo es la receta, el entrenamiento es la práctica, el modelo es el olfato que queda, y la inferencia es usar ese olfato con un caso nuevo. Si te acuerdas de la vendedora nueva, te acuerdas de la cadena.", "c": false}, {"t": "Capítulo 2. Las tres formas de aprender", "c": true}, {"t": "Ya sabemos que la máquina aprende de datos. Ahora, ¿de qué manera? Esa parte de la I.A. se llama aprendizaje automático, o machine learning, que se dice mashín lerning. Y tiene tres formas principales. Te las cuento con tu cartera.", "c": false}, {"t": "La primera es el aprendizaje supervisado. Aquí los ejemplos vienen con la respuesta correcta. Es como estudiar con el historial de traspasos: sabes quién se fue y quién se quedó, y aprendes qué tenían en común. A esa respuesta conocida se le llama etiqueta. Sirve para detectar fraude, estimar ventas futuras o predecir quién no va a pagar.", "c": false}, {"t": "La segunda es el aprendizaje no supervisado. Aquí los ejemplos vienen sin respuesta. La máquina solo busca grupos de clientes parecidos. Es como ordenar la cartera en montoncitos sin saber de antemano cuáles hay. Y acá está el truco: la máquina te dice estos se parecen, pero eres tú la que decide si ese grupo tiene sentido para el negocio. El ejemplo clásico es la segmentación de clientes.", "c": false}, {"t": "La tercera es el aprendizaje por refuerzo. Funciona con premios y castigos. El sistema prueba algo, y si le va bien recibe una señal positiva. Piensa en tu ruta de visitas: pruebas un orden, ves con cuál cierras más, y vas ajustando. Se usa en problemas de muchos pasos, como encontrar la mejor ruta de despacho.", "c": false}, {"t": "Entonces, tres formas: con respuestas, sin respuestas, o con premios.", "c": false}, {"t": "Y seguro has escuchado hablar del deep learning, que se dice dip lerning, o aprendizaje profundo. Atención, porque aquí está la pregunta trampa del curso. El deep learning no es una cuarta forma de aprender. Es una técnica que se puede usar dentro de cualquiera de las tres.", "c": false}, {"t": "Usa lo que se llama redes neuronales, con muchas capas. Las primeras capas ven cosas simples, como los bordes de una foto. Las del medio arman formas. Las últimas reconocen el objeto completo, un rostro o un auto. Y lo de profundo se refiere a la cantidad de capas, no a que la máquina entienda profundamente. En el año dos mil doce una red llamada AlexNet demostró lo poderoso que era, y hoy esto está detrás del reconocimiento facial, los asistentes de voz y los chatbots.", "c": false}, {"t": "Capítulo 3. Un poco de historia", "c": true}, {"t": "Ya sabemos cómo aprende la I.A. hoy. Pero no siempre fue así, y la historia tiene subidas y caídas. Hubo épocas en que la plata se fue porque las promesas no se cumplían. A esas épocas se les llama inviernos de la I.A.", "c": false}, {"t": "Todo parte en mil novecientos cincuenta con Alan Turing. Propuso un juego: una persona conversa a ciegas con una máquina y con un humano. Si no logra distinguir cuál es cuál, la máquina pasa la prueba. Fue genial porque cambió una pregunta imposible, si una máquina puede pensar, por una prueba que se puede observar.", "c": false}, {"t": "Después, en mil novecientos cincuenta y cinco, cuatro investigadores escribieron una propuesta donde usaron por primera vez el nombre inteligencia artificial. Al año siguiente, en mil novecientos cincuenta y seis, hicieron un taller en la universidad de Dartmouth. Ese encuentro se considera el nacimiento de la disciplina.", "c": false}, {"t": "En los años cincuenta a setenta mandó la llamada I.A. simbólica: el conocimiento se escribía a mano, regla por regla. Piensa en el manual de ventas con un guion para cada objeción. Muy claro, siempre puedes explicar por qué se dijo algo. Pero cuando el cliente sale con algo que no está en el manual, no hay regla. Esa fue su debilidad.", "c": false}, {"t": "En los ochenta y noventa vino el cambio grande: en vez de escribir reglas, las máquinas empezaron a sacarlas de los ejemplos. Ahí nació el machine learning moderno. Como la vendedora con experiencia que ya no necesita el manual porque aprendió viendo miles de casos.", "c": false}, {"t": "En los años dos mil diez llegó el deep learning con fuerza, y un programa llamado AlphaGo le ganó a campeones de Go, un juego mucho más complejo que el ajedrez. En dos mil diecisiete apareció el transformer, un diseño que permite a la máquina mirar todas las palabras de una frase al mismo tiempo y decidir cuáles importan más entre sí. Eso se llama mecanismo de atención, y es la base de ChatGPT, Claude y Gemini.", "c": false}, {"t": "Y hoy estamos en la era de los modelos fundacionales: modelos gigantes, entrenados con muchísima información, que sirven para muchas tareas distintas sin tener que entrenarlos de nuevo. La historia en una frase: primero le escribíamos las reglas a la máquina; ahora la máquina las aprende sola.", "c": false}, {"t": "Fíjate cómo todo calza con lo que vimos al principio. La I.A. simbólica era el manual de reglas. Los métodos estadísticos fueron aprender de ejemplos. Y el deep learning y el transformer son esa misma idea, pero con muchísimos más datos y computadores mucho más potentes.", "c": false}, {"t": "Capítulo 4. La I.A. que escribe, y dónde se equivoca", "c": true}, {"t": "Hasta ahora hablamos de I.A. que predice. Ahora vamos a la que crea, que es la que seguro ya usas. Se llama I.A. generativa, y produce textos, imágenes, audio, video y código.", "c": false}, {"t": "Fíjate en cómo funciona, porque de ahí sale todo lo demás. No busca la respuesta en una base de datos y te la copia. Arma una respuesta nueva que suena bien. Y aquí está la frase más importante de esta parte: que algo suene creíble no significa que sea verdad.", "c": false}, {"t": "Los modelos que escriben se llaman LLM, que se dice ele ele eme, modelos de lenguaje de gran tamaño. Funcionan prediciendo cuál es el pedacito de texto más probable que viene después. A ese pedacito se le llama token. Una palabra, o parte de una palabra. Repiten eso cientos de veces y así escriben, resumen y responden.", "c": false}, {"t": "Por eso algunos críticos les dicen loros estadísticos: hablan con fluidez combinando lo que aprendieron, pero eso no prueba que entiendan. Es como el vendedor que tiene el discurso tan aprendido que lo dice perfecto aunque no sepa la respuesta. Suena seguro, convence, y a veces está inventando.", "c": false}, {"t": "Otra distinción que el curso quiere que tengas clara: no es lo mismo el modelo que la aplicación. El modelo es el motor. ChatGPT, Claude, Gemini o Copilot son el auto completo, construido sobre ese motor, con seguridad, memoria, búsqueda y herramientas. Y a un modelo se le puede especializar, por ejemplo con lo que se llama ajuste fino, que el curso compara con un médico general que se especializa en cardiología.", "c": false}, {"t": "Hay dos novedades más. La multimodalidad, que es cuando la I.A. entiende varios formatos a la vez: lee la foto de una factura, resume una reunión grabada. Y los agentes. Un agente no responde una pregunta; recibe un objetivo, planifica los pasos y los ejecuta. Preguntarle a la I.A. cuál es la comisión de tu A F P es usar un modelo. Decirle revisa mis afiliados sin datos actualizados y déjame un correo listo para cada uno, eso es un agente. En dos mil veintiséis todavía se usan poco en las empresas.", "c": false}, {"t": "Ahora, ¿cómo se le pide bien a la I.A.? Lo que le escribes se llama prompt, que se dice prompt, tal cual. Un buen prompt dice seis cosas. Una, el objetivo. Dos, el contexto. Tres, a quién va dirigido. Cuatro, qué es un buen resultado. Cinco, las restricciones. Y seis, el formato.", "c": false}, {"t": "Compara. Escríbeme un correo para un cliente, eso es un prompt pobre. En cambio: quiero que un afiliado de cuarenta y cinco años que pidió información de otra A F P se quede, tiene doce años con nosotros, tono cercano, sin prometer rentabilidades, máximo cien palabras y que termine ofreciendo una reunión. Eso es un prompt profesional. Mientras más contexto le das, menos se equivoca.", "c": false}, {"t": "Y casi nunca sale perfecto a la primera. El curso describe un ciclo de cuatro pasos: pides, revisas, le corriges con lo que solo tú sabes del negocio, y la I.A. mejora. Y otra vuelta. Lo que no cambia nunca es esto: la responsabilidad del resultado es tuya, no de la máquina.", "c": false}, {"t": "Hablemos de los errores. Hay estudios que muestran beneficios reales: gente que escribía con ayuda de I.A. terminó más rápido y mejor, y en atención al cliente la productividad subió, sobre todo en los que tenían menos experiencia. Pero el gran riesgo se llama alucinación.", "c": false}, {"t": "Una alucinación es cuando la I.A. inventa algo con total seguridad. Una fuente que no existe, una cita que nadie dijo. Le preguntas por una norma de la Superintendencia y te da un número de circular con formato perfecto que no existe. Y no te miente a propósito: está hecha para darte una respuesta convincente antes que una precisa.", "c": false}, {"t": "Además tiene otros límites. Cambia la respuesta si cambias una palabra. Da respuestas distintas a la misma pregunta. Puede tener información antigua. Y puede repetir prejuicios de los datos. Un organismo de estándares de Estados Unidos, el NIST, que se dice nist, agrega un riesgo que me parece clave: la dependencia excesiva, que es dejar de pensar por confiar ciegamente.", "c": false}, {"t": "La receta para trabajar seguro tiene cuatro pasos. Pedir bien. Darle información real para que se apoye en ella. Revisar siempre antes de usar. Y recordar que la responsable eres tú. En una frase: la I.A. no avisa cuando se equivoca, por eso revisas tú.", "c": false}, {"t": "Capítulo 5. Lo que está pasando en dos mil veintiséis", "c": true}, {"t": "Ya conoces cómo funciona y dónde falla. Ahora miremos el panorama de este año. Lo más avanzado que existe en un momento se llama el estado del arte, y en I.A. cambia cada pocos meses. Hoy la pregunta ya no es si usar I.A., sino cuál elegir, cómo conectarla y cómo medir si sirve.", "c": false}, {"t": "El curso destaca cinco tendencias. Una, la multimodalidad nativa, un mismo modelo que trabaja texto, audio, imagen y video a la vez. Dos, la I.A. metida dentro de tus herramientas de trabajo, el correo, los documentos, las reuniones. Tres, los agentes que ejecutan tareas completas. Cuatro, modelos más pequeños, baratos y rápidos para tareas específicas.", "c": false}, {"t": "Y cinco, algo que se llama RAG, que se dice rag, y significa generación aumentada por recuperación. Suena complicado, pero es muy simple. Antes de responder, la I.A. busca en los documentos reales de la empresa y se apoya en ellos. Es como contestarle a un afiliado con el reglamento abierto al lado en vez de contestar de memoria. Por eso ayuda tanto contra las alucinaciones.", "c": false}, {"t": "Ahora, una paradoja con números del informe de Stanford de este año. Ochenta y ocho por ciento de las empresas usa I.A. en alguna área. Setenta por ciento usa I.A. generativa. Pero los agentes se usan en menos del diez por ciento. O sea, mucha presencia y poca madurez. Cuesta escalar, medir el retorno y controlar lo que actúa solo.", "c": false}, {"t": "¿Y quiénes compiten? GPT de OpenAI, que es el que usa ChatGPT. Gemini de Google. Claude de Anthropic. Llama de Meta, que es de pesos abiertos, o sea que una empresa lo puede descargar y usar en sus propios computadores. Grok, y otros nuevos como DeepSeek y MiniMax. Compiten en razonamiento, redacción, programación, en cuánto texto pueden leer de una vez, en velocidad y en precio. Y la conclusión del curso: no hay un modelo mejor para todo. No gana el más famoso, gana el que calza con tu problema.", "c": false}, {"t": "Te repito la idea del RAG, porque es de las que más se usan hoy. Sin RAG, la I.A. responde con lo que recuerda de su entrenamiento, que puede estar viejo o incompleto. Con RAG, primero va a buscar el documento oficial de la empresa, lo lee, y recién entonces contesta. Es la diferencia entre una vendedora que improvisa y una que revisa la ficha del afiliado antes de llamar.", "c": false}, {"t": "Capítulo 6. De la herramienta al resultado, y los riesgos", "c": true}, {"t": "La I.A. sirve en todas las áreas: para tu productividad personal, en marketing y ventas, en servicio al cliente, en operaciones y en finanzas. Pero el curso insiste en algo que en ventas conoces de memoria: sin meta, no hay resultado.", "c": false}, {"t": "El valor aparece solo cuando la I.A. se conecta a un proceso concreto y a un K P I, un indicador de negocio, medido antes y después. Usar I.A. porque está de moda no es un proyecto. Bajar de cinco a dos días el tiempo para contactar a un afiliado que pidió traspaso, y medir cuántos se quedaron, eso sí es un proyecto.", "c": false}, {"t": "Y la tecnología sola no basta. Hay que capacitar, dar soporte, dejar claro qué se puede y qué no, y acompañar los miedos del equipo. A eso se le llama gestión del cambio. La ventaja de verdad no es tener ChatGPT, que lo tiene cualquiera. Es combinarlo con tus datos, tu experiencia y la confianza de tus clientes.", "c": false}, {"t": "Ahora los riesgos. El curso parte con un caso fuerte: una empresa usó I.A. para filtrar postulantes y descubrió que descartaba a las mujeres para cargos técnicos. El modelo hacía exactamente lo que aprendió del historial. El problema no era solo la máquina, sino todo lo que la rodeaba.", "c": false}, {"t": "Son seis riesgos. El primero, la privacidad. Meter datos de afiliados en una herramienta pública los expone. La regla es usar solo los datos necesarios. El segundo, el sesgo. Aunque le quites la edad al modelo, otras variables la delatan. Y un modelo puede ir bien en promedio mientras deja fuera a un grupo, por ejemplo a los afiliados mayores. El promedio bonito esconde al que queda fuera.", "c": false}, {"t": "El tercero, la confianza ciega: si revisar se vuelve poner un timbre sin mirar, no sirve. El cuarto, la transparencia: la persona debe saber cuándo habla con una I.A. El quinto, los derechos de autor de lo que genera. Y el sexto, la seguridad. Existe algo llamado inyección de prompt: esconder órdenes maliciosas en un correo para que la I.A. las obedezca. Se combate dándole solo los permisos mínimos, pidiendo aprobación humana en lo importante y teniendo un botón de parada.", "c": false}, {"t": "Capítulo 7. Las reglas de la casa y el caso Unimarc", "c": true}, {"t": "Con tantos riesgos, ¿cómo se ordena una empresa? Con gobernanza. La gobernanza de I.A. son las reglas, los responsables y los controles. Y no es un freno, es lo que te deja acelerar sin chocar.", "c": false}, {"t": "Tiene cuatro pilares. Uno, roles claros: quién decide cuánto riesgo se acepta y quién es dueño de cada uso. Dos, un inventario de todos los usos de I.A., clasificados por riesgo. Una I.A. para lluvia de ideas es riesgo bajo; una que decide créditos es riesgo alto. Tres, probar antes de lanzar. Y cuatro, que alguien firme quién se hace responsable.", "c": false}, {"t": "Y el curso lo resume en siete controles mínimos para cada uso de I.A. Un propósito y un dueño. Datos y herramientas autorizados. Una evaluación de riesgo a la medida. Revisión humana de verdad. Indicadores. Poder reconstruir cómo se llegó a un resultado. Y un botón para avisar errores o detener el sistema.", "c": false}, {"t": "Sobre las leyes, la idea es que la ley es el piso, no el techo. Europa tiene un reglamento de I.A. que exige más mientras más daño pueda causar un uso. Y en Chile está la ley veintiún mil setecientos diecinueve, de protección de datos personales, que crea una agencia nueva y entra en vigencia el uno de diciembre de dos mil veintiséis. Para una A F P es directa: si un dato se pidió para tramitar una pensión, no se puede usar para una campaña sin una base legal.", "c": false}, {"t": "Cerremos con el caso real del curso: SMU, la dueña de Unimarc. Todos los días tiene que decidir cuánto mandar de cada producto a cada tienda. En dos mil veinticinco sus ingresos bajaron un poco, dos coma cuatro por ciento, pero su utilidad subió casi treinta por ciento, en parte por eficiencia.", "c": false}, {"t": "Usa la I.A. en dos capas. La primera predice la demanda: maneja más de nueve millones de combinaciones de producto y tienda, y su precisión subió de sesenta a ochenta y cinco por ciento. Menos productos agotados, menos pérdida. Pero hay que vigilar cuando el mundo cambia y el modelo sigue prediciendo como antes. La segunda capa es generativa, con una inversión grande basada en Gemini de Google, para resumir, responder y redactar.", "c": false}, {"t": "En mayo de dos mil veintiséis su directorio aprobó una política de I.A.: solo herramientas autorizadas, un comité que reporta cada tres meses, y prohibición a los proveedores de usar sus datos para entrenar. Y ataca algo que se llama Shadow AI, que se dice shádou ei ai: el ejecutivo que copia la planilla de clientes en un chatbot gratuito para que lo ayude. Lo hace con buena intención, y sin querer saca datos de la empresa.", "c": false}, {"t": "Y la práctica del curso: entrenar con una herramienta gratuita de Google, Teachable Machine, un modelo que reconozca un latte, un cappuccino y un jugo de naranja. Al menos veinte fotos por bebida, variando la luz y los fondos. Y la lección es preciosa: si todas las fotos de latte salen en taza blanca, la máquina aprende a reconocer tazas, no bebidas. La máquina aprende lo que le muestras, también lo que no querías enseñarle.", "c": false}, {"t": "Para cerrar, quédate con esto. La I.A. es un sistema de datos, personas y reglas. Aprende con respuestas, sin respuestas o con premios. La que escribe suena convincente aunque se equivoque. Sin un indicador medido, no sabes si sirvió. Y la gobernanza es lo que te deja innovar sin perder el control.", "c": false}, {"t": "Y si tienes que repetir una sola frase, que sea esta: la I.A. estima, tú decides, y tú respondes.", "c": false}];
+const reader = document.getElementById('reader');
+const pfill = document.getElementById('pfill');
+const playBtn = document.getElementById('play');
+
+/* ---- SANEADOR: lo que se OYE se limpia; lo que se VE queda intacto ----
+   Garantiza que ningun simbolo (comillas, parentesis, rayas, %) se lea en
+   voz alta, aunque se cuele en el guion. */
+function hablar(t){
+  return String(t)
+    .replace(/[“”„‟«»"‘’‹›']/g,'') // comillas de todo tipo
+    .replace(/[()\[\]{}]/g,', ')            // parentesis/corchetes -> pausa, no la palabra
+    .replace(/[—–]/g,', ')        // raya y guion largo -> coma
+    .replace(/%/g,' por ciento')            // red de seguridad
+    .replace(/&/g,' y ')
+    .replace(/\*/g,'')                       // asteriscos sueltos (markdown colado)
+    .replace(/\s*([,;])(\s*[,;])+/g,'$1')    // colapsa comas/; repetidas
+    .replace(/\s+([,;.!?…])/g,'$1')          // quita el espacio ANTES de la puntuacion
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+// render (en pantalla se muestra el texto ORIGINAL, con o sin simbolos)
+SEGS.forEach((s,i)=>{
+  const d = document.createElement('p');
+  d.className = 'seg' + (s.c ? ' chap':'');
+  d.textContent = s.t;
+  d.dataset.i = i;
+  d.onclick = ()=>{ speakFrom(i); };
+  reader.appendChild(d);
+});
+const nodes = [...document.querySelectorAll('.seg')];
+
+let idx = 0, playing = false, rate = 1;
+const synth = window.speechSynthesis;
+let voices = [], chosenVoice = null;
+
+/* ---- Seleccion de la MEJOR voz disponible ---- */
+function scoreVoice(v){
+  let s = 0;
+  const n = (v.name||'').toLowerCase();
+  const l = (v.lang||'').toLowerCase();
+  if(l.startsWith('es')) s += 100;
+  if(/es-mx|es-us|es-419/.test(l)) s += 20;             // latino neutro
+  if(/enhanced|premium|neural|siri|natural/.test(n)) s += 40; // voces de calidad
+  if(v.localService) s += 10;                            // instalada / offline
+  if(/compact|comp\b|eloquence/.test(n)) s -= 30;        // voz compacta = robotica
+  if(/m[óo]nica|paulina|juan|jorge|marisol|luciana|diego|carlos|angelica/.test(n)) s += 8; // nombres buenos (Apple)
+  return s;
+}
+function loadVoices(){
+  const all = synth.getVoices();
+  voices = all.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+  if(!voices.length) voices = all.slice();
+  voices = voices.slice().sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  const sel = document.getElementById('voice');
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name.replace(/Microsoft |Google /,'')+' ('+v.lang+')';
+    sel.appendChild(o);
+  });
+  chosenVoice = voices[0] || null;   // la mejor por puntaje
+  sel.value = 0;
+  sel.onchange=()=>{ chosenVoice=voices[sel.value]; if(playing){ synth.cancel(); speakFrom(idx);} };
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=loadVoices;
+
+/* ---- Retomar donde quedo (localStorage, por archivo) ---- */
+const POSKEY = 'alib:' + location.pathname;
+function savePos(i){ try{ localStorage.setItem(POSKEY, String(i)); }catch(e){} }
+function clearPos(){ try{ localStorage.removeItem(POSKEY); }catch(e){} }
+function loadPos(){
+  try{
+    const v = parseInt(localStorage.getItem(POSKEY),10);
+    if(isNaN(v)) return 0;
+    return Math.min(Math.max(v,0), SEGS.length-1);
+  }catch(e){ return 0; }
+}
+
+function highlight(i){
+  nodes.forEach((n,k)=>{
+    n.classList.toggle('active', k===i);
+    n.classList.toggle('done', k<i);
+  });
+  pfill.style.width = ((i)/(SEGS.length-1)*100).toFixed(1)+'%';
+  const el = nodes[i];
+  const r = el.getBoundingClientRect();
+  if(r.top < 90 || r.bottom > window.innerHeight-210){
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function speakSeg(i){
+  if(i>=SEGS.length){ stop(); pfill.style.width='100%'; clearPos(); return; }
+  idx=i; highlight(i); savePos(i);
+  const texto = hablar(SEGS[i].t);
+  if(!texto){ if(playing) speakSeg(i+1); return; }   // segmento sin nada que decir
+  const u = new SpeechSynthesisUtterance(texto);
+  if(chosenVoice) u.voice=chosenVoice;
+  u.lang = chosenVoice ? chosenVoice.lang : 'es-ES';
+  u.rate = rate; u.pitch = 1;
+  u.onend = ()=>{
+    if(!playing) return;
+    const next = i+1;
+    // respiracion real antes de entrar a un capitulo nuevo
+    const pausa = (next<SEGS.length && SEGS[next].c) ? 750 : 0;
+    if(pausa){ setTimeout(()=>{ if(playing) speakSeg(next); }, pausa); }
+    else speakSeg(next);
+  };
+  synth.speak(u);
+}
+function speakFrom(i){ synth.cancel(); playing=true; playBtn.innerHTML='&#10074;&#10074;'; speakSeg(i); }
+function stop(){ playing=false; synth.cancel(); playBtn.innerHTML='&#9658;'; }
+
+playBtn.onclick=()=>{
+  if(playing){ stop(); }
+  else { speakFrom(idx); }
+};
+document.getElementById('next').onclick=()=>{ speakFrom(Math.min(idx+1,SEGS.length-1)); };
+document.getElementById('prev').onclick=()=>{ speakFrom(Math.max(idx-1,0)); };
+
+// speed
+document.querySelectorAll('.spd button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.spd button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); rate=parseFloat(b.dataset.r);
+    if(playing){ synth.cancel(); speakSeg(idx); }
+  };
+});
+
+// chapters
+const chapList=document.getElementById('chapList');
+SEGS.forEach((s,i)=>{
+  if(s.c){
+    const d=document.createElement('div');
+    d.className='chap-item';
+    d.innerHTML='<span class="cn">&#9834;</span>'+s.t;
+    d.onclick=()=>{ closeSheet(); speakFrom(i); };
+    chapList.appendChild(d);
+  }
+});
+const sheet=document.getElementById('sheet');
+document.getElementById('chapBtn').onclick=()=>sheet.classList.add('open');
+sheet.onclick=(e)=>{ if(e.target===sheet) closeSheet(); };
+function closeSheet(){ sheet.classList.remove('open'); }
+
+/* ---- Toast breve ---- */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); }, 2600);
+}
+
+/* ---- Arranque: retoma donde quedo, sin reproducir hasta que de play ---- */
+const startAt = loadPos();
+idx = startAt;
+highlight(startAt);
+if(startAt>0){
+  showToast('▶ Retomando donde quedaste');
+  const el = nodes[startAt];
+  if(el) el.scrollIntoView({block:'center'});
+}
+</script>
+</body>
+</html>

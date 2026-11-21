@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA explicada para ventas · Unidad 6 · Perspectivas futuras y aplicaciones emergentes</title>
+<!-- Tipografia 100% offline: Avenir Next (sans) + Georgia (serif de citas). Sin fuentes web. -->
+<style>
+  :root{
+    --bg:#FBFAF6;
+    --ink:#1C2723;
+    --ink-soft:#5C645E;
+    --green:#0F8A6E;
+    --green-deep:#0B6A55;
+    --green-soft:#DEF1EA;
+    --amber:#C2772C;
+    --amber-soft:#F8EAD6;
+    --card:#FFFFFF;
+    --panel:#F1EEE5;
+    --line:#E5E1D6;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    font-size:18.5px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:66px 0 36px;}
+  .eyebrow{
+    font-weight:700;color:var(--green);letter-spacing:.4px;
+    font-size:.8rem;text-transform:uppercase;margin:0 0 16px;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--amber);display:inline-block;}
+  h1{
+    font-weight:800;font-size:2.55rem;line-height:1.1;
+    margin:0 0 20px;letter-spacing:-.6px;
+  }
+  .hero p.lead{font-size:1.15rem;color:var(--ink-soft);margin:0 0 16px;max-width:60ch;}
+  .hero p.lead strong{color:var(--ink);}
+  .hero .nota{
+    display:inline-block;background:var(--green-soft);color:var(--green-deep);
+    font-weight:700;font-size:.96rem;padding:12px 17px;border-radius:12px;margin-top:8px;
+  }
+
+  /* INDICE */
+  .indice{background:var(--panel);border-radius:16px;padding:28px 30px;margin:36px 0 10px;}
+  .indice h2{
+    font-weight:700;font-size:.82rem;margin:0 0 16px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+  .indice ol{margin:0;padding:0;list-style:none;counter-reset:idx;}
+  .indice li{counter-increment:idx;border-bottom:1px solid var(--line);}
+  .indice li:last-child{border-bottom:none;}
+  .indice a{
+    color:var(--ink);text-decoration:none;display:flex;gap:14px;align-items:baseline;
+    padding:10px 0;font-weight:600;
+  }
+  .indice a:hover{color:var(--green);}
+  .indice a .n{
+    font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;
+    min-width:26px;font-size:.95rem;
+  }
+
+  /* SECCIONES */
+  .parte{padding:50px 0 8px;border-top:1px solid var(--line);margin-top:26px;}
+  .parte:first-of-type{border-top:none;}
+  .kicker{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+  .kicker .num{
+    font-weight:800;font-size:1rem;color:#fff;background:var(--green);
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .kicker .tag{
+    font-weight:700;color:var(--amber);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  h2.titulo{font-weight:800;font-size:1.75rem;line-height:1.16;margin:10px 0 18px;letter-spacing:-.4px;}
+  h3{font-weight:700;font-size:1.18rem;margin:30px 0 8px;color:var(--green-deep);}
+  p{margin:0 0 16px;}
+  strong{font-weight:700;}
+  em{font-style:italic;}
+  .term{font-weight:700;color:var(--green-deep);}
+
+  /* "EN TU MUNDO" callout */
+  .mundo{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+    border-radius:10px;padding:16px 20px;margin:0 0 18px;font-size:1rem;
+  }
+  .mundo .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;
+    color:var(--amber);margin-bottom:5px;
+  }
+
+  /* tarjetas dobles */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .card .q{font-weight:800;font-size:1.35rem;margin-bottom:2px;}
+  .card.g .q{color:var(--green);}
+  .card.a .q{color:var(--amber);}
+  .card .sub{font-size:.86rem;color:var(--ink-soft);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .card ul{margin:0;padding-left:18px;font-size:.97rem;}
+  .card li{margin-bottom:6px;}
+  .card .nm{margin:13px 0 0;font-size:.9rem;color:var(--ink-soft);}
+
+  /* tabla */
+  .tablebox{overflow-x:auto;margin:0 0 10px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px;}
+  caption{font-size:.85rem;color:var(--ink-soft);text-align:left;margin-bottom:9px;font-weight:600;}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;}
+  th{background:var(--panel);font-weight:700;}
+  tbody tr:nth-child(even){background:#F8F6EF;}
+  td.lab-col{font-weight:700;color:var(--green-deep);}
+
+  /* pasos */
+  .pasos{margin:6px 0 14px;padding:0;list-style:none;counter-reset:p;}
+  .pasos li{
+    counter-increment:p;position:relative;padding:15px 18px 15px 58px;margin-bottom:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:13px;
+  }
+  .pasos li::before{
+    content:counter(p);position:absolute;left:16px;top:15px;font-weight:800;
+    width:30px;height:30px;border-radius:8px;background:var(--amber-soft);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .pasos li b{font-weight:700;}
+
+  /* vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .vs .box{border-radius:14px;padding:20px;border:1px solid var(--line);}
+  .vs .mal{background:var(--amber-soft);border-color:#EAD3B4;}
+  .vs .bien{background:var(--green-soft);border-color:#C2E4D9;}
+  .vs .box .h{font-weight:800;font-size:1.02rem;margin-bottom:6px;}
+  .vs .mal .h{color:#9c5a1c;}
+  .vs .bien .h{color:var(--green-deep);}
+  .vs .box p{margin:0;font-size:.95rem;}
+
+  /* alarma (sin emoji, etiquetas limpias) */
+  .alarma{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .alarma .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .alarma .a .tt{font-weight:800;margin-bottom:6px;font-size:1.02rem;}
+  .alarma .a.fa .tt{color:var(--amber);}
+  .alarma .a.fn .tt{color:var(--green-deep);}
+  .alarma .a small{color:var(--ink-soft);font-size:.93rem;}
+
+  /* idea en una línea (signature: serif italic) */
+  .idea{
+    margin:28px 0 6px;padding:6px 0 6px 22px;border-left:3px solid var(--green);
+  }
+  .idea .lab{
+    font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;
+    color:var(--amber);margin-bottom:6px;font-family:'Avenir Next','Avenir',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  .idea .frase{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:1.45rem;line-height:1.35;color:var(--ink);
+  }
+
+  /* glosario */
+  .glos{background:var(--panel);border-radius:16px;padding:26px 30px;margin:18px 0;}
+  .glos dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px;}
+  .glos dt{font-weight:800;color:var(--green-deep);}
+  .glos dd{margin:0;color:var(--ink-soft);font-size:.96rem;}
+
+  /* cierre */
+  .cierre{background:var(--ink);color:#EAF1EE;border-radius:20px;padding:40px 32px;margin:42px 0 28px;}
+  .cierre h2{font-weight:800;font-size:1.6rem;margin:0 0 20px;color:#fff;letter-spacing:-.3px;}
+  .cierre ol{margin:0;padding-left:0;list-style:none;counter-reset:c;}
+  .cierre li{counter-increment:c;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);padding-left:48px;position:relative;font-size:1.04rem;}
+  .cierre li:last-child{border-bottom:none;}
+  .cierre li strong{color:#fff;}
+  .cierre li::before{
+    content:counter(c);position:absolute;left:0;top:13px;font-weight:800;
+    width:32px;height:32px;border-radius:9px;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  }
+  .cierre .remate{
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;font-size:1.4rem;
+    color:var(--amber-soft);margin:24px 0 0;line-height:1.32;
+  }
+
+  footer{padding:8px 0 52px;color:var(--ink-soft);font-size:.9rem;text-align:center;line-height:1.5;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:600px){
+    body{font-size:17.5px;}
+    h1{font-size:2rem;}
+    h2.titulo{font-size:1.45rem;}
+    .duo,.vs,.alarma{grid-template-columns:1fr;}
+    .idea .frase{font-size:1.25rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">La inteligencia artificial, explicada desde el mundo comercial · Unidad 6</p>
+    <h1>Lo que viene: cinco tecnologías que van a cambiar cómo vendes, retienes y operas en una AFP</h1>
+    <p class="lead">En las unidades anteriores ya sabes hablarle bien a la IA, automatizar tareas y gobernar sus flujos. Esta unidad mira hacia adelante: <strong>qué tecnologías emergentes van a llegar a tu mesa de trabajo y cómo prepararse para que sean una ventaja y no una sorpresa</strong>. No se trata de adivinar el futuro, sino de anticiparse con criterio para que, cuando esas herramientas estén disponibles, tu equipo ya sepa qué preguntar, qué pedir y en qué poner el ojo.</p>
+    <p class="lead">Vas a recorrer cinco frentes: <span class="term">IA multimodal</span> (que entiende fotos, audio y texto a la vez), <span class="term">Edge Computing</span> (inteligencia que vive en el dispositivo, no en la nube), <span class="term">agentes autónomos</span> (software que toma decisiones y actúa por su cuenta), <span class="term">AutoML</span> (modelos predictivos sin expertos en datos) y <span class="term">IA explicable</span> (que sabe decir por qué decidió lo que decidió). Cada uno con casos reales, cifras del curso y su traducción a tu mundo de afiliados, traspasos y campañas de retención.</p>
+    <span class="nota">No necesitas saber de tecnología ni de matemáticas. Aquí no hay fórmulas: solo criterio comercial aplicado a la IA. Los escenarios de AFP son ejemplos para ilustrar, no datos reales de ninguna institución. Las cifras y casos se citan tal como aparecen en el curso.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="indice">
+    <h2>El recorrido</h2>
+    <ol>
+      <li><a href="#p1"><span class="n">1</span>Antes de comenzar: para qué sirve esta unidad</a></li>
+      <li><a href="#p2"><span class="n">2</span>Las palabras clave de la unidad</a></li>
+      <li><a href="#p3"><span class="n">3</span>IA multimodal: combinar sentidos para ampliar capacidades</a></li>
+      <li><a href="#p4"><span class="n">4</span>Casos multimodales y sus desafíos</a></li>
+      <li><a href="#p5"><span class="n">5</span>Edge Computing e IA distribuida: inteligencia en el punto de acción</a></li>
+      <li><a href="#p6"><span class="n">6</span>Casos, cifras y riesgos del Edge</a></li>
+      <li><a href="#p7"><span class="n">7</span>Agentes autónomos: colaboradores digitales que toman la iniciativa</a></li>
+      <li><a href="#p8"><span class="n">8</span>Casos de uso y riesgos de los agentes autónomos</a></li>
+      <li><a href="#p9"><span class="n">9</span>AutoML: democratizar la construcción de modelos</a></li>
+      <li><a href="#p10"><span class="n">10</span>Casos de AutoML y sus límites</a></li>
+      <li><a href="#p11"><span class="n">11</span>IA explicable (XAI): de la caja negra a la caja de cristal</a></li>
+      <li><a href="#p12"><span class="n">12</span>Regulación, confianza y preparación</a></li>
+      <li><a href="#p13"><span class="n">13</span>El foro 2028 y los recursos del curso</a></li>
+      <li><a href="#p14"><span class="n">14</span>Si te quedas con tres cosas</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <section class="parte reveal" id="p1">
+    <div class="kicker"><span class="num">1</span><span class="tag">Antes de comenzar</span></div>
+    <h2 class="titulo">Antes de comenzar: para qué sirve esta unidad</h2>
+
+    <p>En las unidades anteriores construiste la base: sabes redactar buenos encargos, automatizar tareas repetidas, gobernar flujos y medir resultados. Esta unidad da un giro hacia adelante. El curso la define con una palabra que a primera vista suena a ciencia ficción pero que en la práctica es bastante concreta: <span class="term">prospectiva tecnológica</span>. Es la disciplina de anticipar escenarios futuros en tecnología para guiar decisiones presentes. Aplicada a la IA, significa vigilar tendencias emergentes, evaluar su posible impacto en la estrategia y prepararse con tiempo para no quedar rezagada.</p>
+
+    <p>El objetivo es <strong>observar el futuro de la IA en los negocios</strong> y explorar cinco tecnologías emergentes que prometen transformar la forma de crear valor en las organizaciones. No se trata de predicciones infalibles, sino de identificar direcciones claras para que las empresas latinoamericanas no solo reaccionen ante los cambios, sino que se adelanten a ellos.</p>
+
+    <h3>¿Qué haremos a lo largo de esta unidad?</h3>
+    <p>Recorreremos cinco áreas, siempre con la misma estructura: qué es, cómo funciona a grandes rasgos, qué aplicaciones de negocio habilita y qué casos reales ya muestran sus beneficios. Las cinco son: IA multimodal, computación en el borde (<span class="term">Edge</span>) e IA distribuida, agentes autónomos, AutoML e IA explicable (<span class="term">XAI</span>). Al terminar, tendrás un mapa de lo que viene y criterios para decidir cuándo y cómo adoptarlo en tu área comercial.</p>
+
+    <h3>¿Para qué te servirá?</h3>
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Identificar y anticipar</div>
+        <div class="sub">Tecnologías emergentes con impacto en ventas</div>
+        <ul>
+          <li>Reconocer a tiempo qué tecnologías de IA son relevantes para tu negocio.</li>
+          <li>Aplicar innovación con impacto medible, no por moda.</li>
+          <li>Preparar a tu equipo para lo que viene.</li>
+        </ul>
+        <p class="nm">En tu mundo: cuando un proveedor te ofrezca un "asistente multimodal" o un "agente autónomo", ya sabrás qué es, qué puede y qué no puede, y podrás hacer preguntas concretas.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Confianza y cumplimiento</div>
+        <div class="sub">Transparencia ante usuarios y reguladores</div>
+        <ul>
+          <li>Cumplir futuras regulaciones de IA mediante XAI.</li>
+          <li>Generar confianza en afiliados y en las autoridades.</li>
+          <li>Innovar sin perder de vista transparencia, seguridad y alineación con objetivos de negocio.</li>
+        </ul>
+        <p class="nm">En tu mundo: si un afiliado pregunta "¿por qué me recomendaron ese producto?", tu equipo podrá responder con una explicación clara, no con un "así lo decidió el sistema".</p>
+      </div>
+    </div>
+
+    <p>El curso aporta un dato de contexto: el 90% de las empresas latinoamericanas planea aumentar su inversión en tecnologías emergentes en los próximos meses.</p>
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      ⚠️ Ojo: esa cifra del 90% proviene de un estudio NTT DATA / HBR Analytic Services de mayo 2022 (316 ejecutivos de seis países) y se refiere a tecnologías emergentes en general, no solo a IA. Un dato más reciente (2025, NTT DATA / MIT Technology Review) ubica en 86% a las empresas que explora o implementa IA generativa. Para tu planificación, lo relevante es la dirección: la inversión está subiendo, y tu AFP no va a ser la excepción.
+      <br><br>
+      Traducido a tu día a día: en los próximos años vas a recibir propuestas de proveedores que incluirán estas cinco tecnologías. La ventaja no está en ser la primera en comprar, sino en entender qué resolver en cada caso, qué riesgos mirar y cómo exigir explicabilidad desde el inicio.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Anticipar no es adivinar: es conocer las cinco tecnologías que vienen, entender qué resuelve cada una en tu negocio y decidir con tiempo cómo prepararse.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p2">
+    <div class="kicker"><span class="num">2</span><span class="tag">Palabras clave</span></div>
+    <h2 class="titulo">Las palabras clave de la unidad, en una línea</h2>
+
+    <p>Antes de entrar en cada tecnología, conviene tener claras las definiciones que el curso propone. No necesitas memorizarlas: solo que, cuando aparezcan en una reunión con TI o en una propuesta de un proveedor, reconozcas de qué estamos hablando. Aquí van las más importantes, en lenguaje directo.</p>
+
+    <div class="glos">
+      <dl>
+        <dt>Prospectiva tecnológica</dt><dd>Disciplina de anticipación que explora escenarios futuros en tecnología para guiar la toma de decisiones presentes. En IA, implica vigilar tendencias emergentes y evaluar su impacto en la estrategia.</dd>
+        <dt>IA multimodal</dt><dd>Sistemas capaces de procesar e integrar múltiples modalidades de datos a la vez: texto, imágenes, audio, video, sensores. Combina fuentes diversas para generar respuestas más completas.</dd>
+        <dt>Modalidad (de datos)</dt><dd>Tipo de canal o formato de información que un modelo puede ingerir: texto, imagen, audio, video o señal de sensor.</dd>
+        <dt>Edge Computing</dt><dd>Arquitectura que coloca capacidad de cómputo y modelos de IA en dispositivos locales, cerca de la fuente de datos, reduciendo latencia y tráfico de red.</dd>
+        <dt>IA distribuida</dt><dd>Despliegue de algoritmos de IA en múltiples nodos o dispositivos que operan de forma coordinada.</dd>
+        <dt>Latencia</dt><dd>Retraso en la transmisión o procesamiento de datos. Se reduce al procesar localmente en el Edge.</dd>
+        <dt>Inferencia en el Edge</dt><dd>Ejecución de modelos ya entrenados en dispositivos locales del borde, en contraposición al entrenamiento que se hace en la nube.</dd>
+        <dt>Agente autónomo</dt><dd>Software impulsado por IA capaz de realizar tareas, tomar decisiones no triviales, coordinar acciones y aprender del entorno con mínima intervención humana.</dd>
+        <dt>AutoML</dt><dd>Conjunto de herramientas que automatizan las etapas del ciclo de machine learning (preparación de datos, selección de algoritmos, entrenamiento, optimización) para reducir el trabajo manual.</dd>
+        <dt>IA Explicable (XAI)</dt><dd>Conjunto de técnicas dedicadas a que los sistemas inteligentes expliquen de forma entendible cómo y por qué generan cada resultado o predicción.</dd>
+        <dt>Caja negra</dt><dd>Metáfora para describir modelos de IA cuyo proceso interno de decisión es opaco e incomprensible para los humanos.</dd>
+        <dt>Alucinación</dt><dd>Fenómeno en que un modelo de IA genera inferencias o afirmaciones incorrectas que parecen plausibles. Es un riesgo clave en agentes autónomos.</dd>
+        <dt>Churn</dt><dd>Pérdida o cancelación de un cliente. Es el problema predictivo típico donde AutoML y XAI se aplican para identificar y explicar clientes en riesgo de irse.</dd>
+      </dl>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que en una reunión estratégica tu gerente de operaciones dice: "Queremos un agente autónomo que haga retención proactiva con IA explicable, usando datos multimodales del call center y Edge en las sucursales". Si has leído esta lista, sabes exactamente qué está pidiendo en cada palabra. Y si no, probablemente asientes sin entender por qué el proyecto tardaría seis meses.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Dominar el vocabulario no es un lujo técnico: es lo que te permite participar en decisiones de inversión y exigir que cada tecnología resuelva un problema real de tu negocio.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p3">
+    <div class="kicker"><span class="num">3</span><span class="tag">IA multimodal</span></div>
+    <h2 class="titulo">IA multimodal: combinar sentidos para ampliar capacidades</h2>
+
+    <p>Hasta ahora, la mayoría de las herramientas de IA con las que has trabajado entienden una sola cosa: texto. Les escribes un mensaje y te devuelven texto. La <span class="term">IA multimodal</span> es una evolución significativa: son sistemas capaces de entender e interactuar con distintos tipos de datos a la vez, como texto, imágenes, audio e incluso video. El curso lo resume así: la IA multimodal combina texto, imágenes, audio y video, ofreciendo soluciones más completas. En los negocios, mejora la experiencia del cliente, optimiza la atención y crea productos inteligentes.</p>
+
+    <h3>¿Cómo funciona?</h3>
+    <p>Un modelo multimodal aprende a establecer lo que el curso llama <span class="term">sinestesias</span> entre diferentes tipos de datos: relaciona patrones de distintas modalidades. Durante su entrenamiento, se le suministran datos combinados, como imágenes acompañadas de descripciones textuales, o videos con narración de audio. Esto le permite formar conexiones entre conceptos, como asociar el símbolo visual de un objeto con la palabra que lo nombra. Una vez entrenado, el modelo es capaz de traducir entre estos diferentes modos de información.</p>
+
+    <p>El ejemplo que da el curso es el sistema multimodal GPT-4 de OpenAI: puede recibir una foto y generar una explicación escrita de su contenido, o tomar una instrucción hablada y crear una imagen relacionada con esa solicitud. En términos prácticos, esto implica asistentes de IA mucho más avanzados, que "ven" y "escuchan" el mundo, en lugar de limitarse a leer texto. La sinergia entre modalidades busca imitar la forma en que los humanos usamos varios sentidos a la vez para entender el mundo.</p>
+
+    <h3>Aplicaciones en los negocios</h3>
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Mejora la experiencia del cliente</div>
+        <div class="sub">Interacciones más naturales y enriquecedoras</div>
+        <ul>
+          <li>Asistentes que entienden lo que el cliente dice y ve.</li>
+          <li>Medir satisfacción combinando texto con expresiones en redes.</li>
+          <li>Accesibilidad: convertir textos a lengua de señas o viceversa.</li>
+        </ul>
+        <p class="nm">En tu mundo: un afiliado que llama con una foto de un comprobante de sueldo y pregunta "¿esto me sirve para acreditar ingreso?". Hoy, el operador transcribe y consulta. Con IA multimodal, el sistema lee la imagen y el audio juntos y responde en una sola interacción.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Optimiza la atención y crea productos</div>
+        <div class="sub">Análisis más holístico y contextual</div>
+        <ul>
+          <li>Combinar datos numéricos con imágenes de satélite en agricultura.</li>
+          <li>Crear nuevos productos inteligentes para el cliente.</li>
+          <li>Fortalecer análisis con múltiples fuentes de datos a la vez.</li>
+        </ul>
+        <p class="nm">En tu mundo: cruzar el historial transaccional del afiliado (numérico) con el tono de sus interacciones por voz (audio) para detectar señales tempranas de insatisfacción que un solo canal no vería.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en una campaña de traspaso entre fondos. Hoy, el ejecutivo arma el argumento con datos de rendimiento (numérico) y un gráfico (imagen) y lo explica por teléfono (audio). Con IA multimodal, el sistema podría recibir los tres a la vez, cruzarlos y proponer un argumento personalizado para cada perfil de afiliado, en lugar de un guion genérico.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA multimodal abre la puerta a soluciones más holísticas y contextuales: cuando una tarea en tu empresa involucra varios tipos de datos, es candidata ideal para una solución multimodal.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p4">
+    <div class="kicker"><span class="num">4</span><span class="tag">Casos multimodales</span></div>
+    <h2 class="titulo">Casos multimodales y sus desafíos</h2>
+
+    <p>El curso presenta tres casos de aplicación en Latinoamérica y el mundo para mostrar la IA multimodal en acción. Ninguno es de una AFP, pero todos tienen un paralelo directo con lo que tu equipo hace a diario.</p>
+
+    <h3>Caso 1: Retail y marketing (Cia. Hering, Brasil)</h3>
+    <p>Hering implementó un buscador de productos basado en imágenes más un chatbot avanzado llamado "Herica". El cliente sube una foto de una prenda y la IA reconoce el producto o uno similar en el catálogo (visión más texto). El chatbot comprende preguntas sobre moda y ofrece recomendaciones personalizadas. Cifras reportadas: la tasa de clics aumentó 16 puntos porcentuales y el valor promedio de compra creció 122%.</p>
+
+    <h3>Caso 2: Asistencia al cliente (TIM Brasil)</h3>
+    <p>TIM usa IA generativa multimodal para transcribir el audio de llamadas de soporte, comprender el texto transcrito, clasificar el tipo de problema y resumir la conversación. La IA guía al operador humano con la respuesta más adecuada. El beneficio es doble: agiliza la atención en tiempo real y permite extraer insights de miles de interacciones habladas que antes se perdían en la pileta de llamadas.</p>
+
+    <h3>Caso 3: Industria automotriz (Mercedes-Benz)</h3>
+    <p>El curso describe una herramienta que analiza en tiempo real los alrededores del automóvil mediante cámaras y responde en lenguaje natural preguntas del conductor, como "¿Se permite estacionar en esta calle?", interpretando señalización y respondiendo verbalmente. También identifica puntos de interés. El curso lo ubica bajo la etiqueta "Azure AI Vision + GPT-4".</p>
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      ⚠️ Ojo: el caso Hering no tiene corroboración pública independiente de sus cifras (16 pp, 122%); son datos de un solo caso sin fuente primaria verificable. Y el caso Mercedes-Benz, según la evidencia disponible, es en realidad un asistente de <em>voz</em> (MBUX "Hey Mercedes") con ChatGPT integrado, no un "copiloto visual" con Azure AI Vision. El curso presenta la versión visual, pero la implementación confirmada es de voz. Para tu criterio: al evaluar proveedores, pide siempre la evidencia de la implementación real, no la versión marketing.
+      <br><br>
+      Traducido a tu AFP: el paralelo más cercano es TIM. Tu call center genera miles de llamadas diarias. Una IA multimodal que transcribe, clasifica y resume cada llamada en tiempo real, y le sugiere al ejecutivo la respuesta más adecuada, es exactamente el tipo de aplicación que reduce tiempos de atención y libera a tu equipo para lo que realmente requiere criterio humano: la conversación de retención.
+    </div>
+
+    <h3>Desafíos y accesibilidad</h3>
+    <p>El curso señala un obstáculo importante: estos modelos suelen ser pesados y requieren grandes volúmenes de datos en cada modalidad para su entrenamiento. Sin embargo, la disponibilidad de APIs en la nube (Google con <span class="term">Gemini</span> y OpenAI con GPT-4 Vision) facilita su acceso y uso sin necesidad de infraestructura propia. La clave, dice el curso, es identificar casos de negocio donde esa "visión holística" de la IA marque la diferencia real.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La IA multimodal no es para todo: brilla cuando la tarea involucra varios tipos de datos simultáneamente y la visión combinada resuelve algo que un canal solo no resuelve.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p5">
+    <div class="kicker"><span class="num">5</span><span class="tag">Edge e IA distribuida</span></div>
+    <h2 class="titulo">Edge Computing e IA distribuida: inteligencia en el punto de acción</h2>
+
+    <p>Hasta aquí, la imagen mental es que la IA vive en la nube: en un data center central al que se le envían los datos, procesa y devuelve la respuesta. Pero el curso plantea un problema concreto: ¿qué pasa cuando se tienen 50 tiendas o cientos de sensores en un campo agrícola a kilómetros de la conexión principal? Enviar constantemente datos crudos a un servidor remoto introduce <span class="term">latencia</span> (retraso) y consume <span class="term">ancho de banda</span>. Además, si la conexión falla, la inteligencia se detiene.</p>
+
+    <p><span class="term">Edge Computing</span> propone mover parte de ese "cerebro" digital a la periferia: colocar capacidades de cómputo en dispositivos locales, fábricas, sucursales o antenas, permitiendo que cada punto tenga suficiente capacidad para gestionar la IA necesaria localmente. <span class="term">IA distribuida</span> se refiere al despliegue de algoritmos de IA en múltiples nodos que operan de forma coordinada. El ejemplo del curso: un sensor inteligente que detecta un fallo y acciona una alerta local sin depender de internet.</p>
+
+    <h3>¿Por qué ahora es tan relevante?</h3>
+    <p>El curso dice que estamos entrando en una nueva era de sistemas autónomos en los negocios, donde muchas decisiones serán tomadas por máquinas en tiempo real. Cita a Gartner: se estima que un 75% de los CIO aumentarán sus presupuestos en IA durante 2024 para apoyar este objetivo. La IA generativa y otros modelos avanzados están saliendo del data center para integrarse en vehículos, celulares, cámaras de vigilancia y máquinas industriales. La cita que cierra la sección: "La autonomía de la IA depende de la inmediatez, y el Edge Computing lo hace posible".</p>
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      ⚠️ Ojo: la predicción de Gartner que usa el 75% se refiere en realidad a que el 75% de los datos empresariales se crearía y procesaría fuera del data center o la nube centralizada para 2025. El curso la atribuye a "CIO que aumentarán presupuestos en IA durante 2024", lo que es una formulación distinta. Lo importante para ti: la dirección es clara, la inteligencia se está desplazando hacia el borde, y eso tiene implicaciones de privacidad (los datos sensibles permanecen en el sitio) y de confiabilidad (si se cae la conexión central, la operación local sigue siendo inteligente).
+      <br><br>
+      Para tu AFP: imagina un quiosco en una sucursal rural con autenticación facial local. El afiliado se verifica en el dispositivo, sin enviar datos biométricos crudos a internet. Si la conexión se cae, la autenticación sigue funcionando. Eso es Edge en acción.
+    </div>
+
+    <h3>Contexto Latinoamérica</h3>
+    <p>Las distancias geográficas y la conectividad son desafíos reales en la región: monitoreo ambiental en la Amazonía, minas a gran altitud con internet satelital. Edge Computing aporta resiliencia: reduce los "saltos" de red, mitiga la latencia y los costos de transferencia. Y en el ámbito de la privacidad, los datos sensibles no viajan: se procesan donde se generan.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Edge Computing lleva la inteligencia donde se generan los datos y las decisiones: más rápido, más privado y más resistente a caídas de conexión, especialmente relevante en una región con conectividad desigual.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p6">
+    <div class="kicker"><span class="num">6</span><span class="tag">Casos y riesgos Edge</span></div>
+    <h2 class="titulo">Casos, cifras y riesgos del Edge</h2>
+
+    <p>El curso muestra tres familias de aplicaciones donde el Edge ya está operando. Cada una tiene un paralelo que puede ayudarte a pensar en tu AFP.</p>
+
+    <h3>Manufactura y mantenimiento</h3>
+    <p>Una planta automotriz en México implementó dispositivos Edge en cada sección para detección de anomalías (vibraciones, temperatura). Si una prensa hidráulica muestra un patrón fuera de rango, el sistema alerta al técnico local y detiene la máquina de forma preventiva, sin esperar a que un servidor remoto procese los datos. El curso también menciona a Dairyland Power (EE.UU.) que implementó IA generativa en el Edge para optimizar el rendimiento de su infraestructura en campo, y un equivalente latinoamericano: una empresa minera en Chile que analiza vibraciones de un molino en la cordillera.</p>
+
+    <h3>Retail inteligente</h3>
+    <p>Una cadena de supermercados en Brasil usa cámaras en góndolas más módulos Edge para conteo continuo de stock. Detecta un producto cerca de agotarse y envía una notificación al personal o un pedido de reabastecimiento. Solo transmiten datos procesados: "Quedan 2 leches en el estante 5". No envían video continuo a la nube. El curso cita a Dell: los casos de uso de IA en el Edge abarcan desde manufactura hasta retail, y ayudan a reducir costos, aumentar ingresos y mejorar operaciones al llevar la inteligencia directamente al sitio donde se necesita.</p>
+
+    <h3>Experiencias interactivas en sucursales</h3>
+    <p>El ejemplo más cercano a tu mundo: un banco con quioscos inteligentes en sucursales rurales que hacen autenticación facial y de voz local, sin enviar datos biométricos crudos a internet, y ofrecen asesoría financiera básica vía un agente conversacional que funciona parcialmente en local.</p>
+
+    <h3>Cifras de adopción</h3>
+    <p>El curso señala que se espera la expansión del Edge para 2025, especialmente con la expansión del <span class="term">IoT</span> (Internet de las cosas) y las <span class="term">redes 5G/6G</span>. Cita a Harvard Business Review Analytic Services: Edge Computing es la tecnología emergente con mayor nivel de adopción en la región, junto con biometría y robótica avanzada.</p>
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      ⚠️ Ojo: la fuente original (NTT DATA / HBR Analytics 2022) ubica al Edge Computing "entre las principales" tecnologías emergentes de América Latina. El curso dice "la de mayor adopción", lo que implica primer lugar. Es una leve sobreafirmación. La dirección es correcta, pero si alguien te pregunta "¿es la número uno?", la respuesta precisa es "es una de las principales, junto con biometría y robótica avanzada".
+      <br><br>
+      Para tu AFP: el quiosco de sucursal rural es el caso más transferible. Hoy, un afiliado que va a una sucursal remota depende de que la conexión funcione para autenticarse. Con Edge, la verificación se hace en el dispositivo: más rápido, más privado y resiliente ante caídas.
+    </div>
+
+    <h3>Desafíos y enfoque híbrido</h3>
+    <p>El curso reconoce tres desafíos: hardware adecuado en el campo (sensores, gateways, mini-servidores), ciberseguridad en miles de puntos distribuidos, y gestión de actualizaciones de modelos de forma remota. Sobre costos, un ejecutivo de Dell aclara: si solo se hacen inferencias en el Edge con casos de uso pequeños, la inversión es muy baja; incluso 2 o 3 GPUs pueden ser suficientes. La recomendación del curso es un enfoque híbrido: mantener la inteligencia en la nube para entrenar modelos grandes o tener visiones globales, pero desplegar la <span class="term">inferencia en el Edge</span> para la acción local y en tiempo real. Aquellas organizaciones que logren este balance obtendrán ventajas en agilidad y costos.</p>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">El Edge no reemplaza la nube: se combina con ella. La nube entrena y da visión global; el Edge ejecuta rápido, local y privado, donde la acción ocurre.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p7">
+    <div class="kicker"><span class="num">7</span><span class="tag">Agentes autónomos</span></div>
+    <h2 class="titulo">Agentes autónomos: colaboradores digitales que toman la iniciativa</h2>
+
+    <p>Hasta ahora, cuando pensábamos en automatización, imaginábamos scripts rígidos o robots de software que seguían al pie de la letra un conjunto de reglas predefinidas (el clásico <span class="term">RPA</span>). Los <span class="term">agentes autónomos</span> llevan la automatización al siguiente nivel: son entidades de IA que pueden tomar decisiones no triviales por su cuenta, coordinar acciones y aprender de la retroalimentación, todo orientado a cumplir objetivos más amplios que una simple tarea repetitiva. El curso lo plantea así: pasamos de "automatizar tareas" a automatizar procesos y funciones completas de negocio. Es incorporar un nuevo tipo de "empleado digital" que trabaja codo a codo con los humanos.</p>
+
+    <h3>¿Qué es exactamente un agente autónomo?</h3>
+    <p>Es un software impulsado por IA (a menudo con <span class="term">modelos de lenguaje de grandes dimensiones</span> y algoritmos de planificación) al que se le delega una cierta responsabilidad. A diferencia de un simple bot que responde preguntas, estos agentes pueden encadenar múltiples pasos de razonamiento y acción sin intervención humana en cada paso. Se les llama "autónomos" porque, una vez configurados con sus objetivos y límites, requieren mínima intervención para ejecutar sus funciones. Pueden colaborar entre sí y con personas, operar continuamente (24/7) y ajustarse según las circunstancias.</p>
+
+    <h3>Ejemplo ilustrativo del curso</h3>
+    <p>Un agente de IA de compras: monitorea niveles de stock, cotiza proveedores, inicia órdenes de compra siguiendo lineamientos de costo y calidad, y negocia precios básicos vía mensajes electrónicos. Se adapta a circunstancias: si un proveedor no responde, busca alternativos; si los precios suben, notifica al gerente. El curso menciona dos plataformas: AutoGPT (experimental) y Microsoft Copilot Studio (corporativo).</p>
+
+    <h3>Grados de adopción actual</h3>
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Adopción corporativa</div>
+        <div class="sub">Cifras que muestran tracción</div>
+        <ul>
+          <li>Más de 100.000 organizaciones usan Copilot Studio para crear agentes empresariales (Microsoft, octubre 2024).</li>
+          <li>Entre ellas: Standard Bank, Thomson Reuters, Virgin Money, Zurich Insurance.</li>
+          <li>KPMG: 12% de grandes empresas ya tiene agentes en producción, 37% en piloto, más de la mitad explorando activamente.</li>
+        </ul>
+        <p class="nm">En tu mundo: los grandes bancos ya están evaluando agentes para detección de fraude en tiempo real. Tu AFP probablemente recibirá propuestas similares. La diferencia entre reaccionar y estar preparada está en entender qué puede hacer un agente y dónde pone el límite humano.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Qué los distingue de un chatbot</div>
+        <div class="sub">No solo responden: actúan</div>
+        <ul>
+          <li>Toman decisiones no triviales (no solo dan información).</li>
+          <li>Coordinan múltiples acciones en secuencia.</li>
+          <li>Aprenden de la retroalimentación y se ajustan.</li>
+        </ul>
+        <p class="nm">En tu mundo: un chatbot te dice "su retiro está en proceso". Un agente autónomo verifica su solicitud, confirma que cumple los requisitos, la autoriza, ejecuta el pago y le notifica, todo sin que un humano toque cada paso.</p>
+      </div>
+    </div>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      ⚠️ Ojo: la cifra de 100.000 organizaciones de Microsoft es correcta para su fecha (octubre 2024), pero está desactualizada: a 2025, Microsoft informó más de 230.000 organizaciones, incluyendo el 90% de la Fortune 500. Y los datos de KPMG (12% en producción, 37% en piloto) provienen de su encuesta Q4 2024; al Q1 2025 los pilotos subieron a 65% mientras el despliegue se mantuvo en ≈11%. Lo que esto te dice: los pilotos se aceleran, pero la producción avanza más lento. No te asustes por el ruido: la adopción real sigue siendo cautelosa, especialmente en sectores regulados como el financiero.
+      <br><br>
+      Para tu AFP: un agente de retención proactiva podría monitorear señales de insatisfacción (baja actividad, consultas frecuentes por teléfono, quejas en redes), generar un plan de acción personalizado, redactar la propuesta de valor, enviarla y medir la respuesta. Todo con un supervisor humano revisando las excepciones y las decisiones de mayor impacto.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Los agentes autónomos no reemplazan a las personas: transforman sus roles. La visión moderna es considerarlos colaboradores, donde humanos e IA trabajan estrechamente, cada uno en lo que mejor hace.</div>
+    </div>
+  </section>
+
+
+
+<section class="parte reveal" id="p8">
+    <div class="kicker"><span class="num">8</span><span class="tag">Casos y riesgos</span></div>
+    <h2 class="titulo">Casos de uso y riesgos de los agentes autónomos</h2>
+
+    <p>Los agentes autónomos no son solo teoría. El curso muestra cuatro frentes concretos donde ya operan, y después explora qué hay que cuidar para implementarlos sin sorpresas.</p>
+
+    <h3>Cuatro frentes donde ya actúan</h3>
+    <p>En <span class="term">atención al cliente</span>, un agente de soporte TI recibe un mensaje de un empleado que no puede acceder a un sistema; abre el ticket, verifica credenciales, resetea permisos en Active Directory e informa al usuario. En <span class="term">cadena de suministro</span>, un agente vigila ventas y stock en cada tienda; si detecta que un producto se vende más rápido en una región, redistribuye inventario de otra, ajusta órdenes de compra y notifica al jefe de logística. El agente aprende qué decisiones funcionan mejor con datos históricos. En <span class="term">finanzas</span>, un agente monitorea ingresos diarios, gastos y flujo de caja; ante desviaciones, indaga causas, prepara un resumen para el CFO y ejecuta correcciones de rutina. En <span class="term">desarrollo de software</span>, Devin (Cognition, 2024) toma código fuente antiguo, intenta compilarlo, corrige errores y actualiza el repositorio, siempre con supervisión final humana.</p>
+
+    <h3>El contexto latinoamericano</h3>
+    <p>En nuestra región, el curso señala que aún estamos en fases exploratorias. Yalo, en México, tiene planes para implementar agentes comerciales en conversaciones de ventas a través de WhatsApp. Grandes bancos evalúan agentes para detección de fraude: bloquear transacciones sospechosas en tiempo real y generar reportes de incidentes automáticamente.</p>
+
+    <p>⚠️ Ojo: el curso cita que más de 100.000 organizaciones utilizan Copilot Studio para crear agentes autónomos (Microsoft, octubre 2024). Ese dato es correcto para esa fecha, pero a 2025-2026 Microsoft ya superó las 230.000 organizaciones, incluyendo el 90% de la Fortune 500. También cita una encuesta KPMG (12% en producción, 37% en piloto, más de la mitad explorando) sin dar la fecha; proviene de la AI Pulse Survey Q4 2024, y a Q1 2025 los pilotos ya estaban en 65%, lo que indica aceleración en pilotos pero no tanto en despliegue pleno.</p>
+
+    <h3>Consideraciones para implementarlos</h3>
+    <p>Requiere entrenar la IA dentro del contexto del negocio, incluyendo datos, procesos y reglas, y establecer barandillas de seguridad. Un director de IA de Accenture subraya la importancia de gestionar los riesgos de <span class="term">alucinaciones</span> (cuando el agente hace inferencias incorrectas) y sesgos. En entornos críticos es recomendable comenzar con un humano supervisando las decisiones, al menos hasta ganar confianza. También hay que rediseñar procesos internos: no basta meter un agente en el flujo viejo; hay que repensar el flujo y definir claramente cuándo debe pasar control a un humano. Y una pregunta que el curso deja en el aire: si un agente toma una decisión incorrecta, ¿quién asume la responsabilidad?</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      En tu AFP, imagina un agente que monitorea saldos de afiliados, detecta inactividad prolongada o señales de traspaso incipiente, prepara un borrador de comunicación de retención con las variables correctas y lo envía a la bandeja del ejecutivo para aprobación. El agente hace el trabajo pesado; tú mantienes la decisión final y el tono. Eso es un piloto de bajo riesgo: el agente recomienda, un humano valida antes de cualquier acción externa.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Los agentes autónomos no reemplazan a las personas: transforman sus roles. La clave es comenzar con pilotos controlados, formar equipos multidisciplinarios (negocio, datos, TI y legal) y estar dispuestos a iterar aprendiendo de los errores.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p9">
+    <div class="kicker"><span class="num">9</span><span class="tag">AutoML</span></div>
+    <h2 class="titulo">AutoML: democratizar la construcción de modelos</h2>
+
+    <p><span class="term">AutoML</span> (Automated Machine Learning) es un conjunto de herramientas que automatizan las etapas del aprendizaje automático: preparación de datos, selección de algoritmos, entrenamiento y optimización de hiperparámetros. El curso lo resume con una analogía: es como tener un cocinero automático al que le entregas tus ingredientes (datos) y te devuelve el platillo listo (un modelo entrenado), sin que tengas que saber la receta exacta.</p>
+
+    <h3>Cómo funciona</h3>
+    <p>Existen diversas plataformas: Google Cloud AutoML, H2O Driverless AI, DataRobot, Azure AutoML, entre otras. En general, realizan estos pasos: selección automática de variables relevantes (feature engineering básico), prueban múltiples algoritmos (árboles de decisión, bosques aleatorios, redes neuronales), ajustan sus <span class="term">hiperparámetros</span> mediante técnicas automáticas como <span class="term">búsqueda bayesiana</span>, evalúan cada modelo y presentan el mejor según la métrica definida. Incluso pueden generar explicaciones del modelo. La experiencia del usuario es simple: cargar un conjunto de datos ya etiquetados y apretar un botón de Entrenar AutoML. La plataforma hace el resto en horas.</p>
+
+    <h3>Tres beneficios clave</h3>
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Ahorro de tiempo</div>
+        <div class="sub">De semanas a horas</div>
+        <ul>
+          <li>Consensus Corporation redujo su tiempo de despliegue de modelos de tres a cuatro semanas a ocho horas.</li>
+          <li>Empresas que adoptan AutoML reportan días en lugar de semanas para pasar de datos a modelo funcional.</li>
+        </ul>
+        <p class="nm">En tu mundo: en vez de esperar semanas a un equipo de ciencia de datos, un analista comercial puede tener un primer modelo en una tarde para validar con criterio de negocio.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Mejora de precisión y democratización</div>
+        <div class="sub">Combinaciones que un humano no probaría</div>
+        <ul>
+          <li>Trupanion (seguros para mascotas) identificó con antelación dos tercios de sus clientes propensos a cancelar.</li>
+          <li>Equipos sin especialización en ML pueden generar modelos decentes, reduciendo la dependencia de escasos científicos de datos.</li>
+        </ul>
+        <p class="nm">En tu mundo: el 73% de las empresas en la región ve la escasez de talento en IA como su mayor obstáculo. AutoML baja la barrera de entrada.</p>
+      </div>
+    </div>
+
+    <p>⚠️ Ojo: Consensus Corporation es filial de Target y el caso proviene de DataRobot/Trifacta (material de proveedor, sin auditoría independiente); además incluye mejoras adicionales como +24% en detección de fraude y −55% en falsos positivos. El caso de Trupanion, según la fuente original de DataRobot, dice "más de dos tercios" (ligeramente superior a los dos tercios que cita el curso) y también reportó una reducción de más de 10 veces el tiempo de construcción de modelos; todo es material de vendor. La cifra del 73% sobre escasez de talento no tiene fuente primaria verificable en el PDF.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Piensa en un modelo que predeciría qué afiliados tienen mayor probabilidad de traspasar en los próximos seis meses. Tradicionalmente, eso requeriría un equipo de científicos de datos y varias semanas. Con AutoML, un analista de tu equipo comercial podría cargar datos de actividad, antigüedad y tipo de cuenta, presionar un botón, y en horas tener un primer modelo para validar con criterio de negocio. Eso no elimina la necesidad de criterio: alguien debe revisar si los resultados tienen sentido antes de actuar.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">AutoML no es bala de plata: si los datos de entrada son de mala calidad, el modelo resultante no será bueno (garbage in, garbage out). Pero para una AFP de tamaño mediano que no tiene equipo completo de ciencia de datos, puede ser la puerta de entrada para empezar a aprovechar sus datos.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p10">
+    <div class="kicker"><span class="num">10</span><span class="tag">Casos y límites</span></div>
+    <h2 class="titulo">Casos de AutoML y sus límites</h2>
+
+    <h3>Cuatro casos donde AutoML brilla</h3>
+    <p>El curso presenta cuatro escenarios típicos. En <span class="term">predicciones de negocio recurrentes</span>, una pyme de e-commerce en Colombia usa AutoML para predecir churn (si un cliente se fue o no); la plataforma entrega un modelo con 85% de precisión, destacando factores como baja actividad reciente, y el equipo de marketing aplica campañas dirigidas en pocos días. En <span class="term">detección de fraude</span>, un banco mediano en Perú usa AutoML para modelos de detección de fraude y scoring crediticio; los expertos validan por temas regulatorios y AutoML permite obtener una versión inicial robusta en horas. En <span class="term">optimización de precios</span>, una cadena hotelera argentina usa AutoML para yield management según demanda, temporada y competencia; una empresa de retail redujo 50% su exceso de inventario. En <span class="term">visión por computadora</span>, herramientas como Google AutoML Vision permiten entrenar modelos de clasificación de imágenes subiendo ejemplos etiquetados; varias empresas agropecuarias han creado modelos que detectan plagas en cultivos sin equipos técnicos, usándolos en apps móviles para asistir a agricultores.</p>
+
+    <p>Google destaca un caso latino: la fintech chilena Kredito creó en poco tiempo un modelo de evaluación crediticia con IA y mejoró su precisión de predicción de pagos significativamente. El curso señala que es muy probable que detrás haya habido automatización de por medio.</p>
+
+    <h3>Limitaciones que no conviene ignorar</h3>
+    <p>AutoML no es bala de plata. Si los datos de entrada son de mala calidad, el modelo resultante no será bueno (garbage in, garbage out). Aún se necesita criterio humano para preparar datos (limpieza y selección de variables iniciales) y evaluar si los resultados tienen sentido de negocio. A veces, el modelo ganador que entrega AutoML puede ser muy complejo o poco explicable (por ejemplo, un <span class="term">ensemble</span> de 10 modelos distintos); para casos donde interpretar es importante, conviene restringir qué algoritmos puede probar. Y muchos AutoML funcionan en la nube con costos por hora de cómputo; es fácil gastar de más si se configuran búsquedas demasiado extensas. Es recomendable empezar con subconjuntos de datos pequeños para calibrar tiempos y luego escalar.</p>
+
+    <h3>Efecto en la ciencia de datos</h3>
+    <p>AutoML libera a los científicos de datos de mucho trabajo rutinario. En vez de ajustar modelos a mano, pueden enfocarse en tareas más estratégicas: definir qué problemas atacar, interpretar resultados en contexto o trabajar en datos más avanzados. Es como introducir maquinaria en una fábrica: los operarios dejan de hacer a mano ciertas piezas y pasan a roles de supervisión y mejora continua.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      En tu AFP, un caso natural sería predecir qué afiliados inactivos tienen mayor probabilidad de reactivar su cuenta. Un analista del equipo comercial carga datos de actividad, antigüedad y tipo de cuenta en una plataforma AutoML, obtiene en horas un primer modelo, lo valida con el equipo de retención y ajusta las variables según criterio de negocio. El consejo práctico del curso: involucra a los dueños del proceso desde el inicio, ya que la adopción del modelo en la operación sigue requiriendo convencimiento humano. Con modelos más rápidos de obtener, podrás iterar más veces y afinar tanto la tecnología como la aceptación organizacional.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Empieza en pequeño, pero empieza ya. Identifica un problema donde un pronóstico o clasificación podría ayudar, recopila esos datos y prueba alguna plataforma AutoML. El objetivo no es perfección: es aprender con datos propios qué preguntas puede responder tu organización.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p11">
+    <div class="kicker"><span class="num">11</span><span class="tag">IA explicable</span></div>
+    <h2 class="titulo">IA explicable (XAI): de la caja negra a la caja de cristal</h2>
+
+    <p>La IA moderna a veces actúa como una <span class="term">caja negra</span> opaca: redes neuronales profundas y modelos generativos toman decisiones cuyo proceso interno es incomprensible. La <span class="term">XAI</span> (IA Explicable) busca que cada decisión o predicción hecha por una IA pueda ser interpretada de manera razonable por las personas afectadas: desarrolladores, gerentes, reguladores o los propios clientes. Su premisa es simple: si no lo puedo explicar, no lo puedo confiar.</p>
+
+    <h3>Por qué es crucial</h3>
+    <p>El curso lo ilustra con tres escenarios. Un banco deniega un crédito apoyado en un modelo de IA: el cliente tiene derecho a saber por qué. Si el banco responde "no sabemos, es lo que escupió el algoritmo entrenado en millones de datos", claramente es inaceptable. En salud, si una IA sugiere un diagnóstico, el médico querrá ver qué indicadores o imágenes llevaron a esa conclusión antes de seguirla. En publicidad, las empresas vigilan que no haya sesgos indebidos en recomendaciones y para detectarlos requieren entender las razones de la IA. La falta de explicabilidad dificulta la confianza y la corrección de errores, limitando la adopción segura.</p>
+
+    <h3>Formas de lograr explicabilidad</h3>
+    <p>La XAI no es un único método, sino un conjunto de técnicas. <strong>A priori</strong>: escogiendo modelos intrínsecamente más interpretables (un árbol de decisión o un modelo lineal, en vez de una red neuronal profunda). <strong>A posteriori</strong>, aplicadas sobre modelos complejos:</p>
+    <div class="duo">
+      <div class="card g">
+        <div class="q">Importancia de variables</div>
+        <div class="sub">Cuánto pesó cada entrada</div>
+        <ul>
+          <li>Herramientas que calculan cuánto influyó cada variable en la predicción final.</li>
+          <li>Ejemplo: "la variable meses sin comprar tuvo un peso del 40% en la predicción de que el cliente se iría".</li>
+        </ul>
+        <p class="nm">En tu mundo: saber si un afiliado fue clasificado como "en riesgo" por su saldo, por su antigüedad o por la competencia.</p>
+      </div>
+      <div class="card a">
+        <div class="q">Métodos locales: LIME y SHAP</div>
+        <div class="sub">Explicación caso a caso</div>
+        <ul>
+          <li>Perturban levemente los datos de un caso específico para ver cómo cambia la predicción.</li>
+          <li>Generan una explicación local: "este cliente fue clasificado como de alto riesgo porque su ingreso es bajo (+15%) y ya tiene 3 préstamos (+10%), mientras que su historial bueno restó riesgo (−5%)".</li>
+        </ul>
+        <p class="nm">En tu mundo: poder explicarle a un afiliado exactamente por qué se le negó o se le ofreció algo, con sus variables concretas.</p>
+      </div>
+    </div>
+    <p>Otras técnicas: modelos explicativos adosados (se entrena un modelo interpretable para imitar al complejo en un rango acotado) y explicaciones basadas en ejemplos (una IA médica que dice "esta radiografía fue detectada con tumor porque se parece mucho a estas otras tres imágenes que tenían tumor confirmado").</p>
+
+    <h3>Casos prácticos</h3>
+    <p>Una empresa que usa IA para filtrar CVs descubre con XAI que da menor puntaje a candidatos de cierta universidad o región sin razón válida; señala sesgo en datos de entrenamiento y corrige el modelo. La explicabilidad aquí actuó como garantía ética y de calidad. BBVA desarrolló un modelo de IA explicable para concesión de crédito que genera automáticamente razones de decisión para entregar a los solicitantes: "Su solicitud fue rechazada porque su nivel de endeudamiento (75%) excede el máximo permitido (50%) según nuestra política de riesgo."</p>
+
+    <h3>Beneficios de adoptar XAI</h3>
+    <p>Evitar sorpresas desagradables (descubrir tarde un sesgo que daña reputación). Facilitar la corrección y mejora continua del modelo. Educar al personal (explicaciones revelan patrones insospechados). Cumplir con lo esperado por reguladores y usuarios, generando confianza. Una encuesta global muestra que la falta de transparencia es de los principales frenos a la adopción de IA; al contrario, ser transparentes la impulsa.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      En tu AFP, imagina que un modelo clasifica a un afiliado como "alto riesgo de traspaso". El ejecutivo necesita saber por qué: ¿fue por el saldo bajo, por la antigüedad, por la competencia? Con XAI, puedes decirle al afiliado o a un auditor exactamente qué variables pesaron en esa decisión. Eso es la diferencia entre una caja negra que genera desconfianza y una caja de cristal que genera confianza.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Técnicamente no es tan difícil implementar XAI; el mayor reto suele ser cultural: recordar siempre que un modelo de IA en producción debe ser auditable y entendible por alguien competente.</div>
+    </div>
+  </section>
+
+<section class="parte reveal" id="p12">
+    <div class="kicker"><span class="num">12</span><span class="tag">Regulación y confianza</span></div>
+    <h2 class="titulo">Regulación, confianza y preparación</h2>
+
+    <p>La regulación de IA avanza a un ritmo que pocas veces anticipamos. El curso cierra la unidad repasando cómo distintas regiones están respondiendo al impacto de estas tecnologías y qué debe hacer una empresa para prepararse sin quedar rezagada.</p>
+
+    <h3>Europa: la transparencia será exigida</h3>
+    <p>La Unión Europea es el caso más avanzado. El curso menciona su <span class="term">Ley de IA</span>, que exigirá transparencia en los sistemas de alto riesgo y podría multar a empresas que no puedan explicar decisiones automatizadas que impacten a las personas.</p>
+    <p>⚠️ Ojo: el curso la presenta como "próxima", pero la EU AI Act ya entró en vigor en 2024. Además, un reglamento complementario de 2026 (el llamado Digital Omnibus) pospuso las obligaciones más estrictas: los sistemas de alto riesgo del Anexo III pasan al diciembre de 2027 y los integrados en productos del Anexo I al agosto de 2028. Se pospuso el plazo, no se eliminó la obligación. La dirección es clara: la explicabilidad será exigida, solo se definió cuándo exactamente.</p>
+
+    <h3>Latinoamérica: marcos en construcción</h3>
+    <p>El curso señala que Brasil está discutiendo un marco legal de IA que incluye principios de explicabilidad, y que México, Chile y otros países incorporan en sus estrategias nacionales la necesidad de IA éticas y transparentes.</p>
+    <p>⚠️ Ojo: el estado real es algo más avanzado de lo que sugiere "discutiendo". En Brasil, el PL 2338/2023 ya fue aprobado por el Senado a fines de 2024 y está en la Cámara de Diputados desde marzo de 2025; a noviembre de 2026 aún no tiene votación final. En Chile, el proyecto de ley de IA (boletín 16821-19, inspirado en el enfoque de riesgo europeo) fue aprobado en la Cámara en octubre de 2025 pero sigue en el Senado; tampoco es ley todavía. El punto del curso es que la regulación viene, aunque el estado legislativo exacto varía de país a país.</p>
+
+    <h3>La XAI como pieza que sostiene todo</h3>
+    <p>Aquí entra la <span class="term">IA explicable</span> como complemento de las demás. El curso lo resume con una frase: "IA Explicable es el complemento indispensable de todas las demás tendencias que vimos". Sin explicabilidad, la multimodalidad, el Edge, los agentes y el AutoML son potentes pero opacos. Con XAI, cada decisión puede ser auditada por un desarrollador, un gerente, un regulador o el propio cliente. Y la confianza no es opcional: una encuesta global muestra que la falta de transparencia es uno de los principales frenos a la adopción de IA; al contrario, ser transparentes la impulsa.</p>
+
+    <p>La buena práctica que propone el curso es una pregunta concreta: cada vez que se despliegue un modelo, pregúntate <strong>"¿Qué le diríamos a un cliente o a un auditor que nos cuestione esta predicción?"</strong> Si tienes una respuesta clara, vas por buen camino. Prepararse para esto no es un trámite burocrático: es adoptar una actitud proactiva que además mejora la calidad de los modelos.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina que un afiliado te pregunta por teléfono: "¿Por qué me recomendaron migrar a un fondo más conservador si mi perfil es agresivo?" Si el modelo que generó esa recomendación no puede explicar sus razones, quedas en una posición incómoda: no puedes defender la decisión ni darle tranquilidad. Con XAI podrías decir: "El modelo consideró su edad, su horizonte de retiro y la volatilidad reciente de su fondo actual; esos tres factores superaron el umbral de riesgo que definimos para su perfil". Eso es confianza construida con transparencia, y es exactamente lo que un regulador querría ver.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">Explicabilidad no es un costo extra ni un trámite: es la base de la confianza que tus afiliados, tu dirección y los reguladores van a pedirte cada vez más.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p13">
+    <div class="kicker"><span class="num">13</span><span class="tag">Foro y recursos</span></div>
+    <h2 class="titulo">El foro 2028 y los recursos del curso</h2>
+
+    <h3>El ejercicio de cierre: proyectarte a 2028</h3>
+    <p>El cierre práctico de la unidad es un ejercicio de <span class="term">prospectiva tecnológica</span>: redactar una proyección personal y profesional sobre el uso de IA en tu campo laboral para el año 2028. Debes elegir al menos una de las cinco tecnologías vistas (IA multimodal, Edge Computing, agentes autónomos, AutoML o XAI) y responder cuatro preguntas.</p>
+
+    <ol class="pasos">
+      <li><b>Implementación.</b> ¿Cómo se implementará la IA en tu industria en 2028?</li>
+      <li><b>Impacto.</b> ¿Cómo cambiarán los procesos, los equipos y las decisiones? ¿De qué manera la experiencia del cliente se verá beneficiada?</li>
+      <li><b>Riesgos.</b> ¿Cuáles son los riesgos que deberían ser gestionados desde el inicio?</li>
+      <li><b>Colaboración.</b> Lee las propuestas de al menos dos compañeros o compañeras que hayan abordado otras áreas o problemas. En cada caso, comparte una experiencia similar o haz una pregunta.</li>
+    </ol>
+
+    <h3>Recursos disponibles</h3>
+    <p>El curso ofrece un video resumen donde el profesor Rodrigo Pereira presenta cómo tres tecnologías emergentes están transformando los modelos de negocio en Latinoamérica, entre grandes oportunidades y desafíos por superar. También hay material complementario para profundizar: un capítulo del Banco Interamericano de Desarrollo (2024) sobre IA en América Latina y el Caribe, un artículo de BBVA (2022) sobre qué es la explicabilidad, y una guía de IBM sobre AutoML.</p>
+
+    <p>La bibliografía incluye, entre otras, un artículo de Soenksen et al. (2022) en <em>NPJ Digital Medicine</em> sobre un marco de IA multimodal para aplicaciones en salud, un estudio de AIMultiple (2025) con 22 casos de AutoML con resultados medibles, y una recopilación de Google Cloud (2025) con 90 casos de IA en Latinoamérica que inspiran innovación.</p>
+
+    <p>El caso aplicado de cierre es <strong>NeoRetail</strong>, una empresa de retail que implementa AutoML y agentes autónomos para mejorar la eficiencia en sus tiendas. La lección que el curso extrae: el éxito radica en equilibrar automatización, formar empleados y mantener transparencia con los clientes. ⚠️ Ojo: el curso advierte que los recursos alojados en enlaces y códigos QR presentes en el documento podrían no estar disponibles a partir del 30 de noviembre de 2026. Si necesitas el video o los documentos complementarios, convéniente descargarlos antes de esa fecha.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Para tu foro 2028, piensa en un escenario concreto de tu AFP: por ejemplo, un agente autónomo que gestiona la retención de afiliados con riesgo de traspaso, combinado con AutoML para predecir quién se va y con XAI para explicar cada recomendación al ejecutivo que la hace. No necesitas que sea perfecto ni que cubra las cinco tecnologías a la vez; necesitas que sea plausible, que muestres que entiendes el potencial y que hayas identificado al menos un riesgo y cómo lo gestionarías.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La prospectiva no es adivinar el futuro: es decidir hoy, con información, qué camino te deja mejor preparada. Escribir tu proyección te obliga a convertir la información en criterio propio.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="p14">
+    <div class="kicker"><span class="num">14</span><span class="tag">Cierre</span></div>
+    <h2 class="titulo">Si te quedas con tres cosas</h2>
+
+    <p>Llegamos al final de la unidad. No necesitas memorizar las cinco tecnologías ni sus detalles técnicos. Lo que necesitas es una brújula: criterio para tomar decisiones comerciales cuando estas tecnologías aparezcan en tu conversación de negocio, en un tablero, en una reunión con tu CFO o en una conversación con un regulador. Si tuviera que resumir la unidad en tres ideas que te vas a llevar a la reunión de mañana, serían estas.</p>
+
+    <h3>1. La IA está saliendo del texto</h3>
+    <p>Hasta hace poco, pensar en IA era pensar en texto: un chatbot que responde preguntas. La <span class="term">IA multimodal</span> la extiende a imágenes, audio, video y sensores; el <span class="term">Edge Computing</span> la lleva al punto de acción, donde la latencia importa y la conectividad puede fallar. Para tu AFP, eso significa que en el futuro cercano un afiliado podrá hablar por teléfono, subir un documento en la app o hacer una verificación en sucursal, y el sistema lo entenderá todo a la vez, de forma inmediata. La experiencia se vuelve más natural, más completa y más resiliente.</p>
+
+    <h3>2. De automatizar tareas a delegar procesos</h3>
+    <p>Los <span class="term">agentes autónomos</span> no son bots más inteligentes: son colaboradores digitales que encadenan múltiples pasos de razonamiento y acción, toman decisiones no triviales y aprenden de la retroalimentación. El salto es de paradigma: pasamos de automatizar una tarea repetida a delegar un proceso completo de negocio. Para ti como ejecutiva comercial, tu rol no desaparece, pero cambia: de hacer las cosas una por una a diseñar las reglas, definir los límites y supervisar resultados. El curso es claro: en entornos críticos, un humano debe supervisar al agente al menos hasta ganar confianza.</p>
+
+    <h3>3. Explicabilidad es la base que sostiene a las demás</h3>
+    <p>El curso lo dice sin rodeos: "IA Explicable es el complemento indispensable de todas las demás tendencias que vimos". Sin <span class="term">XAI</span>, la multimodalidad, el Edge, los agentes y el AutoML son potentes pero opacos: no sabes por qué decidieron lo que decidieron. Con XAI, cada decisión es auditable, cada sesgo detectable y cada afiliado puede entender por qué le recomiendan lo que le recomiendan. Y como la regulación viene desde Europa, Brasil y Chile, la explicabilidad no será opcional en el mediano plazo: será requisito para operar.</p>
+
+    <div class="mundo">
+      <div class="lab">En tu mundo</div>
+      Imagina tu campaña de retención del próximo trimestre con las cinco trabajando juntas: AutoML predice qué afiliados tienen mayor riesgo de traspaso; el agente autónomo redacta la propuesta personalizada y coordina el envío; el Edge procesa la llamada en tiempo real cuando el afiliado llama para preguntar; la multimodal entiende su tono, su documento y su contexto; y la XAI te da las razones exactas para que tú respondas con seguridad. Esa es la unidad completa funcionando como sistema. No necesitas implementarlo todo mañana; necesitas saber que el mapa existe y que tú puedes ubicarte en él.
+    </div>
+
+    <div class="idea">
+      <div class="lab">La idea en una línea</div>
+      <div class="frase">La prospectiva no es futurismo: es decidir hoy, con información y con criterio, qué camino te deja mejor preparada para cuando estas tecnologías dejen de ser novedad y se conviertan en estándar del sector.</div>
+    </div>
+  </section>
+
+  <section class="parte reveal" id="glosario">
+    <div class="kicker"><span class="num">★</span><span class="tag">Glosario</span></div>
+    <h2 class="titulo">Las 42 palabras clave de la unidad, en una línea</h2>
+    <div class="glos">
+      <dl>
+        <dt>Prospectiva tecnológica</dt><dd>Disciplina de anticipación que explora escenarios futuros en tecnología para guiar la toma de decisiones presentes. En IA, implica vigilar tendencias emergentes y evaluar su impacto en la estrategia.</dd>
+        <dt>IA multimodal</dt><dd>Sistemas de IA capaces de procesar e integrar múltiples modalidades de datos (texto, imágenes, audio, video, sensores) a la vez, combinando fuentes diversas para generar respuestas o análisis más completos.</dd>
+        <dt>Modalidad (de datos)</dt><dd>Tipo de canal o formato de información (texto, imagen, audio, video, señal de sensor) que un modelo de IA puede ingerir.</dd>
+        <dt>GPT-4 (Vision)</dt><dd>Modelo multimodal de OpenAI que puede recibir una imagen y generar texto explicativo, o tomar una instrucción hablada y crear una imagen relacionada.</dd>
+        <dt>Gemini</dt><dd>Modelo multimodal de Google Cloud disponible vía API que procesa texto, imagen, audio y video.</dd>
+        <dt>Azure AI Vision</dt><dd>Servicio de visión por computadora de Microsoft que, combinado con GPT-4, permite analizar imágenes y responder en lenguaje natural.</dd>
+        <dt>Edge Computing</dt><dd>Arquitectura que coloca capacidad de cómputo y modelos de IA en dispositivos locales cerca de la fuente de datos, reduciendo latencia y tráfico de red.</dd>
+        <dt>IA distribuida</dt><dd>Despliegue de algoritmos de IA en múltiples nodos o dispositivos que operan de forma coordinada.</dd>
+        <dt>Latencia</dt><dd>Retraso en la transmisión o procesamiento de datos. Se reduce al procesar localmente en el Edge en vez de enviar todo a la nube.</dd>
+        <dt>Ancho de banda</dt><dd>Capacidad de una red para transmitir datos. El Edge reduce el tráfico de datos crudos enviado a la nube porque solo transmite información ya procesada.</dd>
+        <dt>Internet de las cosas (IoT)</dt><dd>Red de dispositivos físicos interconectados que generan datos. Su expansión impulsa la adopción de Edge Computing.</dd>
+        <dt>Redes 5G/6G</dt><dd>Generaciones de redes móviles que potencian el paradigma Edge al permitir comunicación de baja latencia con dispositivos distribuidos.</dd>
+        <dt>Inferencia en el Edge</dt><dd>Ejecución de modelos de IA ya entrenados en dispositivos locales del borde, en contraposición al entrenamiento que se hace en la nube.</dd>
+        <dt>Agente autónomo</dt><dd>Software impulsado por IA capaz de realizar tareas, tomar decisiones no triviales, coordinar acciones y aprender del entorno con mínima intervención humana.</dd>
+        <dt>Automatización por software (RPA)</dt><dd>Automatización de tareas repetitivas siguiendo reglas predefinidas. Los agentes autónomos la superan al tomar decisiones no triviales y adaptarse a circunstancias nuevas.</dd>
+        <dt>Modelo de Lenguaje de Grandes dimensiones (LLM)</dt><dd>Modelo de IA entrenado en grandes volúmenes de texto que sirve de base cognitiva para muchos agentes autónomos y asistentes inteligentes.</dd>
+        <dt>AutoGPT</dt><dd>Plataforma experimental que permite construir agentes autónomos con capacidad de encadenar múltiples pasos de razonamiento y acción.</dd>
+        <dt>Devin</dt><dd>Agente de IA presentado por Cognition en 2024 como "el primer ingeniero de software de IA". Capaz de compilar, corregir y modernizar código con supervisión final humana.</dd>
+        <dt>Microsoft Copilot Studio</dt><dd>Plataforma corporativa de Microsoft para crear agentes autónomos empresariales integrados con CRM, RR.HH., ERP y otras plataformas.</dd>
+        <dt>AutoML</dt><dd>Conjunto de herramientas que automatizan las etapas del ciclo de machine learning (preparación de datos, selección de algoritmos, entrenamiento, optimización) para que desarrollar un modelo requiera mucho menos trabajo manual.</dd>
+        <dt>Hiperparámetros</dt><dd>Configuraciones del modelo que se ajustan antes o durante el entrenamiento (tamaños de red, tasas de aprendizaje, etc.). AutoML las optimiza automáticamente.</dd>
+        <dt>Ingeniería de características</dt><dd>Proceso de seleccionar y transformar variables de entrada relevantes para un modelo. AutoML realiza un feature engineering básico automáticamente.</dd>
+        <dt>Búsqueda bayesiana</dt><dd>Técnica automática de optimización de hiperparámetros que usa un modelo probabilístico para elegir las próximas configuraciones a probar de forma eficiente.</dd>
+        <dt>Ensemble</dt><dd>Combinación de múltiples modelos que votan o se promedian para mejorar predicciones. Puede ser muy efectivo pero poco explicable.</dd>
+        <dt>Google Cloud AutoML</dt><dd>Plataforma de AutoML de Google que permite entrenar modelos (incluyendo visión por computadora) cargando datos etiquetados y presionando un botón.</dd>
+        <dt>Azure AutoML</dt><dd>Servicio de AutoML de Microsoft que automatiza el ciclo de desarrollo de modelos de machine learning.</dd>
+        <dt>DataRobot</dt><dd>Plataforma de AutoML muy usada en la industria que, además de entrenar modelos, entrega "Reason Codes": explicaciones por cada predicción.</dd>
+        <dt>H2O Driverless AI</dt><dd>Plataforma de AutoML que automatiza selección de algoritmos, entrenamiento y evaluación sin intervención manual.</dd>
+        <dt>IA Explicable (XAI)</dt><dd>Conjunto de técnicas y ramas de la IA dedicadas a que los sistemas inteligentes expliquen de forma entendible cómo y por qué generan cada resultado o predicción.</dd>
+        <dt>Caja negra</dt><dd>Metáfora para describir modelos de IA (redes neuronales profundas, modelos generativos) cuyo proceso interno de decisión es opaco e incomprensible para los humanos.</dd>
+        <dt>Importancia de variables</dt><dd>Técnica XAI que cuantifica cuánto influyó cada variable de entrada en la predicción final de un modelo.</dd>
+        <dt>LIME</dt><dd>Método local de XAI que perturba levemente los datos de un caso específico para generar una explicación interpretable de la predicción de ese caso.</dd>
+        <dt>SHAP</dt><dd>Método de XAI basado en teoría de juegos que asigna a cada variable una contribución a la predicción individual, con garantías teóricas.</dd>
+        <dt>IBM AI Explainability 360</dt><dd>Kit gratuito de IBM con herramientas para explicar modelos de IA. Incluye implementaciones de LIME, SHAP y otras técnicas.</dd>
+        <dt>Google What-If Tool</dt><dd>Herramienta gratuita de Google que permite explorar y explicar predicciones de modelos probando datos sintéticos.</dd>
+        <dt>Reason Codes</dt><dd>Desglose entregado por DataRobot para cada predicción que explica por qué el modelo decidió así en términos de las variables de entrada.</dd>
+        <dt>Justicia algorítmica (Fairness)</dt><dd>Propiedad deseable de un modelo de IA de no reproducir o amplificar sesgos injustos contra grupos de personas. La XAI ayuda a detectarla.</dd>
+        <dt>Sesgo algorítmico</dt><dd>Tendencia de un modelo de IA a producir predicciones sistemáticamente injustas o discriminatorias debido a sesgos en los datos de entrenamiento o en el diseño.</dd>
+        <dt>Alucinación</dt><dd>Fenómeno en el que un modelo de IA (especialmente LLMs o agentes) genera inferencias o afirmaciones incorrectas que parecen plausibles.</dd>
+        <dt>Churn</dt><dd>Pérdida o cancelación de un cliente. Modelo predictivo típico donde AutoML y XAI se aplican para identificar y explicar clientes en riesgo de irse.</dd>
+        <dt>Scoring crediticio</dt><dd>Asignación de una puntuación de riesgo a un solicitante de crédito usando un modelo predictivo. Requiere explicabilidad por regulación financiera.</dd>
+        <dt>Garbage in, garbage out</dt><dd>Principio que establece que si los datos de entrada son de mala calidad, el resultado del modelo también será malo, sin importar la sofisticación del algoritmo.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="cierre reveal">
+    <h2>Las ideas clave de la unidad</h2>
+    <ol>
+      <li><strong>Cinco tecnologías, un mismo horizonte.</strong> La unidad explora IA multimodal, Edge Computing, agentes autónomos, AutoML y XAI: todas ya muestran beneficios reales en negocios latinoamericanos y globales.</li>
+      <li><strong>La multimodalidad amplía los sentidos.</strong> Combina texto, imágenes, audio y video para crear soluciones más holísticas y contextuales, mejorando la experiencia del cliente y la accesibilidad.</li>
+      <li><strong>El Edge lleva la inteligencia a donde ocurre la acción.</strong> Reduce latencia, mitiga problemas de conectividad (crítico en LatAm) y protege la privacidad al procesar datos localmente.</li>
+      <li><strong>Los agentes autónomos son un cambio de paradigma.</strong> No automatizan tareas: delegan procesos completos. Más de 100.000 organizaciones ya los usan (Microsoft, oct 2024) y el 12% de grandes empresas los tiene en producción (KPMG).</li>
+      <li><strong>AutoML democratiza la construcción de modelos.</strong> Equipos de negocio sin especialización en ML pueden generar modelos decentes. Consensus Corp redujo su tiempo de despliegue de tres a cuatro semanas a ocho horas.</li>
+      <li><strong>XAI es el complemento indispensable de las demás.</strong> Sin explicabilidad, las otras cuatro tendencias son potentes pero opacas. Con XAI, cada decisión es auditable y cada usuario puede entender las razones.</li>
+      <li><strong>La regulación viene desde múltiples frentes.</strong> Europa ya tiene la EU AI Act vigente; Brasil tiene un marco en proceso legislativo; Chile tiene un proyecto en el Senado. La transparencia será requisito, no opción.</li>
+      <li><strong>La confianza se construye con transparencia.</strong> Una encuesta global muestra que la falta de explicabilidad frena la adopción; ser transparentes la impulsa. La pregunta práctica: "¿Qué le diríamos a un cliente que nos cuestione esta predicción?"</li>
+      <li><strong>El 90% de las empresas latinoamericanas planea aumentar inversión en tecnologías emergentes.</strong> Dato del curso (fuente NTT DATA / HBR Analytics, 2022, que abarca tecnologías emergentes en general). La inversión va a seguir creciendo.</li>
+      <li><strong>La clave de implementación es gradual.</strong> Comenzar con pilotos controlados, formar equipos multidisciplinarios (negocio, datos, TI y legal), y estar dispuestos a iterar aprendiendo de los errores.</li>
+      <li><strong>La visión moderna es colaborativa.</strong> En lugar de ver a la IA como amenaza, la visión actual la considera colaboradora. Humanos e IA trabajan estrechamente; la IA transforma roles, no los elimina por completo.</li>
+      <li><strong>La prospectiva es decidir hoy.</strong> No se trata de adivinar el futuro, sino de usar escenarios futuros para tomar mejores decisiones presentes y evitar quedar rezagada cuando los cambios se vuelvan estándar.</li>
+    </ol>
+    <p class="remate">Al terminar la unidad, lo que tienes no es un manual técnico: es un mapa del terreno que se viene. No necesitas dominar cada tecnología; necesitas saber qué hace cada una, cuándo te va a tocar y qué preguntas hacer antes de decir que sí. Y eso, Jeanette, es suficiente para sentarte en cualquier reunión y hablar de IA con criterio, no con miedo.</p>
+  </section>
+
+</main>
+
+<footer>Unidad 6 · Tercer módulo.</footer>
+
+
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+</body>
+</html>

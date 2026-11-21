@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 6 · Perspectivas futuras y aplicaciones emergentes — Mapa conceptual y flashcards</title>
+<style>
+  :root{
+    --bg:#F2F5F9; --surface:#FFFFFF; --ink:#16243F; --ink-soft:#4A576E; --ink-faint:#8B96A8;
+    --line:#DDE4EE; --line-soft:#E9EEF5; --glass:rgba(255,255,255,.92);
+    --dot:#E5EBF4; --halo:#FFFFFF; --edge-col:#5A6478; --edge-dash:#9AA4B5; --edge-text:#5A6478;
+    --azul:#2456C7; --azul-dk:#16336F;
+    --verde:#0E8A5F; --ambar:#C77700; --violeta:#7048C7; --coral:#C73E55; --cian:#0E7E8A; --gris:#5A6478;
+    --verde-bg:#E8F6F0; --coral-bg:#FBEBEE;
+    --card-back:#101C33;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.07);
+    --font:'Avenir Next', Avenir, 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"]{
+    --bg:#0C1322; --surface:#162136; --ink:#E8EDF6; --ink-soft:#AEB9CD; --ink-faint:#6F7C96;
+    --line:#2A3650; --line-soft:#1E2A43; --glass:rgba(22,33,54,.92);
+    --dot:#1F2B45; --halo:#162136; --edge-col:#93A0B8; --edge-dash:#5E6C86; --edge-text:#A4B0C6;
+    --azul:#6C93F2; --azul-dk:#2B4A9E;
+    --verde:#3FBF92; --ambar:#E8A24C; --violeta:#A98CF0; --coral:#EF8298; --cian:#52BCCB; --gris:#9AA6BC;
+    --verde-bg:#11352B; --coral-bg:#3D1B23;
+    --card-back:#0A1120;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .25s, color .25s;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px 80px;}
+
+  header{padding:42px 0 8px;}
+  .kicker{font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--azul); font-weight:600;}
+  h1{font-weight:200; font-size:clamp(1.9rem,4.6vw,3.1rem); letter-spacing:-.01em; margin-top:6px; line-height:1.12;}
+  h1 b{font-weight:600;}
+  .sub{color:var(--ink-soft); margin-top:10px; max-width:64ch; font-size:.95rem;}
+
+  .tabs{display:flex; gap:8px; margin:28px 0 22px; flex-wrap:wrap; align-items:center; position:sticky; top:0; z-index:50; background:linear-gradient(var(--bg) 85%, transparent); padding:10px 0 8px;}
+  .tab{border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:9px 18px; font-family:var(--font); font-size:.9rem; font-weight:500; cursor:pointer; transition:all .18s;}
+  .tab:hover{border-color:var(--azul); color:var(--azul);}
+  .tab.on{background:var(--azul-dk); border-color:var(--azul-dk); color:#fff;}
+  .tab:focus-visible, button:focus-visible{outline:2px solid var(--azul); outline-offset:2px;}
+  .theme-toggle{margin-left:auto;}
+  .panel{display:none; animation:fadein .25s ease;}
+  .panel.on{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  /* ===== Mapa conceptual ===== */
+  .map-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .ghost{border:1px solid var(--line); background:var(--surface); border-radius:9px; padding:7px 13px; font-family:var(--font); font-size:.82rem; color:var(--ink-soft); cursor:pointer; font-weight:500;}
+  .ghost:hover{border-color:var(--azul); color:var(--azul);}
+  .map-hint{font-size:.76rem; color:var(--ink-faint); margin-left:auto;}
+  .map-frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative;}
+  #mapSvg{display:block; width:100%; height:64vh; min-height:440px; cursor:grab; touch-action:none;
+    background:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:26px 26px;}
+  #mapSvg.dragging{cursor:grabbing;}
+  .zoomctl{position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:6px;}
+  .zbtn{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--glass); font-size:1rem; cursor:pointer; color:var(--ink-soft); font-family:var(--font); backdrop-filter:blur(3px);}
+  .zbtn:hover{border-color:var(--azul); color:var(--azul);}
+  .legend{position:absolute; left:12px; bottom:12px; background:var(--glass); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.68rem; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; max-width:75%; backdrop-filter:blur(3px);}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .legend i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .cnode{cursor:pointer;}
+  .cnode rect.box{stroke-width:1.4; transition:stroke-width .12s;}
+  .cnode:hover rect.box{stroke-width:2.6;}
+  .cnode.sel rect.box{stroke-width:3.2; filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+  .cnode text{font-family:var(--font); font-weight:600; pointer-events:none;}
+  .h-edge{fill:none; stroke:var(--edge-col); stroke-width:1.3;}
+  .x-edge{fill:none; stroke:var(--edge-dash); stroke-width:1.2; stroke-dasharray:5 4;}
+  #arrow path{fill:var(--edge-col);}
+  #arrowDash path{fill:var(--edge-dash);}
+  .edge-label{font-family:var(--font); font-size:10.5px; fill:var(--edge-text); paint-order:stroke; stroke:var(--halo); stroke-width:4px; stroke-linejoin:round;}
+  .badge{cursor:pointer;}
+  .badge text{font-family:var(--font); font-size:10.5px; font-weight:700; pointer-events:none;}
+  .badge circle{fill:var(--surface); stroke-width:1.5;}
+
+  .detail-card{margin-top:14px; background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--dc, var(--azul)); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); min-height:84px;}
+  .detail-card .dc-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--dc, var(--azul));}
+  .detail-card h3{font-size:1.05rem; font-weight:600; margin:4px 0 6px;}
+  .detail-card p{font-size:.9rem; color:var(--ink-soft);}
+  .detail-card .placeholder{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  /* ===== Flashcards ===== */
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:6px 14px; font-family:var(--font); font-size:.8rem; cursor:pointer; color:var(--ink-soft); font-weight:500; transition:all .15s;}
+  .chip .cnt{opacity:.55; font-size:.72rem; margin-left:4px;}
+  .chip.on{color:#fff; border-color:transparent;}
+  html[data-theme="dark"] .chip.on{color:#0C1322;}
+  .chip[data-c="todas"].on{background:var(--ink);}
+  .chip[data-c="fund"].on{background:var(--azul);}
+  .chip[data-c="flujo"].on{background:var(--verde);}
+  .chip[data-c="algo"].on{background:var(--ambar);}
+  .chip[data-c="deep"].on{background:var(--violeta);}
+  .chip[data-c="eval"].on{background:var(--coral);}
+  .chip[data-c="err"].on{background:var(--cian);}
+
+  .fc-stage{display:grid; gap:16px;}
+  @media(min-width:840px){.fc-stage{grid-template-columns:1fr 280px;}}
+  .fc-area{perspective:1400px;}
+  .fcard{position:relative; width:100%; min-height:320px; cursor:pointer; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.3,1);}
+  .fcard.flip{transform:rotateY(180deg);}
+  @media(prefers-reduced-motion:reduce){.fcard{transition:none;} .panel{animation:none;}}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:18px; box-shadow:var(--shadow); padding:34px 34px 56px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+  .face.front{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cc, var(--azul));}
+  .face.back{background:var(--card-back); color:#EDF1F8; transform:rotateY(180deg); border-top:5px solid var(--cc, var(--azul));}
+  .f-cat{font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--cc, var(--azul)); margin-bottom:14px;}
+  .face.back .f-cat{color:color-mix(in srgb, var(--cc) 65%, #fff);}
+  .f-term{font-weight:200; font-size:clamp(1.5rem,3.4vw,2.3rem); line-height:1.15;}
+  .f-en{font-family:var(--mono); font-size:.82rem; color:var(--ink-faint); margin-top:10px;}
+  .f-def{font-size:1.02rem; line-height:1.6; max-width:48ch; font-weight:400;}
+  .f-foot{position:absolute; bottom:16px; left:0; right:0; font-size:.72rem; color:var(--ink-faint); text-align:center;}
+  .face.back .f-foot{color:rgba(237,241,248,.4);}
+  .f-state{position:absolute; top:16px; right:18px; font-size:.7rem; font-weight:600; border-radius:999px; padding:3px 10px;}
+  .f-state.ok{background:var(--verde-bg); color:var(--verde);}
+  .f-state.rev{background:var(--coral-bg); color:var(--coral);}
+  .face.back .f-state.ok{background:rgba(14,138,95,.28); color:#7FE0BC;}
+  .face.back .f-state.rev{background:rgba(199,62,85,.32); color:#FFAEBC;}
+  .fc-controls{display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-family:var(--font); font-size:.86rem; font-weight:600; cursor:pointer; transition:transform .12s, opacity .15s;}
+  .btn:active{transform:scale(.96);}
+  .btn-nav{background:var(--surface); border:1px solid var(--line); color:var(--ink);}
+  .btn-nav:hover{border-color:var(--azul); color:var(--azul);}
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-rev{background:var(--coral); color:#fff;}
+  html[data-theme="dark"] .btn-ok, html[data-theme="dark"] .btn-rev{color:#0C1322;}
+  .btn-ok:hover,.btn-rev:hover{opacity:.88;}
+  .fc-side{display:flex; flex-direction:column; gap:12px;}
+  .side-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .side-card h3{font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:12px;}
+  .prog-row{display:flex; justify-content:space-between; font-size:.85rem; padding:5px 0;}
+  .prog-row b{font-weight:600;}
+  .bar{height:8px; border-radius:99px; background:var(--line-soft); overflow:hidden; display:flex; margin-top:10px;}
+  .bar i{display:block; height:100%;}
+  .bar .i-ok{background:var(--verde);} .bar .i-rev{background:var(--coral);}
+  .counter{font-family:var(--mono); font-size:.8rem; color:var(--ink-faint); text-align:center; margin-top:10px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; font-size:.85rem; cursor:pointer; user-select:none;}
+  .sw{width:38px; height:22px; border-radius:99px; background:var(--line); position:relative; transition:background .2s; flex:none;}
+  .sw::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .toggle-row.on .sw{background:var(--coral);}
+  .toggle-row.on .sw::after{left:19px;}
+  .keys{font-size:.74rem; color:var(--ink-faint); line-height:1.9;}
+  .keys kbd{font-family:var(--mono); background:var(--line-soft); border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:.72rem;}
+  .empty-msg{padding:60px 20px; text-align:center; color:var(--ink-faint); background:var(--surface); border:1px dashed var(--line); border-radius:18px;}
+
+  /* ===== Discrepancias ===== */
+  .disc-grid{display:grid; gap:14px;}
+  @media(min-width:760px){.disc-grid{grid-template-columns:1fr 1fr;}}
+  .disc{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--coral); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow);}
+  .disc h3{font-size:.95rem; font-weight:600; margin-bottom:8px; display:flex; gap:8px; align-items:baseline;}
+  .disc .num{font-family:var(--mono); color:var(--coral); font-size:.8rem; font-weight:700;}
+  .disc p{font-size:.86rem; color:var(--ink-soft);}
+  .disc .regla{margin-top:10px; background:var(--coral-bg); border-radius:9px; padding:9px 12px; font-size:.82rem; color:var(--ink);}
+  .disc .regla b{color:var(--coral);}
+
+  footer{margin-top:48px; font-size:.74rem; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Fundamentos de Inteligencia Artificial para negocios · Máster en IA</div>
+  <h1>Unidad 6 · <b>Perspectivas futuras y aplicaciones emergentes</b></h1>
+  <p class="sub">Mapa conceptual interactivo (nodos, flechas y relaciones, estilo CmapTools) y flashcards con los 42 conceptos del glosario. Todo offline, en un solo archivo.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-p="mapa" role="tab">🗺️ Mapa conceptual</button>
+  <button class="tab" data-p="cards" role="tab">🃏 Flashcards</button>
+  <button class="tab" data-p="disc" role="tab">⚠️ Discrepancias</button>
+  <button class="tab theme-toggle" id="themeBtn" title="Cambiar tema">🌙 Oscuro</button>
+</div>
+
+<!-- ============ MAPA ============ -->
+<section class="panel on" id="p-mapa">
+  <div class="map-bar">
+    <button class="ghost" id="expandAll">Expandir todo</button>
+    <button class="ghost" id="collapseAll">Solo ramas principales</button>
+    <button class="ghost" id="fitBtn">⤢ Ajustar a pantalla</button>
+    <span class="map-hint">Clic en una casilla = expandir/contraer + ver detalle · arrastra para mover · rueda para zoom</span>
+  </div>
+  <div class="map-frame">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z"></path>
+        </marker>
+      </defs>
+      <g id="viewport"></g>
+    </svg>
+    <div class="zoomctl">
+      <button class="zbtn" id="zin" title="Acercar">＋</button>
+      <button class="zbtn" id="zout" title="Alejar">－</button>
+      <button class="zbtn" id="zfit" title="Ajustar">⤢</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="detail-card" id="detailCard">
+    <div class="placeholder">👆 Haz clic en cualquier casilla: se expande o contrae su rama y aquí aparece su explicación completa (incluye las frases de examen).</div>
+  </div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="panel" id="p-cards">
+  <div class="chips" id="chips"></div>
+  <div class="fc-stage">
+    <div>
+      <div class="fc-area" id="fcArea">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Voltear flashcard">
+          <div class="face front">
+            <span class="f-state" id="stateFront"></span>
+            <div class="f-cat" id="catFront"></div>
+            <div class="f-term" id="term"></div>
+            <div class="f-en" id="termEn"></div>
+            <div class="f-foot">clic o espacio para voltear</div>
+          </div>
+          <div class="face back">
+            <span class="f-state" id="stateBack"></span>
+            <div class="f-cat" id="catBack"></div>
+            <div class="f-def" id="def"></div>
+            <div class="f-foot">clic para volver al término</div>
+          </div>
+        </div>
+      </div>
+      <div class="empty-msg" id="emptyMsg" style="display:none">No quedan tarjetas en este filtro. 🎉<br>Cambia de categoría o desactiva «Solo repasar».</div>
+      <div class="fc-controls" id="fcControls">
+        <button class="btn btn-nav" id="prevBtn">◀ Anterior</button>
+        <button class="btn btn-nav" id="flipBtn">Voltear</button>
+        <button class="btn btn-nav" id="nextBtn">Siguiente ▶</button>
+        <button class="btn btn-ok" id="okBtn">✓ La domino</button>
+        <button class="btn btn-rev" id="revBtn">↻ Repasar</button>
+      </div>
+      <div class="counter" id="counter"></div>
+    </div>
+    <aside class="fc-side">
+      <div class="side-card">
+        <h3>Progreso</h3>
+        <div class="prog-row"><span>Dominadas</span><b id="nOk" style="color:var(--verde)">0</b></div>
+        <div class="prog-row"><span>Para repasar</span><b id="nRev" style="color:var(--coral)">0</b></div>
+        <div class="prog-row"><span>Sin ver</span><b id="nNew">0</b></div>
+        <div class="bar"><i class="i-ok" id="barOk"></i><i class="i-rev" id="barRev"></i></div>
+      </div>
+      <div class="side-card">
+        <h3>Modo de estudio</h3>
+        <div class="toggle-row" id="onlyRev"><span class="sw"></span><span>Solo tarjetas marcadas «repasar»</span></div>
+        <div style="margin-top:12px"><button class="btn btn-nav" id="shuffleBtn" style="width:100%">🔀 Mezclar</button></div>
+        <div style="margin-top:8px"><button class="btn btn-nav" id="resetBtn" style="width:100%">Reiniciar progreso</button></div>
+      </div>
+      <div class="side-card">
+        <h3>Atajos de teclado</h3>
+        <div class="keys">
+          <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Espacio</kbd> voltear<br>
+          <kbd>1</kbd> la domino · <kbd>2</kbd> repasar
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ DISCREPANCIAS ============ -->
+<section class="panel" id="p-disc">
+  <p class="sub" style="margin-bottom:18px">19 puntos donde el material del curso está desactualizado, no tiene fuente o simplifica lo que dice la evidencia (verificado en noviembre de 2026). Dominar ambas versiones te cubre en el examen.</p>
+  <div class="disc-grid">
+    <div class="disc">
+      <h3><span class="num">01</span> MATIZADO · "el 90% de las empresas latinoamericanas planea aumentar su inversión en tecnologías emergentes en los próximo…</h3>
+      <p>Curso: "el 90% de las empresas latinoamericanas planea aumentar su inversión en tecnologías emergentes en los próximos meses" (pág. 2) Evidencia: La cifra proviene del estudio NTT DATA / HBR Analytic Services de <b>mayo 2022</b> (316 ejecutivos de Brasil, México, Perú, Argentina, Chile y Colombia). Se refiere a tecnologías emergentes <b>en general</b>, no solo a IA. Dato más reciente: un estudio NTT DATA / MIT Technology Review de <b>2025</b> encuentra que el <b>86 %</b> explora o implementa IA generativa. El 90 % es de 2022 y su vigencia a nov-2026 es incierta.</p>
+      <div class="regla"><b>Regla:</b> En el examen responde "el 90 % de las empresas latinoamericanas planea aumentar inversión en tecnologías emergentes" atribuyéndolo al curso. Sabe que la fuente es NTT DATA / HBR Analytics 2022, que abarca tecnologías emergentes en general (no solo IA), y que un dato más reciente (2025, NTT DATA / MIT Tech Review) da 86 % para IA generativa específicamente.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">02</span> CORREGIDO · "Según Gartner, se estima que un 75 % de los CIO aumentarán sus presupuestos en IA durante 2024" (pág. 12)</h3>
+      <p>Curso: "Según Gartner, se estima que un 75 % de los CIO aumentarán sus presupuestos en IA durante 2024" (pág. 12) Evidencia: La predicción de Gartner que usa el <b>75 %</b> es en realidad: "el 75 % de los <b>datos empresariales</b> se crearía y procesaría <b>fuera del data center o la nube centralizada</b> para <b>2025</b>" (vs. 10 % en 2018). Es una proyección formulada ≈2017-2018 sobre <b>volumen de datos en el borde</b>, no sobre presupuestos de CIO en IA. El curso atribuye mal tanto el sujeto (CIO/budgets vs. datos/edge) como el año (2024 vs. 2025).</p>
+      <div class="regla"><b>Regla:</b> En el examen cita la predicción tal como la da el curso (75 %, Gartner, CIO, presupuestos IA, 2024). Sabe que la predicción original de Gartner se refiere a datos procesados fuera del data center para 2025, no a presupuestos de CIO; si el profesor pregunta por el origen, la cifra 75 % de Gartner está asociada a Edge Computing, no a IA.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">03</span> MATIZADO · "más de 100.000 organizaciones utilizan Copilot Studio para crear agentes autónomos empresariales" — informe M…</h3>
+      <p>Curso: "más de 100.000 organizaciones utilizan Copilot Studio para crear agentes autónomos empresariales" — informe Microsoft, octubre 2024 (pág. 17) Evidencia: Microsoft dio efectivamente esa cifra en octubre 2024. En <b>2025</b> Microsoft informó <b>más de 230.000 organizaciones</b>, incluyendo el <b>90 % de la Fortune 500</b>. La cifra del curso es correcta para su fecha pero está desactualizada.</p>
+      <div class="regla"><b>Regla:</b> En el examen responde "más de 100.000 organizaciones" citando el informe de Microsoft de octubre 2024. Sabe que a 2025-2026 la cifra ya superó las 230.000 organizaciones (90 % de la Fortune 500), por lo que el dato del curso es una foto de corte oct-2024.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">04</span> MATIZADO · "el 12 % de grandes empresas ya tiene agentes de IA en producción, 37 % en proyectos piloto y más de la mitad …</h3>
+      <p>Curso: "el 12 % de grandes empresas ya tiene agentes de IA en producción, 37 % en proyectos piloto y más de la mitad explorando activamente" — KPMG (pág. 17) Evidencia: Corresponde a la <b>AI Pulse Survey Q4 2024</b> de KPMG: 12 % desplegado, 37 % en piloto, 51 % explorando. En el <b>Q1 2025</b> los pilotos subieron a <b>65 %</b> y el despliegue se mantuvo en ≈11 %. El curso omite la fecha de la encuesta.</p>
+      <div class="regla"><b>Regla:</b> En el examen usa los porcentajes de KPMG tal como los da el curso (12 % / 37 % / &gt;50 %). Sabe que provienen de la AI Pulse Survey Q4 2024 y que a Q1 2025 los pilotos ya estaban en 65 % (despliegue ≈11 %), lo que indica aceleración en pilotos pero no tanto en producción.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">05</span> CORREGIDO · "La Unión Europea, con su próxima Ley de IA, exigirá transparencia en los sistemas de alto riesgo y podría mul…</h3>
+      <p>Curso: "La Unión Europea, con su <b>próxima</b> Ley de IA, exigirá transparencia en los sistemas de alto riesgo y podría multar a empresas que no puedan explicar decisiones automatizadas" (pág. 28) Evidencia: La EU AI Act <b>entró en vigor en 2024</b> (no es "próxima"). Además, el <b>"Digital Omnibus"</b> (Reglamento UE 2026/1744, publicado el 24-jul-2026) <b>pospuso</b> las obligaciones de alto riesgo: el Anexo III pasó del 2-ago-2026 al <b>2-dic-2027</b> y los sistemas integrados en productos del Anexo I al <b>2-ago-2028</b>. Se pospusieron, no se eliminaron.</p>
+      <div class="regla"><b>Regla:</b> En el examen responde que la EU AI Act exige transparencia y explicabilidad en sistemas de alto riesgo con posible sanción. Sabe que (a) ya <b>no</b> es "próxima": está vigente desde 2024; (b) las obligaciones de alto riesgo fueron <b>pospuestas</b> por el Digital Omnibus 2026 (Anexo III → dic-2027; Anexo I → ago-2028), no eliminadas.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">06</span> MATIZADO · "Brasil está discutiendo un marco legal de IA que incluye principios de explicabilidad" (pág. 28)</h3>
+      <p>Curso: "Brasil está <b>discutiendo</b> un marco legal de IA que incluye principios de explicabilidad" (pág. 28) Evidencia: El <b>PL 2338/2023</b> fue <b>aprobado por el Senado en diciembre 2024</b> y desde <b>marzo 2025</b> está en la Cámara de Diputados (comisión especial). A mediados de 2026 <b>seguía sin votación final</b> en Diputados. "Discutiendo" es un subestimado: ya pasó el Senado.</p>
+      <div class="regla"><b>Regla:</b> En el examen menciona que Brasil tiene un marco legal de IA en proceso legislativo con principios de explicabilidad. Sabe que el PL 2338/2023 ya fue aprobado por el Senado (dic-2024) y está en Diputados (comisión especial desde mar-2025), pero que a nov-2026 <b>aún no es ley</b> (sin votación final en Cámara Baja).</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">07</span> PENDIENTE DE VERIFICAR · "la tasa de clics aumentó 16 pp y el valor promedio de compra creció un 122 % tras adoptar esta IA multimodal"…</h3>
+      <p>Curso: "la tasa de clics aumentó 16 pp y el valor promedio de compra creció un 122 % tras adoptar esta IA multimodal" — caso Cia. Hering (pág. 8) Evidencia: <b>No se encontró ninguna fuente pública</b> que confirme esas cifras (16 pp, 122 %) ni su relación con IA multimodal. Queda sin verificar.</p>
+      <div class="regla"><b>Regla:</b> En el examen cita las cifras (16 pp clics, 122 % valor de compra) atribuyéndolas al caso Hering tal como las presenta el curso. Sabe que no existe corroboración pública independiente; son cifras de un solo caso sin fuente primaria verificable.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">08</span> PENDIENTE DE VERIFICAR · "el 73 % de las empresas ve la escasez de habilidades y experiencia en IA como su mayor obstáculo" (pág. 24)</h3>
+      <p>Curso: "el 73 % de las empresas ve la escasez de habilidades y experiencia en IA como su mayor obstáculo" (pág. 24) Evidencia: No se realizó búsqueda específica para este dato en la investigación. No se pudo identificar la fuente original.</p>
+      <div class="regla"><b>Regla:</b> En el examen usa el 73 % como dato del curso sobre escasez de talento en IA en LatAm. Sabe que la fuente original no se especifica en el PDF y no fue verificada; la cifra puede variar según encuesta y año.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">09</span> PENDIENTE DE VERIFICAR · "el 60 % de ejecutivos cree que agentes de IA harán la mayor parte de la codificación en 3-5 años" (pág. 19)</h3>
+      <p>Curso: "el 60 % de ejecutivos cree que agentes de IA harán la mayor parte de la codificación en 3-5 años" (pág. 19) Evidencia: No se cubre en la investigación.</p>
+      <div class="regla"><b>Regla:</b> En el examen menciona la encuesta (60 % ejecutivos, codificación por agentes en 3-5 años) tal como la da el curso. Sabe que es una proyección sin fuente única citada y que el horizonte temporal es relativo al momento de redacción.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">10</span> MATIZADO · "Edge Computing es la tecnología emergente con mayor nivel de adopción en la región, junto con biometría y rob…</h3>
+      <p>Curso: "Edge Computing es la tecnología emergente con <b>mayor nivel de adopción</b> en la región, junto con biometría y robótica avanzada" — HBR Analytic Services (pág. 13-14) Evidencia: El ranking NTT DATA / HBR Analytics <b>2022</b> ubicó al Edge Computing <b>entre las principales</b> tecnologías emergentes de América Latina. No se confirma explícitamente el puesto #1; el curso dice "mayor" que implica primer lugar.</p>
+      <div class="regla"><b>Regla:</b> En el examen responde que según HBR Analytics / NTT DATA, Edge Computing es una de las tecnologías emergentes con mayor adopción en LatAm (junto a biometría y robótica avanzada). Sabe que la fuente 2022 lo ubica "entre las principales"; si el curso dice "la de mayor adopción" es una leve sobreafirmación respecto al ranking original.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">11</span> PENDIENTE DE VERIFICAR · Bibliografía: "TechTarget. (s.f.). Artificial superintelligence (ASI). SearchEnterpriseAI." (pág. 38)</h3>
+      <p>Curso: Bibliografía: "TechTarget. (s.f.). Artificial superintelligence (ASI). SearchEnterpriseAI." (pág. 38) Evidencia: No se cubre en la investigación. El "(s.f.)" sigue siendo problemático y ASI no se desarrolla en el cuerpo de la unidad.</p>
+      <div class="regla"><b>Regla:</b> No usar esta referencia en el examen. Si se pregunta por bibliografía, señalar que es la única sin fecha y que su tema (ASI) no se desarrolla en la unidad.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">12</span> PENDIENTE DE VERIFICAR · "Dairyland Power (EE.UU.) implementó IA generativa en el Edge para optimizar el rendimiento de su infraestruct…</h3>
+      <p>Curso: "Dairyland Power (EE.UU.) implementó IA generativa en el Edge para optimizar el rendimiento de su infraestructura en campo" (pág. 13) Evidencia: No se cubre en la investigación.</p>
+      <div class="regla"><b>Regla:</b> En el examen lo menciona como ejemplo que da el curso. Sabe que es un caso de nicho sin fuente primaria verificable en el PDF.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">13</span> CORREGIDO (el curso lo lista como si ya tuviera marco vigente) · NUEVA. El nodo `n_xai_reg` del curso menciona "Chile" entre los países con regulación de transparencia/explica…</h3>
+      <p>Curso: <b>NUEVA.</b> El nodo `n_xai_reg` del curso menciona "Chile" entre los países con regulación de transparencia/explicabilidad, sin dar estado. Evidencia: El proyecto de ley de IA chileno (<b>boletín 16821-19</b>, enfoque de riesgo inspirado en la UE) fue <b>aprobado por la Cámara en octubre 2025</b> y <b>sigue en el Senado</b> (segundo trámite) en 2026. <b>Aún no es ley.</b></p>
+      <div class="regla"><b>Regla:</b> En el examen menciona que Chile tiene un proyecto de ley de IA con enfoque de riesgo (inspirado en la EU AI Act) que fue aprobado en la Cámara (oct-2025) pero que <b>a nov-2026 aún está en el Senado y no es ley</b>. No responder que Chile "ya tiene" regulación vigente de IA.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">14</span> CORREGIDO · NUEVA. La bibliografía del curso cita: Soenksen et al. 2022, *npj Digital Medicine*, artículo 155.</h3>
+      <p>Curso: <b>NUEVA.</b> La bibliografía del curso cita: Soenksen et al. 2022, *npj Digital Medicine*, artículo <b>155</b>. Evidencia: La referencia correcta es: Soenksen et al. 2022, "Integrated multimodal artificial intelligence framework for healthcare applications", *npj Digital Medicine*, vol. 5, <b>artículo 149</b>, DOI 10.1038/s41746-022-00689-4 (marco HAIM, MIT). El número de artículo del curso (155) es <b>erróneo</b>.</p>
+      <div class="regla"><b>Regla:</b> En el examen, si se pregunta por la referencia de Soenksen, dar el número de artículo <b>149</b> (no 155). Si el profesor usa el número del curso, señalar que el DOI correcto apunta al artículo 149.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">15</span> CORREGIDO · NUEVA. El curso describe el caso Mercedes-Benz como "Azure AI Vision + GPT-4 (copiloto visual)" (pág. 8, nodo …</h3>
+      <p>Curso: <b>NUEVA.</b> El curso describe el caso Mercedes-Benz como "Azure AI Vision + GPT-4 (copiloto visual)" (pág. 8, nodo `n_multimodal_auto`). Evidencia: Se confirmó que Mercedes-Benz integró <b>ChatGPT (GPT-4 y GPT-3.5) vía Azure OpenAI Service</b> en el asistente de voz <b>MBUX "Hey Mercedes"</b>. Partió en beta en EE.UU. en junio 2023 (&gt;900.000 vehículos) y se extendió a ≈3 millones. <b>No se encontró evidencia de uso de "Azure AI Vision"</b> ni de un "copiloto visual" (es un asistente de <b>voz</b>).</p>
+      <div class="regla"><b>Regla:</b> En el examen describe el caso Mercedes-Benz como: integración de ChatGPT (GPT-4/3.5) vía Azure OpenAI Service en el asistente de voz MBUX. Sabe que el curso añade "Azure AI Vision" y "copiloto visual" que <b>no tienen evidencia pública</b>; la implementación confirmada es de voz, no visual.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">16</span> MATIZADO · NUEVA. "Consensus Corp: 3-4 semanas → 8 horas" como caso de AutoML (pág. 22, nodo `n_automl_tiempo`).</h3>
+      <p>Curso: <b>NUEVA.</b> "Consensus Corp: 3-4 semanas → 8 horas" como caso de AutoML (pág. 22, nodo `n_automl_tiempo`). Evidencia: Consensus Corporation es <b>filial de Target</b>. El caso es de <b>DataRobot + Trifacta</b>: pasó de 3-4 semanas a &lt;8 horas, con <b>+24 %</b> en detección de fraude y <b>−55 %</b> en falsos positivos. Es <b>material del proveedor</b>, sin auditoría independiente. El curso omite que es filial de Target y que es material de vendor.</p>
+      <div class="regla"><b>Regla:</b> En el examen cita el caso Consensus Corp (3-4 semanas → 8 horas) tal como lo da el curso. Sabe que es una filial de Target, que el caso proviene de DataRobot/Trifacta (material de vendor, sin auditoría independiente) y que incluyó mejoras adicionales (+24 % fraude, −55 % falsos positivos).</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">17</span> MATIZADO · NUEVA. "Trupanion: 2/3 de churn identificado" como caso de AutoML (pág. 22, nodo `n_automl_precision`).</h3>
+      <p>Curso: <b>NUEVA.</b> "Trupanion: 2/3 de churn identificado" como caso de AutoML (pág. 22, nodo `n_automl_precision`). Evidencia: El caso de DataRobot dice que identifica a <b>"más de dos tercios"</b> (no exactamente 2/3) de los clientes que se darán de baja, y que <b>redujo más de 10 veces</b> el tiempo para construir modelos. Es <b>material del proveedor</b>.</p>
+      <div class="regla"><b>Regla:</b> En el examen usa la cifra del curso (2/3 de churn). Sabe que el caso original de DataRobot dice "más de dos tercios" (ligeramente superior) y que también reportó una reducción de &gt;10× en tiempo de construcción de modelos; todo es material de vendor.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">18</span> MATIZADO · NUEVA. "Devin (Cognition) — primer ingeniero de software de IA (2024)" (pág. 19, nodo `n_agentes_dev`).</h3>
+      <p>Curso: <b>NUEVA.</b> "Devin (Cognition) — primer ingeniero de software de IA (2024)" (pág. 19, nodo `n_agentes_dev`). Evidencia: Devin se lanzó en 2024 (la demo original fue criticada). En <b>2026</b> es un agente de programación <b>maduro</b> (planifica, programa, depura, prueba y despliega). Cognition <b>compró Windsurf en 2025</b>. En <b>mayo 2026</b> levantó una <b>Serie D</b> con valoración de <b>US$ 26.000 millones</b>. Las cifras de autonomía son propias de la empresa.</p>
+      <div class="regla"><b>Regla:</b> En el examen responde que Devin (Cognition) fue el primer ingeniero de software de IA, lanzado en 2024. Sabe que a 2026 es un agente maduro (ciclo completo: planifica → programa → depura → prueba → despliega), que Cognition compró Windsurf (2025) y que la empresa valuó US$ 26.000 M (Serie D, may-2026). Las métricas de autonomía son auto-reportadas.</div>
+    </div>
+    <div class="disc">
+      <h3><span class="num">19</span> PENDIENTE DE VERIFICAR · Caso evaluado truncado del PDF. El PDF de la unidad parece contener un caso de estudio (posiblemente el de Her…</h3>
+      <p>Curso: <b>Caso evaluado truncado del PDF.</b> El PDF de la unidad parece contener un caso de estudio (posiblemente el de Hering o otro) que aparece <b>truncado/incompleto</b> al final de una sección. Evidencia: La investigación no encontró evidencia que permita identificar con certeza cuál es el caso truncado ni reconstruir su contenido completo.</p>
+      <div class="regla"><b>Regla:</b> Si en el examen se pregunta por un caso que el estudiante no recuerda completo, indicar que el PDF lo presenta de forma truncada y que las cifras asociadas (si aplica) no tienen corroboración externa. No inventar contenido que no aparece en el PDF.</div>
+    </div>
+  </div>
+</section>
+
+<footer>Generado a partir de «Explicación Unidad 6 — Perspectivas futuras y aplicaciones emergentes» · Curso: Tecnologías de Inteligencia Artificial para Negocios · Archivo autocontenido, funciona sin internet.</footer>
+</div>
+
+<script>
+/* ==================== TEMA ==================== */
+let theme = "light";
+try{
+  theme = localStorage.getItem("u6theme") ||
+    (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}catch(e){}
+
+/* ==================== PALETAS (claro / oscuro) ==================== */
+const PAL = {
+ light:{
+  root:{s:"#16336F", f:"#16336F", t:"#FFFFFF", n:"Unidad 6"},
+  azul:{s:"#2456C7", f:"#EBF0FC", t:"#16243F", n:"IA multimodal"},
+  verde:{s:"#0E8A5F", f:"#E8F6F0", t:"#16243F", n:"Edge Computing e IA distribuida"},
+  ambar:{s:"#C77700", f:"#FBF1E0", t:"#16243F", n:"Agentes autónomos"},
+  violeta:{s:"#7048C7", f:"#F1ECFB", t:"#16243F", n:"AutoML"},
+  coral:{s:"#C73E55", f:"#FBEBEE", t:"#16243F", n:"IA Explicable (XAI)"},
+  cian:{s:"#0E7E8A", f:"#E7F4F6", t:"#16243F", n:"Prospectiva y contexto latinoamericano"},
+  gris:{s:"#5A6478", f:"#EEF1F5", t:"#16243F", n:"Foro, recursos y cierre"}
+ },
+ dark:{
+  root:{s:"#7AA0F5", f:"#24407F", t:"#FFFFFF", n:"Unidad 6"},
+  azul:{s:"#7AA0F5", f:"#1C2B4F", t:"#E8EDF6", n:"IA multimodal"},
+  verde:{s:"#4CC79B", f:"#11352B", t:"#E8EDF6", n:"Edge Computing e IA distribuida"},
+  ambar:{s:"#E8A24C", f:"#3A2C12", t:"#E8EDF6", n:"Agentes autónomos"},
+  violeta:{s:"#A98CF0", f:"#2A2147", t:"#E8EDF6", n:"AutoML"},
+  coral:{s:"#EF8298", f:"#3D1B23", t:"#E8EDF6", n:"IA Explicable (XAI)"},
+  cian:{s:"#5BC4D1", f:"#123238", t:"#E8EDF6", n:"Prospectiva y contexto latinoamericano"},
+  gris:{s:"#9AA6BC", f:"#242E42", t:"#E8EDF6", n:"Foro, recursos y cierre"}
+ }
+};
+function C(key){ return PAL[theme][key]; }
+
+/* ==================== DATOS: MAPA CONCEPTUAL ==================== */
+const TREE = {
+ "id": "root",
+ "t": "PERSPECTIVAS FUTURAS Y APLICACIONES EMERGENTES",
+ "c": "root",
+ "d": "Unidad que explora las tendencias tecnológicas emergentes con impacto directo en negocios: IA multimodal, Edge Computing, agentes autónomos, AutoML e IA explicable. Contextualizada en el escenario latinoamericano.",
+ "k": [
+  {
+   "id": "n_prospectiva",
+   "t": "PROSPECTIVA TECNOLÓGICA",
+   "c": "cian",
+   "d": "Disciplina de anticipación que explora escenarios futuros en tecnología para guiar la toma de decisiones presentes. Sirve como marco metodológico que justifica la unidad.",
+   "e": "se fundamenta en",
+   "k": []
+  },
+  {
+   "id": "n_latam_ctx",
+   "t": "CONTEXTO LATINOAMERICANO",
+   "c": "cian",
+   "d": "Escasez de talento en datos (73%), distancias geográficas y conectividad limitada. Fase exploratoria en adopción de IA con oportunidades en banca, salud y gobierno.",
+   "e": "se contextualiza en",
+   "k": []
+  },
+  {
+   "id": "n_multimodal",
+   "t": "IA MULTIMODAL",
+   "c": "azul",
+   "d": "Sistemas de IA capaces de procesar e integrar múltiples modalidades de datos (texto, imágenes, audio, video, sensores) simultáneamente.",
+   "e": "abarca",
+   "k": [
+    {
+     "t": "PROCESA VARIAS MODALIDADES",
+     "c": "azul",
+     "d": "Procesa texto, imagen, audio y video a la vez. Ejemplo: GPT-4 Vision recibe una imagen y genera texto explicativo.",
+     "e": "se define como",
+     "k": []
+    },
+    {
+     "t": "SINESTESIAS ENTRE MODALIDADES",
+     "c": "azul",
+     "d": "Funciona mediante 'sinestesias' entre modalidades durante el entrenamiento. El modelo aprende a traducir información entre formatos distintos.",
+     "e": "funciona mediante",
+     "k": []
+    },
+    {
+     "t": "RETAIL: HERING BRASIL",
+     "c": "azul",
+     "d": "Cia. Hering (Brasil) implementó un buscador por imagen y el chatbot Herica. Permite a clientes buscar productos con fotos.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "TELECOM: TIM BRASIL",
+     "c": "azul",
+     "d": "TIM Brasil usa IA multimodal para transcripción y clasificación de llamadas telefónicas. Mejora la gestión de atención al cliente.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "AUTOMOTRIZ: MERCEDES-BENZ",
+     "c": "azul",
+     "d": "Mercedes-Benz combina Azure AI Vision con GPT-4 para crear un copiloto visual que analiza imágenes y responde en lenguaje natural.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "MODELOS PESADOS",
+     "c": "azul",
+     "d": "Los modelos multimodales son pesados y requieren grandes volúmenes de datos por modalidad. Su despliegue exige infraestructura robusta.",
+     "e": "enfrenta",
+     "k": []
+    },
+    {
+     "t": "ACCESO VÍA APIS",
+     "c": "azul",
+     "d": "Acceso vía APIs como Google Gemini y OpenAI GPT-4 Vision. Permite integrar capacidades multimodales sin entrenar desde cero.",
+     "e": "accesible vía",
+     "k": []
+    }
+   ]
+  },
+  {
+   "id": "n_edge",
+   "t": "EDGE COMPUTING E IA DISTRIBUIDA",
+   "c": "verde",
+   "d": "Arquitectura que coloca capacidad de cómputo y modelos de IA en dispositivos locales cerca de la fuente de datos, reduciendo latencia y tráfico de red.",
+   "e": "abarca",
+   "k": [
+    {
+     "t": "PROCESAMIENTO EN EL BORDE",
+     "c": "verde",
+     "d": "Procesamiento cerca de la fuente de datos, en el borde de la red. Reduce latencia y el tráfico de datos crudos enviado a la nube.",
+     "e": "se define como",
+     "k": []
+    },
+    {
+     "t": "IA DISTRIBUIDA EN NODOS",
+     "c": "verde",
+     "d": "Algoritmos de IA en múltiples nodos o dispositivos que operan de forma coordinada. Permite decisiones distribuidas en tiempo real.",
+     "e": "incluye",
+     "k": []
+    },
+    {
+     "t": "ERÁ DE SISTEMAS AUTÓNOMOS",
+     "c": "verde",
+     "d": "La era de sistemas autónomos exige decisiones en tiempo real. Edge es clave para vehiculares, industria 4.0 e IoT masivo.",
+     "e": "es relevante por",
+     "k": []
+    },
+    {
+     "t": "MANUFACTURA: ANOMALÍAS LOCALES",
+     "c": "verde",
+     "d": "Detección de anomalías local en plantas automotrices (México) y Dairyland Power. El procesamiento local evita enviar datos crudos a la nube.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "RETAIL: CONTEO CON CÁMARAS",
+     "c": "verde",
+     "d": "Conteo de stock con cámaras Edge en supermercado de Brasil. Actualización inmediata sin dependencia de conexión central.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "BANCA: BIOMETRÍA LOCAL",
+     "c": "verde",
+     "d": "Kioscos con autenticación biométrica local en sucursales rurales. Opera sin conexión central, garantizando servicio continuo.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "PRIVACIDAD Y CONFIABILIDAD",
+     "c": "verde",
+     "d": "Datos permanecen en sitio (privacidad) y el sistema opera sin conexión central (confiabilidad). Ideal para sectores regulados.",
+     "e": "ofrece",
+     "k": []
+    },
+    {
+     "t": "HÍBRIDA: NUBE + EDGE",
+     "c": "verde",
+     "d": "Nube para entrenamiento de modelos + Edge para inferencia. Combina la potencia computacional de la nube con la baja latencia del borde.",
+     "e": "combina",
+     "k": []
+    },
+    {
+     "t": "HARDWARE, SEGURIDAD, UPDATES",
+     "c": "verde",
+     "d": "Hardware en campo, ciberseguridad distribuida y actualizaciones remotas son los principales retos. Requiere gobernanza específica.",
+     "e": "enfrenta",
+     "k": []
+    }
+   ]
+  },
+  {
+   "id": "n_agentes",
+   "t": "AGENTES AUTÓNOMOS",
+   "c": "ambar",
+   "d": "Software impulsado por IA capaz de realizar tareas, tomar decisiones no triviales, coordinar acciones y aprender del entorno con mínima intervención humana.",
+   "e": "abarca",
+   "k": [
+    {
+     "t": "DECISIONES NO TRIVIALES",
+     "c": "ambar",
+     "d": "Software IA con responsabilidad delegada. Toma decisiones no triviales y coordina acciones con mínima intervención humana.",
+     "e": "se define como",
+     "k": []
+    },
+    {
+     "t": "SUPERAN AL RPA",
+     "c": "ambar",
+     "d": "A diferencia de RPA (reglas predefinidas), los agentes autónomos automatizan procesos completos tomando decisiones. Van más allá de la automatización por software.",
+     "e": "se diferencia de",
+     "k": []
+    },
+    {
+     "t": "SOPORTE TI Y DEVOLUCIONES",
+     "c": "ambar",
+     "d": "Caso ServiceNow: agentes para soporte TI interno y gestión de devoluciones. Reducen tiempos de respuesta y liberan equipos.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "CADENA DE SUMINISTRO",
+     "c": "ambar",
+     "d": "Gestión de cadena de suministro en tiempo real. Los agentes anticipan disrupciones y reaccionan automáticamente.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "FINANZAS Y TRADING",
+     "c": "ambar",
+     "d": "Monitoreo financiero, correcciones de rutina y trading algorítmico. Ejecutan operaciones con parámetros definidos y supervisión humana.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "DEVIN: INGENIERO DE IA",
+     "c": "ambar",
+     "d": "Devin (Cognition, 2024): primer ingeniero de software de IA. Capaz de compilar, corregir y modernizar código con supervisión final humana.",
+     "e": "ejemplo de",
+     "k": []
+    },
+    {
+     "t": "LATAM: YALO Y BANCOS",
+     "c": "ambar",
+     "d": "Yalo (México): agentes comerciales por WhatsApp. Bancos latinoamericanos los usan para detección de fraude. Fase exploratoria con alto potencial.",
+     "e": "en LatAm",
+     "k": []
+    },
+    {
+     "t": "ALUCINACIONES Y BARANDILLAS",
+     "c": "ambar",
+     "d": "Consideraciones clave: alucinaciones, sesgos y necesidad de barandillas. Un humano siempre debe supervisar al agente.",
+     "e": "requiere considerar",
+     "k": []
+    },
+    {
+     "t": "ADOCCIÓN: COPILOT STUDIO",
+     "c": "ambar",
+     "d": "100.000 organizaciones usan Copilot Studio (Microsoft). Según KPMG, solo 12% está en producción. La adopción sigue en crecimiento acelerado.",
+     "e": "su adopción",
+     "k": []
+    }
+   ]
+  },
+  {
+   "id": "n_automl",
+   "t": "AUTOML",
+   "c": "violeta",
+   "d": "Conjunto de herramientas que automatizan las etapas del ciclo de ML: preparación de datos, selección de algoritmos, entrenamiento y optimización de hiperparámetros.",
+   "e": "abarca",
+   "k": [
+    {
+     "t": "CICLO ML AUTOMATIZADO",
+     "c": "violeta",
+     "d": "Automatiza preparación, selección, entrenamiento y optimización de modelos. Reduce el trabajo manual del ciclo completo de desarrollo.",
+     "e": "se define como",
+     "k": []
+    },
+    {
+     "t": "BÚSQUEDA BAYESIANA",
+     "c": "violeta",
+     "d": "Realiza feature engineering, prueba múltiples algoritmos y aplica búsqueda bayesiana para optimizar hiperparámetros. Todo de forma automática.",
+     "e": "funciona mediante",
+     "k": []
+    },
+    {
+     "t": "AHORRO: SEMANAS A HORAS",
+     "c": "violeta",
+     "d": "Consensus Corp: de 3-4 semanas a 8 horas de desarrollo. El ahorro de tiempo es el beneficio más inmediato de AutoML.",
+     "e": "ahorra",
+     "k": []
+    },
+    {
+     "t": "CHURN: TRUPANION",
+     "c": "violeta",
+     "d": "Trupanion: identifica 2/3 de los clientes en riesgo de churn. La precisión continua se mejora con reentrenamiento automático.",
+     "e": "mejora",
+     "k": []
+    },
+    {
+     "t": "EQUIPOS SIN ML",
+     "c": "violeta",
+     "d": "Equipos sin experiencia en ML pueden generar modelos funcionales. Democratiza el acceso a machine learning en cualquier organización.",
+     "e": "democratiza",
+     "k": []
+    },
+    {
+     "t": "USOS EN LATAM",
+     "c": "violeta",
+     "d": "Casos en LatAm: churn e-commerce Colombia, detección de fraude Perú, pricing dinámico Argentina y aplicaciones agropecuarias.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "GARBAGE IN, GARBAGE OUT",
+     "c": "violeta",
+     "d": "Datos de mala calidad producen resultados malos sin importar el algoritmo. También limita por complejidad y costo computacional.",
+     "e": "tiene",
+     "k": []
+    },
+    {
+     "t": "GOOGLE, H2O, DATAROBOT, AZURE",
+     "c": "violeta",
+     "d": "Google Cloud AutoML, H2O Driverless AI, DataRobot y Azure AutoML son las principales plataformas disponibles en el mercado.",
+     "e": "se implementa con",
+     "k": []
+    }
+   ]
+  },
+  {
+   "id": "n_xai",
+   "t": "IA explicable (XAI)",
+   "c": "coral",
+   "d": "Conjunto de técnicas dedicadas a que los sistemas inteligentes expliquen de forma entendible cómo y por qué generan cada resultado.",
+   "e": "abarca",
+   "k": [
+    {
+     "t": "EXPLICAR CÓMO Y POR QUÉ",
+     "c": "coral",
+     "d": "Técnicas para que la IA explique cómo y por qué predice. Contrasta con la metáfora de 'caja negra' de los modelos profundos.",
+     "e": "se define como",
+     "k": []
+    },
+    {
+     "t": "MODELOS INTRÍNSECOS",
+     "c": "coral",
+     "d": "Enfoque a priori: modelos intrínsecamente interpretables como árboles de decisión y regresiones lineales. La explicabilidad es inherente al modelo.",
+     "e": "incluye enfoque",
+     "k": []
+    },
+    {
+     "t": "LIME, SHAP, FEATURE IMPORTANCE",
+     "c": "coral",
+     "d": "Enfoque a posteriori: LIME, SHAP, feature importance, modelos adosados y analogías. Se aplican sobre modelos ya entrenados.",
+     "e": "incluye enfoque",
+     "k": []
+    },
+    {
+     "t": "EU AI ACT Y LATAM",
+     "c": "coral",
+     "d": "EU AI Act, Brasil, México y Chile exigen transparencia como requisito. La regulación hace de XAI una necesidad de cumplimiento.",
+     "e": "es exigida por",
+     "k": []
+    },
+    {
+     "t": "CVs Y CRÉDITO BBVA",
+     "c": "coral",
+     "d": "Filtrado de CVs (detección de sesgo) y BBVA (razones de decisión crediticia). La XAI permite auditar y corregir decisiones.",
+     "e": "se aplica en",
+     "k": []
+    },
+    {
+     "t": "IBM, GOOGLE, LIME, SHAP",
+     "c": "coral",
+     "d": "IBM AIX360, Google What-If, LIME, SHAP y DataRobot Reason Codes. Herramientas gratuitas y comerciales para explicar predicciones.",
+     "e": "se implementa con",
+     "k": []
+    },
+    {
+     "t": "CONFIANZA Y CUMPLIMIENTO",
+     "c": "coral",
+     "d": "Evitar sesgos, permitir corrección, educar usuarios, generar confianza y cumplir regulaciones. Beneficios operativos y de gobernanza.",
+     "e": "aporta",
+     "k": []
+    },
+    {
+     "t": "COMPLEMENTO DE TODAS",
+     "c": "coral",
+     "d": "XAI es complemento indispensable de todas las demás tendencias. Agentes, AutoML, Edge y multimodal requieren explicabilidad para ser confiables.",
+     "e": "funciona como",
+     "k": []
+    }
+   ]
+  }
+ ]
+};
+
+const CROSS = [
+ {
+  "from": "n_xai",
+  "to": "n_automl",
+  "label": "complementa",
+  "bend": -30
+ },
+ {
+  "from": "n_xai",
+  "to": "n_agentes",
+  "label": "goberna y audita",
+  "bend": 40
+ },
+ {
+  "from": "n_xai",
+  "to": "n_edge",
+  "label": "explica modelos simples",
+  "bend": -50
+ },
+ {
+  "from": "n_multimodal",
+  "to": "n_edge",
+  "label": "desafía capacidad",
+  "bend": 60
+ },
+ {
+  "from": "n_edge",
+  "to": "n_agentes",
+  "label": "reduce latencia",
+  "bend": -20
+ },
+ {
+  "from": "n_automl",
+  "to": "n_agentes",
+  "label": "entrena modelos",
+  "bend": 30
+ },
+ {
+  "from": "n_latam_ctx",
+  "to": "n_edge",
+  "label": "impulsa relevancia",
+  "bend": -40
+ },
+ {
+  "from": "n_latam_ctx",
+  "to": "n_automl",
+  "label": "facilita adopción",
+  "bend": 50
+ },
+ {
+  "from": "n_latam_ctx",
+  "to": "n_agentes",
+  "label": "abre oportunidades",
+  "bend": -60
+ },
+ {
+  "from": "n_prospectiva",
+  "to": "root",
+  "label": "justifica",
+  "bend": 70
+ }
+];
+
+/* ==================== LAYOUT ==================== */
+const FS = 12, LINEH = 15, PADX = 13, PADY = 9, CHARW = 6.55, MAXCH = 19, GAP = 22, ROWH = 132;
+
+function wrapText(t){
+  const out = [];
+  t.split("\n").forEach(part=>{
+    const words = part.split(" ");
+    let line = "";
+    words.forEach(w=>{
+      if((line + " " + w).trim().length > MAXCH && line){ out.push(line); line = w; }
+      else line = (line ? line + " " : "") + w;
+    });
+    if(line) out.push(line);
+  });
+  return out;
+}
+
+let NODES = [];
+(function prep(n, parent){
+  n.parent = parent;
+  n.open = false;                  // todo parte plegado…
+  n.lines = wrapText(n.t);
+  const maxLen = Math.max(...n.lines.map(l=>l.length));
+  n.w = Math.max(64, maxLen*CHARW + PADX*2);
+  n.h = n.lines.length*LINEH + PADY*2;
+  NODES.push(n);
+  (n.k||[]).forEach(c=>prep(c, n));
+})(TREE, null);
+TREE.open = true;                  // …salvo la raíz: las 9 ramas principales visibles
+
+function byId(id){ return NODES.find(n=>n.id===id); }
+function isVisible(n){ let p=n.parent; while(p){ if(!p.open) return false; p=p.parent; } return true; }
+function descCount(n){ return (n.k||[]).reduce((a,c)=>a + 1 + descCount(c), 0); }
+
+function computeWidths(n){
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.tw = n.w; return n.tw; }
+  let sum = 0;
+  kids.forEach(c=>{ sum += computeWidths(c); });
+  sum += GAP*(kids.length-1);
+  n.tw = Math.max(n.w, sum);
+  return n.tw;
+}
+function placeNodes(n, x0, depth){
+  n.y = depth*ROWH;
+  const kids = (n.open && n.k) ? n.k : [];
+  if(!kids.length){ n.x = x0 + n.tw/2; return; }
+  let inner = kids.reduce((a,c)=>a+c.tw,0) + GAP*(kids.length-1);
+  let cx = x0 + (n.tw - inner)/2;
+  kids.forEach(c=>{ placeNodes(c, cx, depth+1); cx += c.tw + GAP; });
+  n.x = (kids[0].x + kids[kids.length-1].x)/2;
+}
+
+/* ==================== RENDER ==================== */
+const svg = document.getElementById("mapSvg");
+const vp = document.getElementById("viewport");
+let selNode = null;
+let view = {x:0, y:0, s:1};
+
+function applyView(){ vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.s})`); }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function edgePath(p, c){
+  const x1 = p.x, y1 = p.y + p.h/2, x2 = c.x, y2 = c.y - c.h/2 - 3;
+  const my = (y1+y2)/2;
+  return {d:`M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, lx:(x1+x2)/2, ly:my};
+}
+
+function renderMap(){
+  computeWidths(TREE);
+  placeNodes(TREE, 0, 0);
+  let h = "";
+
+  NODES.forEach(n=>{
+    if(!n.parent || !isVisible(n)) return;
+    const ep = edgePath(n.parent, n);
+    h += `<path class="h-edge" d="${ep.d}" marker-end="url(#arrow)"/>`;
+    if(n.e) h += `<text class="edge-label" x="${ep.lx}" y="${ep.ly-5}" text-anchor="middle">${esc(n.e)}</text>`;
+  });
+
+  CROSS.forEach(cl=>{
+    const a = byId(cl.from), b = byId(cl.to);
+    if(!a || !b || !isVisible(a) || !isVisible(b)) return;
+    const x1 = a.x, y1 = a.y + a.h/2, x2 = b.x, y2 = b.y - b.h/2 - 3;
+    const mx = (x1+x2)/2 + cl.bend, my = (y1+y2)/2 + Math.abs(cl.bend)*0.4;
+    h += `<path class="x-edge" d="M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}" marker-end="url(#arrowDash)"/>`;
+    h += `<text class="edge-label" x="${mx}" y="${my}" text-anchor="middle" style="font-style:italic">${esc(cl.label)}</text>`;
+  });
+
+  NODES.forEach((n,idx)=>{
+    if(!isVisible(n)) return;
+    const col = C(n.c);
+    const x = n.x - n.w/2, y = n.y - n.h/2;
+    const isRoot = n.c === "root";
+    h += `<g class="cnode${n===selNode?' sel':''}" data-i="${idx}">`;
+    h += `<rect class="box" x="${x}" y="${y}" width="${n.w}" height="${n.h}" rx="11" fill="${col.f}" stroke="${col.s}"/>`;
+    n.lines.forEach((ln,li)=>{
+      h += `<text x="${n.x}" y="${y + PADY + (li+1)*LINEH - 4}" text-anchor="middle" font-size="${FS}" fill="${col.t}" ${isRoot?'font-weight="700" letter-spacing=".4"':''}>${esc(ln)}</text>`;
+    });
+    h += `</g>`;
+    // Indicador expandir/contraer — visible y clicable
+    if(n.k && n.k.length){
+      const cy = n.y + n.h/2;
+      if(n.open){
+        h += `<g class="badge" data-i="${idx}">
+          <circle cx="${n.x}" cy="${cy}" r="9" stroke="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.5}" text-anchor="middle" fill="${col.s}">−</text>
+        </g>`;
+      } else {
+        const txt = "＋ " + descCount(n);
+        const bw = txt.length*7 + 14;
+        h += `<g class="badge" data-i="${idx}">
+          <rect x="${n.x-bw/2}" y="${cy-9}" width="${bw}" height="18" rx="9" fill="${col.s}"/>
+          <text x="${n.x}" y="${cy+3.8}" text-anchor="middle" fill="#FFFFFF">${txt}</text>
+        </g>`;
+      }
+    }
+  });
+
+  vp.innerHTML = h;
+  applyView();
+}
+
+/* Clic en una casilla: expandir/contraer la rama + mostrar detalle,
+   manteniendo el nodo clickeado quieto bajo el cursor tras el re-layout */
+function handleNode(n){
+  const ox = n.x, oy = n.y;
+  if(n.k && n.k.length) n.open = !n.open;
+  selNode = n;
+  renderMap();
+  view.x += (ox - n.x)*view.s;
+  view.y += (oy - n.y)*view.s;
+  applyView();
+  showDetail(n);
+}
+/* Sube por el árbol DOM hasta encontrar el grupo .cnode o .badge clickeado */
+function findGroup(el){
+  while(el && el !== svg){
+    if(el.classList && (el.classList.contains("cnode") || el.classList.contains("badge"))) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function showDetail(n){
+  const card = document.getElementById("detailCard");
+  const col = C(n.c);
+  card.style.setProperty("--dc", col.s);
+  const hint = (n.k && n.k.length) ? ` <span style="color:var(--ink-faint); font-weight:400; font-size:.8rem">· ${n.open?"rama expandida":"rama contraída"} (${descCount(n)} nodos)</span>` : "";
+  card.innerHTML = `<div class="dc-cat">${col.n}</div><h3>${esc(n.t.replace(/\n/g," "))}${hint}</h3><p>${esc(n.d||"")}</p>`;
+}
+
+function contentBBox(){
+  let minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+  NODES.forEach(n=>{
+    if(!isVisible(n)) return;
+    minX = Math.min(minX, n.x - n.w/2);
+    maxX = Math.max(maxX, n.x + n.w/2);
+    minY = Math.min(minY, n.y - n.h/2);
+    maxY = Math.max(maxY, n.y + n.h/2 + 14);
+  });
+  return {minX, minY, maxX, maxY, w:maxX-minX, h:maxY-minY};
+}
+function fit(){
+  const bb = contentBBox();
+  const cw = svg.clientWidth, ch = svg.clientHeight;
+  const s = Math.min(cw/(bb.w+70), ch/(bb.h+70), 1.4);
+  view.s = s;
+  view.x = (cw - bb.w*s)/2 - bb.minX*s;
+  view.y = (ch - bb.h*s)/2 - bb.minY*s + 8;
+  applyView();
+}
+
+/* ---- pan & zoom ----
+   Clic y arrastre conviven en el mismo pointerdown: si el puntero se mueve
+   menos de 5px hasta soltarse, es un clic sobre la casilla (toggle + detalle);
+   si se mueve más, es paneo. No se usan listeners 'click' en los nodos porque
+   setPointerCapture sobre el svg retargetea el pointerup y el click jamás
+   llegaría a la casilla (ese era el bug de la v3). */
+let drag = null;
+svg.addEventListener("pointerdown", e=>{
+  drag = {x:e.clientX, y:e.clientY, vx:view.x, vy:view.y, target:findGroup(e.target), moved:false};
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", e=>{
+  if(!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if(!drag.moved && Math.hypot(dx, dy) > 5){ drag.moved = true; svg.classList.add("dragging"); }
+  if(drag.moved){
+    view.x = drag.vx + dx;
+    view.y = drag.vy + dy;
+    applyView();
+  }
+});
+svg.addEventListener("pointerup", ()=>{
+  if(drag && !drag.moved && drag.target){
+    const idx = parseInt(drag.target.getAttribute("data-i"), 10);
+    if(!isNaN(idx) && NODES[idx]) handleNode(NODES[idx]);
+  }
+  drag = null; svg.classList.remove("dragging");
+});
+svg.addEventListener("pointercancel", ()=>{ drag=null; svg.classList.remove("dragging"); });
+svg.addEventListener("wheel", e=>{
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const factor = Math.exp(-e.deltaY * 0.0016);
+  const ns = Math.min(2.5, Math.max(0.12, view.s * factor));
+  view.x = mx - (mx - view.x) * (ns/view.s);
+  view.y = my - (my - view.y) * (ns/view.s);
+  view.s = ns;
+  applyView();
+}, {passive:false});
+
+function zoomBy(f){
+  const cw = svg.clientWidth/2, ch = svg.clientHeight/2;
+  const ns = Math.min(2.5, Math.max(0.12, view.s*f));
+  view.x = cw - (cw - view.x)*(ns/view.s);
+  view.y = ch - (ch - view.y)*(ns/view.s);
+  view.s = ns;
+  applyView();
+}
+document.getElementById("zin").addEventListener("click", ()=>zoomBy(1.25));
+document.getElementById("zout").addEventListener("click", ()=>zoomBy(0.8));
+document.getElementById("zfit").addEventListener("click", fit);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("expandAll").addEventListener("click", ()=>{ NODES.forEach(n=>n.open=true); renderMap(); fit(); });
+document.getElementById("collapseAll").addEventListener("click", ()=>{
+  NODES.forEach(n=>{ n.open = (n===TREE); });
+  renderMap(); fit();
+});
+
+function renderLegend(){
+  const order = ["azul","verde","ambar","violeta","coral","cian","gris"];
+  document.getElementById("legend").innerHTML = order.map(k=>
+    `<span><i style="background:${C(k).s}"></i>${C(k).n}</span>`).join("");
+}
+
+/* ==================== TEMA: aplicar y alternar ==================== */
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  renderLegend();
+  renderMap();
+  if(selNode) showDetail(selNode);
+}
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme === "dark" ? "light" : "dark";
+  try{ localStorage.setItem("u6theme", theme); }catch(e){}
+  applyTheme();
+});
+
+applyTheme();
+fit();
+
+/* ==================== FLASHCARDS ==================== */
+const CARDS = [
+  ["pros", "Prospectiva tecnológica", "Technological foresight", "Disciplina de anticipación que explora escenarios futuros en tecnología para guiar la toma de decisiones presentes."],
+  ["multimodal", "IA multimodal", "Multimodal AI", "Sistemas de IA capaces de procesar e integrar múltiples modalidades de datos (texto, imágenes, audio, video, sensores) a la vez."],
+  ["multimodal", "Modalidad (de datos)", "Data modality", "Tipo de canal o formato de información (texto, imagen, audio, video, señal de sensor) que un modelo de IA puede ingerir."],
+  ["multimodal", "GPT-4 (Vision)", "GPT-4 (Vision)", "Modelo multimodal de OpenAI que puede recibir una imagen y generar texto explicativo, o tomar audio y crear una imagen."],
+  ["multimodal", "Gemini", "Gemini", "Modelo multimodal de Google Cloud disponible vía API que procesa texto, imagen, audio y video."],
+  ["multimodal", "Azure AI Vision", "Azure AI Vision", "Servicio de visión por computadora de Microsoft que, combinado con GPT-4, permite analizar imágenes y responder en lenguaje natural."],
+  ["edge", "Edge Computing", "Edge Computing", "Arquitectura que coloca capacidad de cómputo y modelos de IA en dispositivos locales cerca de la fuente de datos, reduciendo latencia y tráfico de red."],
+  ["edge", "IA distribuida", "Distributed AI", "Despliegue de algoritmos de IA en múltiples nodos o dispositivos que operan de forma coordinada."],
+  ["edge", "Latencia", "Latency", "Retraso en la transmisión o procesamiento de datos; se reduce al procesar localmente en el Edge."],
+  ["edge", "Ancho de banda", "Bandwidth", "Capacidad de una red para transmitir datos; el Edge reduce el tráfico de datos crudos enviado a la nube."],
+  ["edge", "Internet de las cosas", "Internet of Things (IoT)", "Red de dispositivos físicos interconectados que generan datos; su expansión impulsa la adopción de Edge Computing."],
+  ["edge", "Redes 5G/6G", "5G/6G networks", "Generaciones de redes móviles que potencian el paradigma Edge al permitir comunicación de baja latencia con dispositivos distribuidos."],
+  ["edge", "Inferencia en el Edge", "Edge inference", "Ejecución de modelos de IA ya entrenados en dispositivos locales del borde, en contraposición al entrenamiento que se hace en la nube."],
+  ["agents", "Agente autónomo", "Autonomous agent", "Software impulsado por IA capaz de realizar tareas, tomar decisiones no triviales, coordinar acciones y aprender del entorno con mínima intervención humana."],
+  ["agents", "Automatización por software / RPA", "Robotic Process Automation (RPA)", "Automatización de tareas repetitivas siguiendo reglas predefinidas; los agentes autónomos la superan al tomar decisiones no triviales."],
+  ["agents", "Modelo de Lenguaje de Grandes dimensiones", "Large Language Model (LLM)", "Modelo de IA entrenado en grandes volúmenes de texto que sirve de base cognitiva para muchos agentes autónomos."],
+  ["agents", "AutoGPT", "AutoGPT", "Plataforma experimental que permite construir agentes autónomos con capacidad de encadenar múltiples pasos de razonamiento y acción."],
+  ["agents", "Devin", "Devin", "Agente de IA presentado por Cognition en 2024 como \"el primer ingeniero de software de IA\", capaz de compilar, corregir y modernizar código con supervisión final humana."],
+  ["agents", "Microsoft Copilot Studio", "Microsoft Copilot Studio", "Plataforma corporativa de Microsoft para crear agentes autónomos empresariales integrados con CRM, RR.HH., ERP y otras plataformas."],
+  ["automl", "AutoML", "Automated Machine Learning", "Conjunto de herramientas que automatizan las etapas del ciclo de ML (preparación de datos, selección de algoritmos, entrenamiento, optimización de hiperparámetros) para reducir el trabajo manual."],
+  ["automl", "Hiperparámetros", "Hyperparameters", "Configuraciones del modelo que se ajustan antes o durante el entrenamiento (tamaños de red, tasas de aprendizaje, etc.); AutoML las optimiza automáticamente."],
+  ["automl", "Ingeniería de características", "Feature engineering", "Proceso de seleccionar y transformar variables de entrada relevantes para un modelo; AutoML realiza un feature engineering básico automáticamente."],
+  ["automl", "Búsqueda bayesiana", "Bayesian optimization", "Técnica automática de optimización de hiperparámetros que usa un modelo probabilístico para elegir las próximas configuraciones a probar de forma eficiente."],
+  ["automl", "Ensemble", "Ensemble", "Combinación de múltiples modelos (p. ej., 10 modelos distintos) que votan o se promedian para mejorar predicciones; puede ser poco explicable."],
+  ["automl", "Google Cloud AutoML", "Google Cloud AutoML", "Plataforma de AutoML de Google que permite entrenar modelos (incluyendo visión) cargando datos etiquetados y presionando un botón."],
+  ["automl", "Azure AutoML", "Azure AutoML", "Servicio de AutoML de Microsoft que automatiza el ciclo de desarrollo de modelos de machine learning."],
+  ["automl", "DataRobot", "DataRobot", "Plataforma de AutoML muy usada en la industria que, además de entrenar modelos, entrega \"Reason Codes\" (explicaciones por predicción)."],
+  ["automl", "H2O Driverless AI", "H2O Driverless AI", "Plataforma de AutoML que automatiza selección de algoritmos, entrenamiento y evaluación sin intervención manual."],
+  ["xai", "IA Explicable", "Explainable AI (XAI)", "Conjunto de técnicas y ramas de la IA dedicadas a que los sistemas inteligentes expliquen de forma entendible cómo y por qué generan cada resultado."],
+  ["xai", "Caja negra", "Black box", "Metáfora para describir modelos de IA (redes neuronales profundas, modelos generativos) cuyo proceso interno de decisión es opaco e incomprensible."],
+  ["xai", "Importancia de variables", "Feature importance", "Técnica XAI que cuantifica cuánto influyó cada variable de entrada en la predicción final de un modelo."],
+  ["xai", "LIME", "LIME (Local Interpretable Model-agnostic Explanations)", "Método local de XAI que perturba levemente los datos de un caso específico para generar una explicación interpretable de la predicción de ese caso."],
+  ["xai", "SHAP", "SHAP (SHapley Additive exPlanations)", "Método de XAI basado en teoría de juegos que asigna a cada variable una contribución a la predicción individual, similar a LIME pero con garantías teóricas."],
+  ["xai", "IBM AI Explainability 360", "IBM AI Explainability 360", "Kit gratuito de IBM con herramientas para explicar modelos de IA (incluye implementaciones de LIME, SHAP y otras)."],
+  ["xai", "Google What-If Tool", "Google What-If Tool", "Herramienta gratuita de Google que permite explorar y explicar predicciones de modelos probando datos sintéticos."],
+  ["xai", "Reason Codes", "Reason Codes", "Desglose entregado por DataRobot para cada predicción que explica por qué el modelo decidió así en términos de las variables de entrada."],
+  ["xai", "Justicia algorítmica / Fairness", "Algorithmic fairness", "Propiedad deseable de un modelo de IA de no reproducir o amplificar sesgos injustos contra grupos de personas; la XAI ayuda a detectarla."],
+  ["transv", "Sesgo algorítmico", "Algorithmic bias", "Tendencia de un modelo de IA a producir predicciones sistemáticamente injustas o discriminatorias debido a sesgos en los datos de entrenamiento o en el diseño."],
+  ["transv", "Alucinación", "Hallucination", "Fenómeno en el que un modelo de IA (especialmente LLMs o agentes) genera inferencias o afirmaciones incorrectas que parecen plausibles."],
+  ["transv", "Churn", "Churn (customer attrition)", "Pérdida o cancelación de un cliente; modelo predictivo típico donde AutoML y XAI se aplican para identificar y explicar clientes en riesgo de irse."],
+  ["transv", "Scoring crediticio", "Credit scoring", "Asignación de una puntuación de riesgo a un solicitante de crédito usando un modelo predictivo; requiere explicabilidad por regulación financiera."],
+  ["transv", "Garbage in, garbage out", "Garbage in, garbage out", "Principio que establece que si los datos de entrada son de mala calidad, el resultado del modelo también será malo, sin importar la sofisticación del algoritmo."]
+];
+
+const CATS = {
+  pros:{n:"Prospectiva tecnológica", col:"var(--cian)"},
+  multimodal:{n:"IA multimodal", col:"var(--azul)"},
+  edge:{n:"Edge Computing e IA distribuida", col:"var(--verde)"},
+  agents:{n:"Agentes autónomos", col:"var(--ambar)"},
+  automl:{n:"AutoML", col:"var(--violeta)"},
+  xai:{n:"IA explicable (XAI)", col:"var(--coral)"},
+  transv:{n:"Conceptos transversales", col:"var(--gris)"}
+};
+
+/* ==================== TABS ==================== */
+document.querySelectorAll(".tab[data-p]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab[data-p]").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById("p-"+b.dataset.p).classList.add("on");
+    if(b.dataset.p==="mapa"){ renderMap(); }
+  });
+});
+
+/* ==================== LÓGICA FLASHCARDS ==================== */
+let state = {};
+let filterCat = "todas";
+let onlyRev = false;
+let order = CARDS.map((_,i)=>i);
+let pos = 0;
+let flipped = false;
+
+function loadState(){ try{ const s = localStorage.getItem("u3fc"); if(s) state = JSON.parse(s); }catch(e){} }
+function saveState(){ try{ localStorage.setItem("u3fc", JSON.stringify(state)); }catch(e){} }
+loadState();
+
+function visibleIdx(){
+  return order.filter(i=>{
+    if(filterCat!=="todas" && CARDS[i][0]!==filterCat) return false;
+    if(onlyRev && state[i]!=="rev") return false;
+    return true;
+  });
+}
+function renderChips(){
+  const counts = {};
+  CARDS.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  let h = `<button class="chip ${filterCat==='todas'?'on':''}" data-c="todas">Todas <span class="cnt">${CARDS.length}</span></button>`;
+  for(const k in CATS){
+    h += `<button class="chip ${filterCat===k?'on':''}" data-c="${k}">${CATS[k].n} <span class="cnt">${counts[k]||0}</span></button>`;
+  }
+  const el = document.getElementById("chips");
+  el.innerHTML = h;
+  el.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{ filterCat = c.dataset.c; pos = 0; flipped = false; renderChips(); renderCard(); });
+  });
+}
+function renderCard(){
+  const vis = visibleIdx();
+  const card = document.getElementById("fcard");
+  const empty = document.getElementById("emptyMsg");
+  const controls = document.getElementById("fcControls");
+  if(!vis.length){
+    card.parentElement.style.display = "none";
+    controls.style.visibility = "hidden";
+    empty.style.display = "block";
+    document.getElementById("counter").textContent = "";
+    renderProgress();
+    return;
+  }
+  card.parentElement.style.display = "";
+  controls.style.visibility = "";
+  empty.style.display = "none";
+  if(pos >= vis.length) pos = 0;
+  if(pos < 0) pos = vis.length - 1;
+  const i = vis[pos];
+  const [cat, term, en, def] = CARDS[i];
+  card.classList.toggle("flip", flipped);
+  card.style.setProperty("--cc", CATS[cat].col);
+  document.getElementById("catFront").textContent = CATS[cat].n;
+  document.getElementById("catBack").textContent = CATS[cat].n;
+  document.getElementById("term").textContent = term;
+  document.getElementById("termEn").textContent = en && en !== "—" ? en : "";
+  document.getElementById("def").textContent = def;
+  const st = state[i];
+  for(const id of ["stateFront","stateBack"]){
+    const el = document.getElementById(id);
+    el.className = "f-state" + (st==="ok"?" ok":st==="rev"?" rev":"");
+    el.textContent = st==="ok" ? "✓ dominada" : st==="rev" ? "↻ repasar" : "";
+  }
+  document.getElementById("counter").textContent = `${pos+1} / ${vis.length}`;
+  renderProgress();
+}
+function renderProgress(){
+  let ok=0, rev=0;
+  CARDS.forEach((_,i)=>{ if(state[i]==="ok") ok++; else if(state[i]==="rev") rev++; });
+  document.getElementById("nOk").textContent = ok;
+  document.getElementById("nRev").textContent = rev;
+  document.getElementById("nNew").textContent = CARDS.length - ok - rev;
+  document.getElementById("barOk").style.width = (ok/CARDS.length*100)+"%";
+  document.getElementById("barRev").style.width = (rev/CARDS.length*100)+"%";
+}
+function move(dir){ flipped = false; pos += dir; renderCard(); }
+function flip(){ flipped = !flipped; document.getElementById("fcard").classList.toggle("flip", flipped); }
+function mark(val){
+  const vis = visibleIdx();
+  if(!vis.length) return;
+  const i = vis[pos];
+  state[i] = val;
+  saveState();
+  flipped = false;
+  if(onlyRev && val==="ok"){ renderCard(); }
+  else { pos++; renderCard(); }
+}
+document.getElementById("fcard").addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("prevBtn").addEventListener("click", ()=>move(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>move(1));
+document.getElementById("okBtn").addEventListener("click", ()=>mark("ok"));
+document.getElementById("revBtn").addEventListener("click", ()=>mark("rev"));
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  pos = 0; flipped = false; renderCard();
+});
+document.getElementById("resetBtn").addEventListener("click", ()=>{ state = {}; saveState(); renderCard(); });
+document.getElementById("onlyRev").addEventListener("click", function(){
+  onlyRev = !onlyRev; this.classList.toggle("on", onlyRev); pos = 0; flipped = false; renderCard();
+});
+document.addEventListener("keydown", e=>{
+  if(!document.getElementById("p-cards").classList.contains("on")) return;
+  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if(e.key === "ArrowLeft"){ e.preventDefault(); move(-1); }
+  else if(e.key === "ArrowRight"){ e.preventDefault(); move(1); }
+  else if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if(e.key === "1"){ mark("ok"); }
+  else if(e.key === "2"){ mark("rev"); }
+});
+renderChips();
+renderCard();
+</script>
+</body>
+</html>
